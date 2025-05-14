@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tryvia BI - Portal de Dashboards</title>
+  <style>
+    :root {
+      --primary-color: #0d47a1;
+      --secondary-color: #1976d2;
+      --accent-color: #00b0ff;
+      --hover-color: #0091ea;
+      --text-color: #ffffff;
+      --dark-bg: #0a2b59;
+      --card-bg: rgba(255, 255, 255, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--text-color);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 40px;
+    }
+    
+    .logo {
+      height: 60px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background-color: var(--accent-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .welcome-section h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .welcome-section p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .dashboard-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-image {
+      height: 160px;
+      background-color: var(--dark-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .card-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+    }
+    
+    .card-content {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .card-description {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+    
+    .access-btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background: var(--accent-color);
+      color: white;
+      border-radius: 30px;
+      font-weight: 500;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .access-btn:hover {
+      background: var(--hover-color);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .access-btn i {
+      font-size: 1.1rem;
+    }
+    
+    .search-container {
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      padding-left: 50px;
+      border-radius: 30px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+    }
+    
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .category-btn {
+      padding: 8px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .category-btn:hover,
+    .category-btn.active {
+      background: var(--accent-color);
+    }
+    
+    .logout-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .dashboard-card {
+      animation: fadeIn 0.5s ease-out forwards;
+      opacity: 0;
+    }
+    
+    .dashboard-card:nth-child(1) { animation-delay: 0.1s; }
+    .dashboard-card:nth-child(2) { animation-delay: 0.2s; }
+    .dashboard-card:nth-child(3) { animation-delay: 0.3s; }
+    .dashboard-card:nth-child(4) { animation-delay: 0.4s; }
+    .dashboard-card:nth-child(5) { animation-delay: 0.5s; }
+    .dashboard-card:nth-child(6) { animation-delay: 0.6s; }
+    .dashboard-card:nth-child(7) { animation-delay: 0.7s; }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      .welcome-section h1 {
+        font-size: 2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .welcome-section h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+  <!-- Font Awesome para ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="logo1.png" alt="Logo Tryvia BI" class="logo">
+      <div class="user-info">
+        <span>Olá, Usuário</span>
+        <div class="user-avatar">U</div>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+      </div>
+    </header>
+    
+    <section class="welcome-section">
+      <h1>Portal de BI</h1>
+      <p>Escolha um dos dashboards abaixo para visualizar </p>
+    </section>
+    
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" placeholder="Buscar dashboard..." id="searchInput" oninput="filterDashboards()">
+    </div>
+    
+    <div class="categories">
+      <button class="category-btn active" onclick="filterCategory('all')">Todos</button>
+      <button class="category-btn" onclick="filterCategory('transporte')">Transporte</button>
+      <button class="category-btn" onclick="filterCategory('implantacao')">Implantação</button>
+    </div>
+    
+    <div class="dashboard-grid" id="dashboardGrid">
+      <!-- Dashboard 1 -->
+     <!-- Código correto para o card do Pássaro Verde -->
+<div class="dashboard-card" data-category="transporte">
+  <div class="card-image" style="background-color: #0d62b3; display: flex; align-items: center; justify-content: center;">
+      <img src="pv.PNG" alt="Dashboard Passaro Verde" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+  </div>
+  <div class="card-content">
+    <h3 class="card-title">Passaro Verde</h3>
+    <p class="card-description">BI Passaro Verde.</p>
+    <button class="access-btn" onclick="acessarDashboard('passaroverde')">
+      <i class="fas fa-chart-line"></i> Acessar
+    </button>
+  </div>
+</div>
+      
+      <!-- Dashboard 2 -->
+     <div class="dashboard-card" data-category="transporte">
+  <div class="card-image" style="background-color: #0d62b3; display: flex; align-items: center; justify-content: center;">
+      <img src="pm.PNG" alt="Dashboard Passaro Marron" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+  </div>
+  <div class="card-content">
+    <h3 class="card-title">Passaro Marron</h3>
+    <p class="card-description">BI Passaro Marron.</p>
+    <button class="access-btn" onclick="acessarDashboard('passaromarron')">
+      <i class="fas fa-chart-line"></i> Acessar
+    </button>
+  </div>
+</div>
+
+      <!-- Dashboard 3 -->
+       <div class="dashboard-card" data-category="transporte">
+  <div class="card-image" style="background-color: #0d62b3; display: flex; align-items: center; justify-content: center;">
+      <img src="Em.PNG" alt="Dashboard Emtram" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+  </div>
+  <div class="card-content">
+    <h3 class="card-title">Emtram</h3>
+    <p class="card-description">BI Emtram.</p>
+    <button class="access-btn" onclick="acessarDashboard('emtram')">
+      <i class="fas fa-chart-line"></i> Acessar
+    </button>
+  </div>
+</div>
+
+      
+      <!-- Dashboard 4 -->
+       <div class="dashboard-card" data-category="transporte">
+  <div class="card-image" style="background-color: #0d62b3; display: flex; align-items: center; justify-content: center;">
+      <img src="lideranca.PNG" alt="Dashboard Liderança" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+  </div>
+  <div class="card-content">
+    <h3 class="card-title">Liderança</h3>
+    <p class="card-description">BI Liderança.</p>
+    <button class="access-btn" onclick="acessarDashboard('lideranca')">
+      <i class="fas fa-chart-line"></i> Acessar
+    </button>
+  </div>
+</div>
+
+      
+      <!-- Dashboard 5 -->
+       <div class="dashboard-card" data-category="transporte">
+  <div class="card-image" style="background-color: #0d62b3; display: flex; align-items: center; justify-content: center;">
+      <img src="planalto.PNG" alt="Dashboard Planalto" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+  </div>
+  <div class="card-content">
+    <h3 class="card-title">Planalto</h3>
+    <p class="card-description">BI Planalto.</p>
+    <button class="access-btn" onclick="acessarDashboard('planalto')">
+      <i class="fas fa-chart-line"></i> Acessar
+    </button>
+  </div>
+</div>
+      
+      <!-- Dashboard 6 -->
+      <div class="dashboard-card" data-category="transporte">
+  <div class="card-image" style="background-color: #0d62b3; display: flex; align-items: center; justify-content: center;">
+      <img src="reunidas.PNG" alt="Dashboard Reunidas" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+  </div>
+  <div class="card-content">
+    <h3 class="card-title">Reunidas</h3>
+    <p class="card-description">BI Reunidas.</p>
+    <button class="access-btn" onclick="acessarDashboard('reunidas')">
+      <i class="fas fa-chart-line"></i> Acessar
+    </button>
+  </div>
+</div>
+
+      
+      <!-- Dashboard 7 -->
+      <div class="dashboard-card" data-category="implantacao">
+        <div class="card-image" style="background-color: #0d62b3; display: flex; align-items: center; justify-content: center;">
+      <img src="logo tryvia.PNG" alt="Dashboard BI Time de Implantação" style="max-height: 80%; max-width: 80%; object-fit: contain;">
+  </div>
+  <div class="card-content">
+    <h3 class="card-title">BI Time de implantação</h3>
+    <p class="card-description">BI Time de Implantação.</p>
+    <button class="access-btn" onclick="acessarDashboard('implantacao')">
+      <i class="fas fa-chart-line"></i> Acessar
+    </button>
+  </div>
+</div>
+
+    </div>
+    
+    <footer>
+      <p>&copy; 2025 Tryvia BI - Todos os direitos reservados</p>
+    </footer>
+  </div>
+
+ <script>
+  const dashboardURLs = {
+    passaroverde: "https://bi.newsgps.com.br/bi/dash_Geral_Passaro_verde.html",
+    passaromarron: "https://bi.newsgps.com.br/bi/dash_Geral_Passaro_marron.html",
+    emtram: "https://bi.newsgps.com.br/bi/dash_Geral_Emtram.html",
+    lideranca: "https://bi.newsgps.com.br/bi/dash_Geral_Lideranca.html",
+    planalto: "https://bi.newsgps.com.br/bi/dash_Geral_Planalto.html",
+    reunidas: "https://bi.newsgps.com.br/bi/dash_Geral_Reunidas.html",
+    implantacao: "https://app.powerbi.com/view?r=eyJrIjoiZWJmY2EyYjgtYmI0ZS00YzliLWE2MmMtODJhN2IyYjJmNTI5IiwidCI6IjFiNzUzM2EyLWM0MGMtNDA5OS1iNDBjLWU0MzM4OWIxMGU1ZCJ9"
+  };
+
+  function acessarDashboard(tipo) {
+    window.location.href = dashboardURLs[tipo];
+  }
+
+  function logout() {
+    window.location.href = "index.html";
+  }
+
+  function filterCategory(category) {
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach(card => {
+      if (category === 'all' || card.dataset.category === category) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function filterDashboards() {
+    const searchText = document.getElementById('searchInput').value.toLowerCase();
+    const cards = document.querySelectorAll('.dashboard-card');
+
+    cards.forEach(card => {
+      const title = card.querySelector('.card-title').textContent.toLowerCase();
+      const description = card.querySelector('.card-description').textContent.toLowerCase();
+
+      if (title.includes(searchText) || description.includes(searchText)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+    
+  
+
+  </script>
+</body>
+</html>
