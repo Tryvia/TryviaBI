@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRYVIA - Gerenciamento de Documentos</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #1A237E 0%, #303F9F 100%); /* Existing dark blue gradient */
+            min-height: 100vh;
+            color: white;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(26, 35, 126, 0.9);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            margin-bottom: 50px;
+            display: flex; /* Added to center the image */
+            justify-content: center; /* Added to center the image */
+            align-items: center; /* Added to center the image */
+            width: 100%; /* Ensure it takes full width for centering */
+        }
+
+        .logo img {
+            max-width: 180px; /* Adjust as needed for your logo size */
+            height: auto;
+            border-radius: 5px; /* Optional: if you want rounded corners on the logo image */
+        }
+
+        .nav-menu {
+            width: 100%;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none; /* For the new a tag */
+            border-radius: 8px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 600;
+            border-left: 5px solid #FFFFFF; /* Changed from yellow to white */
+            padding-left: 15px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px 30px;
+            flex-grow: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #FFFFFF; /* Changed from yellow to white */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1A237E; /* Existing dark blue */
+            font-size: 1.2em;
+        }
+
+        .btn-primary {
+            background-color: #FFFFFF; /* Changed from yellow to white */
+            color: #1A237E; /* Existing dark blue */
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #F0F0F0; /* Changed from lighter yellow to off-white */
+            transform: translateY(-2px);
+        }
+
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #FFFFFF; /* Changed from yellow to white */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .section-subtitle {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"],
+        .form-group select {
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .form-group input[type="text"]::placeholder,
+        .form-group input[type="email"]::placeholder,
+        .form-group input[type="tel"]::placeholder,
+        .form-group input[type="number"]::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="tel"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group select:focus {
+            border-color: #FFFFFF; /* Changed from yellow to white */
+            background-color: rgba(255, 255, 255, 0.15);
+            outline: none;
+        }
+
+        .form-group select option {
+            background-color: #1A237E; /* Existing dark blue */
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #283593; /* Existing dark blue */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #3949AB; /* Existing lighter dark blue */
+            transform: translateY(-2px);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .upload-area:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: #FFFFFF; /* Changed from yellow to white */
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .document-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .document-type {
+            background-color: #FFFFFF; /* Changed from yellow to white */
+            color: #1A237E; /* Existing dark blue */
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            color: #FF1744;
+        }
+
+        .document-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .document-author {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+            color: rgba(255, 255, 255, 0.6);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-top: 30px;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .client-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .client-tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: color 0.3s ease, border-bottom 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .client-tab-button.active {
+            color: white;
+            border-bottom: 3px solid #FFFFFF; /* Changed from yellow to white */
+            font-weight: 600;
+        }
+
+        .client-tab-button:hover {
+            color: white;
+        }
+
+        .client-tab-content {
+            display: none;
+        }
+
+        .client-tab-content.active {
+            display: block;
+        }
+
+        /* Client form specific styles */
+        .logo-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-upload-area:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: #FFFFFF; /* Changed from yellow to white */
+        }
+
+        .logo-preview {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 5px;
+            object-fit: contain;
+        }
+
+        .products-section {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: white;
+        }
+
+        .client-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .client-card-vertical {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .client-card-top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .delete-btn-card {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            margin-left: auto;
+            padding: 5px;
+            border-radius: 50%;
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+
+        .delete-btn-card:hover {
+            color: #FF1744;
+            background-color: rgba(255, 0, 0, 0.3);
+        }
+
+        .client-status-card {
+            background-color: #4CAF50;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-right: auto;
+        }
+
+        .client-logo-vertical {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #FFFFFF; /* Changed from yellow to white */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #1A237E; /* Existing dark blue */
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .logo-preview-vertical {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .add-logo-text {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .client-name-vertical {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .client-status-text {
+            font-size: 0.9em;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .products-info-vertical {
+            text-align: left;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .btn-secondary-vertical {
+            background-color: #283593;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 80%;
+        }
+
+        .btn-secondary-vertical:hover {
+            background-color: #3949AB;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo"><img src="logo1.png" alt="Logo" style="max-width: 100%; height: auto;"></div>
+        <nav class="nav-menu">
+            <a href="https://tryvia.github.io/TryviaBI/portal-clientes.html" target="_blank" class="nav-item">Dashboard</a>
+            <div class="nav-item active" onclick="showTab('documents')">Time de Implantação</div>
+            <div class="nav-item" onclick="showTab('clients')">Clientes</div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar">J</div>
+                <span>Olá, João!</span>
+            </div>
+            <button class="btn-primary">Sair</button>
+        </div>
+
+        <div id="documents" class="content-section active">
+            <h1 class="section-title">Time de Implantação</h1>
+            <p class="section-subtitle">Gerencie os documentos da sua empresa</p>
+
+            <div class="form-container">
+                <h2>Adicionar Novo Documento</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="documentTitle">Título</label>
+                        <input type="text" id="documentTitle" placeholder="Título do documento...">
+                    </div>
+                    <div class="form-group">
+                        <label for="documentAuthor">Autor</label>
+                        <input type="text" id="documentAuthor" placeholder="Nome do autor...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="documentType">Tipo</label>
+                        <select id="documentType">
+                            <option value="">Selecione o tipo</option>
+                            <option value="contrato">Contrato</option>
+                            <option value="relatorio">Relatório</option>
+                            <option value="proposta">Proposta</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="documentFile">Arquivo</label>
+                        <div class="upload-area" onclick="document.getElementById('documentFile').click()">
+                            <div class="upload-icon">📄</div>
+                            <p>Arraste e solte ou clique para selecionar um arquivo</p>
+                            <input type="file" id="documentFile" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="addDocument()">Adicionar Documento</button>
+            </div>
+
+            <h2>Documentos Existentes</h2>
+            <div id="documentsList" class="documents-grid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📁</div>
+                    <p>Nenhum documento encontrado.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="clients" class="content-section">
+            <h1 class="section-title">Clientes</h1>
+            <p class="section-subtitle">Gerencie seus clientes e seus produtos</p>
+
+            <div class="client-tabs">
+                <button class="client-tab-button active" onclick="showClientTab('view-clients')">Visualizar Clientes</button>
+                <button class="client-tab-button" onclick="showClientTab('add-client')">Adicionar Cliente</button>
+            </div>
+
+            <div id="view-clients" class="client-tab-content active">
+                <h2>Meus Clientes</h2>
+                <div id="clientsList" class="client-grid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👥</div>
+                        <p>Nenhum cliente encontrado.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="add-client" class="client-tab-content">
+                <div class="form-container">
+                    <h2>Adicionar Novo Cliente</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientName">Nome do Cliente</label>
+                            <input type="text" id="clientName" placeholder="Nome completo ou da empresa...">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientEmail">Email de Contato</label>
+                            <input type="email" id="clientEmail" placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientPhone">Telefone</label>
+                            <input type="tel" id="clientPhone" placeholder="(XX) XXXXX-XXXX">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientLogo">Logo do Cliente</label>
+                            <div class="logo-upload-area" id="logoPreview" onclick="document.getElementById('clientLogo').click()">
+                                <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
+                                <p>Clique para adicionar logo</p>
+                                <input type="file" id="clientLogo" style="display: none;" onchange="previewLogo(this)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="products-section">
+                        <h3>Produtos do Cliente</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productName">Nome do Produto</label>
+                                <input type="text" id="productName" placeholder="Nome do produto...">
+                            </div>
+                            <div class="form-group" style="flex: 0.5;">
+                                <label for="productQuantity">Quantidade</label>
+                                <input type="number" id="productQuantity" min="1" value="1">
+                            </div>
+                            <button class="btn-secondary" style="align-self: flex-end; width: auto; padding: 10px 20px;" onclick="addProduct()">+</button>
+                        </div>
+                        <div id="productsList" class="products-grid">
+                            <div id="productsContainer">
+                                <p style="color: rgba(255,255,255,0.7);">Nenhum produto adicionado ainda.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" onclick="saveClient()">Salvar Cliente</button>
+                </div>
+            </div>
+            
+            <div id="view-client-documents" class="client-tab-content" style="display:none;">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicialize o Supabase Client globalmente
+        const SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
+        // ATENÇÃO: SUBSTITUA ESTA CHAVE PELA SUA CHAVE ANON/PUBLIC KEY DO SUPABASE REAL!
+        // NÃO COLOQUE A CHAVE SERVICE_ROLE AQUI, POIS ELA É SENSÍVEL!
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc'; 
+        
+        // Acessa a função createClient do objeto global 'supabase' fornecido pela CDN
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Armazenamento de dados (serão substituídos pelos dados do Supabase)
+        let documents = [];
+        let clients = [];
+        let currentProducts = [];
+
+        // Funções que são chamadas diretamente de atributos onclick no HTML ou por outras funções globais
+        // DEVEM estar no escopo global (fora do DOMContentLoaded)
+
+        function showTab(tabId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.nav-item[onclick="showTab('${tabId}')"]`).classList.add('active');
+
+            // Renderiza o conteúdo específico da aba
+            if (tabId === 'documents') {
+                fetchAndRenderDocuments();
+            } else if (tabId === 'clients') {
+                showClientTab('view-clients'); // Padrão para visualizar clientes ao abrir a aba de clientes
+                fetchAndRenderClients();
+            }
+        }
+
+        function showClientTab(tabId) {
+            document.querySelectorAll('.client-tab-content').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(tabId).style.display = 'block';
+
+            // Atualiza os botões da aba de cliente para marcar o ativo
+            document.querySelectorAll('.client-tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            // Encontra o botão correspondente e adiciona a classe 'active'
+            const activeClientButton = document.querySelector(`.client-tab-button[onclick="showClientTab('${tabId}')"]`);
+            if (activeClientButton) {
+                activeClientButton.classList.add('active');
+            }
+
+            if (tabId === 'view-clients') {
+                fetchAndRenderClients();
+            }
+        }
+
+        function previewLogo(input) {
+            const logoPreview = document.getElementById('logoPreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoPreview.innerHTML = `<img src="${e.target.result}" class="logo-preview" alt="Logo preview">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                // Se nenhum arquivo for selecionado, restaura o estado padrão
+                logoPreview.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
+                    <p>Clique para adicionar logo</p>
+                `;
+            }
+        }
+
+        function addProduct() {
+            const productName = document.getElementById('productName').value;
+            const productQuantity = document.getElementById('productQuantity').value;
+
+            if (productName && productQuantity > 0) {
+                currentProducts.push({ name: productName, quantity: parseInt(productQuantity) });
+                updateProductsList();
+                document.getElementById('productName').value = '';
+                document.getElementById('productQuantity').value = '1'; // Resetar para 1
+                document.getElementById('productsList').style.display = 'block';
+            } else {
+                alert('Por favor, insira um nome e uma quantidade válida para o produto.');
+            }
+        }
+
+        function removeProduct(index) {
+            currentProducts.splice(index, 1);
+            updateProductsList();
+        }
+
+        function updateProductsList() {
+            const productsContainer = document.getElementById('productsContainer');
+            if (currentProducts.length === 0) {
+                productsContainer.innerHTML = '<p style="color: rgba(255,255,255,0.7);">Nenhum produto adicionado ainda.</p>';
+                // Oculta a lista se estiver vazia
+                document.getElementById('productsList').style.display = 'none'; 
+                return;
+            }
+            // Exibe a lista se houver produtos
+            document.getElementById('productsList').style.display = 'grid'; 
+            productsContainer.innerHTML = currentProducts.map((product, index) => `
+                <div class="product-item">
+                    <span>${product.name} (x${product.quantity})</span>
+                    <button class="delete-btn" onclick="removeProduct(${index})">X</button>
+                </div>
+            `).join('');
+        }
+
+        // A função viewClientDocuments também é chamada diretamente do HTML
+        async function viewClientDocuments(clientId) {
+            const clientName = clients.find(c => c.id === clientId)?.name || `Cliente ID: ${clientId}`;
+            
+            let clientDocumentsSection = document.getElementById('view-client-documents');
+            if (!clientDocumentsSection) {
+                    // Criar a seção dinamicamente se ela não existir (caso a página seja carregada com um link direto para esta aba)
+                const clientsDiv = document.getElementById('clients');
+                clientsDiv.insertAdjacentHTML('beforeend', `<div id="view-client-documents" class="client-tab-content" style="display:none;"></div>`);
+                clientDocumentsSection = document.getElementById('view-client-documents');
+            }
+            
+            clientDocumentsSection.innerHTML = `
+                <div class="form-container">
+                    <h3 style="margin-bottom: 20px;">Documentos de: ${clientName}</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientDocumentTitle">Título</label>
+                            <input type="text" id="clientDocumentTitle" placeholder="Título do documento...">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientDocumentType">Tipo</label>
+                            <select id="clientDocumentType">
+                                <option value="">Selecione o tipo</option>
+                                <option value="contrato">Contrato</option>
+                                <option value="relatorio">Relatório</option>
+                                <option value="proposta">Proposta</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="clientDocumentFile">Arquivo</label>
+                            <div class="upload-area" onclick="document.getElementById('clientDocumentFile').click()">
+                                <div class="upload-icon">📄</div>
+                                <p>Arraste e solte ou clique para selecionar um arquivo</p>
+                                <input type="file" id="clientDocumentFile" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-secondary" onclick="addClientDocument(${clientId})">Adicionar Documento ao Cliente</button>
+                    <button class="btn-secondary" onclick="showClientTab('view-clients')" style="margin-left: 10px;">Voltar aos Clientes</button>
+                </div>
+
+                <h3 style="margin-top: 40px; margin-bottom: 20px;">Documentos Existentes</h3>
+                <div id="clientDocumentsList" class="documents-grid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <p>Nenhum documento para este cliente.</p>
+                    </div>
+                </div>
+            `;
+            
+            // Exibir a nova aba
+            showClientTab('view-client-documents');
+            
+            // Carregar e renderizar os documentos específicos deste cliente
+            await fetchAndRenderClientDocuments(clientId);
+        }
+
+        // Funções para documentos
+        async function addDocument() {
+            const title = document.getElementById('documentTitle').value;
+            const author = document.getElementById('documentAuthor').value;
+            const type = document.getElementById('documentType').value;
+            const fileInput = document.getElementById('documentFile');
+            const file = fileInput.files[0];
+
+            if (title && author && type && file) {
+                const filePath = `${Date.now()}_${file.name}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('documentfiles') // Nome do seu bucket de documentos
+                    .upload(filePath, file);
+
+                if (uploadError) {
+                    console.error('Erro ao fazer upload do arquivo:', uploadError.message);
+                    alert('Erro ao fazer upload do documento.');
+                    return;
+                }
+
+                // Ajuste a URL pública para o formato correto do Supabase Storage v1
+                // O formato deve ser: SUPABASE_URL/storage/v1/object/public/seu_bucket_name/caminho_do_arquivo
+                const publicURL = `${SUPABASE_URL}/storage/v1/object/public/documentfiles/${filePath}`;
+
+                const { data, error } = await supabase
+                    .from('documents') // Nome da sua tabela de documentos
+                    .insert([
+                        { title, author, type, file_url: publicURL, file_path: filePath }
+                    ]);
+
+                if (error) {
+                    console.error('Erro ao adicionar documento no banco de dados:', error.message);
+                    alert('Erro ao adicionar documento.');
+                } else {
+                    alert('Documento adicionado com sucesso!');
+                    // Limpar formulário
+                    document.getElementById('documentTitle').value = '';
+                    document.getElementById('documentAuthor').value = '';
+                    document.getElementById('documentType').value = '';
+                    fileInput.value = ''; // Limpa o input de arquivo
+                    fetchAndRenderDocuments(); // Re-renderiza os documentos do DB
+                }
+            } else {
+                alert('Por favor, preencha todos os campos e selecione um arquivo.');
+            }
+        }
+
+        async function fetchAndRenderDocuments() {
+            const { data, error } = await supabase
+                .from('documents')
+                .select('*');
+
+            const container = document.getElementById('documentsList');
+
+            if (error) {
+                console.error('Erro ao buscar documentos:', error.message);
+                container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro ao carregar documentos.</p></div>`;
+                return;
+            }
+
+            documents = data; // Atualiza a variável local com os dados do Supabase
+
+            if (documents.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <p>Nenhum documento encontrado</p>
+                        <p>Adicione documentos para começar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = documents.map(doc => `
+                <div class="document-card">
+                    <div class="document-header">
+                        <span class="document-type">${doc.type}</span>
+                        <button class="delete-btn" onclick="deleteDocument(${doc.id}, '${doc.file_path}')">X</button>
+                    </div>
+                    <div class="document-title">${doc.title}</div>
+                    <div class="document-author">${doc.author}</div>
+                    <a href="${doc.file_url}" download="${doc.title}.${doc.file_url.split('.').pop()}" target="_blank" class="btn-secondary" style="margin-top: 15px; display: block; text-align: center;">Download</a>
+                </div>
+            `).join('');
+        }
+
+        async function deleteDocument(id, filePath) {
+            if (!confirm('Tem certeza que deseja deletar este documento?')) {
+                return;
+            }
+
+            // Primeiro, deleta o arquivo do Storage
+            const { error: storageError } = await supabase.storage
+                .from('documentfiles') // Nome do seu bucket de documentos
+                .remove([filePath]);
+
+            if (storageError) {
+                console.error('Erro ao deletar arquivo do Storage:', storageError.message);
+                alert('Erro ao deletar arquivo do Storage. Verifique as permissões do bucket.');
+                return;
+            }
+
+            // Depois, deleta o registro do banco de dados
+            const { error: dbError } = await supabase
+                .from('documents') // Nome da sua tabela de documentos
+                .delete()
+                .eq('id', id);
+
+            if (dbError) {
+                console.error('Erro ao deletar documento do banco de dados:', dbError.message);
+                alert('Erro ao deletar documento do banco de dados. Verifique as permissões da tabela.');
+            } else {
+                alert('Documento deletado com sucesso!');
+                fetchAndRenderDocuments(); // Re-renderiza os documentos
+            }
+        }
+
+        // Funções para clientes
+        async function saveClient() {
+            const name = document.getElementById('clientName').value;
+            const email = document.getElementById('clientEmail').value;
+            const phone = document.getElementById('clientPhone').value;
+            const logoFileInput = document.getElementById('clientLogo'); // Obtém o elemento input
+            const logoFile = logoFileInput.files[0]; // Acessa o arquivo, se existir
+            let logoUrl = null;
+            let logoPath = null;
+
+            if (name && email && phone) {
+                if (logoFile) { // Verifica se um arquivo foi realmente selecionado
+                    const logoFilePath = `logos/${Date.now()}_${logoFile.name}`;
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('clientlogos') // Nome do seu bucket de logos de cliente
+                        .upload(logoFilePath, logoFile);
+
+                    if (uploadError) {
+                        console.error('Erro ao fazer upload do logo:', uploadError.message);
+                        alert('Erro ao fazer upload do logo. Verifique as permissões do bucket.');
+                        return;
+                    }
+                    logoUrl = `${SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
+                    logoPath = logoFilePath;
+                }
+
+                // Salva o cliente
+                const { data: clientData, error: clientError } = await supabase
+                    .from('clients') // Nome da sua tabela de clientes
+                    .insert([
+                        { name, email, phone, logo_url: logoUrl }
+                    ])
+                    .select(); // Retorna o cliente inserido para pegar o ID
+
+                if (clientError) {
+                    console.error('Erro ao salvar cliente:', clientError.message);
+                    alert('Erro ao salvar cliente. Verifique as permissões da tabela.');
+                    return;
+                }
+
+                const clientId = clientData[0].id;
+
+                // Salva os produtos
+                if (currentProducts.length > 0) {
+                    const productsToInsert = currentProducts.map(p => ({
+                        client_id: clientId,
+                        name: p.name,
+                        quantity: p.quantity
+                    }));
+                    const { error: productsError } = await supabase
+                        .from('products') // Nome da sua tabela de produtos
+                        .insert(productsToInsert);
+
+                    if (productsError) {
+                        console.error('Erro ao salvar produtos:', productsError.message);
+                        alert('Cliente salvo, mas erro ao salvar produtos. Verifique as permissões da tabela de produtos.');
+                    }
+                }
+                
+                alert('Cliente salvo com sucesso!');
+                // Limpar formulário
+                document.getElementById('clientName').value = '';
+                document.getElementById('clientEmail').value = '';
+                document.getElementById('clientPhone').value = '';
+                logoFileInput.value = ''; // Limpa o input de arquivo do logo
+                document.getElementById('logoPreview').innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
+                    <p>Clique para adicionar logo</p>
+                `;
+                currentProducts = [];
+                updateProductsList();
+                fetchAndRenderClients(); // Re-renderiza os clientes do DB
+                showClientTab('view-clients'); // Volta para a visualização de clientes após salvar
+                
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios do cliente.');
+            }
+        }
+
+        async function fetchAndRenderClients() {
+            const { data, error } = await supabase
+                .from('clients')
+                .select(`
+                    *,
+                    products (
+                        id, name, quantity
+                    )
+                `);
+
+            const container = document.getElementById('clientsList');
+
+            if (error) {
+                console.error('Erro ao buscar clientes:', error.message);
+                container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro ao carregar clientes.</p></div>`;
+                return;
+            }
+
+            clients = data; // Atualiza a variável local com os dados do Supabase
+
+            if (clients.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👥</div>
+                        <p>Nenhum cliente encontrado</p>
+                        <p>Adicione clientes para começar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = clients.map(client => `
+                <div class="client-card-vertical">
+                    <div class="client-card-top">
+                        <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_url || ''}')"><span style="font-size: 16px;">🗑️</span></button>
+                        <span class="client-status-card">Ativo</span>
+                    </div>
+                    <div class="client-logo-vertical">
+                        ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
+                    </div>
+                    <p class="add-logo-text">${client.logo_url ? '' : 'Adicionar Logo'}</p>
+                    <h3 class="client-name-vertical">${client.name}</h3>
+                    <p class="client-status-text">Cliente Ativo</p>
+                    <div class="products-info-vertical">
+                        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 5px;">
+                            <span style="font-size: 18px;">📦</span> <span style="font-weight: bold;">Produtos</span> (<span id="productCount-${client.id}">${client.products ? client.products.length : 0}</span>)
+                        </div>
+                        ${client.products && client.products.length > 0 ? client.products.map(p => `<p style="font-size: 14px; margin-left: 25px;">• ${p.name} (x${p.quantity})</p>`).join('') : '<p style="font-size: 14px; color: rgba(255,255,255,0.6); margin-left: 25px;">Nenhum produto</p>'}
+                    </div>
+                    <button class="btn-secondary-vertical" onclick="viewClientDocuments(${client.id})">Ver Documentos</button>
+                </div>
+            `).join('');
+        }
+        
+        async function deleteClient(id, logoUrl) {
+            if (!confirm('Tem certeza que deseja deletar este cliente e todos os seus produtos e documentos? Esta ação é irreversível.')) {
+                return;
+            }
+
+            // Se houver um logo, tenta deletá-lo do Storage
+            if (logoUrl) {
+                // Extrai o caminho do arquivo do Storage da URL completa
+                const urlParts = logoUrl.split('/');
+                const bucketIndex = urlParts.indexOf('clientlogos'); 
+                const logoPath = urlParts.slice(bucketIndex + 1).join('/');
+
+                if (logoPath) {
+                    const { error: storageError } = await supabase.storage
+                        .from('clientlogos') 
+                        .remove([logoPath]);
+
+                    if (storageError) {
+                        console.warn('Aviso: Erro ao deletar logo do Storage (pode não existir ou caminho incorreto). Continuando com a exclusão do cliente no DB:', storageError.message);
+                    }
+                }
+            }
+
+            // Deleta o cliente (produtos e documentos associados serão deletados via ON DELETE CASCADE se configurado no DB)
+            const { error: dbError } = await supabase
+                .from('clients') 
+                .delete()
+                .eq('id', id);
+
+            if (dbError) {
+                console.error('Erro ao deletar cliente do banco de dados:', dbError.message);
+                alert('Erro ao deletar cliente do banco de dados. Verifique as permissões da tabela ou as regras ON DELETE CASCADE.');
+            } else {
+                alert('Cliente deletado com sucesso!');
+                fetchAndRenderClients(); 
+            }
+        }
+
+
+        async function addClientDocument(clientId) {
+            const title = document.getElementById('clientDocumentTitle').value;
+            const type = document.getElementById('clientDocumentType').value;
+            const fileInput = document.getElementById('clientDocumentFile');
+            const file = fileInput.files[0];
+
+            if (title && type && file) {
+                const filePath = `client_documents/${clientId}/${Date.now()}_${file.name}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('clientdocumentfiles') 
+                    .upload(filePath, file);
+
+                if (uploadError) {
+                    console.error('Erro ao fazer upload do arquivo do cliente:', uploadError.message);
+                    alert('Erro ao fazer upload do documento do cliente. Verifique as permissões do bucket.');
+                    return;
+                }
+
+                const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
+
+                const { data, error } = await supabase
+                    .from('client_documents') 
+                    .insert([
+                        { client_id: clientId, title, type, file_url: publicURL, file_path: filePath }
+                    ]);
+
+                if (error) {
+                    console.error('Erro ao adicionar documento do cliente no banco de dados:', error.message);
+                    alert('Erro ao adicionar documento do cliente. Verifique as permissões da tabela.');
+                } else {
+                    alert('Documento do cliente adicionado com sucesso!');
+                    // Limpar formulário
+                    document.getElementById('clientDocumentTitle').value = '';
+                    document.getElementById('clientDocumentType').value = '';
+                    fileInput.value = '';
+                    fetchAndRenderClientDocuments(clientId); 
+                }
+            } else {
+                alert('Por favor, preencha todos os campos e selecione um arquivo para o documento do cliente.');
+            }
+        }
+
+        async function fetchAndRenderClientDocuments(clientId) {
+            const { data, error } = await supabase
+                .from('client_documents') 
+                .select('*')
+                .eq('client_id', clientId);
+
+            const container = document.getElementById('clientDocumentsList');
+
+            if (error) {
+                console.error('Erro ao buscar documentos do cliente:', error.message);
+                container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro ao carregar documentos do cliente.</p></div>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <p>Nenhum documento para este cliente.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.map(doc => `
+                <div class="document-card">
+                    <div class="document-header">
+                        <span class="document-type">${doc.type}</span>
+                        <button class="delete-btn" onclick="deleteClientDocument(${doc.id}, '${doc.file_path}', ${clientId})">X</button>
+                    </div>
+                    <div class="document-title">${doc.title}</div>
+                    <div class="document-author">ID do Cliente: ${doc.client_id}</div>
+                    <a href="${doc.file_url}" download="${doc.title}.${doc.file_url.split('.').pop()}" target="_blank" class="btn-secondary" style="margin-top: 15px; display: block; text-align: center;">Download</a>
+                </div>
+            `).join('');
+        }
+
+        async function deleteClientDocument(documentId, filePath, clientId) {
+            if (!confirm('Tem certeza que deseja deletar este documento do cliente?')) {
+                return;
+            }
+
+            // Primeiro, deleta o arquivo do Storage
+            const { error: storageError } = await supabase.storage
+                .from('clientdocumentfiles') 
+                .remove([filePath]);
+
+            if (storageError) {
+                console.error('Erro ao deletar arquivo do Storage do cliente:', storageError.message);
+                alert('Erro ao deletar arquivo do Storage do cliente. Verifique as permissões do bucket.');
+                return;
+            }
+
+            // Depois, deleta o registro do banco de dados
+            const { error: dbError } = await supabase
+                .from('client_documents') 
+                .delete()
+                .eq('id', documentId);
+
+            if (dbError) {
+                console.error('Erro ao deletar documento do cliente do banco de dados:', dbError.message);
+                alert('Erro ao deletar documento do cliente do banco de dados. Verifique as permissões da tabela.');
+            } else {
+                alert('Documento do cliente deletado com sucesso!');
+                fetchAndRenderClientDocuments(clientId); 
+            }
+        }
+
+
+        // O código dentro deste bloco só será executado quando o DOM estiver completamente carregado.
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('documents'); // Agora "Time de Implantação" é a aba padrão ao carregar
+        });
+    </script>
+</body>
+</html>
