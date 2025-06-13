@@ -587,7 +587,7 @@ select {
             gap: 15px;
         }
         .product-item {
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(255, 255, 255, 0.85);
             padding: 8px 15px;
             border-radius: 20px;
             display: flex;
@@ -1430,6 +1430,37 @@ select {
 </div>
 </div>
 <div class="products-section">
+<div class="integration-section">
+  <h4>Integração</h4>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="integrationType">Tipo</label>
+      <select id="integrationType">
+        <option value="servicos">Serviços</option>
+        <option value="servicos-bilhetes">Serviços/Bilhetes</option>
+        <option value="escala">Escala</option>
+        <option value="api">API</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="integrationSystem">Sistemas</label>
+      <select id="integrationSystem">
+        <option value="proprio">Sistema Próprio</option>
+        <option value="totalbus">Totalbus</option>
+        <option value="smartbus">Smartbus</option>
+        <option value="optz">Opt+z</option>
+      </select>
+    </div>
+    <div class="form-group" style="flex: 0 0 120px; display: flex; align-items: flex-end;">
+      <button class="btn-secondary" onclick="addIntegration()">Adicionar</button>
+    </div>
+  </div>
+  <div id="integrationList">
+    <div class="products-grid" id="integrationContainer">
+      <p style="color: rgba(0, 0, 0, 0.85);">Nenhuma integração adicionada ainda.</p>
+    </div>
+  </div>
+</div>
 <h4>Produtos / Serviços Associados</h4>
 <div class="form-row">
 <div class="form-group">
@@ -1478,6 +1509,37 @@ select {
 </div>
 </div>
 <div class="products-section">
+<div class="integration-section">
+  <h4>Integração</h4>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="editIntegrationType">Tipo</label>
+      <select id="editIntegrationType">
+        <option value="servicos">Serviços</option>
+        <option value="servicos-bilhetes">Serviços/Bilhetes</option>
+        <option value="escala">Escala</option>
+        <option value="api">API</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="editIntegrationSystem">Sistemas</label>
+      <select id="editIntegrationSystem">
+        <option value="proprio">Sistema Próprio</option>
+        <option value="totalbus">Totalbus</option>
+        <option value="smartbus">Smartbus</option>
+        <option value="optz">Opt+z</option>
+      </select>
+    </div>
+    <div class="form-group" style="flex: 0 0 120px; display: flex; align-items: flex-end;">
+      <button class="btn-secondary" onclick="addEditIntegration()">Adicionar</button>
+    </div>
+  </div>
+  <div id="editIntegrationList">
+    <div class="products-grid" id="editIntegrationContainer">
+      <p style="color: rgba(0, 0, 0, 0.85);">Nenhuma integração adicionada ainda.</p>
+    </div>
+  </div>
+</div>
 <h4>Produtos / Serviços Associados</h4>
 <div class="form-row">
 <div class="form-group">
@@ -1757,7 +1819,51 @@ select {
         let currentProducts = []; // For adding new clients
         let editingProducts = []; // For editing existing clients
         let arquivosHomologacaoSelecionados = []; // For homologation files
+        let currentIntegrations = []; // Para adicionar cliente
+let editingIntegrations = []; // Para editar cliente
 
+function addIntegration() {
+  const type = document.getElementById('integrationType').value;
+  const system = document.getElementById('integrationSystem').value;
+  currentIntegrations.push({ type, system });
+  renderIntegrations('currentIntegrations', 'integrationContainer', 'integrationList');
+}
+
+function addEditIntegration() {
+  const type = document.getElementById('editIntegrationType').value;
+  const system = document.getElementById('editIntegrationSystem').value;
+  editingIntegrations.push({ type, system });
+  renderIntegrations('editingIntegrations', 'editIntegrationContainer', 'editIntegrationList');
+}
+
+function renderIntegrations(listName, containerId, listDivId) {
+  const list = listName === 'currentIntegrations' ? currentIntegrations : editingIntegrations;
+  const container = document.getElementById(containerId);
+  const listDiv = document.getElementById(listDivId);
+
+  if (list.length === 0) {
+    container.innerHTML = '<p style="color: rgba(0, 0, 0, 0.85);">Nenhuma integração adicionada ainda.</p>';
+    listDiv.style.display = 'none';
+    return;
+  }
+  listDiv.style.display = 'block';
+  container.innerHTML = list.map((item, idx) => `
+    <div class="product-item">
+      <span>Tipo: ${item.type}, Sistema: ${item.system}</span>
+      <button class="delete-btn" onclick="removeIntegration(${idx}, '${listName}')">X</button>
+    </div>
+  `).join('');
+}
+
+function removeIntegration(idx, listName) {
+  if (listName === 'currentIntegrations') {
+    currentIntegrations.splice(idx, 1);
+    renderIntegrations('currentIntegrations', 'integrationContainer', 'integrationList');
+  } else {
+    editingIntegrations.splice(idx, 1);
+    renderIntegrations('editingIntegrations', 'editIntegrationContainer', 'editIntegrationList');
+  }
+}
         // Helper function to convert hex to rgb for rgba usage
         function hexToRgb(hex) {
             var bigint = parseInt(hex.slice(1), 16);
@@ -2179,6 +2285,15 @@ select {
                 }
 
                 const clientId = clientData[0].id;
+                
+                if (currentIntegrations.length > 0) {
+  const integrationsToInsert = currentIntegrations.map(i => ({
+    client_id: clientId,
+    type: i.type,
+    system: i.system
+  }));
+  await supabase.from('integrations').insert(integrationsToInsert);
+}
 
                 if (currentProducts.length > 0) {
                     const productsToInsert = currentProducts.map(p => ({
@@ -2219,15 +2334,17 @@ select {
         }
 
         async function fetchAndRenderClients() {
-            const { data, error } = await supabase
-                .from('clients')
-                .select(`
-                    *,
-                    products (
-                        id, name, quantity
-                    )
-                `);
-
+           const { data, error } = await supabase
+    .from('clients')
+    .select(`
+        *,
+        products (
+            id, name, quantity
+        ),
+        integrations (
+            id, type, system
+        )
+    `);
             const container = document.getElementById('clientsList');
 
             if (error) {
@@ -2249,30 +2366,56 @@ select {
                 return;
             }
 
-            container.innerHTML = clients.map(client => `
-                <div class="client-card-vertical">
-                    <div class="client-card-top">
-                        <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_path || ''}')"><span style="font-size: 16px;">🗑️</span></button>
-                        <span class="client-status-card">Ativo</span>
-                    </div>
-                    <div class="client-logo-vertical">
-                        ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
-                    </div>
-                    <p class="add-logo-text">${client.logo_url ? '' : 'Adicionar Logo'}</p>
-                    <h3 class="client-name-vertical">${client.name}</h3>
-                    <p class="client-status-text">Cliente Ativo</p>
-                    <div class="products-info-vertical">
-                        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 5px;">
-                            <span style="font-size: 18px;">📦</span> <span style="font-weight: bold;">Produtos</span> (<span id="productCount-${client.id}">${client.products ? client.products.length : 0}</span>)
-                        </div>
-                        ${client.products && client.products.length > 0 ? client.products.map(p => `<p style="font-size: 14px; margin-left: 25px;">• ${p.name} (x${p.quantity})</p>`).join('') : '<p style="font-size: 14px; color: rgba(0, 0, 0, 0.85); margin-left: 25px;">Nenhum produto</p>'}
-                    </div>
-                    <button class="btn-vertical" onclick="viewClientDocuments(${client.id})">Ver Documentos</button>
-                    <button class="btn-vertical edit" onclick="editClient(${client.id})">Editar Cliente</button>
-                </div>
-            `).join('');
+container.innerHTML = clients.map(client => `
+
+  <div class="client-card-vertical">
+    <div class="client-card-top">
+      <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_path || ''}')"><span style="font-size: 16px;">🗑️</span></button>
+      <span class="client-status-card">Ativo</span>
+    </div>
+
+    <div class="client-logo-vertical">
+      ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
+    </div>
+
+    <p class="add-logo-text">${client.logo_url ? '' : 'Adicionar Logo'}</p>
+    <h3 class="client-name-vertical">${client.name}</h3>
+    <p class="client-status-text">Cliente Ativo</p>
+
+    <!-- Produtos -->
+    <div class="info-section">
+      <div class="section-title">
+        <span style="font-size: 18px;">📦</span>
+        <span style="font-weight: bold;">Produtos</span> (<span id="productCount-${client.id}">${client.products ? client.products.length : 0}</span>)
+      </div>
+      ${
+        client.products && client.products.length > 0
+          ? client.products.map(p => `<p class="section-item">• ${p.name} (x${p.quantity})</p>`).join('')
+          : '<p class="section-item muted">Nenhum produto</p>'
+      }
+    </div>
+
+    <!-- Integrações -->
+    <div class="info-section">
+      <div class="section-title">
+        <span style="font-size: 18px;">🔗</span>
+        <span style="font-weight: bold;">Integrações</span>
+      </div>
+      ${
+        client.integrations && client.integrations.length > 0
+          ? client.integrations.map(i => `<p class="section-item">• ${i.type} (${i.system})</p>`).join('')
+          : '<p class="section-item muted">Nenhuma integração</p>'
+      }
+    </div>
+
+    <button class="btn-vertical" onclick="viewClientDocuments(${client.id})">Ver Documentos</button>
+    <button class="btn-vertical edit" onclick="editClient(${client.id})">Editar Cliente</button>
+  </div>
+
+`).join('');
+
+            
         }
-        
         async function deleteClient(id, logoPath) {
             const confirmed = await showConfirm('Confirmação', 'Tem certeza que deseja deletar este cliente e todos os seus produtos e documentos? Esta ação é irreversível.');
             if (!confirmed) {
@@ -2390,6 +2533,15 @@ select {
                 showAlert('Erro', 'Erro ao atualizar cliente.');
                 return;
             }
+            await supabase.from('integrations').delete().eq('client_id', clientId);
+if (editingIntegrations.length > 0) {
+  const integrationsToInsert = editingIntegrations.map(i => ({
+    client_id: parseInt(clientId),
+    type: i.type,
+    system: i.system
+  }));
+  await supabase.from('integrations').insert(integrationsToInsert);
+}
 
             const { error: deleteProductsError } = await supabase
                 .from('products')
