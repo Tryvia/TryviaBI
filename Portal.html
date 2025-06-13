@@ -1342,7 +1342,7 @@ select {
 <h1>Portal - Time de Implantação</h1>
 <div class="profile-info">
 <img alt="Profile Picture" src="tryvia.png"/>
-<span>Usuário TRYVIA</span>
+<span><span id="nomeUsuario">Usuário</span></span>
 </div>
 </header>
 <div class="content-section active" id="documents">
@@ -3503,5 +3503,13 @@ function filtrarReunioes() {
 }
 
 document.addEventListener("DOMContentLoaded", carregarReunioes);
-</script></body>
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const nome = localStorage.getItem('username') || 'TRYVIA';
+    document.getElementById('nomeUsuario').innerText = 'Usuário ' + nome;
+  });
+</script>
+</body>
+
 </html>
