@@ -500,6 +500,7 @@
           if (response.success) {
             // Armazenar token de forma segura e redirecionar
             storeAuthToken(response.token);
+            localStorage.setItem('username', username);
             showMessage('Login bem-sucedido! Redirecionando...', 'success');
             
             // Aguardar um pouco antes de redirecionar para mostrar a mensagem
