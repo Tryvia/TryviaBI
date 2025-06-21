@@ -308,6 +308,10 @@ select {
             display: block;
         }
 
+        #gestao.active {
+            display: block;
+        }
+
         /* Forms */
         .form-container {
             max-width: 800px;
@@ -1193,6 +1197,9 @@ const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABA
   <button onclick="showTab('documents')"><i class="fas fa-file-alt"></i> Time de Implantação</button>
 </li>
 <li class="nav-item">
+<button onclick="showTab('gestao')"><i class="fas fa-users-cog"></i> Gestão</button>
+</li>
+<li class="nav-item">
 <a href="#"><i class="fas fa-cog"></i> Configurações</a>
 </li>
 <li class="nav-item">
@@ -1345,7 +1352,45 @@ select {
 <span><span id="nomeUsuario">Usuário</span></span>
 </div>
 </header>
-<div class="content-section active" id="documents">
+<div class="content-section" id="gestao">
+<div class="form-container">
+<h3 style="margin-bottom: 20px;">Adicionar Funcionário</h3>
+<div class="form-row">
+<div class="form-group">
+<label for="funcionarioNome">Nome</label>
+<input id="funcionarioNome" placeholder="Nome completo do funcionário..." type="text"/>
+</div>
+<div class="form-group">
+<label for="funcionarioCargo">Cargo</label>
+<input id="funcionarioCargo" placeholder="Cargo/Função do funcionário..." type="text"/>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="funcionarioLink">Link</label>
+<input id="funcionarioLink" placeholder="https://..." type="url"/>
+</div>
+<div class="form-group" style="flex: 1;">
+<label for="funcionarioFoto">Foto</label>
+<div class="upload-area" onclick="document.getElementById('funcionarioFoto').click()">
+<div class="upload-icon">📷</div>
+<p>Arraste e solte ou clique para selecionar uma foto</p>
+<input id="funcionarioFoto" style="display: none;" type="file" accept="image/*"/>
+</div>
+</div>
+</div>
+<button class="btn-primary" onclick="adicionarFuncionario()">Adicionar Funcionário</button>
+</div>
+<h3 style="margin-top: 40px; margin-bottom: 20px;">Funcionários</h3>
+<div class="documents-grid" id="funcionariosList">
+<div class="empty-state">
+<div class="empty-state-icon">👥</div>
+<p>Nenhum funcionário encontrado</p>
+<p>Adicione funcionários para começar</p>
+</div>
+</div>
+</div>
+<div class="content-section" id="documents">
 <div class="form-container">
 <h3 style="margin-bottom: 20px;">Adicionar Novo Documento de Implantação</h3>
 <div class="form-row">
@@ -1908,6 +1953,8 @@ function removeIntegration(idx, listName) {
                 fetchAndRenderHomologacoes(); // Fetch and render list when entering homologacao tab
             } else if (tabId === 'dashboard') {
                 fetchAndRenderDashboards(); 
+            } else if (tabId === 'gestao') {
+                fetchAndRenderFuncionarios();
             }
         }
 
@@ -2125,6 +2172,128 @@ function removeIntegration(idx, listName) {
             
             showClientTab('view-client-documents');
             await fetchAndRenderClientDocuments(clientId);
+        }
+
+        // --- Funcionarios Functions ---
+        async function adicionarFuncionario() {
+            const nome = document.getElementById('funcionarioNome').value;
+            const funcao = document.getElementById('funcionarioCargo').value;
+            const link = document.getElementById('funcionarioLink').value;
+            const fotoInput = document.getElementById('funcionarioFoto');
+            const foto = fotoInput.files[0];
+
+            if (nome && funcao && link && foto) {
+                const fotoPath = `funcionarios/${Date.now()}_${foto.name}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('funcionariofotos')
+                    .upload(fotoPath, foto);
+
+                if (uploadError) {
+                    console.error('Erro ao fazer upload da foto:', uploadError.message);
+                    showAlert('Erro', 'Erro ao fazer upload da foto.');
+                    return;
+                }
+
+                const fotoUrl = `${SUPABASE_URL}/storage/v1/object/public/funcionariofotos/${fotoPath}`;
+
+                const { data, error } = await supabase
+                    .from('especialistas')
+                    .insert([
+                        { nome, funcao, foto_url: fotoUrl, foto_path: fotoPath, link }
+                    ]);
+
+                if (error) {
+                    console.error('Erro ao adicionar funcionário no banco de dados:', error.message);
+                    showAlert('Erro', 'Erro ao adicionar funcionário.');
+                } else {
+                    showAlert('Sucesso', 'Funcionário adicionado com sucesso!');
+                    document.getElementById('funcionarioNome').value = '';
+                    document.getElementById('funcionarioCargo').value = '';
+                    document.getElementById('funcionarioLink').value = '';
+                    fotoInput.value = '';
+                    fetchAndRenderFuncionarios();
+                }
+            } else {
+                showAlert('Atenção', 'Por favor, preencha todos os campos e selecione uma foto.');
+            }
+        }
+
+        async function fetchAndRenderFuncionarios() {
+            const { data, error } = await supabase
+                .from('especialistas')
+                .select('*');
+
+            const container = document.getElementById('funcionariosList');
+
+            if (error) {
+                console.error('Erro ao buscar funcionários:', error.message);
+                container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro ao carregar funcionários.</p></div>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👥</div>
+                        <p>Nenhum funcionário encontrado</p>
+                        <p>Adicione funcionários para começar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.map(funcionario => `
+                <div class="document-card" style="cursor: pointer;" onclick="redirecionarFuncionario('${funcionario.link}')">
+                    <div class="document-header">
+                        <span class="document-type">${funcionario.funcao}</span>
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteFuncionario(${funcionario.id}, '${funcionario.foto_path}')">X</button>
+                    </div>
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <img src="${funcionario.foto_url}" alt="Foto de ${funcionario.nome}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-color);">
+                    </div>
+                    <div class="document-title">${funcionario.nome}</div>
+                    <div class="document-author">${funcionario.funcao}</div>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <small style="color: #666;">Clique para acessar o link</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function redirecionarFuncionario(link) {
+            if (link) {
+                window.open(link, '_blank');
+            }
+        }
+
+        async function deleteFuncionario(id, fotoPath) {
+            const confirmed = await showConfirm('Confirmação', 'Tem certeza que deseja deletar este funcionário?');
+            if (!confirmed) {
+                return;
+            }
+
+            if (fotoPath) {
+                const { error: storageError } = await supabase.storage
+                    .from('funcionariofotos')
+                    .remove([fotoPath]);
+
+                if (storageError) {
+                    console.warn('Aviso: Erro ao deletar foto do Storage:', storageError.message);
+                }
+            }
+
+            const { error: dbError } = await supabase
+                .from('especialistas')
+                .delete()
+                .eq('id', id);
+
+            if (dbError) {
+                console.error('Erro ao deletar funcionário do banco de dados:', dbError.message);
+                showAlert('Erro', 'Erro ao deletar funcionário do banco de dados.');
+            } else {
+                showAlert('Sucesso', 'Funcionário deletado com sucesso!');
+                fetchAndRenderFuncionarios();
+            }
         }
 
         // --- Document Functions ---
@@ -3513,3 +3682,94 @@ document.addEventListener("DOMContentLoaded", carregarReunioes);
 </body>
 
 </html>
+
+
+<!-- Chat Widget -->
+<!-- Botão para mostrar/esconder o chat -->
+<div id="chat-toggle-button" style="position: fixed; top: 20px; right: 20px; width: 50px; height: 50px; background-color: #0288d1; color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1001;">
+    💬
+</div>
+
+<div id="chat-container" style="position: fixed; top: 20px; right: 20px; width: 300px; height: 400px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1000; transition: all 0.3s ease;">
+    <div id="chat-header" style="background-color: #0288d1; color: white; padding: 10px; border-top-left-radius: 10px; border-top-right-radius: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+        <span>Assistente do Portal</span>
+        <button id="chat-close-button" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; width: 20px; height: 20px;">×</button>
+    </div>
+    <div id="chat-messages" style="flex-grow: 1; padding: 10px; overflow-y: auto; border-bottom: 1px solid #eee;"></div>
+    <div id="chat-input-container" style="padding: 10px; display: flex;">
+        <input type="text" id="chat-input" placeholder="Digite sua mensagem..." style="flex-grow: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; margin-right: 10px;">
+        <button id="chat-send-button" style="background-color: #0288d1; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Enviar</button>
+    </div>
+</div>
+
+<script>
+    const chatMessages = document.getElementById("chat-messages");
+    const chatInput = document.getElementById("chat-input");
+    const chatSendButton = document.getElementById("chat-send-button");
+    const chatContainer = document.getElementById("chat-container");
+    const chatToggleButton = document.getElementById("chat-toggle-button");
+    const chatCloseButton = document.getElementById("chat-close-button");
+
+    // Função para mostrar o chat
+    function showChat() {
+        chatContainer.style.display = "flex";
+        chatToggleButton.style.display = "none";
+    }
+
+    // Função para esconder o chat
+    function hideChat() {
+        chatContainer.style.display = "none";
+        chatToggleButton.style.display = "flex";
+    }
+
+    // Event listeners para mostrar/esconder o chat
+    chatToggleButton.addEventListener("click", showChat);
+    chatCloseButton.addEventListener("click", hideChat);
+
+    function appendMessage(sender, message) {
+        const messageElement = document.createElement("div");
+        messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatSendButton.addEventListener("click", async () => {
+        const message = chatInput.value.trim();
+        if (message) {
+            appendMessage("Você", message);
+            chatInput.value = "";
+
+            try {
+                const response = await fetch("https://5000-i15r3x8k3k10fog7u69rk-619fe7be.manusvm.computer/api/supabase/query", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ query: message })
+                });
+                const data = await response.json();
+                appendMessage("Assistente", data.response || `O número é: ${data.count}`);
+            } catch (error) {
+                console.error("Erro ao comunicar com o backend:", error);
+                appendMessage("Assistente", "Desculpe, não consegui processar sua solicitação no momento.");
+            }
+        }
+    });
+
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            chatSendButton.click();
+        }
+    });
+
+    // Inicializar a mensagem de boas-vindas apenas quando o chat for aberto pela primeira vez
+    let chatInitialized = false;
+    chatToggleButton.addEventListener("click", () => {
+        if (!chatInitialized) {
+            appendMessage("Assistente", "Olá! Como posso ajudar hoje?");
+            chatInitialized = true;
+        }
+    });
+</script>
+</body>
+
