@@ -1064,7 +1064,7 @@ window.onload = async function () {
     const { data, error } = await supabaseClient
         .from("especialista__")
         .select("*")
-        .eq("id", 1)
+        .eq("id", 2)
         .single();
 
     if (data) {
@@ -1160,7 +1160,7 @@ async function salvarModificacoes() {
     });
 
     const { data, error } = await supabaseClient.from("especialista__").upsert([{
-        id: 1,
+        id: 2,
         nome: nome,
         funcao: cargo,
         treinamentos: treinamentos,
