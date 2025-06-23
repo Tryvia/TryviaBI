@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de Atividades</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100% );
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .header-icon svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .month-navigation {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #374151;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #f3f4f6;
+            transform: scale(1.1);
+        }
+
+        .month-year {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .calendar-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .weekday {
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #374151;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .weekday:last-child {
+            border-right: none;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-day {
+            min-height: 120px;
+            padding: 10px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: #eff6ff;
+        }
+
+        .calendar-day:last-child {
+            border-right: none;
+        }
+
+        .calendar-day.other-month {
+            background: #f9fafb;
+            color: #9ca3af;
+        }
+
+        .calendar-day.today {
+            background: #dbeafe;
+        }
+
+        .day-number {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .today .day-number {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .activity {
+            background: #3b82f6;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.75rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .activity:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .activity.homologacao { background: #3b82f6; }
+        .activity.reuniao { background: #10b981; }
+        .activity.atendimento { background: #f59e0b; }
+        .activity.release { background: #8b5cf6; }
+        .activity.viagem { background: #ef4444; }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        .activity-icon {
+            width: 12px;
+            height: 12px;
+        }
+
+        .activity-title {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .activity-actions {
+            opacity: 0;
+            display: flex;
+            gap: 3px;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity:hover .activity-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .action-btn svg {
+            width: 10px;
+            height: 10px;
+            color: white;
+        }
+
+        .participants {
+            display: flex;
+            gap: -2px;
+            margin-top: 5px;
+        }
+
+        .participant-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-left: -2px;
+        }
+
+        .participant-count {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #6b7280;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: white;
+            margin-left: -2px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            font-weight: 500;
+            margin-top: 3px;
+        }
+
+        .status-planejada {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-executada {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .status-nao-realizada {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 30px 30px 0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .modal-body {
+            padding: 0 30px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .participants-section {
+            margin-bottom: 20px;
+        }
+
+        .participants-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .participant-tag {
+            display: flex;
+            align-items: center;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            gap: 8px;
+        }
+
+        .participant-tag img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .remove-participant {
+            background: none;
+            border: none;
+            color: #1d4ed8;
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .add-participant-btn {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .add-participant-btn:hover {
+            color: #1d4ed8;
+        }
+
+        .participant-form {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .participant-form.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .participant-form-row {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .participant-form input[type="text"] {
+            flex: 1;
+        }
+
+        .photo-upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .photo-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .photo-option {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .photo-option:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .photo-option.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .photo-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto 5px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        #participantPhotoPreview {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px auto;
+            display: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #f3f4f6;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+                padding: 5px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i data-lucide="calendar"></i>
+                </div>
+                <div class="header-title">
+                    <h1>Calendário de Atividades</h1>
+                    <p>Gerencie suas atividades de forma inteligente</p>
+                </div>
+            </div>
+            <div class="month-navigation">
+                <button class="nav-btn" onclick="previousMonth()">←</button>
+                <div class="month-year" id="monthYear"></div>
+                <button class="nav-btn" onclick="nextMonth()">→</button>
+            </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="calendar-container">
+            <div class="weekdays">
+                <div class="weekday">Dom</div>
+                <div class="weekday">Seg</div>
+                <div class="weekday">Ter</div>
+                <div class="weekday">Qua</div>
+                <div class="weekday">Qui</div>
+                <div class="weekday">Sex</div>
+                <div class="weekday">Sáb</div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="activityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Nova Atividade</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Título</label>
+                    <input type="text" class="form-input" id="activityTitle" placeholder="Digite o título da atividade">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tipo de Atividade</label>
+                    <select class="form-input" id="activityType">
+                        <option value="homologacao">Homologação</option>
+                        <option value="reuniao">Reunião</option>
+                        <option value="atendimento">Atendimento</option>
+                        <option value="release">Release</option>
+                        <option value="viagem">Viagem</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Data</label>
+                        <input type="date" class="form-input" id="activityDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Horário</label>
+                        <input type="time" class="form-input" id="activityTime">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-input" id="activityStatus">
+                        <option value="planejada">Planejada</option>
+                        <option value="executada">Executada</option>
+                        <option value="nao-realizada">Não Realizada</option>
+                    </select>
+                </div>
+
+                <div class="participants-section">
+                    <label class="form-label">Participantes</label>
+                    <div class="participants-list" id="participantsList"></div>
+                    
+                    <!-- Formulário para adicionar participante -->
+                    <div class="participant-form" id="participantForm" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Nome do Participante</label>
+                            <input type="text" class="form-input" id="participantName" placeholder="Digite o nome">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Foto do Participante</label>
+                            <div class="photo-upload-section">
+                                <!-- Preview da foto -->
+                                <img id="participantPhotoPreview" alt="Preview">
+                                
+                                <!-- Opções de foto -->
+                                <div class="photo-options">
+                                    <div class="photo-option" onclick="selectPhotoOption('avatar')">
+                                        <div class="photo-preview" id="avatarPreview"></div>
+                                        <div>Avatar Automático</div>
+                                    </div>
+                                    <div class="photo-option" onclick="selectPhotoOption('upload')">
+                                        <i data-lucide="upload" style="width: 40px; height: 40px; margin: 0 auto 5px; display: block;"></i>
+                                        <div>Enviar Foto</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Área de upload -->
+                                <div class="upload-area" id="uploadArea" style="display: none;" onclick="document.getElementById('photoInput').click()">
+                                    <i data-lucide="camera" style="width: 24px; height: 24px; margin: 0 auto 10px; display: block;"></i>
+                                    <p>Clique para selecionar uma foto ou arraste aqui</p>
+                                    <small>PNG, JPG até 5MB</small>
+                                </div>
+                                
+                                <input type="file" id="photoInput" class="file-input" accept="image/*" onchange="handlePhotoUpload(event)">
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button class="btn btn-primary" onclick="confirmAddParticipant()" style="flex: 1;">
+                                Adicionar
+                            </button>
+                            <button class="btn btn-secondary" onclick="cancelAddParticipant()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button class="add-participant-btn" id="addParticipantBtn" onclick="showParticipantForm()">
+                        <i data-lucide="plus"></i>
+                        Adicionar Participante
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <textarea class="form-input" id="activityDescription" rows="3" placeholder="Descrição da atividade"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="saveActivity()">
+                        <span id="saveButtonText">Criar Atividade</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let currentDate = new Date();
+        let activities = [];
+        let currentParticipants = [];
+        let editingActivityId = null;
+        let currentPhotoOption = 'avatar';
+        let currentParticipantPhoto = null;
+
+        // Supabase client setup
+        const SUPABASE_URL = "https://obwgegvrtxrlombmkaej.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM";
+        let supabaseClient;
+
+        const monthNames = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+
+        const activityTypes = {
+            'homologacao': { color: 'homologacao', icon: 'check-circle' },
+            'reuniao': { color: 'reuniao', icon: 'users' },
+            'atendimento': { color: 'atendimento', icon: 'clock' },
+            'release': { color: 'release', icon: 'alert-circle' },
+            'viagem': { color: 'viagem', icon: 'map-pin' }
+        };
+
+        const statusTypes = {
+            'planejada': { class: 'status-planejada', icon: 'clock' },
+            'executada': { class: 'status-executada', icon: 'check-circle' },
+            'nao-realizada': { class: 'status-nao-realizada', icon: 'x-circle' }
+        };
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async function( ) {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+            lucide.createIcons();
+            await carregarAtividadesDoSupabase();
+            renderCalendar();
+            
+            const participantNameInput = document.getElementById('participantName');
+            if (participantNameInput) {
+                participantNameInput.addEventListener('input', function() {
+                    if (currentPhotoOption === 'avatar') {
+                        updateAvatarPreview();
+                    }
+                });
+            }
+            
+            const uploadArea = document.getElementById('uploadArea');
+            if (uploadArea) {
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        const file = files[0];
+                        if (file.type.startsWith('image/')) {
+                            document.getElementById('photoInput').files = files;
+                            handlePhotoUpload({ target: { files: [file] } });
+                        }
+                    }
+                });
+            }
+
+            document.getElementById('activityModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Navegação do calendário
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // Renderizar calendário
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('monthYear').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+                const prevDate = new Date(year, month, -i);
+                createDayElement(prevDate, false);
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                createDayElement(date, true);
+            }
+            
+            const totalCells = calendarGrid.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const nextDate = new Date(year, month + 1, day);
+                createDayElement(nextDate, false);
+            }
+            lucide.createIcons();
+        }
+
+        function createDayElement(date, isCurrentMonth) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            
+            if (!isCurrentMonth) {
+                dayElement.classList.add('other-month');
+            }
+            
+            if (isToday(date)) {
+                dayElement.classList.add('today');
+            }
+            
+            const dayActivities = getActivitiesForDate(date);
+            
+            dayElement.innerHTML = `
+                <div class="day-number">${date.getDate()}</div>
+                <div class="activities-container">
+                    ${dayActivities.map(activity => createActivityElement(activity)).join('')}
+                </div>
+            `;
+            
+            dayElement.addEventListener('click', () => openModal(date));
+            
+            document.getElementById('calendarGrid').appendChild(dayElement);
+        }
+
+        function createActivityElement(activity) {
+            const type = activityTypes[activity.type];
+            const status = statusTypes[activity.status];
+            
+            return `
+                <div class="activity ${type.color}" onclick="event.stopPropagation(); editActivity('${activity.id}')">
+                    <div class="activity-header">
+                        <i data-lucide="${type.icon}" class="activity-icon"></i>
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); editActivity('${activity.id}')">
+                                <i data-lucide="edit-3"></i>
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); deleteActivity('${activity.id}')">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${activity.participants && activity.participants.length > 0 ? `
+                        <div class="participants">
+                            ${activity.participants.slice(0, 3).map(p => `
+                                <img src="${p.avatar_url}" alt="${p.name}" class="participant-avatar" title="${p.name}">
+                            `).join('')}
+                            ${activity.participants.length > 3 ? `
+                                <div class="participant-count">+${activity.participants.length - 3}</div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                    <div class="status-badge ${status.class}">
+                        <i data-lucide="${status.icon}" style="width: 10px; height: 10px;"></i>
+                        ${activity.status.replace('-', ' ')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function isToday(date) {
+            const today = new Date();
+            return date.toDateString() === today.toDateString();
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function getActivitiesForDate(date) {
+            const dateStr = formatDate(date);
+            return activities.filter(activity => activity.date === dateStr);
+        }
+
+        // Modal functions
+        function openModal(date) {
+            editingActivityId = null;
+            currentParticipants = [];
+            
+            document.getElementById('modalTitle').textContent = 'Nova Atividade';
+            document.getElementById('saveButtonText').textContent = 'Criar Atividade';
+            document.getElementById('activityTitle').value = '';
+            document.getElementById('activityType').value = 'reuniao';
+            document.getElementById('activityDate').value = formatDate(date);
+            document.getElementById('activityTime').value = '';
+            document.getElementById('activityStatus').value = 'planejada';
+            document.getElementById('activityDescription').value = '';
+            
+            renderParticipants();
+            hideParticipantForm();
+            resetPhotoUpload();
+
+            document.getElementById('activityModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('activityModal').classList.remove('show');
+        }
+
+        async function saveActivity() {
+            const title = document.getElementById('activityTitle').value;
+            const type = document.getElementById('activityType').value;
+            const date = document.getElementById('activityDate').value;
+            const time = document.getElementById('activityTime').value;
+            const status = document.getElementById('activityStatus').value;
+            const description = document.getElementById('activityDescription').value;
+
+            if (!title || !date) {
+                alert('Título e Data são obrigatórios!');
+                return;
+            }
+
+            let activityData = {
+                title,
+                type,
+                date,
+                time,
+                status,
+                description
+            };
+
+            if (editingActivityId) {
+                // Atualizar atividade existente
+                const { data: updatedActivity, error: updateError } = await supabaseClient
+                    .from('activities')
+                    .update(activityData)
+                    .eq('id', editingActivityId)
+                    .select();
+
+                if (updateError) {
+                    console.error('Erro ao atualizar atividade:', updateError);
+                    alert('Erro ao atualizar atividade.');
+                    return;
+                }
+
+                // Deletar participantes antigos e inserir novos
+                const { error: deleteParticipantsError } = await supabaseClient
+                    .from('participants')
+                    .delete()
+                    .eq('activity_id', editingActivityId);
+
+                if (deleteParticipantsError) {
+                    console.error('Erro ao deletar participantes antigos:', deleteParticipantsError);
+                    alert('Erro ao atualizar participantes.');
+                    return;
+                }
+
+                for (const participant of currentParticipants) {
+                    const { error: insertParticipantError } = await supabaseClient
+                        .from('participants')
+                        .insert({
+                            activity_id: editingActivityId,
+                            name: participant.name,
+                            avatar_url: participant.avatar_url
+                        });
+                    if (insertParticipantError) {
+                        console.error('Erro ao inserir participante:', insertParticipantError);
+                        alert('Erro ao atualizar participantes.');
+                        return;
+                    }
+                }
+
+                const index = activities.findIndex(act => act.id === editingActivityId);
+                if (index !== -1) {
+                    activities[index] = { ...updatedActivity[0], participants: currentParticipants };
+                }
+
+            } else {
+                // Criar nova atividade
+                const { data: newActivity, error: insertActivityError } = await supabaseClient
+                    .from('activities')
+                    .insert([activityData])
+                    .select();
+
+                if (insertActivityError) {
+                    console.error('Erro ao salvar atividade:', insertActivityError);
+                    alert('Erro ao salvar atividade.');
+                    return;
+                }
+
+                const activityId = newActivity[0].id;
+
+                for (const participant of currentParticipants) {
+                    const { error: insertParticipantError } = await supabaseClient
+                        .from('participants')
+                        .insert({
+                            activity_id: activityId,
+                            name: participant.name,
+                            avatar_url: participant.avatar_url
+                        });
+                    if (insertParticipantError) {
+                        console.error('Erro ao inserir participante:', insertParticipantError);
+                        alert('Erro ao salvar participantes.');
+                        return;
+                    }
+                }
+
+                activities.push({ ...newActivity[0], participants: currentParticipants });
+            }
+
+            closeModal();
+            renderCalendar();
+        }
+
+        async function editActivity(id) {
+            editingActivityId = id;
+            const activity = activities.find(act => act.id === id);
+
+            if (activity) {
+                document.getElementById('modalTitle').textContent = 'Editar Atividade';
+                document.getElementById('saveButtonText').textContent = 'Salvar Alterações';
+                document.getElementById('activityTitle').value = activity.title;
+                document.getElementById('activityType').value = activity.type;
+                document.getElementById('activityDate').value = activity.date;
+                document.getElementById('activityTime').value = activity.time;
+                document.getElementById('activityStatus').value = activity.status;
+                document.getElementById('activityDescription').value = activity.description;
+                
+                // Carregar participantes da tabela 'participants'
+                const { data: participantsData, error: participantsError } = await supabaseClient
+                    .from('participants')
+                    .select('*')
+                    .eq('activity_id', id);
+
+                if (participantsError) {
+                    console.error('Erro ao carregar participantes:', participantsError);
+                    currentParticipants = [];
+                } else {
+                    currentParticipants = participantsData.map(p => ({ name: p.name, avatar_url: p.avatar_url }));
+                }
+
+                renderParticipants();
+                hideParticipantForm();
+                resetPhotoUpload();
+
+                document.getElementById('activityModal').classList.add('show');
+            }
+        }
+
+        async function deleteActivity(id) {
+            if (confirm('Tem certeza que deseja excluir esta atividade?')) {
+                // Deletar participantes primeiro (devido à chave estrangeira)
+                const { error: deleteParticipantsError } = await supabaseClient
+                    .from('participants')
+                    .delete()
+                    .eq('activity_id', id);
+
+                if (deleteParticipantsError) {
+                    console.error('Erro ao excluir participantes:', deleteParticipantsError);
+                    alert('Erro ao excluir atividade.');
+                    return;
+                }
+
+                // Deletar a atividade
+                const { error: deleteActivityError } = await supabaseClient
+                    .from('activities')
+                    .delete()
+                    .eq('id', id);
+
+                if (deleteActivityError) {
+                    console.error('Erro ao excluir atividade:', deleteActivityError);
+                    alert('Erro ao excluir atividade.');
+                } else {
+                    activities = activities.filter(act => act.id !== id);
+                    renderCalendar();
+                }
+            }
+        }
+
+        async function carregarAtividadesDoSupabase() {
+            const { data: activitiesData, error: activitiesError } = await supabaseClient
+                .from('activities')
+                .select('*');
+
+            if (activitiesError) {
+                console.error('Erro ao carregar atividades:', activitiesError);
+            } else {
+                // Para cada atividade, carregar seus participantes
+                const activitiesWithParticipants = await Promise.all(activitiesData.map(async (activity) => {
+                    const { data: participantsData, error: participantsError } = await supabaseClient
+                        .from('participants')
+                        .select('*')
+                        .eq('activity_id', activity.id);
+
+                    if (participantsError) {
+                        console.error(`Erro ao carregar participantes para a atividade ${activity.id}:`, participantsError);
+                        return { ...activity, participants: [] };
+                    } else {
+                        return { ...activity, participants: participantsData };
+                    }
+                }));
+                activities = activitiesWithParticipants;
+                console.log('Atividades carregadas:', activities);
+            }
+        }
+
+        // Funções de Participantes
+        function renderParticipants() {
+            const participantsListDiv = document.getElementById('participantsList');
+            participantsListDiv.innerHTML = '';
+            currentParticipants.forEach((p, index) => {
+                const participantTag = document.createElement('div');
+                participantTag.className = 'participant-tag';
+                participantTag.innerHTML = `
+                    <img src="${p.avatar_url}" alt="${p.name}">
+                    <span>${p.name}</span>
+                    <button class="remove-participant" onclick="removeParticipant(${index})">
+                        <i data-lucide="x"></i>
+                    </button>
+                `;
+                participantsListDiv.appendChild(participantTag);
+            });
+            lucide.createIcons();
+        }
+
+        function showParticipantForm() {
+            document.getElementById('participantForm').style.display = 'block';
+            document.getElementById('addParticipantBtn').style.display = 'none';
+            document.getElementById('participantName').value = '';
+            resetPhotoUpload();
+            selectPhotoOption('avatar');
+            updateAvatarPreview();
+        }
+
+        function hideParticipantForm() {
+            document.getElementById('participantForm').style.display = 'none';
+            document.getElementById('addParticipantBtn').style.display = 'flex';
+        }
+
+        function confirmAddParticipant() {
+            const name = document.getElementById('participantName').value;
+            if (!name) {
+                alert('O nome do participante é obrigatório.');
+                return;
+            }
+
+            let avatarUrl = '';
+            if (currentPhotoOption === 'avatar') {
+                avatarUrl = document.getElementById('avatarPreview').src;
+            } else if (currentPhotoOption === 'upload' && currentParticipantPhoto) {
+                avatarUrl = currentParticipantPhoto;
+            } else {
+                alert('Por favor, selecione uma opção de foto ou faça upload.');
+                return;
+            }
+
+            currentParticipants.push({ name, avatar_url: avatarUrl });
+            renderParticipants();
+            hideParticipantForm();
+        }
+
+        function cancelAddParticipant() {
+            hideParticipantForm();
+        }
+
+        function removeParticipant(index) {
+            currentParticipants.splice(index, 1);
+            renderParticipants();
+        }
+
+        // Funções de Upload de Foto
+        function selectPhotoOption(option) {
+            currentPhotoOption = option;
+            document.querySelectorAll('.photo-option').forEach(el => el.classList.remove('selected'));
+            
+            if (option === 'avatar') {
+                document.querySelector('.photo-option:nth-child(1)').classList.add('selected');
+                document.getElementById('uploadArea').style.display = 'none';
+                document.getElementById('participantPhotoPreview').style.display = 'block';
+                updateAvatarPreview();
+            } else if (option === 'upload') {
+                document.querySelector('.photo-option:nth-child(2)').classList.add('selected');
+                document.getElementById('uploadArea').style.display = 'block';
+                document.getElementById('participantPhotoPreview').style.display = 'none';
+            }
+        }
+
+        function updateAvatarPreview() {
+            const name = document.getElementById('participantName').value;
+            const avatarPreview = document.getElementById('avatarPreview');
+            const participantPhotoPreview = document.getElementById('participantPhotoPreview');
+            
+            if (name) {
+                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const color = stringToHslColor(name, 50, 60);
+                const svg = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="${color}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Arial" font-size="18">${initials}</text></svg>`;
+                const dataUrl = `data:image/svg+xml;base64,${btoa(svg )}`;
+                avatarPreview.src = dataUrl;
+                if (currentPhotoOption === 'avatar') {
+                    participantPhotoPreview.src = dataUrl;
+                }
+            } else {
+                avatarPreview.src = '';
+                if (currentPhotoOption === 'avatar') {
+                    participantPhotoPreview.src = '';
+                }
+            }
+        }
+
+        function stringToHslColor(str, s, l) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const h = hash % 360;
+            return `hsl(${h}, ${s}%, ${l}%)`;
+        }
+
+        async function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const participantPhotoPreview = document.getElementById('participantPhotoPreview');
+            participantPhotoPreview.style.display = 'block';
+            participantPhotoPreview.src = URL.createObjectURL(file);
+
+            // Upload para o Supabase Storage
+            const filePath = `participant-photos/${Date.now()}-${file.name}`;
+            const { data, error } = await supabaseClient.storage
+                .from('participant-photos')
+                .upload(filePath, file);
+
+            if (error) {
+                console.error('Erro ao fazer upload da foto:', error);
+                alert('Erro ao fazer upload da foto.');
+                currentParticipantPhoto = null;
+            } else {
+                const { data: publicUrlData } = supabaseClient.storage
+                    .from('participant-photos')
+                    .getPublicUrl(filePath);
+                currentParticipantPhoto = publicUrlData.publicUrl;
+                console.log('Foto uploaded:', currentParticipantPhoto);
+            }
+        }
+
+        function resetPhotoUpload() {
+            document.getElementById('photoInput').value = '';
+            document.getElementById('participantPhotoPreview').src = '';
+            document.getElementById('participantPhotoPreview').style.display = 'none';
+            currentParticipantPhoto = null;
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+    </script>
+</body>
+</html>
