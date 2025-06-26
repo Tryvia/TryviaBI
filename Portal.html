@@ -1152,6 +1152,215 @@ select {
   color: #000000 !important;
 }
 
+/* CSS Responsivo para Aba Início */
+@media (max-width: 1200px) {
+    #inicio .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    #inicio div[style*="grid-template-columns: 2fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    #inicio .charts-section {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #inicio .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    #inicio .welcome-header {
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    #inicio .welcome-header h2 {
+        font-size: 1.8em !important;
+    }
+    
+    #inicio .welcome-header p {
+        font-size: 1em !important;
+    }
+    
+    /* Layout principal responsivo */
+    #inicio .main-layout {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 20px !important;
+    }
+    
+    #inicio .activities-section,
+    #inicio .clients-highlight,
+    #inicio .quick-access,
+    #inicio .notifications {
+        margin-bottom: 20px !important;
+        padding: 20px !important;
+    }
+    
+    #inicio .quick-access div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+    
+    #inicio .quick-access button {
+        padding: 12px !important;
+        font-size: 0.8em !important;
+    }
+    
+    #inicio .quick-access button i {
+        font-size: 1.2em !important;
+    }
+    
+    #inicio .client-highlight-card {
+        min-width: 150px !important;
+        padding: 15px !important;
+    }
+    
+    #inicio .metric-card {
+        padding: 20px !important;
+    }
+    
+    #inicio .metric-card h3 {
+        font-size: 1em !important;
+    }
+    
+    #inicio .metric-card p {
+        font-size: 2em !important;
+    }
+    
+    #inicio .metric-card div[style*="font-size: 3em"] {
+        font-size: 2.5em !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #inicio .quick-access div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Layout principal empilhado verticalmente */
+    #inicio .main-layout {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    #inicio .metric-card {
+        padding: 15px !important;
+    }
+    
+    #inicio .metric-card p {
+        font-size: 1.8em !important;
+    }
+    
+    #inicio .welcome-header h2 {
+        font-size: 1.5em !important;
+    }
+    
+    #inicio .client-highlight-card {
+        min-width: 120px !important;
+        padding: 12px !important;
+    }
+    
+    #inicio .activities-section div[style*="max-height"] {
+        max-height: 300px !important;
+    }
+}
+
+/* Animações para a aba Início */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#inicio.active .welcome-header {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+#inicio.active .metric-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+#inicio.active .metric-card:nth-child(1) { animation-delay: 0.1s; }
+#inicio.active .metric-card:nth-child(2) { animation-delay: 0.2s; }
+#inicio.active .metric-card:nth-child(3) { animation-delay: 0.3s; }
+#inicio.active .metric-card:nth-child(4) { animation-delay: 0.4s; }
+
+#inicio.active .activities-section,
+#inicio.active .clients-highlight {
+    animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+#inicio.active .quick-access,
+#inicio.active .notifications {
+    animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+#inicio.active .charts-section {
+    animation: fadeInUp 0.6s ease-out 0.7s both;
+}
+
+/* Correção para os gráficos - altura fixa */
+#inicio .charts-section > div {
+    height: 300px !important;
+    position: relative;
+}
+
+#inicio #homologacoesChart,
+#inicio #releasesChart {
+    max-height: 250px !important;
+    height: 250px !important;
+}
+
+/* Garantir que as seções não saiam da tela */
+#inicio .main-layout {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#inicio .quick-access,
+#inicio .notifications {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#inicio .quick-access div[style*="grid-template-columns"] {
+    max-width: 100%;
+}
+
+#inicio .quick-access button {
+    min-width: 0;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+/* Responsividade para os gráficos */
+@media (max-width: 768px) {
+    #inicio .charts-section {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    
+    #inicio .charts-section > div {
+        height: 250px !important;
+    }
+    
+    #inicio #homologacoesChart,
+    #inicio #releasesChart {
+        max-height: 200px !important;
+        height: 200px !important;
+    }
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
@@ -1173,6 +1382,9 @@ const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABA
 <img alt="Sua Logo" class="your-custom-logo" src="logo1.png"/>
 </div>
 <ul class="nav-list">
+<li class="nav-item">
+<button onclick="showTab('inicio')"><i class="fas fa-home"></i> Início</button>
+</li>
 <li class="nav-item">
 <button onclick="showTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboards</button>
 </li>
@@ -1355,6 +1567,175 @@ select {
 <span><span id="nomeUsuario">Usuário</span></span>
 </div>
 </header>
+
+<!-- Nova Aba Início -->
+<div class="content-section active" id="inicio">
+    <!-- Cabeçalho de Boas-vindas -->
+    <div class="welcome-header" style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
+        <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
+            <i class="fas fa-home" style="margin-right: 15px;"></i>
+            Bem-vindo ao Portal Tryvia
+        </h2>
+        <p style="margin: 0; font-size: 1.2em; opacity: 0.9;" id="welcomeMessage">
+            Hoje é <span id="currentDate"></span> | Última atualização: <span id="lastUpdate"></span>
+        </p>
+    </div>
+
+    <!-- Métricas Principais -->
+    <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px;">
+        <div class="metric-card" style="background: linear-gradient(135deg, #b3e5fc 0%, #81d4fa 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('clients')">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Total de Clientes</h3>
+                    <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="totalClients">-</p>
+                </div>
+                <div style="font-size: 3em; color: #0277bd; opacity: 0.7;">👥</div>
+            </div>
+        </div>
+
+        <div class="metric-card" style="background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('homologacao')">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Homologações</h3>
+                    <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #2e7d32;" id="totalHomologacoes">-</p>
+                </div>
+                <div style="font-size: 3em; color: #2e7d32; opacity: 0.7;">✅</div>
+            </div>
+        </div>
+
+        <div class="metric-card" style="background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('release')">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Releases</h3>
+                    <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #ef6c00;" id="totalReleases">-</p>
+                </div>
+                <div style="font-size: 3em; color: #ef6c00; opacity: 0.7;">🚀</div>
+            </div>
+        </div>
+
+        <div class="metric-card" style="background: linear-gradient(135deg, #d1c4e9 0%, #b39ddb 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('reunioes')">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Reuniões</h3>
+                    <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #7b1fa2;" id="totalReunioes">-</p>
+                </div>
+                <div style="font-size: 3em; color: #7b1fa2; opacity: 0.7;">📅</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seções de Acesso Rápido e Notificações -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px;">
+        <!-- Acesso Rápido -->
+        <div class="quick-access" style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h3 style="margin: 0 0 20px 0; color: #000; font-size: 1.4em;">
+                <i class="fas fa-bolt" style="margin-right: 10px; color: #ff9800;"></i>
+                Acesso Rápido
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <button onclick="showTab('clients')" style="background: #4fc3f7; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-user-plus" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Novo Cliente
+                </button>
+                <button onclick="showTab('homologacao')" style="background: #66bb6a; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-clipboard-check" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Homologação
+                </button>
+                <button onclick="showTab('release')" style="background: #ff7043; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-rocket" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Novo Release
+                </button>
+                <button onclick="showTab('reunioes')" style="background: #ab47bc; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-users" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Nova Reunião
+                </button>
+                <button onclick="showTab('documents')" style="background: #5c6bc0; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-file-alt" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Documentos
+                </button>
+                <button onclick="showTab('relatorioVisita')" style="background: #26a69a; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-file-signature" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Relatório
+                </button>
+            </div>
+        </div>
+
+        <!-- Notificações -->
+        <div class="notifications" style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h3 style="margin: 0 0 20px 0; color: #000; font-size: 1.4em;">
+                <i class="fas fa-bell" style="margin-right: 10px; color: #f44336;"></i>
+                Notificações
+            </h3>
+            <div id="notificationsList">
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <i class="fas fa-check-circle" style="font-size: 2em; margin-bottom: 10px; color: #4caf50;"></i>
+                    <p style="margin: 0;">Tudo em dia!</p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9em;">Nenhuma notificação pendente</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout Principal -->
+    <div class="main-layout" style="display: block; margin-bottom: 40px;">
+        
+        <!-- Atividades Recentes e Clientes em Destaque -->
+        <div>
+            <!-- Atividades Recentes -->
+            <div class="activities-section" style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #000; font-size: 1.4em;">
+                        <i class="fas fa-clock" style="margin-right: 10px; color: #29b6f6;"></i>
+                        Atividades Recentes
+                    </h3>
+                    <button onclick="refreshActivities()" style="background: #29b6f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div id="activitiesList" style="max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2em; margin-bottom: 15px;"></i>
+                        <p>Carregando atividades...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clientes em Destaque -->
+            <div class="clients-highlight" style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+                <h3 style="margin: 0 0 20px 0; color: #000; font-size: 1.4em;">
+                    <i class="fas fa-star" style="margin-right: 10px; color: #ffc107;"></i>
+                    Clientes em Destaque
+                </h3>
+                <div id="clientsCarousel" style="display: flex; overflow-x: auto; gap: 20px; padding: 10px 0; scroll-behavior: smooth;">
+                    <div style="text-align: center; padding: 40px; color: #666; min-width: 100%;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2em; margin-bottom: 15px;"></i>
+                        <p>Carregando clientes...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos de Resumo -->
+    <div class="charts-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+        <div style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h3 style="margin: 0 0 20px 0; color: #000; font-size: 1.4em;">
+                <i class="fas fa-chart-bar" style="margin-right: 10px; color: #29b6f6;"></i>
+                Homologações por Mês
+            </h3>
+            <canvas id="homologacoesChart" width="400" height="200"></canvas>
+        </div>
+        
+        <div style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h3 style="margin: 0 0 20px 0; color: #000; font-size: 1.4em;">
+                <i class="fas fa-chart-pie" style="margin-right: 10px; color: #29b6f6;"></i>
+                Releases por Tipo
+            </h3>
+            <canvas id="releasesChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
 <div class="content-section" id="gestao">
 <div class="form-container">
 <h3 style="margin-bottom: 20px;">Adicionar Funcionário</h3>
@@ -1945,7 +2326,11 @@ function removeIntegration(idx, listName) {
             }
 
             // Render content specific to the tab
-            if (tabId === 'documents') {
+            if (tabId === 'inicio') {
+                setTimeout(() => {
+                    initializeInicio();
+                }, 100);
+            } else if (tabId === 'documents') {
                 fetchAndRenderDocuments();
             } else if (tabId === 'clients') {
                 document.getElementById('editClientTabButton').style.display = 'none';
@@ -3681,6 +4066,451 @@ document.addEventListener("DOMContentLoaded", carregarReunioes);
     const nome = localStorage.getItem('username') || 'TRYVIA';
     document.getElementById('nomeUsuario').innerText = nome;
   });
+</script>
+
+<!-- Chart.js para gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// ===== FUNÇÕES DA ABA INÍCIO =====
+
+let dashboardData = {
+    totalClients: 0,
+    totalHomologacoes: 0,
+    totalReleases: 0,
+    totalReunioes: 0,
+    recentActivities: [],
+    highlightClients: [],
+    notifications: []
+};
+
+// Inicializar aba Início
+async function initializeInicio() {
+    updateDateTime();
+    await loadDashboardMetrics();
+    await loadRecentActivities();
+    await loadHighlightClients();
+    loadNotifications();
+    createCharts();
+    
+    // Auto-refresh a cada 5 minutos
+    setInterval(async () => {
+        await loadDashboardMetrics();
+        await loadRecentActivities();
+        updateDateTime();
+    }, 300000);
+}
+
+// Atualizar data e hora
+function updateDateTime() {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('pt-BR', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const timeStr = now.toLocaleTimeString('pt-BR');
+    
+    document.getElementById('currentDate').textContent = dateStr;
+    document.getElementById('lastUpdate').textContent = timeStr;
+}
+
+// Carregar métricas do dashboard
+async function loadDashboardMetrics() {
+    try {
+        // Carregar contadores de cada tabela
+        const [clientsResult, homologacoesResult, releasesResult, reunioesResult] = await Promise.all([
+            supabase.from('clients').select('id', { count: 'exact', head: true }),
+            supabase.from('homologacoes').select('id', { count: 'exact', head: true }),
+            releaseClient.from('releases').select('id', { count: 'exact', head: true }),
+            releaseClient.from('reunioes').select('id', { count: 'exact', head: true })
+        ]);
+
+        dashboardData.totalClients = clientsResult.count || 0;
+        dashboardData.totalHomologacoes = homologacoesResult.count || 0;
+        dashboardData.totalReleases = releasesResult.count || 0;
+        dashboardData.totalReunioes = reunioesResult.count || 0;
+
+        // Atualizar UI
+        document.getElementById('totalClients').textContent = dashboardData.totalClients;
+        document.getElementById('totalHomologacoes').textContent = dashboardData.totalHomologacoes;
+        document.getElementById('totalReleases').textContent = dashboardData.totalReleases;
+        document.getElementById('totalReunioes').textContent = dashboardData.totalReunioes;
+
+        // Adicionar animação aos cards
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px)';
+                card.style.boxShadow = '0 8px 25px rgba(41, 182, 246, 0.4)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 4px 15px rgba(41, 182, 246, 0.3)';
+            });
+        });
+
+    } catch (error) {
+        console.error('Erro ao carregar métricas:', error);
+    }
+}
+
+// Carregar atividades recentes
+async function loadRecentActivities() {
+    try {
+        const activitiesList = document.getElementById('activitiesList');
+        activitiesList.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+
+        // Buscar atividades recentes de diferentes tabelas
+        const [clientsData, homologacoesData, releasesData, reunioesData] = await Promise.all([
+            supabase.from('clients').select('id, name, created_at').order('created_at', { ascending: false }).limit(3),
+            supabase.from('homologacoes').select('id, especialista, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
+            releaseClient.from('releases').select('id, sistema, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
+            releaseClient.from('reunioes').select('id, cliente, data, tipo').order('data', { ascending: false }).limit(3)
+        ]);
+
+        let activities = [];
+
+        // Processar clientes
+        if (clientsData.data) {
+            clientsData.data.forEach(client => {
+                activities.push({
+                    type: 'cliente',
+                    icon: '👥',
+                    color: '#4fc3f7',
+                    title: 'Novo Cliente',
+                    description: client.name,
+                    date: new Date(client.created_at),
+                    action: () => showTab('clients')
+                });
+            });
+        }
+
+        // Processar homologações
+        if (homologacoesData.data) {
+            homologacoesData.data.forEach(homol => {
+                activities.push({
+                    type: 'homologacao',
+                    icon: '✅',
+                    color: '#66bb6a',
+                    title: 'Homologação',
+                    description: `${homol.versao} - ${homol.especialista}`,
+                    date: new Date(homol.data_liberacao),
+                    action: () => showTab('homologacao')
+                });
+            });
+        }
+
+        // Processar releases
+        if (releasesData.data) {
+            releasesData.data.forEach(release => {
+                activities.push({
+                    type: 'release',
+                    icon: '🚀',
+                    color: '#ff7043',
+                    title: 'Release',
+                    description: `${release.sistema} ${release.versao}`,
+                    date: new Date(release.data_liberacao),
+                    action: () => showTab('release')
+                });
+            });
+        }
+
+        // Processar reuniões
+        if (reunioesData.data) {
+            reunioesData.data.forEach(reuniao => {
+                activities.push({
+                    type: 'reuniao',
+                    icon: '📅',
+                    color: '#ab47bc',
+                    title: 'Reunião',
+                    description: `${reuniao.tipo} - ${reuniao.cliente}`,
+                    date: new Date(reuniao.data),
+                    action: () => showTab('reunioes')
+                });
+            });
+        }
+
+        // Ordenar por data
+        activities.sort((a, b) => b.date - a.date);
+        activities = activities.slice(0, 10); // Limitar a 10 atividades
+
+        // Renderizar atividades
+        if (activities.length === 0) {
+            activitiesList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <i class="fas fa-inbox" style="font-size: 2em; margin-bottom: 15px;"></i>
+                    <p>Nenhuma atividade recente</p>
+                </div>
+            `;
+        } else {
+            activitiesList.innerHTML = activities.map(activity => `
+                <div class="activity-item" style="background: rgba(179, 229, 252, 0.95); border-left: 4px solid ${activity.color}; padding: 16px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;" onclick="(${activity.action.toString()})()">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="font-size: 1.5em;">${activity.icon}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold; color: #000; margin-bottom: 4px;">${activity.title}</div>
+                            <div style="color: #333; margin-bottom: 4px;">${activity.description}</div>
+                            <div style="font-size: 0.85em; color: #666;">${activity.date.toLocaleDateString('pt-BR')} às ${activity.date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    } catch (error) {
+        console.error('Erro ao carregar atividades:', error);
+        document.getElementById('activitiesList').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #f44336;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 15px;"></i>
+                <p>Erro ao carregar atividades</p>
+            </div>
+        `;
+    }
+}
+
+// Carregar clientes em destaque
+async function loadHighlightClients() {
+    try {
+        const carousel = document.getElementById('clientsCarousel');
+        carousel.innerHTML = '<div style="text-align: center; padding: 20px; min-width: 100%;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+
+        const { data: clients, error } = await supabase
+            .from('clients')
+            .select('id, name, logo_url, bi_link')
+            .not('bi_link', 'is', null)
+            .not('bi_link', 'eq', '')
+            .limit(5);
+
+        if (error) throw error;
+
+        if (clients.length === 0) {
+            carousel.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #666; min-width: 100%;">
+                    <i class="fas fa-users" style="font-size: 2em; margin-bottom: 15px;"></i>
+                    <p>Nenhum cliente com BI configurado</p>
+                </div>
+            `;
+        } else {
+            carousel.innerHTML = clients.map(client => `
+                <div class="client-highlight-card" style="min-width: 200px; background: #ffffff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; cursor: pointer;" onclick="window.open('${client.bi_link}', '_blank')">
+                    <div style="width: 80px; height: 80px; margin: 0 auto 15px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        ${client.logo_url ? 
+                            `<img src="${client.logo_url}" alt="${client.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                            `<span style="font-size: 2em; color: #29b6f6;">${client.name.charAt(0).toUpperCase()}</span>`
+                        }
+                    </div>
+                    <h4 style="margin: 0 0 10px 0; color: #333; font-size: 1.1em;">${client.name}</h4>
+                    <p style="margin: 0; color: #666; font-size: 0.9em;">Dashboard BI</p>
+                    <div style="margin-top: 15px;">
+                        <span style="background: #4fc3f7; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.8em;">Ativo</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Adicionar hover effects
+            document.querySelectorAll('.client-highlight-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'scale(1.05)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'scale(1)';
+                });
+            });
+        }
+
+    } catch (error) {
+        console.error('Erro ao carregar clientes em destaque:', error);
+        document.getElementById('clientsCarousel').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #f44336; min-width: 100%;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 15px;"></i>
+                <p>Erro ao carregar clientes</p>
+            </div>
+        `;
+    }
+}
+
+// Carregar notificações
+function loadNotifications() {
+    // Por enquanto, mostrar mensagem padrão
+    // Futuramente pode incluir lógica para verificar homologações vencendo, etc.
+    const notificationsList = document.getElementById('notificationsList');
+    notificationsList.innerHTML = `
+        <div style="text-align: center; padding: 20px; color: #666;">
+            <i class="fas fa-check-circle" style="font-size: 2em; margin-bottom: 10px; color: #4caf50;"></i>
+            <p>Tudo em dia!</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Nenhuma notificação pendente</p>
+        </div>
+    `;
+}
+
+// Criar gráficos
+async function createCharts() {
+    try {
+        // Gráfico de Homologações por Mês
+        await createHomologacoesChart();
+        
+        // Gráfico de Releases por Tipo
+        await createReleasesChart();
+        
+    } catch (error) {
+        console.error('Erro ao criar gráficos:', error);
+    }
+}
+
+// Gráfico de Homologações por Mês
+async function createHomologacoesChart() {
+    try {
+        const { data, error } = await supabase
+            .from('homologacoes')
+            .select('data_liberacao');
+
+        if (error) throw error;
+
+        // Processar dados por mês
+        const monthCounts = {};
+        const currentYear = new Date().getFullYear();
+        
+        // Inicializar últimos 6 meses
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date();
+            date.setMonth(date.getMonth() - i);
+            const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            monthCounts[key] = 0;
+        }
+
+        // Contar homologações por mês
+        data.forEach(item => {
+            const date = new Date(item.data_liberacao);
+            const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            if (monthCounts.hasOwnProperty(key)) {
+                monthCounts[key]++;
+            }
+        });
+
+        const labels = Object.keys(monthCounts).map(key => {
+            const [year, month] = key.split('-');
+            const date = new Date(year, month - 1);
+            return date.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+        });
+
+        const values = Object.values(monthCounts);
+
+        const ctx = document.getElementById('homologacoesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Homologações',
+                    data: values,
+                    backgroundColor: 'rgba(41, 182, 246, 0.8)',
+                    borderColor: 'rgba(41, 182, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Erro ao criar gráfico de homologações:', error);
+    }
+}
+
+// Gráfico de Releases por Tipo
+async function createReleasesChart() {
+    try {
+        const { data, error } = await releaseClient
+            .from('releases')
+            .select('tipo');
+
+        if (error) throw error;
+
+        // Contar por tipo
+        const typeCounts = {};
+        data.forEach(item => {
+            const tipo = item.tipo || 'Não especificado';
+            typeCounts[tipo] = (typeCounts[tipo] || 0) + 1;
+        });
+
+        const labels = Object.keys(typeCounts);
+        const values = Object.values(typeCounts);
+        const colors = [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 205, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)'
+        ];
+
+        const ctx = document.getElementById('releasesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors.slice(0, labels.length),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Erro ao criar gráfico de releases:', error);
+    }
+}
+
+// Função para refresh manual das atividades
+async function refreshActivities() {
+    const button = event.target;
+    const originalIcon = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    button.disabled = true;
+    
+    await loadRecentActivities();
+    updateDateTime();
+    
+    setTimeout(() => {
+        button.innerHTML = originalIcon;
+        button.disabled = false;
+    }, 1000);
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Definir início como aba padrão
+    setTimeout(() => {
+        showTab('inicio');
+    }, 500);
+});
+
 </script>
 </body>
 
