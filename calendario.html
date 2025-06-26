@@ -4,8 +4,201 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendário de Atividades</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
+        function enviarEmailVisita(data) {
+            const { title, date, time, description, participants } = data;
+
+            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
+
+            const corpoEmail = `
+  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
+    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Título:</td>
+        <td style="padding: 8px;">\${title}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Data:</td>
+        <td style="padding: 8px;">\${date}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Hora:</td>
+        <td style="padding: 8px;">\${time}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
+        <td style="padding: 8px;">\${description}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
+        <td style="padding: 8px;">\${listaParticipantes}</td>
+      </tr>
+    </table>
+  </div>
+`;
+
+            emailjs.send("service_s592ale", "template_2wfn09q", {
+              title: title,
+              date: date,
+              time: time,
+              description: description,
+             participants: listaParticipantes
+            }).then(() => {
+                console.log("📨 E-mail de visita enviado!");
+            }).catch((error) => {
+                console.error("Erro ao enviar e-mail:", error);
+            });
+        }
+
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js">
+        function enviarEmailVisita(data) {
+            const { title, date, time, description, participants } = data;
+
+            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
+
+            const corpoEmail = `
+  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
+    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Título:</td>
+        <td style="padding: 8px;">\${title}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Data:</td>
+        <td style="padding: 8px;">\${date}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Hora:</td>
+        <td style="padding: 8px;">\${time}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
+        <td style="padding: 8px;">\${description}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
+        <td style="padding: 8px;">\${listaParticipantes}</td>
+      </tr>
+    </table>
+  </div>
+`;
+
+            emailjs.send("service_s592ale", "template_2wfn09q", {
+                   title: title,
+             date: date,
+             time: time,
+             description: description,
+             participants: listaParticipantes
+            }).then(() => {
+                console.log("📨 E-mail de visita enviado!");
+            }).catch((error) => {
+                console.error("Erro ao enviar e-mail:", error);
+            });
+        }
+
+    </script>
+<script>
+    emailjs.init("8gWnUalrGwJEQbRwM"); // Substitua pelo seu User ID do EmailJS
+
+        function enviarEmailVisita(data) {
+            const { title, date, time, description, participants } = data;
+
+            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
+
+            const corpoEmail = `
+  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
+    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Título:</td>
+        <td style="padding: 8px;">\${title}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Data:</td>
+        <td style="padding: 8px;">\${date}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Hora:</td>
+        <td style="padding: 8px;">\${time}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
+        <td style="padding: 8px;">\${description}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
+        <td style="padding: 8px;">\${listaParticipantes}</td>
+      </tr>
+    </table>
+  </div>
+`;
+
+            emailjs.send("service_s592ale", "template_2wfn09q", {
+                  title: title,
+            date: date,
+            time: time,
+            description: description,
+            participants: listaParticipantes
+            }).then(() => {
+                console.log("📨 E-mail de visita enviado!");
+            }).catch((error) => {
+                console.error("Erro ao enviar e-mail:", error);
+            });
+        }
+
+    </script>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js">
+        function enviarEmailVisita(data) {
+            const { title, date, time, description, participants } = data;
+
+            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
+
+            const corpoEmail = `
+  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
+    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Título:</td>
+        <td style="padding: 8px;">\${title}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Data:</td>
+        <td style="padding: 8px;">\${date}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Hora:</td>
+        <td style="padding: 8px;">\${time}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
+        <td style="padding: 8px;">\${description}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
+        <td style="padding: 8px;">\${listaParticipantes}</td>
+      </tr>
+    </table>
+  </div>
+`;
+
+            emailjs.send("service_s592ale", "template_2wfn09q", {
+                  title: title,
+               date: date,
+             time: time,
+             description: description,
+             participants: listaParticipantes
+            }).then(() => {
+                console.log("📨 E-mail de visita enviado!");
+            }).catch((error) => {
+                console.error("Erro ao enviar e-mail:", error);
+            });
+        }
+
+    </script>
     <style>
         * {
             margin: 0;
@@ -1070,6 +1263,16 @@
 
             closeModal();
             renderCalendar();
+            if (type.toLowerCase() === "viagem" || type.toLowerCase() === "viagem") {
+                enviarEmailVisita({
+                    title,
+                    date,
+                    time,
+                    description,
+                    participants: currentParticipants
+                });
+            }
+
         }
 
         async function editActivity(id) {
@@ -1310,6 +1513,53 @@
             currentParticipantPhoto = null;
             document.getElementById('uploadArea').classList.remove('dragover');
         }
+    
+        function enviarEmailVisita(data) {
+            const { title, date, time, description, participants } = data;
+
+            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
+
+            const corpoEmail = `
+  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
+    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Título:</td>
+        <td style="padding: 8px;">\${title}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Data:</td>
+        <td style="padding: 8px;">\${date}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Hora:</td>
+        <td style="padding: 8px;">\${time}</td>
+      </tr>
+      <tr style="background-color: #f3f4f6;">
+        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
+        <td style="padding: 8px;">\${description}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
+        <td style="padding: 8px;">\${listaParticipantes}</td>
+      </tr>
+    </table>
+  </div>
+`;
+
+            emailjs.send("service_s592ale", "template_2wfn09q", {
+                  title: title,
+                  date: date,
+                  time: time,
+                  description: description,
+                  participants: listaParticipantes
+            }).then(() => {
+                console.log("📨 E-mail de visita enviado!");
+            }).catch((error) => {
+                console.error("Erro ao enviar e-mail:", error);
+            });
+        }
+
     </script>
 </body>
 </html>
