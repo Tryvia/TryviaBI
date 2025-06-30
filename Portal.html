@@ -3,6 +3,10 @@
 <html lang="pt-BR">
 <head>
 <link rel="icon" type="image/png" href="tryvia.png" />
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
 button, a.button, .btn {
     font-weight: 500;
@@ -1386,6 +1390,9 @@ const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABA
 <button onclick="showTab('inicio')"><i class="fas fa-home"></i> Início</button>
 </li>
 <li class="nav-item">
+<button onclick="showTab('painel-setor')"><i class="fas fa-chart-pie"></i> Painel do Setor</button>
+</li>
+<li class="nav-item">
 <button onclick="showTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboards</button>
 </li>
 <li class="nav-item">
@@ -2174,6 +2181,267 @@ select {
 <h3 style="margin-top: 30px;">Filtrar por Cliente</h3>
 <input class="input-padrao" id="filtroReuniaoCliente" oninput="filtrarReunioes()" placeholder="Filtrar por cliente..." type="text"/>
 <div class="documents-grid" id="listaReunioes" style="margin-top: 20px;"></div>
+</div>
+<!-- Nova Seção: Painel do Setor -->
+<div class="content-section" id="painel-setor">
+    <div style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
+        <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
+            <i class="fas fa-chart-pie" style="margin-right: 15px;"></i>
+            Painel do Setor
+        </h2>
+        <p style="margin: 0; font-size: 1.2em; opacity: 0.9;">
+            Gestão completa de tarefas, projetos, time e visitas
+        </p>
+    </div>
+
+    <!-- Layout Principal -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+        
+        <!-- Coluna Esquerda: Tarefas -->
+        <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+            <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                <i class="fas fa-tasks" style="margin-right: 10px;"></i>TAREFAS
+            </h3>
+            
+            <!-- Métricas de Tarefas -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-graduation-cap" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Treinamentos</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('treinamentos', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="treinamentos-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('treinamentos', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-exchange-alt" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Migrações</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('migracoes', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="migracoes-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('migracoes', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-users" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Reuniões</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('reunioes', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="reunioes-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('reunioes', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-trophy" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">MVP</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('mvp', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="mvp-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('mvp', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-check-circle" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Homologações</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('homologacoes', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="homologacoes-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('homologacoes', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-handshake" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Acompanhamentos</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('acompanhamentos', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="acompanhamentos-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('acompanhamentos', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-cogs" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Implantações</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('implantacoes', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="implantacoes-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('implantacoes', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-star" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Projetos em andamento</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('projetos', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="projetos-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('projetos', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                        <i class="fas fa-ticket-alt" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                        <span style="color: #4fc3f7; font-weight: bold;">Tickets</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <button onclick="alterarQuantidade('tickets', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                        <div id="tickets-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                        <button onclick="alterarQuantidade('tickets', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botão para adicionar tarefa -->
+            <button class="btn-primary" onclick="showAddTaskModal()" style="width: 100%; margin-top: 15px;">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i>Adicionar Tarefa
+            </button>
+            <button class="btn-primary" id="save-tasks-btn" onclick="saveTasks()" style="width: 100%; margin-top: 15px;">
+                <i class="fas fa-save" style="margin-right: 8px;"></i>Salvar Tarefas
+            </button>
+        </div>
+
+        <!-- Coluna Direita: Time -->
+        <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+            <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                <i class="fas fa-users" style="margin-right: 10px;"></i>TIME
+            </h3>
+            
+            <!-- Lista do Time -->
+            <div id="timeList" style="max-height: 400px; overflow-y: auto;">
+                <!-- Membros do time serão carregados aqui -->
+            </div>
+            
+            <!-- Botão para adicionar membro -->
+            <button class="btn-primary" onclick="showAddTeamMemberModal()" style="width: 100%; margin-top: 15px;">
+                <i class="fas fa-user-plus" style="margin-right: 8px;"></i>Adicionar Membro
+            </button>
+        </div>
+    </div>
+
+    <!-- Projetos em Andamento -->
+    <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+        <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+            <i class="fas fa-project-diagram" style="margin-right: 10px;"></i>PROJETOS EM ANDAMENTO
+        </h3>
+        
+        <!-- Tabela de Projetos -->
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead style="background: #4fc3f7; color: white;">
+                    <tr>
+                        <th style="padding: 15px; text-align: left; font-weight: bold;">Projeto</th>
+                        <th style="padding: 15px; text-align: left; font-weight: bold;">Empresa</th>
+                        <th style="padding: 15px; text-align: left; font-weight: bold;">Especialista</th>
+                        <th style="padding: 15px; text-align: center; font-weight: bold;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="projetosTableBody">
+                    <!-- Projetos serão carregados aqui -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Botão para adicionar projeto -->
+        <button class="btn-primary" onclick="showAddProjectModal()" style="margin-top: 15px;">
+            <i class="fas fa-plus" style="margin-right: 8px;"></i>Adicionar Projeto
+        </button>
+    </div>
+
+    <!-- Layout Inferior: Visitas e Entregas -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        
+        <!-- Visitas com Mapa -->
+        <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+            <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                <i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i>VISITAS
+            </h3>
+            
+            <!-- Mapa -->
+            <div id="mapContainer" style="height: 300px; border-radius: 10px; margin-bottom: 20px; z-index: 1;">
+                <!-- Mapa Leaflet será carregado aqui -->
+            </div>
+            
+            <!-- Contador de empresas -->
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span style="font-size: 1.2em; font-weight: bold; color: #4fc3f7;">
+                    <i class="fas fa-building" style="margin-right: 8px;"></i>
+                    <span id="empresasCount">05</span> Empresas
+                </span>
+            </div>
+            
+            <!-- Botão para adicionar visita -->
+            <button class="btn-primary" onclick="showAddVisitModal()" style="width: 100%;">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i>Adicionar Visita
+            </button>
+        </div>
+
+        <!-- Entregas -->
+        <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+            <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                <i class="fas fa-truck" style="margin-right: 10px;"></i>ENTREGAS
+            </h3>
+            
+            <!-- Tabela de Entregas por Mês -->
+            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="background: #4fc3f7; color: white; padding: 15px; text-align: center; font-weight: bold;">
+                    Time Implantação & Projetos
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: #e3f2fd;">
+                        <tr>
+                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Mês</th>
+                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Marlos</th>
+                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Larissa</th>
+                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Renata</th>
+                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Victor</th>
+                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">% SETOR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entregasTableBody">
+                        <!-- Entregas serão carregadas aqui -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Botão para adicionar entrega -->
+            <button class="btn-primary" onclick="showAddEntregaModal()" style="width: 100%; margin-top: 15px;">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i>Adicionar Entrega
+            </button>
+        </div>
+    </div>
+
+    <!-- Rodapé com Tags -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); border-radius: 15px; color: white;">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 30px; font-size: 1.2em; font-weight: bold;">
+            <span><i class="fas fa-shield-alt" style="margin-right: 8px;"></i>+ segurança</span>
+            <span><i class="fas fa-chart-line" style="margin-right: 8px;"></i>+ eficiência</span>
+            <span><i class="fas fa-coins" style="margin-right: 8px;"></i>+ economia</span>
+        </div>
+    </div>
 </div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -2241,6 +2509,116 @@ select {
             window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
         const supabase = window.supabaseClient;
+
+        // Mapeamento entre nomes HTML e nomes do banco de dados
+        const tipoMap = {
+            'suprimentos': 'suprimentos',
+            'projetos': 'projetos',
+            'tickets': 'tickets',
+            'treinamentos': 'treinamento',
+            'migracoes': 'migracao',
+            'reunioes': 'reuniao',
+            'mvp': 'mvp',
+            'homologacoes': 'homologacao',
+            'acompanhamentos': 'acompanhamento',
+            'implantacoes': 'implantacao'
+        };
+
+        // Função para alterar quantidade de tarefas
+        async function alterarQuantidade(tipoHtml, incremento) {
+            const elemento = document.getElementById(tipoHtml + '-count');
+            if (!elemento) {
+                console.error('Elemento não encontrado:', tipoHtml + '-count');
+                return;
+            }
+
+            let valorAtual = parseInt(elemento.textContent) || 0;
+            let novoValor = Math.max(0, valorAtual + incremento);
+
+            elemento.textContent = novoValor.toString().padStart(2, '0');
+
+            // Usar o nome correto do banco
+            const tipoDb = tipoMap[tipoHtml];
+            if (!tipoDb) {
+                console.error('Tipo não encontrado no mapeamento:', tipoHtml);
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('tarefas')
+                    .upsert([
+                        { tipo: tipoDb, quantidade: novoValor }
+                    ], { onConflict: ['tipo'] });
+
+                if (error) throw error;
+                console.log('Quantidade salva com sucesso:', tipoDb, novoValor);
+            } catch (err) {
+                console.error('Erro ao salvar quantidade:', err);
+                showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
+            }
+        }
+
+        // Função para carregar contadores de tarefas
+        async function carregarContadoresDeTarefas() {
+            try {
+                const { data, error } = await supabase
+                    .from('tarefas')
+                    .select('*');
+
+                if (error) throw error;
+
+                data.forEach(item => {
+                    // Procurar o nome do HTML correspondente ao tipo do banco
+                    const tipoHtml = Object.keys(tipoMap).find(key => tipoMap[key] === item.tipo);
+                    if (tipoHtml) {
+                        const elemento = document.getElementById(tipoHtml + '-count');
+                        if (elemento) {
+                            elemento.textContent = item.quantidade.toString().padStart(2, '0');
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar contadores de tarefas:', error);
+            }
+        }
+
+        // Função para salvar tarefas
+        async function saveTasks() {
+            try {
+                const updates = [];
+                for (const tipoHtml in tipoMap) {
+                    const element = document.getElementById(tipoHtml + '-count');
+                    if (element) {
+                        updates.push({
+                            tipo: tipoMap[tipoHtml],
+                            quantidade: parseInt(element.textContent) || 0
+                        });
+                    } else {
+                        console.warn('Elemento não encontrado para salvar:', tipoHtml + '-count');
+                    }
+                }
+
+                if (updates.length === 0) {
+                    showAlert('Aviso', 'Nenhum contador de tarefa encontrado para salvar.');
+                    return;
+                }
+
+                for (const update of updates) {
+                    const { error } = await supabase
+                        .from('tarefas')
+                        .upsert([update], { onConflict: ['tipo'] });
+
+                    if (error) throw error;
+                }
+
+                showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso!');
+            } catch (error) {
+                console.error('Erro ao salvar quantidades:', error);
+                showAlert('Erro', 'Erro ao salvar as quantidades das tarefas.');
+            }
+        }
 
         // Global data storage (will be replaced by Supabase data)
         let documents = [];
@@ -4018,7 +4396,7 @@ async function carregarReunioes() {
   const { data, error } = await releaseClient.from("reunioes").select("*").order("data", { ascending: false });
   if (error) return console.error("Erro ao carregar reuniões", error);
 
-  const container = document.getElementById("listaReunioes");
+  const container = document.getElementById("listaReunioes")
   container.innerHTML = "";
 
   const agrupado = {};
@@ -4586,15 +4964,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error("Erro ao comunicar com o backend:", error);
                 appendMessage("Assistente", "Desculpe, não consegui processar sua solicitação no momento.");
             }
-        }
+         }
     });
-
     chatInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             chatSendButton.click();
         }
     });
-
     // Inicializar a mensagem de boas-vindas apenas quando o chat for aberto pela primeira vez
     let chatInitialized = false;
     chatToggleButton.addEventListener("click", () => {
@@ -4604,5 +4980,930 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 </script>
-</body>
 
+<!-- Modais para Painel do Setor -->
+<!-- Modal para Adicionar Tarefa -->
+<div id="addTaskModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>Adicionar Nova Tarefa</h3>
+        <div class="form-group">
+            <label for="taskType">Tipo de Tarefa</label>
+            <select id="taskType">
+                <option value="treinamento">Treinamento</option>
+                <option value="migracao">Migração</option>
+                <option value="reuniao">Reunião</option>
+                <option value="mvp">MVP</option>
+                <option value="homologacao">Homologação</option>
+                <option value="acompanhamento">Acompanhamento</option>
+                <option value="implantacao">Implantação</option>
+                <option value="projeto">Projeto em andamento</option>
+                <option value="ticket">Ticket</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="taskTitle">Título da Tarefa</label>
+            <input type="text" id="taskTitle" placeholder="Digite o título da tarefa">
+        </div>
+        <div class="form-group">
+            <label for="taskDescription">Descrição</label>
+            <textarea id="taskDescription" placeholder="Descreva a tarefa"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="taskResponsible">Responsável</label>
+            <input type="text" id="taskResponsible" placeholder="Nome do responsável">
+        </div>
+        <div class="form-group">
+            <label for="taskDeadline">Prazo</label>
+            <input type="date" id="taskDeadline">
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-button cancel" onclick="closeModal('addTaskModal')">Cancelar</button>
+            <button class="modal-button confirm" onclick="saveTask()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Adicionar Membro do Time -->
+<div id="addTeamMemberModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>Adicionar Membro do Time</h3>
+        <div class="form-group">
+            <label for="memberName">Nome</label>
+            <input type="text" id="memberName" placeholder="Nome completo">
+        </div>
+        <div class="form-group">
+            <label for="memberRole">Cargo</label>
+            <select id="memberRole">
+                <option value="Gerente">Gerente</option>
+                <option value="Especialista">Especialista</option>
+                <option value="Analista">Analista</option>
+                <option value="Desenvolvedor">Desenvolvedor</option>
+                <option value="Consultor">Consultor</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="memberEmail">Email</label>
+            <input type="email" id="memberEmail" placeholder="email@exemplo.com">
+        </div>
+        <div class="form-group">
+            <label for="memberPhoto">Foto</label>
+            <input type="file" id="memberPhoto" accept="image/*">
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-button cancel" onclick="closeModal('addTeamMemberModal')">Cancelar</button>
+            <button class="modal-button confirm" onclick="saveTeamMember()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Adicionar Projeto -->
+<div id="addProjectModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px;">
+        <h3>Adicionar Novo Projeto</h3>
+        <div class="form-group">
+            <label for="projectName">Nome do Projeto</label>
+            <input type="text" id="projectName" placeholder="Nome do projeto">
+        </div>
+        <div class="form-group">
+            <label for="projectCompany">Empresa</label>
+            <input type="text" id="projectCompany" placeholder="Nome da empresa">
+        </div>
+        <div class="form-group">
+            <label for="projectSpecialist">Especialista Responsável</label>
+            <input type="text" id="projectSpecialist" placeholder="Nome do especialista">
+        </div>
+        <div class="form-group">
+            <label for="projectDescription">Descrição</label>
+            <textarea id="projectDescription" placeholder="Descrição do projeto"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="projectStatus">Status</label>
+            <select id="projectStatus">
+                <option value="Planejamento">Planejamento</option>
+                <option value="Em Andamento">Em Andamento</option>
+                <option value="Homologação">Homologação</option>
+                <option value="Finalizado">Finalizado</option>
+            </select>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-button cancel" onclick="closeModal('addProjectModal')">Cancelar</button>
+            <button class="modal-button confirm" onclick="saveProject()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Adicionar Visita -->
+<div id="addVisitModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>Adicionar Nova Visita</h3>
+        <div class="form-group">
+            <label for="visitCompany">Empresa</label>
+            <input type="text" id="visitCompany" placeholder="Nome da empresa">
+        </div>
+        <div class="form-group">
+            <label for="visitAddress">Endereço</label>
+            <input type="text" id="visitAddress" placeholder="Endereço completo">
+        </div>
+        <div class="form-group">
+            <label for="visitCity">Cidade</label>
+            <input type="text" id="visitCity" placeholder="Cidade">
+        </div>
+        <div class="form-group">
+            <label for="visitState">Estado</label>
+            <input type="text" id="visitState" placeholder="Estado">
+        </div>
+        <div class="form-group">
+            <label for="visitDate">Data da Visita</label>
+            <input type="date" id="visitDate">
+        </div>
+        <div class="form-group">
+            <label for="visitPurpose">Objetivo</label>
+            <textarea id="visitPurpose" placeholder="Objetivo da visita"></textarea>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-button cancel" onclick="closeModal('addVisitModal')">Cancelar</button>
+            <button class="modal-button confirm" onclick="saveVisit()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Adicionar Entrega -->
+<div id="addEntregaModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>Adicionar Nova Entrega</h3>
+        <div class="form-group">
+            <label for="entregaMonth">Mês</label>
+            <select id="entregaMonth">
+                <option value="JAN">Janeiro</option>
+                <option value="FEV">Fevereiro</option>
+                <option value="MAR">Março</option>
+                <option value="ABR">Abril</option>
+                <option value="MAI">Maio</option>
+                <option value="JUN">Junho</option>
+                <option value="JUL">Julho</option>
+                <option value="AGO">Agosto</option>
+                <option value="SET">Setembro</option>
+                <option value="OUT">Outubro</option>
+                <option value="NOV">Novembro</option>
+                <option value="DEZ">Dezembro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="entregaMarlos">Marlos (%)</label>
+            <input type="number" id="entregaMarlos" min="0" max="100" placeholder="0-100">
+        </div>
+        <div class="form-group">
+            <label for="entregaLarissa">Larissa (%)</label>
+            <input type="number" id="entregaLarissa" min="0" max="100" placeholder="0-100">
+        </div>
+        <div class="form-group">
+            <label for="entregaRenata">Renata (%)</label>
+            <input type="number" id="entregaRenata" min="0" max="100" placeholder="0-100">
+        </div>
+        <div class="form-group">
+            <label for="entregaVictor">Victor (%)</label>
+            <input type="number" id="entregaVictor" min="0" max="100" placeholder="0-100">
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-button cancel" onclick="closeModal('addEntregaModal')">Cancelar</button>
+            <button class="modal-button confirm" onclick="saveEntrega()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Variáveis globais para o painel do setor
+let painelData = {
+    tarefas: [],
+    time: [],
+    projetos: [],
+    visitas: [],
+    entregas: []
+};
+
+// Funções para mostrar modais
+function showAddTaskModal() {
+    document.getElementById('addTaskModal').classList.add('visible');
+}
+
+function showAddTeamMemberModal() {
+    document.getElementById('addTeamMemberModal').classList.add('visible');
+}
+
+function showAddProjectModal() {
+    document.getElementById('addProjectModal').classList.add('visible');
+}
+
+function showAddVisitModal() {
+    document.getElementById('addVisitModal').classList.add('visible');
+}
+
+function showAddEntregaModal() {
+    document.getElementById('addEntregaModal').classList.add('visible');
+}
+
+// Função para fechar modais
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('visible');
+}
+
+// Funções para salvar dados
+async function saveTask() {
+    const taskData = {
+        tipo: document.getElementById('taskType').value,
+        titulo: document.getElementById('taskTitle').value,
+        descricao: document.getElementById('taskDescription').value,
+        responsavel: document.getElementById('taskResponsible').value,
+        prazo: document.getElementById('taskDeadline').value,
+        status: 'pendente',
+        created_at: new Date().toISOString()
+    };
+
+    try {
+        const { data, error } = await supabase
+            .from('tarefas')
+            .insert([taskData]);
+
+        if (error) throw error;
+
+        showAlert('Sucesso', 'Tarefa adicionada com sucesso!');
+        closeModal('addTaskModal');
+        clearTaskForm();
+        loadPainelData();
+    } catch (error) {
+        console.error('Erro ao salvar tarefa:', error);
+        showAlert('Erro', 'Erro ao salvar tarefa. Tente novamente.');
+    }
+}
+
+async function saveTeamMember() {
+    const memberData = {
+        nome: document.getElementById('memberName').value,
+        cargo: document.getElementById('memberRole').value,
+        email: document.getElementById('memberEmail').value,
+        ativo: true,
+        created_at: new Date().toISOString()
+    };
+
+    // Upload da foto se fornecida
+    const photoFile = document.getElementById('memberPhoto').files[0];
+    if (photoFile) {
+        const photoPath = `team/${Date.now()}_${photoFile.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('team-photos')
+            .upload(photoPath, photoFile);
+
+        if (uploadError) {
+            console.error('Erro ao fazer upload da foto:', uploadError);
+        } else {
+            memberData.foto_url = `${SUPABASE_URL}/storage/v1/object/public/team-photos/${photoPath}`;
+        }
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('time')
+            .insert([memberData]);
+
+        if (error) throw error;
+
+        showAlert('Sucesso', 'Membro do time adicionado com sucesso!');
+        closeModal('addTeamMemberModal');
+        clearTeamMemberForm();
+        loadPainelData();
+    } catch (error) {
+        console.error('Erro ao salvar membro do time:', error);
+        showAlert('Erro', 'Erro ao salvar membro do time. Tente novamente.');
+    }
+}
+
+async function saveProject() {
+    const projectData = {
+        nome: document.getElementById('projectName').value,
+        empresa: document.getElementById('projectCompany').value,
+        especialista: document.getElementById('projectSpecialist').value,
+        descricao: document.getElementById('projectDescription').value,
+        status: document.getElementById('projectStatus').value,
+        created_at: new Date().toISOString()
+    };
+
+    try {
+        const { data, error } = await supabase
+            .from('projetos')
+            .insert([projectData]);
+
+        if (error) throw error;
+
+        showAlert('Sucesso', 'Projeto adicionado com sucesso!');
+        closeModal('addProjectModal');
+        clearProjectForm();
+        loadPainelData();
+    } catch (error) {
+        console.error('Erro ao salvar projeto:', error);
+        showAlert('Erro', 'Erro ao salvar projeto. Tente novamente.');
+    }
+}
+
+async function saveVisit() {
+    const visitData = {
+        empresa: document.getElementById('visitCompany').value,
+        endereco: document.getElementById('visitAddress').value,
+        cidade: document.getElementById('visitCity').value,
+        estado: document.getElementById('visitState').value,
+        data_visita: document.getElementById('visitDate').value,
+        objetivo: document.getElementById('visitPurpose').value,
+        created_at: new Date().toISOString()
+    };
+
+    try {
+        const { data, error } = await supabase
+            .from('visitas_setor')
+            .insert([visitData]);
+
+        if (error) throw error;
+
+        showAlert('Sucesso', 'Visita adicionada com sucesso!');
+        closeModal('addVisitModal');
+        clearVisitForm();
+        loadPainelData();
+    } catch (error) {
+        console.error('Erro ao salvar visita:', error);
+        showAlert('Erro', 'Erro ao salvar visita. Tente novamente.');
+    }
+}
+
+async function saveEntrega() {
+    // Mapeamento de meses para números
+    const monthMap = {
+        'JAN': 1, 'FEV': 2, 'MAR': 3, 'ABR': 4, 'MAI': 5, 'JUN': 6,
+        'JUL': 7, 'AGO': 8, 'SET': 9, 'OUT': 10, 'NOV': 11, 'DEZ': 12
+    };
+
+    const selectedMonth = document.getElementById('entregaMonth').value;
+    const entregaData = {
+        mes: monthMap[selectedMonth], // Converter para número
+        marlos: parseInt(document.getElementById('entregaMarlos').value),
+        larissa: parseInt(document.getElementById('entregaLarissa').value),
+        renata: parseInt(document.getElementById('entregaRenata').value),
+        victor: parseInt(document.getElementById('entregaVictor').value),
+        ano: new Date().getFullYear(),
+        created_at: new Date().toISOString()
+    };
+
+    // Calcular porcentagem do setor (média dos 4 valores)
+    entregaData.percentual_setor = Math.round((entregaData.marlos + entregaData.larissa + entregaData.renata + entregaData.victor) / 4);
+
+    try {
+        // Primeiro, verificar se já existe uma entrega para este mês/ano
+        const { data: existingData, error: selectError } = await supabase
+            .from('entregas')
+            .select('id')
+            .eq('mes', entregaData.mes)
+            .eq('ano', entregaData.ano)
+            .single();
+
+        if (selectError && selectError.code !== 'PGRST116') {
+            // PGRST116 é o código para "nenhum resultado encontrado", que é esperado
+            throw selectError;
+        }
+
+        let result;
+        if (existingData) {
+            // Se já existe, atualizar
+            result = await supabase
+                .from('entregas')
+                .update(entregaData)
+                .eq('id', existingData.id);
+        } else {
+            // Se não existe, inserir
+            result = await supabase
+                .from('entregas')
+                .insert([entregaData]);
+        }
+
+        if (result.error) throw result.error;
+
+        showAlert('Sucesso', 'Entrega salva com sucesso!');
+        closeModal('addEntregaModal');
+        clearEntregaForm();
+        loadPainelData();
+    } catch (error) {
+        console.error('Erro ao salvar entrega:', error);
+        showAlert('Erro', 'Erro ao salvar entrega. Tente novamente.');
+    }
+}
+
+// Funções para limpar formulários
+function clearTaskForm() {
+    document.getElementById('taskType').value = 'treinamento';
+    document.getElementById('taskTitle').value = '';
+    document.getElementById('taskDescription').value = '';
+    document.getElementById('taskResponsible').value = '';
+    document.getElementById('taskDeadline').value = '';
+}
+
+function clearTeamMemberForm() {
+    document.getElementById('memberName').value = '';
+    document.getElementById('memberRole').value = 'Gerente';
+    document.getElementById('memberEmail').value = '';
+    document.getElementById('memberPhoto').value = '';
+}
+
+function clearProjectForm() {
+    document.getElementById('projectName').value = '';
+    document.getElementById('projectCompany').value = '';
+    document.getElementById('projectSpecialist').value = '';
+    document.getElementById('projectDescription').value = '';
+    document.getElementById('projectStatus').value = 'Planejamento';
+}
+
+function clearVisitForm() {
+    document.getElementById('visitCompany').value = '';
+    document.getElementById('visitAddress').value = '';
+    document.getElementById('visitCity').value = '';
+    document.getElementById('visitState').value = '';
+    document.getElementById('visitDate').value = '';
+    document.getElementById('visitPurpose').value = '';
+}
+
+function clearEntregaForm() {
+    document.getElementById('entregaMonth').value = 'JAN';
+    document.getElementById('entregaMarlos').value = '';
+    document.getElementById('entregaLarissa').value = '';
+    document.getElementById('entregaRenata').value = '';
+    document.getElementById('entregaVictor').value = '';
+}
+
+// Função para carregar dados do painel
+async function loadPainelData() {
+    try {
+        // Carregar time
+        await loadTimeData();
+        
+        // Carregar projetos
+        await loadProjectsData();
+        
+        // Carregar entregas
+        await loadEntregasData();
+        
+        // Atualizar contadores de tarefas
+        await updateTaskCounters();
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados do painel:', error);
+    }
+}
+
+// Carregar dados do time
+async function loadTimeData() {
+    try {
+        const { data, error } = await supabase
+            .from('time')
+            .select('*')
+            .eq('ativo', true)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const timeList = document.getElementById('timeList');
+        
+        if (data.length === 0) {
+            timeList.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <i class="fas fa-users" style="font-size: 2em; margin-bottom: 10px;"></i>
+                    <p>Nenhum membro cadastrado</p>
+                </div>
+            `;
+        } else {
+            timeList.innerHTML = data.map(member => `
+                <div style="display: flex; align-items: center; padding: 15px; background: white; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #4fc3f7; display: flex; align-items: center; justify-content: center; margin-right: 15px; overflow: hidden;">
+                        ${member.foto_url ? 
+                            `<img src="${member.foto_url}" alt="${member.nome}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                            `<span style="color: white; font-weight: bold; font-size: 1.2em;">${member.nome.charAt(0).toUpperCase()}</span>`
+                        }
+                    </div>
+                    <div style="flex: 1;">
+                        <h4 style="margin: 0; color: #4fc3f7; font-size: 1.1em;">${member.nome}</h4>
+                        <p style="margin: 0; color: #666; font-size: 0.9em;">${member.cargo}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dados do time:', error);
+    }
+}
+
+// Carregar dados dos projetos
+async function loadProjectsData() {
+    try {
+        const { data, error } = await supabase
+            .from('projetos')
+            .select('*')
+            .eq('status', 'Em Andamento')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const tableBody = document.getElementById('projetosTableBody');
+        
+        if (data.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+                        Nenhum projeto em andamento
+                    </td>
+                </tr>
+            `;
+        } else {
+            tableBody.innerHTML = data.map(project => `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 15px; font-weight: bold; color: #333;">${project.nome}</td>
+                    <td style="padding: 15px; color: #666;">${project.empresa}</td>
+                    <td style="padding: 15px; color: #666;">${project.especialista}</td>
+                    <td style="padding: 15px; text-align: center;">
+                        <button onclick="excluirProjeto(${project.id})" style="background: #f44336; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 12px; transition: background 0.3s ease;" onmouseover="this.style.background='#d32f2f'" onmouseout="this.style.background='#f44336'">
+                            <i class="fas fa-trash" style="margin-right: 4px;"></i>Excluir
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dados dos projetos:', error);
+    }
+}
+
+// Carregar dados das entregas
+async function loadEntregasData() {
+    try {
+        const { data, error } = await supabase
+            .from('entregas')
+            .select('*')
+            .eq('ano', new Date().getFullYear())
+            .order('mes', { ascending: true });
+
+        if (error) throw error;
+
+        const tableBody = document.getElementById('entregasTableBody');
+        
+        // Meses padrão e mapeamento de números para strings
+        const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+        const monthNumberMap = {
+            1: 'JAN', 2: 'FEV', 3: 'MAR', 4: 'ABR', 5: 'MAI', 6: 'JUN',
+            7: 'JUL', 8: 'AGO', 9: 'SET', 10: 'OUT', 11: 'NOV', 12: 'DEZ'
+        };
+        
+        const entregasMap = {};
+        data.forEach(entrega => {
+            // Converter número do mês para string
+            const mesString = monthNumberMap[entrega.mes];
+            if (mesString) {
+                entregasMap[mesString] = entrega;
+            }
+        });
+
+        tableBody.innerHTML = meses.map(mes => {
+            const entrega = entregasMap[mes];
+            if (entrega) {
+                const percentualColor = entrega.percentual_setor >= 90 ? '#4caf50' : entrega.percentual_setor >= 70 ? '#ff9800' : '#f44336';
+                return `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px; font-weight: bold;">${mes}</td>
+                        <td style="padding: 10px; text-align: center;">${entrega.marlos}%</td>
+                        <td style="padding: 10px; text-align: center;">${entrega.larissa}%</td>
+                        <td style="padding: 10px; text-align: center;">${entrega.renata}%</td>
+                        <td style="padding: 10px; text-align: center;">${entrega.victor}%</td>
+                        <td style="padding: 10px; text-align: center; background: ${percentualColor}; color: white; font-weight: bold;">${entrega.percentual_setor}%</td>
+                    </tr>
+                `;
+            } else {
+                return `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px; font-weight: bold;">${mes}</td>
+                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
+                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
+                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
+                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
+                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
+                    </tr>
+                `;
+            }
+        }).join('');
+    } catch (error) {
+        console.error('Erro ao carregar dados das entregas:', error);
+    }
+}
+
+// Atualizar contadores de tarefas
+async function updateTaskCounters() {
+    try {
+        const { data, error } = await supabase
+            .from('tarefas')
+            .select('tipo');
+
+        if (error) throw error;
+
+        // Contar tarefas por tipo
+        const counters = {
+            treinamento: 0,
+            migracao: 0,
+            reuniao: 0,
+            mvp: 0,
+            homologacao: 0,
+            acompanhamento: 0,
+            implantacao: 0,
+            projeto: 0,
+            ticket: 0
+        };
+
+        data.forEach(tarefa => {
+            if (counters.hasOwnProperty(tarefa.tipo)) {
+                counters[tarefa.tipo]++;
+            }
+        });
+
+        // Atualizar os contadores na interface (valores fixos da imagem por enquanto)
+        // Futuramente estes valores serão dinâmicos baseados nos dados do Supabase
+        
+    } catch (error) {
+        console.error('Erro ao atualizar contadores de tarefas:', error);
+    }
+}
+
+// ...existing code...
+// ...existing code...
+
+// Função para inicializar o carregamento de contadores quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
+    carregarContadoresDeTarefas();
+});
+
+// Adicionar funcionalidade específica para o painel do setor
+document.addEventListener('DOMContentLoaded', function() {
+    // Interceptar cliques no botão do painel do setor
+    const painelButton = document.querySelector('button[onclick="showTab(\'painel-setor\')"]');
+    if (painelButton) {
+        painelButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Mostrar a aba do painel do setor
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            const painelSection = document.getElementById('painel-setor');
+            if (painelSection) {
+                painelSection.classList.add('active');
+            }
+
+            // Atualizar navegação ativa
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            painelButton.parentElement.classList.add('active');
+            
+            // Carregar dados do painel
+            setTimeout(() => {
+                loadPainelData();
+                initializeMap();
+            }, 100);
+        });
+    }
+});
+
+// Variável global para o mapa
+let visitasMap = null;
+
+// Função para inicializar o mapa real
+async function initializeMap() {
+    try {
+        // Inicializar o mapa centrado no Brasil
+        if (visitasMap) {
+            visitasMap.remove(); // Remove mapa anterior se existir
+        }
+        
+        visitasMap = L.map('mapContainer').setView([-14.2350, -51.9253], 4);
+
+        // Adicionar camada de tiles do OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(visitasMap);
+
+        // Carregar e exibir visitas no mapa
+        await loadVisitasOnMap();
+        
+    } catch (error) {
+        console.error('Erro ao inicializar mapa:', error);
+        document.getElementById('mapContainer').innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f5f5f5; border-radius: 10px;">
+                <div style="text-align: center; color: #666;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 10px;"></i>
+                    <p>Erro ao carregar mapa</p>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Função para carregar visitas no mapa
+async function loadVisitasOnMap() {
+    try {
+        const { data: visitas, error } = await supabase
+            .from('visitas_setor')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        // Limpar marcadores existentes
+        visitasMap.eachLayer(function (layer) {
+            if (layer instanceof L.Marker) {
+                visitasMap.removeLayer(layer);
+            }
+        });
+
+        let empresasCount = 0;
+
+        // Adicionar marcadores para cada visita
+        for (const visita of visitas) {
+            let lat = visita.latitude;
+            let lng = visita.longitude;
+
+            // Se não tiver coordenadas, tentar geocodificar
+            if (!lat || !lng) {
+                const coords = await geocodeAddress(`${visita.endereco}, ${visita.cidade}, ${visita.estado}, Brasil`);
+                if (coords) {
+                    lat = coords.lat;
+                    lng = coords.lng;
+                    
+                    // Atualizar coordenadas no banco
+                    await supabase
+                        .from('visitas_setor')
+                        .update({ latitude: lat, longitude: lng })
+                        .eq('id', visita.id);
+                }
+            }
+
+            if (lat && lng) {
+                // Criar marcador personalizado
+                const marker = L.marker([lat, lng]).addTo(visitasMap);
+                
+                // Popup com informações da visita
+                const popupContent = `
+                    <div style="min-width: 200px;">
+                        <h4 style="margin: 0 0 10px 0; color: #4fc3f7;">${visita.empresa}</h4>
+                        <p style="margin: 5px 0;"><strong>Cidade:</strong> ${visita.cidade}, ${visita.estado}</p>
+                        <p style="margin: 5px 0;"><strong>Data:</strong> ${visita.data_visita ? new Date(visita.data_visita).toLocaleDateString('pt-BR') : 'Não informada'}</p>
+                        <p style="margin: 5px 0;"><strong>Objetivo:</strong> ${visita.objetivo || 'Não informado'}</p>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                empresasCount++;
+            }
+        }
+
+        // Atualizar contador de empresas
+        const empresasCountElement = document.getElementById('empresasCount');
+        if (empresasCountElement) {
+            empresasCountElement.textContent = empresasCount.toString().padStart(2, '0');
+        }
+
+        // Se houver visitas, ajustar zoom para mostrar todas
+        if (empresasCount > 0) {
+            const group = new L.featureGroup();
+            visitasMap.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    group.addLayer(layer);
+                }
+            });
+            if (group.getLayers().length > 0) {
+                visitasMap.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+    } catch (error) {
+        console.error('Erro ao carregar visitas no mapa:', error);
+    }
+}
+
+// Função para geocodificar endereços usando Nominatim (OpenStreetMap)
+async function geocodeAddress(address) {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`);
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+            return {
+                lat: parseFloat(data[0].lat),
+                lng: parseFloat(data[0].lon)
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error('Erro na geocodificação:', error);
+        return null;
+    }
+}
+
+// Modificar a função saveVisit para atualizar o mapa
+async function saveVisit() {
+    const visitData = {
+        empresa: document.getElementById('visitCompany').value,
+        endereco: document.getElementById('visitAddress').value,
+        cidade: document.getElementById('visitCity').value,
+        estado: document.getElementById('visitState').value,
+        data_visita: document.getElementById('visitDate').value,
+        objetivo: document.getElementById('visitPurpose').value,
+        created_at: new Date().toISOString()
+    };
+
+    try {
+        const { data, error } = await supabase
+            .from('visitas_setor')
+            .insert([visitData]);
+
+        if (error) throw error;
+
+        showAlert('Sucesso', 'Visita adicionada com sucesso!');
+        closeModal('addVisitModal');
+        clearVisitForm();
+        loadPainelData();
+
+        // ✅ Novo! Recarregar o mapa após salvar
+        if (visitasMap) {
+            await loadVisitasOnMap();
+        }
+
+    } catch (error) {
+        console.error('Erro ao salvar visita:', error);
+        showAlert('Erro', 'Erro ao salvar visita. Tente novamente.');
+    }
+}
+
+// Função para alterar quantidade de tarefas no painel do setor
+
+// Função para excluir projeto
+async function excluirProjeto(projetoId) {
+    const confirmacao = await showConfirm(
+        'Confirmar Exclusão',
+        'Tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.'
+    );
+    
+    if (confirmacao) {
+        try {
+            const { error } = await supabase
+                .from('projetos')
+                .delete()
+                .eq('id', projetoId);
+
+            if (error) throw error;
+
+            showAlert('Sucesso', 'Projeto excluído com sucesso!');
+            
+            // Recarregar a lista de projetos
+            await loadProjectsData();
+            
+            // Atualizar contador de projetos em andamento
+            const elemento = document.getElementById('projetos-count');
+            if (elemento) {
+                let valorAtual = parseInt(elemento.textContent);
+                let novoValor = Math.max(0, valorAtual - 1);
+                elemento.textContent = novoValor.toString().padStart(2, '0');
+            }
+            
+        } catch (error) {
+            console.error('Erro ao excluir projeto:', error);
+            showAlert('Erro', 'Erro ao excluir projeto. Tente novamente.');
+        }
+    }
+}
+</script>
+
+</body>>
+
+
+
+        async function saveTasks() {
+            const suprimentosCount = document.getElementById("suprimentos-count").textContent;
+            const projetosCount = document.getElementById("projetos-count").textContent;
+            const ticketsCount = document.getElementById("tickets-count").textContent;
+
+            // Aqui você adicionaria a lógica para salvar esses valores no Supabase ou em outro local
+            // Por exemplo, se você tiver uma tabela 'task_quantities' no Supabase:
+            // const { data, error } = await supabase
+            //     .from('task_quantities')
+            //     .upsert({ id: 1, suprimentos: suprimentosCount, projetos: projetosCount, tickets: ticketsCount });
+            // if (error) {
+            //     console.error('Erro ao salvar quantidades:', error.message);
+            //     showAlert('Erro', 'Erro ao salvar as quantidades das tarefas.');
+            // } else {
+            //     showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso!');
+            // }
+
+            showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso! (Lógica de salvamento precisa ser implementada)');
+        }
+    </script>
+</body>
+</html>
