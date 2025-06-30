@@ -5882,28 +5882,6 @@ async function excluirProjeto(projetoId) {
 </script>
 
 </body>>
-
-
-
-        async function saveTasks() {
-            const suprimentosCount = document.getElementById("suprimentos-count").textContent;
-            const projetosCount = document.getElementById("projetos-count").textContent;
-            const ticketsCount = document.getElementById("tickets-count").textContent;
-
-            // Aqui você adicionaria a lógica para salvar esses valores no Supabase ou em outro local
-            // Por exemplo, se você tiver uma tabela 'task_quantities' no Supabase:
-            // const { data, error } = await supabase
-            //     .from('task_quantities')
-            //     .upsert({ id: 1, suprimentos: suprimentosCount, projetos: projetosCount, tickets: ticketsCount });
-            // if (error) {
-            //     console.error('Erro ao salvar quantidades:', error.message);
-            //     showAlert('Erro', 'Erro ao salvar as quantidades das tarefas.');
-            // } else {
-            //     showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso!');
-            // }
-
-            showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso! (Lógica de salvamento precisa ser implementada)');
-        }
     </script>
 </body>
 </html>
