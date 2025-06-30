@@ -698,9 +698,32 @@ tbody tr:hover {
     from { transform: translateX(0) scale(1); opacity: 1; }
     to { transform: translateX(100%) scale(0.8); opacity: 0; }
 }
+
+.btn-voltar-portal {
+    display: inline-block;
+    margin: 20px;
+    padding: 12px 24px;
+    background-color: #4285f4;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-voltar-portal:hover {
+    background-color: #357ae8;
+    transform: translateY(-2px);
+}
+
     </style>
 </head>
 <body>
+<a href="https://tryvia.github.io/TryviaBI/Portal.html" class="btn-voltar-portal">
+    Voltar para o portal
+</a>
     <div class="container">
         <header class="header">
             <h1><i class="fas fa-chart-line"></i> Linha do Tempo</h1>
