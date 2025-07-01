@@ -505,7 +505,7 @@
             
             // Aguardar um pouco antes de redirecionar para mostrar a mensagem
             setTimeout(() => {
-              window.location.href = "https://tryvia.github.io/TryviaBI/Portal.html";
+              window.location.href = response.redirectUrl;
             }, 1500);
           } else {
             showMessage(response.message || 'Credenciais inválidas. Tente novamente.', 'error');
@@ -535,7 +535,7 @@
           // Sempre use uma API segura com HTTPS
           
           // Credenciais válidas de demonstração - em produção, isso NUNCA estaria no cliente
-          const validCredentials = {
+            const validCredentials = {
             'tryvia': '1303',
             'Julyana': '1303',
             'Marlos': '1303',
@@ -544,15 +544,30 @@
             'Victor': '1303',
             'Marciele': '1303',
             'Brenda': '1303',
-            'Bia': '1303'
+            'Bia': '1303',
+            'Suzantur': '1303'
           };
-          
+
+          const redirectionUrls = {
+            'Suzantur': 'https://tryvia.github.io/TryviaBI/suzantur.html',
+            'tryvia': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Julyana': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Marlos': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Renata': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Larissa': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Victor': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Marciele': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Brenda': 'https://tryvia.github.io/TryviaBI/Portal.html',
+            'Bia': 'https://tryvia.github.io/TryviaBI/Portal.html'
+          };         
           if (validCredentials[username] && validCredentials[username] === password) {
             // Gerar um token JWT simulado
             const fakeToken = generateFakeToken(username);
+            const redirectUrl = redirectionUrls[username] || "https://tryvia.github.io/TryviaBI/Portal.html";
             resolve({
               success: true,
-              token: fakeToken
+              token: fakeToken,
+              redirectUrl: redirectUrl
             });
           } else {
             resolve({
