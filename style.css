@@ -10,7 +10,7 @@
     --dark-gray: #495057;
     --day-cell-width: 20px;
     --day-cell-spacing: 1px;
-}
+
 
 * {
     margin: 0;
@@ -1064,7 +1064,6 @@ body {
 }
 
 
-
 /* Botão Voltar para o Portal */
 .btn-voltar-portal {
     background: linear-gradient(135deg, #3498db, #2980b9);
@@ -1082,5 +1081,6 @@ body {
     transform: translateY(-1px);
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
 }
+
 
 
