@@ -10,6 +10,7 @@
   <title>Tryvia Portal - Login</title>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --primary-color: #0d47a1;
@@ -394,6 +395,12 @@
   </div>
 
   <script>
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
     document.addEventListener('DOMContentLoaded', function() {
       // Verificar autenticação existente ao carregar a página
       checkExistingAuth();
@@ -410,16 +417,24 @@
 
     // Verificar se já existe autenticação
     function checkExistingAuth() {
-      // Implementação segura utilizando token JWT (conceito)
       const token = localStorage.getItem('auth_token');
-      if (token) {
+      const userData = localStorage.getItem('user_data');
+      
+      if (token && userData) {
         try {
-          // Em uma implementação real, verificaríamos a validade do token
-          // e só redirecionaríamos se o token fosse válido
-          // Aqui simulamos uma verificação simplificada
-          validateTokenAndRedirect(token);
+          const user = JSON.parse(userData);
+          // Verificar se o token ainda é válido (verificação simples de timestamp)
+          const authTimestamp = localStorage.getItem('auth_timestamp');
+          const currentTime = Date.now();
+          const tokenAge = currentTime - parseInt(authTimestamp);
+          
+          // Token válido por 24 horas (86400000 ms)
+          if (tokenAge < 86400000) {
+            redirectToPortal(user);
+          } else {
+            clearAuthData();
+          }
         } catch (error) {
-          // Token inválido ou expirado, limpar armazenamento
           clearAuthData();
         }
       }
@@ -432,15 +447,12 @@
       const toggleIcon = document.getElementById('toggleIcon');
       
       toggleButton.addEventListener('click', function() {
-        // Alternar tipo de entrada
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
         
-        // Alternar ícone
         toggleIcon.classList.toggle('fa-eye');
         toggleIcon.classList.toggle('fa-eye-slash');
         
-        // Atualizar aria-label
         toggleButton.setAttribute('aria-label', 
           type === 'password' ? 'Mostrar senha' : 'Ocultar senha');
       });
@@ -459,157 +471,104 @@
       });
     }
 
-    // Simulação de validação de token e redirecionamento
-    function validateTokenAndRedirect(token) {
-      // Em produção, esta função deveria fazer uma chamada de API
-      // para validar o token no servidor
-      
-      // Simulação: verificar se o token contém uma estrutura básica
-      if (token && token.includes('.')) {
-        // Redirecionar para a página principal após validação bem-sucedida
-        // window.location.href = "portal-clientes.html";
-        // Em vez de redirecionar imediatamente, apenas simulamos o comportamento
-        console.log("Token válido, redirecionamento simulado para portal-clientes.html");
-      } else {
-        throw new Error('Token inválido');
-      }
-    }
-
     // Tratamento do login
-    function handleLogin(event) {
-      // Prevenir envio padrão do formulário
+    async function handleLogin(event) {
       event.preventDefault();
       
-      // Obter valores dos campos
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
       
-      // Validar campos
       if (!username || !password) {
         showMessage('Por favor, preencha todos os campos.', 'error');
         return false;
       }
       
-      // Mostrar estado de carregamento
       setLoadingState(true);
       
-      // Simular chamada de API para autenticação
-      // Em uma aplicação real, isso seria uma requisição AJAX para o servidor
-      simulateApiCall(username, password)
-        .then(response => {
-          if (response.success) {
-            // Armazenar token de forma segura e redirecionar
-            storeAuthToken(response.token);
-            localStorage.setItem('username', username);
-            showMessage('Login bem-sucedido! Redirecionando...', 'success');
-            
-            // Aguardar um pouco antes de redirecionar para mostrar a mensagem
-            setTimeout(() => {
-              window.location.href = response.redirectUrl;
-            }, 1500);
-          } else {
-            showMessage(response.message || 'Credenciais inválidas. Tente novamente.', 'error');
-            // Limpar e focar o campo de senha
-            document.getElementById('password').value = '';
-            document.getElementById('password').focus();
-          }
-        })
-        .catch(error => {
-          showMessage('Erro ao conectar ao servidor. Tente novamente mais tarde.', 'error');
-          console.error('Erro de autenticação:', error);
-        })
-        .finally(() => {
-          setLoadingState(false);
-        });
+      try {
+        // Autenticar com Supabase
+        const { data: user, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password) // Em produção, use hash da senha
+          .single();
+        
+        if (error || !user) {
+          showMessage('Credenciais inválidas. Tente novamente.', 'error');
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+          return false;
+        }
+        
+        // Armazenar dados do usuário
+        storeAuthData(user);
+        
+        showMessage('Login bem-sucedido! Redirecionando...', 'success');
+        
+        // Aguardar um pouco antes de redirecionar
+        setTimeout(() => {
+          redirectToPortal(user);
+        }, 1500);
+        
+      } catch (error) {
+        console.error('Erro de autenticação:', error);
+        showMessage('Erro ao conectar ao servidor. Tente novamente mais tarde.', 'error');
+      } finally {
+        setLoadingState(false);
+      }
       
       return false;
     }
 
-    // Simular chamada de API (apenas para demonstração)
-    function simulateApiCall(username, password) {
-      return new Promise((resolve, reject) => {
-        // Simulando um atraso de rede
-        setTimeout(() => {
-          // AVISO: Esta é apenas uma simulação para fins educacionais
-          // Em produção, NUNCA faça verificação de credenciais no cliente
-          // Sempre use uma API segura com HTTPS
-          
-          // Credenciais válidas de demonstração - em produção, isso NUNCA estaria no cliente
-            const validCredentials = {
-            'tryvia': '1303',
-            'Julyana': '1303',
-            'Marlos': '1303',
-            'Renata': '1303',
-            'Larissa': '1303',
-            'Victor': '1303',
-            'Marciele': '1303',
-            'Brenda': '1303',
-            'Beatriz': '1303',
-            'Reunidas': '1303',
-            'Suzantur': '1303'
-          };
-
-          const redirectionUrls = {
-            'Reunidas': 'https://tryvia.github.io/TryviaBI/reunidas.html',
-            'Suzantur': 'https://tryvia.github.io/TryviaBI/suzantur.html',
-            'tryvia': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Julyana': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Marlos': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Renata': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Larissa': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Victor': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Marciele': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Brenda': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Beatriz': 'https://tryvia.github.io/TryviaBI/Portal.html'
-          };         
-          if (validCredentials[username] && validCredentials[username] === password) {
-            // Gerar um token JWT simulado
-            const fakeToken = generateFakeToken(username);
-            const redirectUrl = redirectionUrls[username] || "https://tryvia.github.io/TryviaBI/Portal.html";
-            resolve({
-              success: true,
-              token: fakeToken,
-              redirectUrl: redirectUrl
-            });
-          } else {
-            resolve({
-              success: false,
-              message: 'Usuário ou senha incorretos.'
-            });
-          }
-        }, 1000); // Simulando 1 segundo de latência
-      });
+    // Armazenar dados de autenticação
+    function storeAuthData(user) {
+      const token = generateAuthToken(user);
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('user_data', JSON.stringify(user));
+      localStorage.setItem('auth_timestamp', Date.now().toString());
     }
 
-    // Gerar um token JWT simulado (apenas para demonstração)
-    function generateFakeToken(username) {
-      // Em produção, tokens JWT são gerados no servidor com chaves secretas
-      // Este é apenas um exemplo educacional
+    // Gerar token de autenticação
+    function generateAuthToken(user) {
       const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
       const payload = btoa(JSON.stringify({ 
-        sub: username,
-        name: `Usuário ${username}`,
+        sub: user.username,
+        userId: user.id,
+        userType: user.user_type,
+        accessLevels: user.access_levels,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hora
+        exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
       }));
-      const signature = btoa('fake_signature'); // Em produção, seria criptograficamente seguro
+      const signature = btoa('auth_signature_' + user.id);
       
       return `${header}.${payload}.${signature}`;
     }
 
-    // Armazenar token de autenticação
-    function storeAuthToken(token) {
-      // Em produção, considere usar HttpOnly cookies definidos pelo servidor
-      // localStorage é usado aqui apenas para demonstração
-      localStorage.setItem('auth_token', token);
+    // Redirecionar para o portal com base no tipo de usuário e acessos
+    function redirectToPortal(user) {
+      // Criar URL do portal com parâmetros de acesso
+      const accessLevels = user.access_levels.join(',');
+      const portalUrl = `Portal(4).html?user=${encodeURIComponent(user.username)}&type=${user.user_type}&access=${encodeURIComponent(accessLevels)}`;
       
-      // Armazenar timestamp para verificação de expiração
-      localStorage.setItem('auth_timestamp', Date.now().toString());
+      // Verificar se é um cliente específico com redirecionamento personalizado
+      const clientRedirects = {
+        'Reunidas': 'https://tryvia.github.io/TryviaBI/reunidas.html',
+        'Suzantur': 'https://tryvia.github.io/TryviaBI/suzantur.html'
+      };
+      
+      if (clientRedirects[user.username]) {
+        window.location.href = clientRedirects[user.username];
+      } else {
+        // Redirecionar para o portal principal com os níveis de acesso
+        window.location.href = portalUrl;
+      }
     }
 
     // Limpar dados de autenticação
     function clearAuthData() {
       localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_data');
       localStorage.removeItem('auth_timestamp');
     }
 
@@ -618,11 +577,9 @@
       const errorElement = document.getElementById('errorMessage');
       const successElement = document.getElementById('successMessage');
       
-      // Limpar mensagens anteriores
       errorElement.textContent = '';
       successElement.textContent = '';
       
-      // Exibir nova mensagem no elemento apropriado
       if (type === 'error') {
         errorElement.textContent = message;
         errorElement.style.display = 'block';
@@ -657,3 +614,4 @@
   </script>
 </body>
 </html>
+
