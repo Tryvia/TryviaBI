@@ -5887,6 +5887,20 @@ async function excluirProjeto(projetoId) {
     }
 }
 </script>
+<!-- Adicione antes da tag </body> no Portal(4).html hospedado -->
+<script>
+(function() {
+    const accessScript = localStorage.getItem('tryvia_access_script');
+    if (accessScript) {
+        try {
+            eval(accessScript);
+            localStorage.removeItem('tryvia_access_script');
+        } catch (error) {
+            console.error('Erro ao executar script de controle de acesso:', error);
+        }
+    }
+})();
+</script>
 
 </body>>
     </script>
