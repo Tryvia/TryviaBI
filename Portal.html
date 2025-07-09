@@ -2035,7 +2035,12 @@ select {
 <div class="form-row">
 <div class="form-group">
 <label for="especialista">👨‍💻 Especialista Responsável</label>
-<input id="especialista" name="especialista" required="" type="text"/>
+<select id="especialista" name="especialista" required="">
+<option value="">Selecione o especialista</option>
+<option value="Marlos">Marlos</option>
+<option value="Renata">Renata</option>
+<option value="Larissa">Larissa</option>
+</select>
 </div>
 <div class="form-group">
 <label for="versao">📋 Versão</label>
@@ -2123,7 +2128,7 @@ select {
 <div class="form-container">
 <h3 style="margin-bottom: 20px;">Cadastro de Release</h3>
 <div class="form-row">
-<div class="form-group"><label for="releaseDate">📅 Data de Liberação</label><input class="input-padrao" id="releaseDate" placeholder="Selecione a data" type="date"/></div>
+<div class="form-group"><label for="releaseDate">📅 Data de Liberação</label><input class="input-padrao" id="releaseDate" placeholder="Selecione a data" type="date" readonly/></div>
 <div class="form-group"><label for="releaseStatus">📌 Status</label><input id="releaseStatus" type="text"/></div>
 </div>
 <div class="form-row">
@@ -4010,7 +4015,7 @@ if (editingIntegrations.length > 0) {
 </div>
 <div class="form-group">
 <label>Data</label>
-<input class="input-padrao" id="rvData" type="date"/>
+<input class="input-padrao" id="rvData" type="date" readonly/>
 </div>
 <div class="form-group">
 <label>Gestor</label>
@@ -5809,3 +5814,29 @@ async function excluirProjeto(projetoId) {
     </script>
 </body>
 </html>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const releaseDateInput = document.getElementById('releaseDate');
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    releaseDateInput.value = `${year}-${month}-${day}`;
+  });
+</script>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const rvDateInput = document.getElementById("rvData");
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    rvDateInput.value = `${year}-${month}-${day}`;
+  });
+</script>
+
