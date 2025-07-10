@@ -6062,79 +6062,33 @@ async function enviarRelatorioPorEmail() {
     // Converter PDF para Blob
     const pdfBlob = doc.output('blob');
     
-    // Converter PDF para Base64 para upload
-    const reader = new FileReader();
-    const pdfBase64 = await new Promise((resolve) => {
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.readAsDataURL(pdfBlob);
-    });
-    
-    // Upload do PDF para ImgBB (aceita PDFs e tem CORS habilitado)
-    const formData = new FormData();
-    formData.append('image', pdfBase64);
-    formData.append('key', '2d1f7b0e88c6c6c8c8c6c6c8c8c6c6c8'); // Chave pública de exemplo
-    
-    const uploadResponse = await fetch('https://api.imgbb.com/1/upload', {
-      method: 'POST',
-      body: formData
-    });
-    
-    const uploadResult = await uploadResponse.json();
-    
-    if (!uploadResult.success) {
-      // Se falhar, usar uma abordagem alternativa: criar um data URL
-      const downloadLink = `data:application/pdf;base64,${pdfBase64}`;
-      
-      // Processar lista de e-mails
-      const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email);
-      
-      // Preparar parâmetros para o EmailJS (com link de download direto)
-      const emailBody = `${message || `Prezado(a),
-
-Segue o link para download do Relatório de Visita gerado pelo portal.`}
-
-🔗 **Link para Download do Relatório:**
-Clique com o botão direito no link abaixo e selecione "Salvar link como..." para baixar o PDF:
-
-${downloadLink}
-
-⚠️ **Importante:** Este é um link direto para o PDF. Clique com o botão direito e escolha "Salvar como" para baixar.
-
-Atenciosamente,
-Equipe Tryvia`;
-
-      const templateParams = {
-        to_email: emailList.join(','),
-        subject: subject,
-        message: emailBody
-      };
-
-      // Enviar e-mail usando EmailJS
-      const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
-      
-      if (response.status === 200) {
-        closeEmailModal();
-        showAlert('Sucesso', `E-mail enviado com sucesso para ${emailList.length} destinatário(s)! O link para download do PDF foi incluído no e-mail.`);
-      } else {
-        throw new Error('Falha no envio do e-mail');
-      }
-      return;
-    }
-    
-    const downloadLink = uploadResult.data.url;
+    // Converter PDF para Base64 para criar data URL
+    const pdfBase64 = doc.output('datauristring');
     
     // Processar lista de e-mails
     const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email);
     
-    // Preparar parâmetros para o EmailJS (sem anexo, apenas com link)
+    // Preparar parâmetros para o EmailJS com link de download direto
+    const empresa = document.getElementById('rvEmpresa').value || 'Empresa';
+    const data = document.getElementById('rvData').value || new Date().toLocaleDateString('pt-BR');
+    const fileName = `Relatorio_Visita_${empresa.replace(/\s+/g, '_')}_${data.replace(/\//g, '-')}.pdf`;
+    
     const emailBody = `${message || `Prezado(a),
 
-Segue o link para download do Relatório de Visita gerado pelo portal.`}
+Segue o Relatório de Visita gerado pelo portal.`}
 
-🔗 **Link para Download do Relatório:**
-${downloadLink}
+📄 **Relatório de Visita**
+Empresa: ${empresa}
+Data: ${data}
 
-⚠️ **Importante:** Este link é válido por tempo limitado.
+🔗 **Para baixar o PDF:**
+1. Clique no link abaixo
+2. Clique com o botão direito e escolha "Salvar como..."
+3. Salve o arquivo como "${fileName}"
+
+Link para download: ${pdfBase64}
+
+⚠️ **Importante:** Este é um link direto para o PDF. Use "Salvar como..." para baixar o arquivo.
 
 Atenciosamente,
 Equipe Tryvia`;
