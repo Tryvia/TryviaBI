@@ -5962,203 +5962,405 @@ function closeWhatsappModal() {
   document.getElementById('whatsappModal').classList.remove('visible');
 }
 
-// SUBSTITUA a função enviarRelatorioPorEmail existente por esta versão:
-
+// Função para enviar relatório por e-mail (executada após confirmação no modal)
+const novaFuncaoEnviarEmail = `
+// NOVA FUNÇÃO PARA ENVIAR RELATÓRIO COM SUPABASE
 async function enviarRelatorioPorEmail() {
     try {
-        // Gerar o PDF (mantém a lógica existente)
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        // Cabeçalho do relatório
-        doc.setFontSize(20);
-        doc.text('Relatório de Visita', 20, 30);
-        
-        const visitaAtual = JSON.parse(localStorage.getItem('visitaAtual'));
-        if (visitaAtual) {
-            doc.setFontSize(12);
-            let yPosition = 50;
-            
-            // Informações básicas
-            doc.text(`Cliente: ${visitaAtual.cliente || 'N/A'}`, 20, yPosition);
-            yPosition += 10;
-            doc.text(`Data: ${visitaAtual.data || 'N/A'}`, 20, yPosition);
-            yPosition += 10;
-            doc.text(`Técnico: ${visitaAtual.tecnico || 'N/A'}`, 20, yPosition);
-            yPosition += 20;
-            
-            // Observações
-            if (visitaAtual.observacoes) {
-                doc.text('Observações:', 20, yPosition);
-                yPosition += 10;
-                const observacoes = doc.splitTextToSize(visitaAtual.observacoes, 170);
-                doc.text(observacoes, 20, yPosition);
-                yPosition += observacoes.length * 5 + 10;
-            }
-            
-            // Adicionar outras informações do relatório conforme sua estrutura atual
-            // ... (mantenha o resto da lógica de geração do PDF que você já tem)
+        // Verificar se Supabase está configurado
+        if (!inicializarSupabase()) {
+            showAlert('Erro', 'Supabase não está configurado. Entre em contato com o administrador.');
+            return;
         }
         
-        // Converter PDF para blob
-        const pdfBlob = doc.output('blob');
+        // Mostrar indicador de carregamento
+        mostrarCarregamento('Gerando PDF...');
         
-        // Gerar nome único para o arquivo
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const clienteNome = visitaAtual?.cliente?.replace(/[^a-zA-Z0-9]/g, '') || 'cliente';
-        const fileName = `relatorio-${clienteNome}-${timestamp}.pdf`;
+        // Validar campos obrigatórios
+        const emails = document.getElementById('emailRecipients').value.trim();
+        if (!emails) {
+            esconderCarregamento();
+            showAlert('Atenção', 'Por favor, digite pelo menos um e-mail de destinatário.');
+            return;
+        }
         
-        // Mostrar loading
-        const loadingMsg = document.createElement('div');
-        loadingMsg.innerHTML = 'Enviando relatório...';
-        loadingMsg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border:2px solid #ccc;z-index:9999;';
-        document.body.appendChild(loadingMsg);
+        // Coletar dados do relatório
+        const dadosRelatorio = coletarDadosRelatorio();
         
-        try {
-            // Upload para Supabase Storage
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('relatorio-pdfs')
-                .upload(fileName, pdfBlob, {
-                    contentType: 'application/pdf',
-                    upsert: false
-                });
-            
-            if (uploadError) {
-                throw new Error(`Erro no upload: ${uploadError.message}`);
+        // Gerar PDF melhorado
+        const pdf = await gerarPDFMelhorado(dadosRelatorio);
+        const pdfBlob = pdf.output('blob');
+        
+        // Upload do PDF para Supabase Storage
+        mostrarCarregamento('Fazendo upload do PDF...');
+        const linkDownload = await uploadPDFParaSupabase(pdfBlob, dadosRelatorio);
+        
+        // Preparar dados para o email
+        const subject = document.getElementById('emailSubject').value || \`Relatório de Visita - \${dadosRelatorio.empresa}\`;
+        const message = gerarMensagemComLinkSupabase(dadosRelatorio, linkDownload);
+        
+        // Processar lista de emails
+        const emailList = emails.split(/[,\\n]/).map(email => email.trim()).filter(email => email && email.includes('@'));
+        
+        if (emailList.length === 0) {
+            esconderCarregamento();
+            showAlert('Erro', 'Nenhum e-mail válido foi encontrado.');
+            return;
+        }
+        
+        // Enviar emails
+        mostrarCarregamento('Enviando e-mails...');
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (const email of emailList) {
+            try {
+                const templateParams = {
+                    email: email.trim(),
+                    subject: subject,
+                    message: message
+                };
+
+                const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
+                
+                if (response.status === 200) {
+                    successCount++;
+                } else {
+                    errorCount++;
+                }
+            } catch (error) {
+                errorCount++;
+                console.error(\`Erro ao enviar para \${email}:\`, error);
             }
-            
-            // Obter URL pública permanente
-            const { data: urlData } = supabase.storage
-                .from('relatorio-pdfs')
-                .getPublicUrl(fileName);
-            
-            const linkPermanente = urlData.publicUrl;
-            
-            // Solicitar email do destinatário
-            const emailDestinatario = prompt('Digite o email do destinatário:');
-            if (!emailDestinatario) {
-                alert('Email é obrigatório para envio do relatório.');
-                return;
+        }
+        
+        esconderCarregamento();
+        closeEmailModal();
+        
+        if (successCount > 0) {
+            if (errorCount === 0) {
+                showAlert('Sucesso', \`E-mail enviado com sucesso para \${successCount} destinatário(s)! O link de download permanente foi incluído no e-mail.\`);
+            } else {
+                showAlert('Parcial', \`E-mail enviado para \${successCount} de \${emailList.length} destinatários. \${errorCount} falharam.\`);
             }
-            
-            // Preparar conteúdo do email
-            const assunto = `Relatório de Visita - ${visitaAtual?.cliente || 'Cliente'}`;
-            const corpoEmail = `
-Olá,
-
-Segue o link para download do relatório de visita:
-
-🔗 Link para download: ${linkPermanente}
-
-📋 Detalhes do relatório:
-• Cliente: ${visitaAtual?.cliente || 'N/A'}
-• Data: ${visitaAtual?.data || 'N/A'}
-• Técnico: ${visitaAtual?.tecnico || 'N/A'}
-
-Este link é permanente e pode ser acessado a qualquer momento.
-
-Atenciosamente,
-Equipe Técnica
-            `.trim();
-            
-            // Enviar email (adapte conforme seu serviço de email)
-            await enviarEmailComLink(emailDestinatario, assunto, corpoEmail, linkPermanente);
-            
-            // Remover loading
-            document.body.removeChild(loadingMsg);
-            
-            // Mostrar sucesso com opção de copiar link
-            const resultado = confirm(`✅ Relatório enviado com sucesso!\n\nLink permanente gerado:\n${linkPermanente}\n\nDeseja copiar o link para a área de transferência?`);
-            
-            if (resultado) {
-                navigator.clipboard.writeText(linkPermanente).then(() => {
-                    alert('Link copiado para a área de transferência!');
-                });
-            }
-            
-        } catch (error) {
-            // Remover loading em caso de erro
-            if (document.body.contains(loadingMsg)) {
-                document.body.removeChild(loadingMsg);
-            }
-            throw error;
+        } else {
+            showAlert('Erro', 'Falha ao enviar e-mail para todos os destinatários.');
         }
         
     } catch (error) {
-        console.error('Erro ao enviar relatório:', error);
-        alert('❌ Erro ao enviar relatório: ' + error.message);
+        console.error('Erro ao enviar por e-mail:', error);
+        esconderCarregamento();
+        closeEmailModal();
+        showAlert('Erro', 'Erro ao enviar e-mail: ' + error.message);
     }
 }
 
-// Função auxiliar para enviar email
-async function enviarEmailComLink(destinatario, assunto, corpo, linkPdf) {
-    // OPÇÃO 1: Usando EmailJS (recomendado para simplicidade)
-    if (typeof emailjs !== 'undefined') {
-        const templateParams = {
-            to_email: destinatario,
-            subject: assunto,
-            message: corpo,
-            pdf_link: linkPdf
-        };
-        
-        return emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
-    }
-    
-    // OPÇÃO 2: Usando sua própria API
-    const response = await fetch('/api/enviar-email', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            destinatario,
-            assunto,
-            corpo,
-            linkPdf
-        })
-    });
-    
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Falha ao enviar email');
-    }
-    
-    return response.json();
-}
-
-// FUNÇÃO BONUS: Listar relatórios salvos
-async function listarRelatoriosSalvos() {
+// FUNÇÃO PARA UPLOAD DO PDF PARA SUPABASE
+async function uploadPDFParaSupabase(pdfBlob, dadosRelatorio) {
     try {
-        const { data, error } = await supabase.storage
-            .from('relatorio-pdfs')
-            .list('', {
-                limit: 100,
-                offset: 0,
-                sortBy: { column: 'created_at', order: 'desc' }
+        // Gerar nome único para o arquivo
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const empresaLimpa = dadosRelatorio.empresa.replace(/[^a-zA-Z0-9]/g, '_');
+        const nomeArquivo = \`relatorio_\${empresaLimpa}_\${timestamp}.pdf\`;
+        
+        // Fazer upload para o bucket
+        const { data, error } = await supabaseClient.storage
+            .from(SUPABASE_CONFIG.BUCKET_NAME)
+            .upload(nomeArquivo, pdfBlob, {
+                contentType: 'application/pdf',
+                upsert: false
             });
         
         if (error) {
-            throw error;
+            throw new Error(\`Erro no upload: \${error.message}\`);
         }
         
-        const relatorios = data
-            .filter(file => file.name.endsWith('.pdf'))
-            .map(file => ({
-                nome: file.name,
-                url: supabase.storage.from('relatorio-pdfs').getPublicUrl(file.name).data.publicUrl,
-                dataUpload: new Date(file.created_at).toLocaleString('pt-BR'),
-                tamanho: (file.metadata?.size || 0) / 1024 // KB
-            }));
+        // Gerar URL pública para download
+        const { data: urlData } = supabaseClient.storage
+            .from(SUPABASE_CONFIG.BUCKET_NAME)
+            .getPublicUrl(nomeArquivo);
         
-        console.table(relatorios);
-        return relatorios;
+        if (!urlData || !urlData.publicUrl) {
+            throw new Error('Erro ao gerar URL pública');
+        }
+        
+        // Adicionar parâmetro para forçar download
+        const linkDownload = \`\${urlData.publicUrl}?download=\${encodeURIComponent(\`relatorio_visita_\${dadosRelatorio.empresa}.pdf\`)}\`;
+        
+        console.log('PDF enviado para Supabase:', {
+            arquivo: nomeArquivo,
+            url: linkDownload
+        });
+        
+        return linkDownload;
         
     } catch (error) {
-        console.error('Erro ao listar relatórios:', error);
-        return [];
+        console.error('Erro no upload para Supabase:', error);
+        throw new Error(\`Falha no upload: \${error.message}\`);
     }
 }
-  
+
+// FUNÇÃO PARA GERAR PDF MELHORADO
+async function gerarPDFMelhorado(dados) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    
+    // Configurações de design
+    const corPrimaria = '#00E6FD';
+    const corSecundaria = '#0288D1';
+    const margemEsquerda = 20;
+    const margemDireita = 190;
+    let yPos = 25;
+    
+    // Cabeçalho com design melhorado
+    pdf.setFillColor(0, 230, 253);
+    pdf.rect(0, 0, 210, 35, 'F');
+    
+    pdf.setFontSize(28);
+    pdf.setTextColor(255, 255, 255);
+    pdf.text('RELATÓRIO DE VISITA', 105, 22, { align: 'center' });
+    
+    yPos = 50;
+    
+    // Informações básicas em caixa estilizada
+    pdf.setFillColor(245, 250, 255);
+    pdf.rect(margemEsquerda, yPos, margemDireita - margemEsquerda, 65, 'F');
+    pdf.setDrawColor(corSecundaria);
+    pdf.setLineWidth(1);
+    pdf.rect(margemEsquerda, yPos, margemDireita - margemEsquerda, 65);
+    
+    yPos += 15;
+    
+    pdf.setFontSize(18);
+    pdf.setTextColor(corSecundaria);
+    pdf.text('📋 INFORMAÇÕES DA VISITA', margemEsquerda + 5, yPos);
+    
+    yPos += 15;
+    pdf.setFontSize(12);
+    pdf.setTextColor(0, 0, 0);
+    
+    const informacoes = [
+        ['🏢 Empresa:', dados.empresa || 'Não informado'],
+        ['📅 Data:', dados.data || 'Não informado'],
+        ['👤 Gestor:', dados.gestor || 'Não informado'],
+        ['🔧 Analista:', dados.analista || 'Não informado'],
+        ['📍 Local:', dados.local || 'Não informado']
+    ];
+    
+    informacoes.forEach(([label, valor]) => {
+        pdf.setFont(undefined, 'bold');
+        pdf.text(label, margemEsquerda + 5, yPos);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(valor, margemEsquerda + 50, yPos);
+        yPos += 10;
+    });
+    
+    yPos += 20;
+    
+    // Seções do relatório
+    const secoes = [
+        { titulo: '🔧 SERVIÇOS CONTRATADOS', conteudo: dados.servicos },
+        { titulo: '📝 RESUMO DA VISITA', conteudo: dados.resumo },
+        { titulo: '🚨 CHAMADOS URGENTES', conteudo: dados.chamados }
+    ];
+    
+    secoes.forEach(secao => {
+        if (secao.conteudo && secao.conteudo.trim()) {
+            // Verificar se precisa de nova página
+            if (yPos > 240) {
+                pdf.addPage();
+                yPos = 30;
+            }
+            
+            // Título da seção com fundo colorido
+            pdf.setFillColor(corSecundaria);
+            pdf.rect(margemEsquerda, yPos - 5, margemDireita - margemEsquerda, 15, 'F');
+            
+            pdf.setFontSize(16);
+            pdf.setTextColor(255, 255, 255);
+            pdf.text(secao.titulo, margemEsquerda + 5, yPos + 5);
+            yPos += 20;
+            
+            // Conteúdo
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            const linhas = pdf.splitTextToSize(secao.conteudo, margemDireita - margemEsquerda - 10);
+            pdf.text(linhas, margemEsquerda + 5, yPos);
+            yPos += linhas.length * 6 + 20;
+        }
+    });
+    
+    // Status dos veículos
+    if (dados.grafico_veiculos) {
+        const { sem_report, reportando, manutencao } = dados.grafico_veiculos;
+        const total = sem_report + reportando + manutencao;
+        
+        if (total > 0) {
+            if (yPos > 200) {
+                pdf.addPage();
+                yPos = 30;
+            }
+            
+            // Título da seção
+            pdf.setFillColor(corSecundaria);
+            pdf.rect(margemEsquerda, yPos - 5, margemDireita - margemEsquerda, 15, 'F');
+            
+            pdf.setFontSize(16);
+            pdf.setTextColor(255, 255, 255);
+            pdf.text('🚗 STATUS DOS VEÍCULOS', margemEsquerda + 5, yPos + 5);
+            yPos += 25;
+            
+            // Dados dos veículos com barras visuais
+            const dadosVeiculos = [
+                { label: '✅ Sem Report', valor: sem_report, cor: [76, 175, 80] },
+                { label: '📡 Reportando', valor: reportando, cor: [255, 152, 0] },
+                { label: '🔧 Manutenção', valor: manutencao, cor: [244, 67, 54] }
+            ];
+            
+            dadosVeiculos.forEach((item) => {
+                // Barra visual
+                const larguraBarra = total > 0 ? (item.valor / total) * 120 : 0;
+                pdf.setFillColor(...item.cor);
+                pdf.rect(margemEsquerda + 5, yPos - 3, larguraBarra, 10, 'F');
+                
+                // Borda da barra
+                pdf.setDrawColor(200, 200, 200);
+                pdf.rect(margemEsquerda + 5, yPos - 3, 120, 10);
+                
+                // Texto
+                pdf.setFontSize(12);
+                pdf.setTextColor(0, 0, 0);
+                const porcentagem = total > 0 ? ((item.valor / total) * 100).toFixed(1) : '0.0';
+                pdf.text(\`\${item.label}: \${item.valor} veículos (\${porcentagem}%)\`, margemEsquerda + 135, yPos + 3);
+                yPos += 18;
+            });
+            
+            // Total
+            pdf.setFont(undefined, 'bold');
+            pdf.text(\`📊 TOTAL: \${total} veículos\`, margemEsquerda + 5, yPos + 10);
+        }
+    }
+    
+    // Rodapé
+    const totalPaginas = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+        pdf.setPage(i);
+        
+        // Linha separadora
+        pdf.setDrawColor(corPrimaria);
+        pdf.setLineWidth(1);
+        pdf.line(margemEsquerda, 280, margemDireita, 280);
+        
+        // Informações do rodapé
+        pdf.setFontSize(10);
+        pdf.setTextColor(128, 128, 128);
+        pdf.text(\`Relatório gerado em \${new Date().toLocaleString('pt-BR')}\`, 105, 288, { align: 'center' });
+        pdf.text('Portal Tryvia - Sistema de Gestão', 105, 295, { align: 'center' });
+        pdf.text(\`Página \${i} de \${totalPaginas}\`, margemDireita, 295, { align: 'right' });
+    }
+    
+    return pdf;
+}
+
+// FUNÇÃO PARA GERAR MENSAGEM DO EMAIL
+function gerarMensagemComLinkSupabase(dados, linkDownload) {
+    return \`Prezado(a),
+
+Segue o Relatório de Visita da empresa \${dados.empresa || 'Empresa'}.
+
+📋 DADOS DA VISITA:
+• Empresa: \${dados.empresa || 'Não informada'}
+• Data: \${dados.data || 'Não informada'}
+• Analista: \${dados.analista || 'Não informado'}
+• Local: \${dados.local || 'Não informado'}
+
+📄 DOWNLOAD DO RELATÓRIO:
+\${linkDownload}
+
+✅ VANTAGENS DESTE LINK:
+• Link permanente - não expira
+• Download automático do PDF
+• Acesso a qualquer momento
+• Armazenamento seguro na nuvem
+
+Clique no link acima para baixar automaticamente o relatório em PDF.
+
+Atenciosamente,
+Equipe Tryvia
+
+---
+Portal Tryvia - Sistema de Gestão
+Relatório gerado automaticamente em \${new Date().toLocaleString('pt-BR')}\`;
+}
+
+// FUNÇÃO PARA COLETAR DADOS DO RELATÓRIO
+function coletarDadosRelatorio() {
+    const graficoVeiculos = {
+        sem_report: parseInt(document.getElementById('inputSemReport')?.value || 0),
+        reportando: parseInt(document.getElementById('inputReportando')?.value || 0),
+        manutencao: parseInt(document.getElementById('inputManutencao')?.value || 0)
+    };
+    
+    return {
+        empresa: document.getElementById('rvEmpresa')?.value || '',
+        data: document.getElementById('rvData')?.value || '',
+        gestor: document.getElementById('rvGestor')?.value || '',
+        analista: document.getElementById('rvAnalista')?.value || '',
+        servicos: document.getElementById('rvServicos')?.value || '',
+        resumo: document.getElementById('rvResumo')?.value || '',
+        chamados: document.getElementById('rvChamados')?.value || '',
+        local: document.getElementById('rvLocal')?.value || '',
+        grafico_veiculos: graficoVeiculos
+    };
+}
+
+// FUNÇÕES DE INTERFACE
+function mostrarCarregamento(mensagem = 'Processando...') {
+    esconderCarregamento();
+    
+    const overlay = document.createElement('div');
+    overlay.id = 'loading-overlay';
+    overlay.style.cssText = \`
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0, 230, 253, 0.9), rgba(2, 136, 209, 0.9));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        backdrop-filter: blur(10px);
+    \`;
+    
+    overlay.innerHTML = \`
+        <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+            <div style="border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; margin: 0 auto 25px;"></div>
+            <div style="font-weight: 600; font-size: 20px; margin-bottom: 10px;">\${mensagem}</div>
+            <div style="font-size: 14px; opacity: 0.8;">Aguarde um momento...</div>
+        </div>
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    \`;
+    
+    document.body.appendChild(overlay);
+}
+
+function esconderCarregamento() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+`;
 // Função para enviar relatório por WhatsApp (executada após confirmação no modal)
 function enviarRelatorioPorWhatsapp() {
   const number = document.getElementById('whatsappNumber').value.trim();
