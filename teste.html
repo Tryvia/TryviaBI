@@ -6115,7 +6115,8 @@ Equipe Tryvia`;
     for (const email of emailList) {
       try {
         // Validação extra do email
-        if (!email || email.trim() === '' || !email.includes('@')) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || email.trim() === '' || !emailRegex.test(email.trim())) {
           console.error(`Email inválido: "${email}"`);
           errorCount++;
           continue;
@@ -6125,9 +6126,7 @@ Equipe Tryvia`;
         console.log(`Tentando enviar para: "${cleanEmail}"`);
         
         const templateParams = {
-          to_email: cleanEmail,
-          user_email: cleanEmail, // Campo alternativo
-          recipient_email: cleanEmail, // Outro campo alternativo
+          email: cleanEmail,
           subject: subject,
           message: emailBody
         };
@@ -6136,6 +6135,7 @@ Equipe Tryvia`;
         
         if (response.status === 200) {
           successCount++;
+          console.log(`Email enviado com sucesso para: ${cleanEmail}`);
         } else {
           errorCount++;
           console.error(`Erro ao enviar para ${email}:`, response);
