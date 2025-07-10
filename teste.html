@@ -6114,13 +6114,22 @@ Equipe Tryvia`;
     
     for (const email of emailList) {
       try {
+        // Validação extra do email
+        if (!email || email.trim() === '' || !email.includes('@')) {
+          console.error(`Email inválido: "${email}"`);
+          errorCount++;
+          continue;
+        }
+        
+        const cleanEmail = email.trim();
+        console.log(`Tentando enviar para: "${cleanEmail}"`);
+        
         const templateParams = {
-          to_email: email,
-          to_name: email.split('@')[0],
+          to_email: cleanEmail,
+          user_email: cleanEmail, // Campo alternativo
+          recipient_email: cleanEmail, // Outro campo alternativo
           subject: subject,
-          message: emailBody,
-          from_name: 'Portal Tryvia',
-          reply_to: 'noreply@tryvia.com'
+          message: emailBody
         };
 
         const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
