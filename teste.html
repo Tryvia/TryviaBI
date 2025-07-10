@@ -5962,190 +5962,202 @@ function closeWhatsappModal() {
   document.getElementById('whatsappModal').classList.remove('visible');
 }
 
-// Função para enviar relatório por e-mail (executada após confirmação no modal)
+// SUBSTITUA a função enviarRelatorioPorEmail existente por esta versão:
+
 async function enviarRelatorioPorEmail() {
-  const emails = document.getElementById('emailRecipients').value.trim();
-  const subject = document.getElementById('emailSubject').value.trim();
-  const message = document.getElementById('emailMessage').value.trim();
-  
-  if (!emails) {
-    showAlert('Atenção', 'Por favor, digite pelo menos um e-mail de destinatário.');
-    return;
-  }
-  
-  if (!subject) {
-    showAlert('Atenção', 'Por favor, digite o assunto do e-mail.');
-    return;
-  }
-  
-  try {
-    // Gerar PDF
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    try {
+        // Gerar o PDF (mantém a lógica existente)
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Cabeçalho do relatório
+        doc.setFontSize(20);
+        doc.text('Relatório de Visita', 20, 30);
+        
+        const visitaAtual = JSON.parse(localStorage.getItem('visitaAtual'));
+        if (visitaAtual) {
+            doc.setFontSize(12);
+            let yPosition = 50;
+            
+            // Informações básicas
+            doc.text(`Cliente: ${visitaAtual.cliente || 'N/A'}`, 20, yPosition);
+            yPosition += 10;
+            doc.text(`Data: ${visitaAtual.data || 'N/A'}`, 20, yPosition);
+            yPosition += 10;
+            doc.text(`Técnico: ${visitaAtual.tecnico || 'N/A'}`, 20, yPosition);
+            yPosition += 20;
+            
+            // Observações
+            if (visitaAtual.observacoes) {
+                doc.text('Observações:', 20, yPosition);
+                yPosition += 10;
+                const observacoes = doc.splitTextToSize(visitaAtual.observacoes, 170);
+                doc.text(observacoes, 20, yPosition);
+                yPosition += observacoes.length * 5 + 10;
+            }
+            
+            // Adicionar outras informações do relatório conforme sua estrutura atual
+            // ... (mantenha o resto da lógica de geração do PDF que você já tem)
+        }
+        
+        // Converter PDF para blob
+        const pdfBlob = doc.output('blob');
+        
+        // Gerar nome único para o arquivo
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const clienteNome = visitaAtual?.cliente?.replace(/[^a-zA-Z0-9]/g, '') || 'cliente';
+        const fileName = `relatorio-${clienteNome}-${timestamp}.pdf`;
+        
+        // Mostrar loading
+        const loadingMsg = document.createElement('div');
+        loadingMsg.innerHTML = 'Enviando relatório...';
+        loadingMsg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border:2px solid #ccc;z-index:9999;';
+        document.body.appendChild(loadingMsg);
+        
+        try {
+            // Upload para Supabase Storage
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('relatorio-pdfs')
+                .upload(fileName, pdfBlob, {
+                    contentType: 'application/pdf',
+                    upsert: false
+                });
+            
+            if (uploadError) {
+                throw new Error(`Erro no upload: ${uploadError.message}`);
+            }
+            
+            // Obter URL pública permanente
+            const { data: urlData } = supabase.storage
+                .from('relatorio-pdfs')
+                .getPublicUrl(fileName);
+            
+            const linkPermanente = urlData.publicUrl;
+            
+            // Solicitar email do destinatário
+            const emailDestinatario = prompt('Digite o email do destinatário:');
+            if (!emailDestinatario) {
+                alert('Email é obrigatório para envio do relatório.');
+                return;
+            }
+            
+            // Preparar conteúdo do email
+            const assunto = `Relatório de Visita - ${visitaAtual?.cliente || 'Cliente'}`;
+            const corpoEmail = `
+Olá,
 
-    // Adicionar título (removendo logo temporariamente para teste)
-    doc.setTextColor(0, 230, 253);
-    doc.setFontSize(22);
-    doc.setFont(undefined, 'bold');
-    doc.text('Relatório de Visita', 80, 30);
+Segue o link para download do relatório de visita:
 
-    // Adicionar conteúdo
-    let y = 45;
-    doc.setDrawColor(0, 230, 253);
-    doc.line(10, y - 5, 200, y - 5);
+🔗 Link para download: ${linkPermanente}
 
-    const campos = [
-      ['Empresa', 'rvEmpresa'],
-      ['Data', 'rvData'],
-      ['Gestor', 'rvGestor'],
-      ['Analista', 'rvAnalista'],
-      ['Serviços Contratados', 'rvServicos'],
-      ['Chamados Urgentes', 'rvChamados'],
-      ['Local', 'rvLocal']
-    ];
+📋 Detalhes do relatório:
+• Cliente: ${visitaAtual?.cliente || 'N/A'}
+• Data: ${visitaAtual?.data || 'N/A'}
+• Técnico: ${visitaAtual?.tecnico || 'N/A'}
 
-    doc.setFontSize(12);
-    doc.setTextColor(0);
-    campos.forEach(([label, id]) => {
-      const el = document.getElementById(id);
-      const valor = el ? el.value : '';
-      const texto = doc.splitTextToSize(`${label}: ${valor}`, 180);
-      doc.text(texto, 10, y);
-      y += texto.length * 8;
-      if (y > 270) {
-        doc.addPage();
-        y = 20;
-      }
-    });
-
-    // Adicionar resumo em tabela
-    const resumo = document.getElementById('rvResumo')?.value || '';
-    const linhasResumo = resumo.split('\n').map(linha => [linha.trim()]);
-    if (linhasResumo.length > 0) {
-      doc.addPage();
-      doc.setFontSize(14);
-      doc.setTextColor(0, 230, 253);
-      doc.text('Resumo da Visita (Tabela)', 10, 20);
-      doc.autoTable({
-        startY: 30,
-        head: [['Conteúdo']],
-        body: linhasResumo,
-        styles: { fontSize: 10, halign: 'left' },
-        headStyles: { fillColor: [0, 230, 253], textColor: 20, fontStyle: 'bold' },
-        alternateRowStyles: { fillColor: [245, 245, 245] },
-        tableLineColor: [200, 200, 200],
-        tableLineWidth: 0.1
-      });
-    }
-
-    // Adicionar gráficos
-    const canvas1 = document.getElementById('chartVeiculos');
-    if (canvas1) {
-      const imgData1 = canvas1.toDataURL('image/png');
-      doc.addPage();
-      doc.setFontSize(14);
-      doc.setTextColor(0, 230, 253);
-      doc.text('Gráfico: Report de Veículos', 10, 20);
-      doc.addImage(imgData1, 'PNG', 10, 30, 180, 90);
-    }
-
-    const canvas2 = document.getElementById('chartComparativo');
-    if (canvas2) {
-      const imgData2 = canvas2.toDataURL('image/png');
-      doc.addPage();
-      doc.setFontSize(14);
-      doc.setTextColor(0, 230, 253);
-      doc.text('Gráfico: Comparativo de Visitas por Empresa', 10, 20);
-      doc.addImage(imgData2, 'PNG', 10, 30, 180, 90);
-    }
-
-    // Converter PDF para Blob e criar URL de download
-    const pdfBlob = doc.output('blob');
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    
-    // Processar lista de e-mails - CORREÇÃO PRINCIPAL
-    const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email && email.includes('@'));
-    
-    if (emailList.length === 0) {
-      showAlert('Erro', 'Nenhum e-mail válido foi encontrado. Verifique os endereços digitados.');
-      return;
-    }
-    
-    // Preparar parâmetros para o EmailJS com link de download
-    const empresa = document.getElementById('rvEmpresa').value || 'Empresa';
-    const data = document.getElementById('rvData').value || new Date().toLocaleDateString('pt-BR');
-    const fileName = `Relatorio_Visita_${empresa.replace(/\s+/g, '_')}_${data.replace(/\//g, '-')}.pdf`;
-    
-    // Criar um link temporário para download
-    const downloadLink = document.createElement('a');
-    downloadLink.href = pdfUrl;
-    downloadLink.download = fileName;
-    downloadLink.style.display = 'none';
-    document.body.appendChild(downloadLink);
-    
-    // Gerar um ID único para o link
-    const linkId = 'download_' + Date.now();
-    downloadLink.id = linkId;
-    
-    const emailBody = `${message || `Prezado(a),
-
-Segue o Relatório de Visita gerado pelo portal.`}
-
-📄 **Relatório de Visita**
-Empresa: ${empresa}
-Data: ${data}
-
-🔗 **Para baixar o PDF, clique no link abaixo:**
-${window.location.origin + window.location.pathname}#${linkId}
-
-📋 **Instruções:**
-1. Clique no link acima
-2. O download do PDF será iniciado automaticamente
-3. Salve o arquivo como "${fileName}"
-
-⚠️ **Importante:** Este link é válido apenas enquanto a página estiver aberta.
+Este link é permanente e pode ser acessado a qualquer momento.
 
 Atenciosamente,
-Equipe Tryvia`;
-
-    // CORREÇÃO: Enviar para cada email individualmente para evitar erro 422
-    let successCount = 0;
-    let errorCount = 0;
-    
-    for (const email of emailList) {
-      try {
-        // Validação extra do email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email || email.trim() === '' || !emailRegex.test(email.trim())) {
-          console.error(`Email inválido: "${email}"`);
-          errorCount++;
-          continue;
+Equipe Técnica
+            `.trim();
+            
+            // Enviar email (adapte conforme seu serviço de email)
+            await enviarEmailComLink(emailDestinatario, assunto, corpoEmail, linkPermanente);
+            
+            // Remover loading
+            document.body.removeChild(loadingMsg);
+            
+            // Mostrar sucesso com opção de copiar link
+            const resultado = confirm(`✅ Relatório enviado com sucesso!\n\nLink permanente gerado:\n${linkPermanente}\n\nDeseja copiar o link para a área de transferência?`);
+            
+            if (resultado) {
+                navigator.clipboard.writeText(linkPermanente).then(() => {
+                    alert('Link copiado para a área de transferência!');
+                });
+            }
+            
+        } catch (error) {
+            // Remover loading em caso de erro
+            if (document.body.contains(loadingMsg)) {
+                document.body.removeChild(loadingMsg);
+            }
+            throw error;
         }
         
-        const cleanEmail = email.trim();
-        console.log(`Tentando enviar para: "${cleanEmail}"`);
-        
+    } catch (error) {
+        console.error('Erro ao enviar relatório:', error);
+        alert('❌ Erro ao enviar relatório: ' + error.message);
+    }
+}
+
+// Função auxiliar para enviar email
+async function enviarEmailComLink(destinatario, assunto, corpo, linkPdf) {
+    // OPÇÃO 1: Usando EmailJS (recomendado para simplicidade)
+    if (typeof emailjs !== 'undefined') {
         const templateParams = {
-          email: cleanEmail,
-          subject: subject,
-          message: emailBody
+            to_email: destinatario,
+            subject: assunto,
+            message: corpo,
+            pdf_link: linkPdf
         };
-
-        const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
         
-        if (response.status === 200) {
-          successCount++;
-          console.log(`Email enviado com sucesso para: ${cleanEmail}`);
-        } else {
-          errorCount++;
-          console.error(`Erro ao enviar para ${email}:`, response);
-        }
-      } catch (error) {
-        errorCount++;
-        console.error(`Erro ao enviar para ${email}:`, error);
-      }
+        return emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
     }
     
+    // OPÇÃO 2: Usando sua própria API
+    const response = await fetch('/api/enviar-email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            destinatario,
+            assunto,
+            corpo,
+            linkPdf
+        })
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Falha ao enviar email');
+    }
+    
+    return response.json();
+}
+
+// FUNÇÃO BONUS: Listar relatórios salvos
+async function listarRelatoriosSalvos() {
+    try {
+        const { data, error } = await supabase.storage
+            .from('relatorio-pdfs')
+            .list('', {
+                limit: 100,
+                offset: 0,
+                sortBy: { column: 'created_at', order: 'desc' }
+            });
+        
+        if (error) {
+            throw error;
+        }
+        
+        const relatorios = data
+            .filter(file => file.name.endsWith('.pdf'))
+            .map(file => ({
+                nome: file.name,
+                url: supabase.storage.from('relatorio-pdfs').getPublicUrl(file.name).data.publicUrl,
+                dataUpload: new Date(file.created_at).toLocaleString('pt-BR'),
+                tamanho: (file.metadata?.size || 0) / 1024 // KB
+            }));
+        
+        console.table(relatorios);
+        return relatorios;
+        
+    } catch (error) {
+        console.error('Erro ao listar relatórios:', error);
+        return [];
+    }
+}
     closeEmailModal();
     
     if (successCount > 0) {
