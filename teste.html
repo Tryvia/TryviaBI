@@ -6059,23 +6059,9 @@ async function enviarRelatorioPorEmail() {
       doc.addImage(imgData2, 'PNG', 10, 30, 180, 90);
     }
 
-  // Upload para Supabase Storage
-const pdfBlob = doc.output('blob');
-const fileName = `relatorio_visita_${timestamp}_${empresa}.pdf`;
-
-const { data: uploadData, error: uploadError } = await supabase.storage
-  .from('relatorio-pdfs')
-  .upload(fileName, pdfBlob, {
-    contentType: 'application/pdf',
-    upsert: false
-  });
-
-// Gerar URL pública permanente
-const { data: urlData } = supabase.storage
-  .from('relatorio-pdfs')
-  .getPublicUrl(fileName);
-
-const permanentUrl = urlData.publicUrl; // PERMANENTE
+    // Converter PDF para Blob e criar URL de download
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
     
     // Processar lista de e-mails - CORREÇÃO PRINCIPAL
     const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email && email.includes('@'));
