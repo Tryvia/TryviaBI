@@ -6158,40 +6158,7 @@ async function listarRelatoriosSalvos() {
         return [];
     }
 }
-    closeEmailModal();
-    
-    if (successCount > 0) {
-      // Adicionar listener para downloads via hash
-      window.addEventListener('hashchange', function() {
-        const hash = window.location.hash.substring(1);
-        if (hash.startsWith('download_')) {
-          const linkElement = document.getElementById(hash);
-          if (linkElement) {
-            linkElement.click();
-            // Limpar o hash após o download
-            setTimeout(() => {
-              window.location.hash = '';
-            }, 1000);
-          }
-        }
-      });
-      
-      if (errorCount === 0) {
-        showAlert('Sucesso', `E-mail enviado com sucesso para ${successCount} destinatário(s)! O link para download do PDF foi incluído no e-mail.`);
-      } else {
-        showAlert('Parcial', `E-mail enviado para ${successCount} de ${emailList.length} destinatários. ${errorCount} falharam.`);
-      }
-    } else {
-      showAlert('Erro', 'Falha ao enviar e-mail para todos os destinatários. Verifique os endereços e tente novamente.');
-    }
-    
-  } catch (error) {
-    console.error('Erro ao enviar por e-mail:', error);
-    closeEmailModal();
-    showAlert('Erro', 'Erro ao enviar e-mail. Verifique sua conexão e tente novamente.');
-  }
-}
-
+  
 // Função para enviar relatório por WhatsApp (executada após confirmação no modal)
 function enviarRelatorioPorWhatsapp() {
   const number = document.getElementById('whatsappNumber').value.trim();
