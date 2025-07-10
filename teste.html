@@ -6059,19 +6059,28 @@ async function enviarRelatorioPorEmail() {
       doc.addImage(imgData2, 'PNG', 10, 30, 180, 90);
     }
 
-    // Converter PDF para Blob
+    // Converter PDF para Blob e criar URL de download
     const pdfBlob = doc.output('blob');
-    
-    // Converter PDF para Base64 para criar data URL
-    const pdfBase64 = doc.output('datauristring');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
     
     // Processar lista de e-mails
     const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email);
     
-    // Preparar parâmetros para o EmailJS com link de download direto
+    // Preparar parâmetros para o EmailJS com link de download
     const empresa = document.getElementById('rvEmpresa').value || 'Empresa';
     const data = document.getElementById('rvData').value || new Date().toLocaleDateString('pt-BR');
     const fileName = `Relatorio_Visita_${empresa.replace(/\s+/g, '_')}_${data.replace(/\//g, '-')}.pdf`;
+    
+    // Criar um link temporário para download
+    const downloadLink = document.createElement('a');
+    downloadLink.href = pdfUrl;
+    downloadLink.download = fileName;
+    downloadLink.style.display = 'none';
+    document.body.appendChild(downloadLink);
+    
+    // Gerar um ID único para o link
+    const linkId = 'download_' + Date.now();
+    downloadLink.id = linkId;
     
     const emailBody = `${message || `Prezado(a),
 
@@ -6081,14 +6090,15 @@ Segue o Relatório de Visita gerado pelo portal.`}
 Empresa: ${empresa}
 Data: ${data}
 
-🔗 **Para baixar o PDF:**
-1. Clique no link abaixo
-2. Clique com o botão direito e escolha "Salvar como..."
+🔗 **Para baixar o PDF, clique no link abaixo:**
+${window.location.origin + window.location.pathname}#${linkId}
+
+📋 **Instruções:**
+1. Clique no link acima
+2. O download do PDF será iniciado automaticamente
 3. Salve o arquivo como "${fileName}"
 
-Link para download: ${pdfBase64}
-
-⚠️ **Importante:** Este é um link direto para o PDF. Use "Salvar como..." para baixar o arquivo.
+⚠️ **Importante:** Este link é válido apenas enquanto a página estiver aberta.
 
 Atenciosamente,
 Equipe Tryvia`;
@@ -6104,7 +6114,23 @@ Equipe Tryvia`;
     
     if (response.status === 200) {
       closeEmailModal();
-      showAlert('Sucesso', `E-mail enviado com sucesso para ${emailList.length} destinatário(s)! O link para download do PDF foi incluído no e-mail.`);
+      
+      // Adicionar listener para downloads via hash
+      window.addEventListener('hashchange', function() {
+        const hash = window.location.hash.substring(1);
+        if (hash.startsWith('download_')) {
+          const linkElement = document.getElementById(hash);
+          if (linkElement) {
+            linkElement.click();
+            // Limpar o hash após o download
+            setTimeout(() => {
+              window.location.hash = '';
+            }, 1000);
+          }
+        }
+      });
+      
+      showAlert('Sucesso', `E-mail enviado com sucesso para ${emailList.length} destinatário(s)! O link para download do PDF foi incluído no e-mail. O arquivo ficará disponível para download enquanto esta página estiver aberta.`);
     } else {
       throw new Error('Falha no envio do e-mail');
     }
