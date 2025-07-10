@@ -6063,8 +6063,13 @@ async function enviarRelatorioPorEmail() {
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
     
-    // Processar lista de e-mails
-    const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email);
+    // Processar lista de e-mails - CORREÇÃO PRINCIPAL
+    const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email && email.includes('@'));
+    
+    if (emailList.length === 0) {
+      showAlert('Erro', 'Nenhum e-mail válido foi encontrado. Verifique os endereços digitados.');
+      return;
+    }
     
     // Preparar parâmetros para o EmailJS com link de download
     const empresa = document.getElementById('rvEmpresa').value || 'Empresa';
@@ -6103,18 +6108,38 @@ ${window.location.origin + window.location.pathname}#${linkId}
 Atenciosamente,
 Equipe Tryvia`;
 
-    const templateParams = {
-      to_email: emailList.join(','),
-      subject: subject,
-      message: emailBody
-    };
-
-    // Enviar e-mail usando EmailJS
-    const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
+    // CORREÇÃO: Enviar para cada email individualmente para evitar erro 422
+    let successCount = 0;
+    let errorCount = 0;
     
-    if (response.status === 200) {
-      closeEmailModal();
-      
+    for (const email of emailList) {
+      try {
+        const templateParams = {
+          to_email: email,
+          to_name: email.split('@')[0],
+          subject: subject,
+          message: emailBody,
+          from_name: 'Portal Tryvia',
+          reply_to: 'noreply@tryvia.com'
+        };
+
+        const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
+        
+        if (response.status === 200) {
+          successCount++;
+        } else {
+          errorCount++;
+          console.error(`Erro ao enviar para ${email}:`, response);
+        }
+      } catch (error) {
+        errorCount++;
+        console.error(`Erro ao enviar para ${email}:`, error);
+      }
+    }
+    
+    closeEmailModal();
+    
+    if (successCount > 0) {
       // Adicionar listener para downloads via hash
       window.addEventListener('hashchange', function() {
         const hash = window.location.hash.substring(1);
@@ -6130,9 +6155,13 @@ Equipe Tryvia`;
         }
       });
       
-      showAlert('Sucesso', `E-mail enviado com sucesso para ${emailList.length} destinatário(s)! O link para download do PDF foi incluído no e-mail. O arquivo ficará disponível para download enquanto esta página estiver aberta.`);
+      if (errorCount === 0) {
+        showAlert('Sucesso', `E-mail enviado com sucesso para ${successCount} destinatário(s)! O link para download do PDF foi incluído no e-mail.`);
+      } else {
+        showAlert('Parcial', `E-mail enviado para ${successCount} de ${emailList.length} destinatários. ${errorCount} falharam.`);
+      }
     } else {
-      throw new Error('Falha no envio do e-mail');
+      showAlert('Erro', 'Falha ao enviar e-mail para todos os destinatários. Verifique os endereços e tente novamente.');
     }
     
   } catch (error) {
