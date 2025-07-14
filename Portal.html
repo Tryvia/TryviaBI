@@ -5966,17 +5966,17 @@ function closeWhatsappModal() {
 
 // Função para enviar relatório por e-mail (executada após confirmação no modal)
 async function enviarRelatorioPorEmail() {
-  const emails = document.getElementById("emailRecipients").value.trim();
-  const subject = document.getElementById("emailSubject").value.trim();
-  const message = document.getElementById("emailMessage").value.trim();
+  const emails = document.getElementById('emailRecipients').value.trim();
+  const subject = document.getElementById('emailSubject').value.trim();
+  const message = document.getElementById('emailMessage').value.trim();
   
   if (!emails) {
-    showAlert("Atenção", "Por favor, digite pelo menos um e-mail de destinatário.");
+    showAlert('Atenção', 'Por favor, digite pelo menos um e-mail de destinatário.');
     return;
   }
   
   if (!subject) {
-    showAlert("Atenção", "Por favor, digite o assunto do e-mail.");
+    showAlert('Atenção', 'Por favor, digite o assunto do e-mail.');
     return;
   }
   
@@ -5988,8 +5988,8 @@ async function enviarRelatorioPorEmail() {
     // Adicionar título
     doc.setTextColor(0, 230, 253);
     doc.setFontSize(22);
-    doc.setFont(undefined, "bold");
-    doc.text("Relatório de Visita", 80, 30);
+    doc.setFont(undefined, 'bold');
+    doc.text('Relatório de Visita', 80, 30);
 
     // Adicionar conteúdo
     let y = 45;
@@ -5997,20 +5997,20 @@ async function enviarRelatorioPorEmail() {
     doc.line(10, y - 5, 200, y - 5);
 
     const campos = [
-      ["Empresa", "rvEmpresa"],
-      ["Data", "rvData"],
-      ["Gestor", "rvGestor"],
-      ["Analista", "rvAnalista"],
-      ["Serviços Contratados", "rvServicos"],
-      ["Chamados Urgentes", "rvChamados"],
-      ["Local", "rvLocal"]
+      ['Empresa', 'rvEmpresa'],
+      ['Data', 'rvData'],
+      ['Gestor', 'rvGestor'],
+      ['Analista', 'rvAnalista'],
+      ['Serviços Contratados', 'rvServicos'],
+      ['Chamados Urgentes', 'rvChamados'],
+      ['Local', 'rvLocal']
     ];
 
     doc.setFontSize(12);
     doc.setTextColor(0);
     campos.forEach(([label, id]) => {
       const el = document.getElementById(id);
-      const valor = el ? el.value : "";
+      const valor = el ? el.value : '';
       const texto = doc.splitTextToSize(`${label}: ${valor}`, 180);
       doc.text(texto, 10, y);
       y += texto.length * 8;
@@ -6021,19 +6021,19 @@ async function enviarRelatorioPorEmail() {
     });
 
     // Adicionar resumo em tabela
-    const resumo = document.getElementById("rvResumo")?.value || "";
-    const linhasResumo = resumo.split("\n").map(linha => [linha.trim()]);
+    const resumo = document.getElementById('rvResumo')?.value || '';
+    const linhasResumo = resumo.split('\n').map(linha => [linha.trim()]);
     if (linhasResumo.length > 0) {
       doc.addPage();
       doc.setFontSize(14);
       doc.setTextColor(0, 230, 253);
-      doc.text("Resumo da Visita (Tabela)", 10, 20);
+      doc.text('Resumo da Visita (Tabela)', 10, 20);
       doc.autoTable({
         startY: 30,
-        head: [["Conteúdo"]],
+        head: [['Conteúdo']],
         body: linhasResumo,
-        styles: { fontSize: 10, halign: "left" },
-        headStyles: { fillColor: [0, 230, 253], textColor: 20, fontStyle: "bold" },
+        styles: { fontSize: 10, halign: 'left' },
+        headStyles: { fillColor: [0, 230, 253], textColor: 20, fontStyle: 'bold' },
         alternateRowStyles: { fillColor: [245, 245, 245] },
         tableLineColor: [200, 200, 200],
         tableLineWidth: 0.1
@@ -6041,40 +6041,40 @@ async function enviarRelatorioPorEmail() {
     }
 
     // Adicionar gráficos
-    const canvas1 = document.getElementById("chartVeiculos");
+    const canvas1 = document.getElementById('chartVeiculos');
     if (canvas1) {
-      const imgData1 = canvas1.toDataURL("image/png");
+      const imgData1 = canvas1.toDataURL('image/png');
       doc.addPage();
       doc.setFontSize(14);
       doc.setTextColor(0, 230, 253);
-      doc.text("Gráfico: Report de Veículos", 10, 20);
-      doc.addImage(imgData1, "PNG", 10, 30, 180, 90);
+      doc.text('Gráfico: Report de Veículos', 10, 20);
+      doc.addImage(imgData1, 'PNG', 10, 30, 180, 90);
     }
 
-    const canvas2 = document.getElementById("chartComparativo");
+    const canvas2 = document.getElementById('chartComparativo');
     if (canvas2) {
-      const imgData2 = canvas2.toDataURL("image/png");
+      const imgData2 = canvas2.toDataURL('image/png');
       doc.addPage();
       doc.setFontSize(14);
       doc.setTextColor(0, 230, 253);
-      doc.text("Gráfico: Comparativo de Visitas por Empresa", 10, 20);
-      doc.addImage(imgData2, "PNG", 10, 30, 180, 90);
+      doc.text('Gráfico: Comparativo de Visitas por Empresa', 10, 20);
+      doc.addImage(imgData2, 'PNG', 10, 30, 180, 90);
     }
 
-    // ✅ SOLUÇÃO: Enviar PDF para servidor e obter link permanente
-    const pdfBase64 = doc.output("datauristring").split(",")[1];
-    const empresa = document.getElementById("rvEmpresa").value || "Empresa";
-    const data = document.getElementById("rvData").value || new Date().toLocaleDateString("pt-BR");
-    const fileName = `Relatorio_Visita_${empresa.replace(/\s+/g, "_")}_${data.replace(/\//g, "-")}.pdf`;
+ 
+    const pdfBase64 = doc.output('datauristring').split(',')[1];
+    const empresa = document.getElementById('rvEmpresa').value || 'Empresa';
+    const data = document.getElementById('rvData').value || new Date().toLocaleDateString('pt-BR');
+    const fileName = `Relatorio_Visita_${empresa.replace(/\s+/g, '_')}_${data.replace(/\//g, '-')}.pdf`;
     
-    let downloadLink = "";
+    let downloadLink = '';
     
     try {
       // Tentar enviar para o servidor de armazenamento
       const response = await fetch(`${PDF_SERVER_URL}/api/pdf/upload`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           filename: fileName,
@@ -6085,36 +6085,39 @@ async function enviarRelatorioPorEmail() {
       if (response.ok) {
         const result = await response.json();
         downloadLink = `${PDF_SERVER_URL}/api/pdf/download/${result.id}`;
-        console.log("PDF enviado para servidor:", downloadLink);
+        console.log('PDF enviado para servidor:', downloadLink);
       } else {
-        throw new Error("Servidor não disponível");
+        throw new Error('Servidor não disponível');
       }
     } catch (error) {
-      console.warn("Servidor de PDF não disponível, usando fallback local:", error);
+      console.warn('Servidor de PDF não disponível, usando fallback local:', error);
       // Fallback: usar blob URL local (funciona apenas na sessão atual)
-      const pdfBlob = doc.output("blob");
+      const pdfBlob = doc.output('blob');
       downloadLink = URL.createObjectURL(pdfBlob);
     }
     
     // Processar lista de e-mails
-    const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email && email.includes("@"));
+    const emailList = emails.split(/[,\n]/).map(email => email.trim()).filter(email => email && email.includes('@'));
     
     if (emailList.length === 0) {
-      showAlert("Erro", "Nenhum e-mail válido foi encontrado. Verifique os endereços digitados.");
+      showAlert('Erro', 'Nenhum e-mail válido foi encontrado. Verifique os endereços digitados.');
       return;
     }
     
-    // Preparar corpo do e-mail com link de download formatado como HTML
-    // A principal mudança é usar HTML para o corpo do e-mail, permitindo links clicáveis
-    const emailBodyHtml = `
-      <p>${message || `Prezado(a),<br><br>Segue o Relatório de Visita gerado pelo portal.`}</p>
-      <p>📄 <b>Relatório de Visita</b><br>
-      Empresa: ${empresa}<br>
-      Data: ${data}</p>
-      <p>🔗 Para baixar o PDF, clique no link abaixo:</p>
-      <p><a href="${downloadLink}">${downloadLink}</a></p>
-      <p>---<br>Gerado automaticamente pelo Portal Tryvia</p>
-    `;
+    // Preparar corpo do e-mail com link de download
+    const emailBody = `${message || `Prezado(a),
+
+Segue o Relatório de Visita gerado pelo portal.`}
+
+📄 **Relatório de Visita**
+Empresa: ${empresa}
+Data: ${data}
+
+🔗 **Para baixar o PDF, clique no link abaixo:**
+${downloadLink}
+
+---
+Gerado automaticamente pelo Portal Tryvia`;
 
     // Enviar para cada email individualmente
     let successCount = 0;
@@ -6123,7 +6126,7 @@ async function enviarRelatorioPorEmail() {
     for (const email of emailList) {
       try {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email || email.trim() === "" || !emailRegex.test(email.trim())) {
+        if (!email || email.trim() === '' || !emailRegex.test(email.trim())) {
           console.error(`Email inválido: "${email}"`);
           errorCount++;
           continue;
@@ -6135,12 +6138,10 @@ async function enviarRelatorioPorEmail() {
         const templateParams = {
           email: cleanEmail,
           subject: subject,
-          html_message: emailBodyHtml // Usar html_message para enviar HTML
+          message: emailBody
         };
 
-        // IMPORTANTE: O template do EmailJS (template_waamyv4) precisa estar configurado para aceitar HTML.
-        // Verifique se o campo de mensagem no seu template do EmailJS está configurado como HTML.
-        const response = await emailjs.send("service_g3ln0jh", "template_waamyv4", templateParams);
+        const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
         
         if (response.status === 200) {
           successCount++;
@@ -6159,18 +6160,18 @@ async function enviarRelatorioPorEmail() {
     
     if (successCount > 0) {
       if (errorCount === 0) {
-        showAlert("Sucesso", `✅ E-mail enviado com sucesso para ${successCount} destinatário(s)! O link para download do PDF foi incluído no e-mail e funcionará permanentemente.`);
+        showAlert('Sucesso', `✅ E-mail enviado com sucesso para ${successCount} destinatário(s)! O link para download do PDF foi incluído no e-mail e funcionará permanentemente.`);
       } else {
-        showAlert("Parcial", `E-mail enviado para ${successCount} de ${emailList.length} destinatários. ${errorCount} falharam.`);
+        showAlert('Parcial', `E-mail enviado para ${successCount} de ${emailList.length} destinatários. ${errorCount} falharam.`);
       }
     } else {
-      showAlert("Erro", "Falha ao enviar e-mail para todos os destinatários. Verifique os endereços e tente novamente.");
+      showAlert('Erro', 'Falha ao enviar e-mail para todos os destinatários. Verifique os endereços e tente novamente.');
     }
     
   } catch (error) {
-    console.error("Erro ao enviar por e-mail:", error);
+    console.error('Erro ao enviar por e-mail:', error);
     closeEmailModal();
-    showAlert("Erro", "Erro ao enviar e-mail. Verifique sua conexão e tente novamente.");
+    showAlert('Erro', 'Erro ao enviar e-mail. Verifique sua conexão e tente novamente.');
   }
 }
 
