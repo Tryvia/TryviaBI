@@ -1372,7 +1372,7 @@ select {
       emailjs.init("4DvVlBCto4HMC88CF");
    })();
    // Configuração do servidor de armazenamento de PDF
-const PDF_SERVER_URL = 'https://servis-nxtv.onrender.com';
+const PDF_SERVER_URL = 'https://servis-pdf.onrender.com';
 </script>
 </head>
 <body><script>
@@ -6104,16 +6104,45 @@ async function enviarRelatorioPorEmail() {
       return;
     }
     
-    // Preparar corpo do e-mail com link de download
-    const emailBody = `${message || `Prezado(a),
+    // Preparar corpo do e-mail em HTML com link clicável
+    const emailBodyHTML = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <p>${message || `Prezado(a),<br><br>Segue o Relatório de Visita gerado pelo portal.`}</p>
+      
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="color: #00e6fd; margin-top: 0;">📄 Relatório de Visita</h3>
+        <p><strong>Empresa:</strong> ${empresa}</p>
+        <p><strong>Data:</strong> ${data}</p>
+      </div>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <h3 style="color: #00e6fd;">🔗 Download do PDF</h3>
+    <a href="${downloadLink}"
+   style="display:inline-block;
+          background-color:#00e6fd;
+          color:white;
+          padding:15px 30px;
+          text-decoration:none;
+          border-radius:5px;
+          font-weight:bold;">
+  📥 CLIQUE AQUI PARA BAIXAR O PDF
+</a></div>
+      
+      <p style="font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; margin-top: 30px;">
+        Gerado automaticamente pelo Portal Tryvia
+      </p>
+    </div>`;
+
+    // Versão em texto simples como fallback
+    const emailBodyText = `${message || `Prezado(a),
 
 Segue o Relatório de Visita gerado pelo portal.`}
 
-📄 **Relatório de Visita**
+📄 Relatório de Visita
 Empresa: ${empresa}
 Data: ${data}
 
-🔗 **Para baixar o PDF, clique no link abaixo:**
+🔗 Para baixar o PDF, copie e cole o link abaixo no seu navegador:
 ${downloadLink}
 
 ---
@@ -6138,7 +6167,8 @@ Gerado automaticamente pelo Portal Tryvia`;
         const templateParams = {
           email: cleanEmail,
           subject: subject,
-          message: emailBody
+          message_html: emailBodyHTML,  // Versão HTML com link clicável
+          message_text: emailBodyText   // Versão texto como fallback
         };
 
         const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
@@ -6160,7 +6190,7 @@ Gerado automaticamente pelo Portal Tryvia`;
     
     if (successCount > 0) {
       if (errorCount === 0) {
-        showAlert('Sucesso', `✅ E-mail enviado com sucesso para ${successCount} destinatário(s)! O link para download do PDF foi incluído no e-mail e funcionará permanentemente.`);
+        showAlert('Sucesso', `✅ E-mail enviado com sucesso para ${successCount} destinatário(s)! O link para download do PDF está clicável no e-mail e funcionará permanentemente.`);
       } else {
         showAlert('Parcial', `E-mail enviado para ${successCount} de ${emailList.length} destinatários. ${errorCount} falharam.`);
       }
@@ -6174,7 +6204,6 @@ Gerado automaticamente pelo Portal Tryvia`;
     showAlert('Erro', 'Erro ao enviar e-mail. Verifique sua conexão e tente novamente.');
   }
 }
-
 // Função para enviar relatório por WhatsApp (executada após confirmação no modal)
 function enviarRelatorioPorWhatsapp() {
   const number = document.getElementById('whatsappNumber').value.trim();
