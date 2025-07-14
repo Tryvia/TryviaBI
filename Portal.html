@@ -1864,10 +1864,15 @@ select {
 <label for="documentTitle">Título</label>
 <input id="documentTitle" placeholder="Título do documento..." type="text"/>
 </div>
-<div class="form-group">
-<label for="documentAuthor">Autor</label>
-<input id="documentAuthor" placeholder="Nome do autor..." type="text"/>
-</div>
+                <div class="form-group">
+                <label for="documentAuthor">Autor</label>
+                <select id="documentAuthor">
+                    <option value="">Selecione o autor</option>
+                    <option value="Marlos">Marlos</option>
+                    <option value="Renata">Renata</option>
+                    <option value="Larissa">Larissa</option>
+                </select>
+                </div>
 </div>
 <div class="form-row">
 <div class="form-group">
@@ -4094,7 +4099,11 @@ if (editingIntegrations.length > 0) {
 </div>
 <div class="form-group">
 <label>Analista Responsável</label>
-<input id="rvAnalista" type="text"/>
+<select id="rvAnalista">
+<option value="Marlos">Marlos</option>
+<option value="Renata">Renata</option>
+<option value="Larissa">Larissa</option>
+</select>
 </div>
 </div>
 <div class="form-group">
