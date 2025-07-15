@@ -207,6 +207,9 @@ select {
             border-bottom: none;
             width: 100%;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .your-custom-logo {
@@ -627,6 +630,42 @@ select {
         .clients-grid {
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 5px rgba(79, 195, 247, 0.3);
+        }
+
         .client-card-vertical {
             background-color: #000000;
             border-radius: 10px;
@@ -683,6 +722,7 @@ select {
             font-weight: bold;
             color: var(--accent-color);
             margin-bottom: 10px;
+            margin-left: 70px;
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.2);
         }
@@ -1914,6 +1954,37 @@ select {
 </div>
 <div class="client-tab-content" id="view-clients" style="display: block;">
 <h3 style="margin-bottom: 20px;">Lista de Clientes</h3>
+<div style="background-color: rgba(179, 229, 252, 0.95); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+    <div class="form-row">
+        <div class="form-group">
+            <label for="filterClientGroup">Filtrar por Grupo</label>
+            <select id="filterClientGroup" onchange="filterClientsByGroup()">
+                <option value="">Todos os grupos</option>
+                <option value="JCA">JCA</option>
+                <option value="Guanabara">Guanabara</option>
+                <option value="Águia Branca">Águia Branca</option>
+                <option value="Nenhum">Nenhum</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="filterClientSubgroup">Filtrar por Subgrupo</label>
+            <select id="filterClientSubgroup" onchange="filterClientsByGroup()">
+                <option value="">Todos os subgrupos</option>
+                <option value="Carga">Carga</option>
+                <option value="Urbano">Urbano</option>
+                <option value="Rodoviário">Rodoviário</option>
+                <option value="Nenhum">Nenhum</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="filterClientName">Filtrar por Nome</label>
+            <input type="text" id="filterClientName" placeholder="Digite o nome do cliente..." oninput="filterClientsByGroup()">
+        </div>
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+            <button class="btn-secondary" onclick="clearClientFilters()">Limpar Filtros</button>
+        </div>
+    </div>
+</div>
 <div class="clients-grid" id="clientsList">
 <div class="empty-state">
 <div class="empty-state-icon">👥</div>
@@ -1939,10 +2010,29 @@ select {
 <input id="clientName" placeholder="Nome completo ou da empresa..." type="text"/>
 <label for="clientEmail" style="margin-top: 15px;">Email</label>
 <input id="clientEmail" placeholder="email@exemplo.com" type="email"/>
-<label for="clientPhone" style="margin-top: 15px;">Telefone</label>
-<input id="clientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
-<label for="clientBiLink" style="margin-top: 15px;">Link do Dashboard BI</label>
-<input id="clientBiLink" placeholder="https://app.powerbi.com/dashboard/..." type="url"/>
+                <label for="clientPhone" style="margin-top: 15px;">Telefone</label>
+                <input id="clientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
+                <label for="clientStatus" style="margin-top: 15px;">Status do Cliente</label>
+                <select id="clientStatus">
+                    <option value="Cliente Ativo">Cliente Ativo</option>
+                    <option value="Cliente Inativo">Cliente Inativo</option>
+                </select>
+                <label for="clientGroup" style="margin-top: 15px;">Grupo</label>
+                <select id="clientGroup">
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="JCA">JCA</option>
+                    <option value="Guanabara">Guanabara</option>
+                    <option value="Águia Branca">Águia Branca</option>
+                </select>
+                <label for="clientSubgroup" style="margin-top: 15px;">Subgrupo</label>
+                <select id="clientSubgroup">
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="Carga">Carga</option>
+                    <option value="Urbano">Urbano</option>
+                    <option value="Rodoviário">Rodoviário</option>
+                </select>
+                <label for="clientBiLink" style="margin-top: 15px;">Link do Dashboard BI</label>
+                <input id="clientBiLink" placeholder="https://app.powerbi.com/dashboard/..." type="url"/>
 </div>
 </div>
 <div class="products-section">
@@ -2018,10 +2108,29 @@ select {
 <input id="editClientName" placeholder="Nome completo ou da empresa..." type="text"/>
 <label for="editClientEmail" style="margin-top: 15px;">Email</label>
 <input id="editClientEmail" placeholder="email@exemplo.com" type="email"/>
-<label for="editClientPhone" style="margin-top: 15px;">Telefone</label>
-<input id="editClientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
-<label for="editClientBiLink" style="margin-top: 15px;">Link do Dashboard BI</label>
-<input id="editClientBiLink" placeholder="https://app.powerbi.com/dashboard/..." type="url"/>
+                <label for="editClientPhone" style="margin-top: 15px;">Telefone</label>
+                <input id="editClientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
+                <label for="editClientStatus" style="margin-top: 15px;">Status do Cliente</label>
+                <select id="editClientStatus">
+                    <option value="Cliente Ativo">Cliente Ativo</option>
+                    <option value="Cliente Inativo">Cliente Inativo</option>
+                </select>
+                <label for="editClientGroup" style="margin-top: 15px;">Grupo</label>
+                <select id="editClientGroup">
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="JCA">JCA</option>
+                    <option value="Guanabara">Guanabara</option>
+                    <option value="Águia Branca">Águia Branca</option>
+                </select>
+                <label for="editClientSubgroup" style="margin-top: 15px;">Subgrupo</label>
+                <select id="editClientSubgroup">
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="Carga">Carga</option>
+                    <option value="Urbano">Urbano</option>
+                    <option value="Rodoviário">Rodoviário</option>
+                </select>
+                <label for="editClientBiLink" style="margin-top: 15px;">Link do Dashboard BI</label>
+                <input id="editClientBiLink" placeholder="https://app.powerbi.com/dashboard/..." type="url"/>
 </div>
 </div>
 <div class="products-section">
@@ -2100,17 +2209,17 @@ select {
 </div>
 <div class="tabs">
 <button class="tab-button active" onclick="openHomologacaoTab(event, 'formularioHomologacao')">
-                         Formulário de Registro
+                        📝 Formulário de Registro
                     </button>
 <button class="tab-button" onclick="openHomologacaoTab(event, 'listaHomologacoes')">
-                         Homologações Registradas
+                        📚 Homologações Registradas
                     </button>
 </div>
 <div class="tab-content active" id="formularioHomologacao">
 <form id="homologacaoForm">
 <div class="form-row">
 <div class="form-group">
-<label for="especialista"> Especialista Responsável</label>
+<label for="especialista">👨‍💻 Especialista Responsável</label>
 <select id="especialista" name="especialista" required="">
 <option value="">Selecione o especialista</option>
 <option value="Marlos">Marlos</option>
@@ -2119,22 +2228,22 @@ select {
 </select>
 </div>
 <div class="form-group">
-<label for="versao"> Versão</label>
+<label for="versao">📋 Versão</label>
 <input id="versao" name="versao" placeholder="Ex: v1.2.3" required="" type="text"/>
 </div>
 </div>
 <div class="form-row">
 <div class="form-group">
-<label for="dataLiberacao"> Data de Liberação</label>
+<label for="dataLiberacao">📅 Data de Liberação</label>
 <input id="dataLiberacao" name="dataLiberacao" required="" type="date"/>
 </div>
 <div class="form-group">
-<label for="dataHomologacao"> Data de Homologação</label>
+<label for="dataHomologacao">✅ Data de Homologação</label>
 <input id="dataHomologacao" name="dataHomologacao" type="date"/>
 </div>
 </div>
 <div class="form-group">
-<label for="sistema"> Sistema</label>
+<label for="sistema">🖥️ Sistema</label>
 <select id="sistema" name="sistema" required="">
 <option value="">Selecione o sistema</option>
 <option value="Sistema Web">Sistema Web</option>
@@ -2146,11 +2255,11 @@ select {
 </select>
 </div>
 <div class="form-group">
-<label for="observacao"> Observações</label>
+<label for="observacao">📝 Observações</label>
 <textarea id="observacao" name="observacao" placeholder="Descreva detalhes da homologação, testes realizados, bugs encontrados, etc."></textarea>
 </div>
 <div class="form-group">
-<label> Arquivos de Homologação</label>
+<label>📁 Arquivos de Homologação</label>
 <div class="upload-area" id="uploadAreaHomologacao">
 <div class="upload-icon">☁️</div>
 <div class="upload-text">Clique aqui ou arraste arquivos</div>
@@ -2185,7 +2294,7 @@ select {
 </select>
 </div>
 <div class="form-group">
-<label for="filtroEspecialista"> Filtrar por Especialista</label>
+<label for="filtroEspecialista">👨‍💻 Filtrar por Especialista</label>
 <input id="filtroEspecialista" onkeyup="filtrarHomologacoes()" placeholder="Nome do especialista" type="text"/>
 </div>
 </div>
@@ -2204,18 +2313,18 @@ select {
 <div class="form-container">
 <h3 style="margin-bottom: 20px;">Cadastro de Release</h3>
 <div class="form-row">
-<div class="form-group"><label for="releaseDate"> Data de Liberação</label><input class="input-padrao" id="releaseDate" placeholder="Selecione a data" type="date" readonly/></div>
-<div class="form-group"><label for="releaseStatus"> Status</label><input id="releaseStatus" type="text"/></div>
+<div class="form-group"><label for="releaseDate">📅 Data de Liberação</label><input class="input-padrao" id="releaseDate" placeholder="Selecione a data" type="date" readonly/></div>
+<div class="form-group"><label for="releaseStatus">📌 Status</label><input id="releaseStatus" type="text"/></div>
 </div>
 <div class="form-row">
-<div class="form-group"><label for="releaseSystem"> Sistema</label><input id="releaseSystem" type="text"/></div>
-<div class="form-group"><label for="releaseVersion"> Versão</label><input id="releaseVersion" type="text"/></div>
+<div class="form-group"><label for="releaseSystem">🖥️ Sistema</label><input id="releaseSystem" type="text"/></div>
+<div class="form-group"><label for="releaseVersion">🧾 Versão</label><input id="releaseVersion" type="text"/></div>
 </div>
 <div class="form-row">
-<div class="form-group"><label for="releaseAnalyst"> Analista</label><input id="releaseAnalyst" type="text"/></div>
-<div class="form-group"><label for="releaseHomologDate"> Data de Homologação</label><input class="input-padrao" id="releaseHomologDate" placeholder="Selecione a data" type="date"/></div>
+<div class="form-group"><label for="releaseAnalyst">👤 Analista</label><input id="releaseAnalyst" type="text"/></div>
+<div class="form-group"><label for="releaseHomologDate">✅ Data de Homologação</label><input class="input-padrao" id="releaseHomologDate" placeholder="Selecione a data" type="date"/></div>
 </div>
-<div class="form-group"><label for="releaseType"> Tipo</label>
+<div class="form-group"><label for="releaseType">📂 Tipo</label>
 <select id="releaseType">
 <option value="">Selecione o tipo</option>
 <option value="bug">Bug</option>
@@ -2234,8 +2343,8 @@ select {
 <button class="btn-primary" onclick="salvarRelease()">Salvar Release</button>
 </div>
 <div class="form-row" style="margin-top: 40px; align-items: flex-end;">
-<div class="form-group"><label for="filtroSistema"> Sistema</label><input id="filtroSistema" type="text"/></div>
-<div class="form-group"><label for="filtroTipo"> Tipo</label>
+<div class="form-group"><label for="filtroSistema">🔍 Sistema</label><input id="filtroSistema" type="text"/></div>
+<div class="form-group"><label for="filtroTipo">📂 Tipo</label>
 <select id="filtroTipo">
 <option value="">Todos</option>
 <option value="bug">Bug</option>
@@ -2248,7 +2357,7 @@ select {
 </div>
 <h3 style="margin-top: 20px;">Releases Salvos</h3>
 <div class="documents-grid" id="releaseList">
-<div class="empty-state"><div class="empty-state-icon">📋</div><p>Nenhum release salvo</p></div>
+<div class="empty-state"><div class="empty-state-icon">🚀</div><p>Nenhum release salvo</p></div>
 </div>
 </div>
 <div class="content-section" id="reunioes">
@@ -3110,6 +3219,65 @@ function removeIntegration(idx, listName) {
             }
         }
 
+        // Função para filtrar clientes por grupo, subgrupo e nome
+        function filterClientsByGroup() {
+            const selectedGroup = document.getElementById('filterClientGroup').value.toLowerCase();
+            const selectedSubgroup = document.getElementById('filterClientSubgroup').value.toLowerCase();
+            const searchName = document.getElementById('filterClientName').value.toLowerCase();
+            const clientCards = document.querySelectorAll('#clientsList .client-card-vertical');
+            
+            let visibleCount = 0;
+                      clientCards.forEach(card => {
+                const clientId = card.dataset.clientId;
+                const client = clients.find(c => c.id == clientId);
+                if (!client) return;
+
+                const clientName = client.name.toLowerCase();
+                const clientGroup = client.group ? client.group.toLowerCase() : "";
+                const clientSubgroup = client.subgroup ? client.subgroup.toLowerCase() : "";                
+                const matchesGroup = selectedGroup === '' || clientGroup === selectedGroup;
+                const matchesSubgroup = selectedSubgroup === '' || clientSubgroup === selectedSubgroup;
+                const matchesName = searchName === '' || clientName.includes(searchName);
+                
+                if (matchesGroup && matchesSubgroup && matchesName) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Mostrar/esconder estado vazio
+            const emptyState = document.querySelector('#clientsList .empty-state');
+            if (emptyState) {
+                if (visibleCount === 0 && clientCards.length > 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = `
+                        <div class="empty-state-icon">🔍</div>
+                        <p>Nenhum cliente encontrado</p>
+                        <p>Tente ajustar os filtros</p>
+                    `;
+                } else if (clientCards.length === 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = `
+                        <div class="empty-state-icon">👥</div>
+                        <p>Nenhum cliente encontrado</p>
+                        <p>Adicione clientes para começar</p>
+                    `;
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
+        }
+        
+        // Função para limpar filtros
+        function clearClientFilters() {
+            document.getElementById('filterClientGroup').value = '';
+            document.getElementById('filterClientSubgroup').value = '';
+            document.getElementById('filterClientName').value = '';
+            filterClientsByGroup();
+        }
+
         // --- Document  ---
         async function addDocument() {
             const title = document.getElementById('documentTitle').value;
@@ -3228,6 +3396,9 @@ function removeIntegration(idx, listName) {
             const name = document.getElementById('clientName').value;
             const email = document.getElementById('clientEmail').value;
             const phone = document.getElementById('clientPhone').value;
+            const status = document.getElementById('clientStatus').value;
+            const group = document.getElementById('clientGroup').value;
+            const subgroup = document.getElementById('clientSubgroup').value;
             const biLink = document.getElementById('clientBiLink').value;
             
             let logoUrl = null;
@@ -3257,7 +3428,7 @@ function removeIntegration(idx, listName) {
                 const { data: clientData, error: clientError } = await supabase
                     .from('clients') 
                     .insert([
-                        { name, email, phone, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
+                        { name, email, phone, status, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
                     ])
                     .select(); 
 
@@ -3298,6 +3469,9 @@ function removeIntegration(idx, listName) {
                 document.getElementById('clientName').value = '';
                 document.getElementById('clientEmail').value = '';
                 document.getElementById('clientPhone').value = '';
+                document.getElementById('clientStatus').value = 'Cliente Ativo';
+                document.getElementById('clientGroup').value = 'Nenhum';
+                document.getElementById('clientSubgroup').value = 'Nenhum';
                 document.getElementById('clientBiLink').value = '';
                 if (logoFileInput) { 
                     logoFileInput.value = ''; 
@@ -3349,12 +3523,11 @@ function removeIntegration(idx, listName) {
                 return;
             }
 
-container.innerHTML = clients.map(client => `
+            container.innerHTML = clients.map(client => `
 
-  <div class="client-card-vertical">
+  <div class="client-card-vertical" data-client-id="${client.id}">
     <div class="client-card-top">
       <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_path || ''}')"><span style="font-size: 16px;">🗑️</span></button>
-      <span class="client-status-card">Ativo</span>
     </div>
 
     <div class="client-logo-vertical">
@@ -3363,7 +3536,8 @@ container.innerHTML = clients.map(client => `
 
     <p class="add-logo-text">${client.logo_url ? '' : 'Adicionar Logo'}</p>
     <h3 class="client-name-vertical">${client.name}</h3>
-    <p class="client-status-text">Cliente Ativo</p>
+    <p class="client-status-text ${client.status === 'Cliente Inativo' ? 'inactive' : ''}">${client.status || 'Cliente Ativo'}</p>
+
 
     <!-- Produtos -->
     <div class="info-section">
@@ -3396,6 +3570,11 @@ container.innerHTML = clients.map(client => `
   </div>
 
 `).join('');
+
+            // Aplicar filtros após renderizar
+            setTimeout(() => {
+                filterClientsByGroup();
+            }, 100);
 
             
         }
@@ -3441,6 +3620,9 @@ container.innerHTML = clients.map(client => `
             document.getElementById('editClientName').value = clientToEdit.name;
             document.getElementById('editClientEmail').value = clientToEdit.email;
             document.getElementById('editClientPhone').value = clientToEdit.phone;
+            document.getElementById('editClientStatus').value = clientToEdit.status || 'Cliente Ativo';
+            document.getElementById('editClientGroup').value = clientToEdit.group || 'Nenhum';
+            document.getElementById('editClientSubgroup').value = clientToEdit.subgroup || 'Nenhum';
             document.getElementById('editClientBiLink').value = clientToEdit.bi_link || '';
 
             const editLogoPreview = document.getElementById('editLogoPreview');
@@ -3464,6 +3646,9 @@ container.innerHTML = clients.map(client => `
             const name = document.getElementById('editClientName').value;
             const email = document.getElementById('editClientEmail').value;
             const phone = document.getElementById('editClientPhone').value;
+            const status = document.getElementById('editClientStatus').value;
+            const group = document.getElementById('editClientGroup').value;
+            const subgroup = document.getElementById('editClientSubgroup').value;
             const biLink = document.getElementById('editClientBiLink').value;
             const logoFileInput = document.getElementById('editClientLogo');
             const newLogoFile = logoFileInput.files[0];
@@ -3508,7 +3693,7 @@ container.innerHTML = clients.map(client => `
 
             const { error: clientError } = await supabase
                 .from('clients')
-                .update({ name, email, phone, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
+                .update({ name, email, phone, status, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
                 .eq('id', clientId);
 
             if (clientError) {
@@ -4103,6 +4288,8 @@ if (editingIntegrations.length > 0) {
 <option value="Marlos">Marlos</option>
 <option value="Renata">Renata</option>
 <option value="Larissa">Larissa</option>
+<option value="AdrielCS">Adriel CS</option>
+<option value="GabrielCS">Gabriel CS</option>
 </select>
 </div>
 </div>
@@ -6280,4 +6467,12 @@ document.addEventListener('keydown', function(event) {
   }
 });
 </script>
+
+
+
+<style>
+.client-status-text.inactive {
+    color: #f44336 !important; /* Vermelho */
+}
+</style>
 
