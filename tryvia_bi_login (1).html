@@ -10,6 +10,7 @@
   <title>Tryvia Portal - Login</title>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <style>
     /* ...seu CSS permanece igual... */
     :root {
@@ -121,6 +122,11 @@
     </div>
   </div>
   <script>
+    // Configuração do Supabase
+const SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     document.addEventListener('DOMContentLoaded', function() {
       checkExistingAuth();
       document.getElementById('username').focus();
@@ -171,109 +177,66 @@
       }
     }
 
-    function handleLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-      if (!username || !password) {
-        showMessage('Por favor, preencha todos os campos.', 'error');
-        return false;
-      }
-      setLoadingState(true);
-      simulateApiCall(username, password)
-        .then(response => {
-          if (response.success) {
-            storeAuthToken(response.token);
-            localStorage.setItem('username', username);
-            sessionStorage.setItem('tryvia_logged', '1');
-            // Salvar as permissões do usuário no localStorage
-            localStorage.setItem('permissoes', JSON.stringify(response.permissoes || []));
-            showMessage('Login bem-sucedido! Redirecionando...', 'success');
-            setTimeout(() => {
-              window.location.href = response.redirectUrl;
-            }, 1500);
-          } else {
-            showMessage(response.message || 'Credenciais inválidas. Tente novamente.', 'error');
-            document.getElementById('password').value = '';
-            document.getElementById('password').focus();
-          }
-        })
-        .catch(error => {
-          showMessage('Erro ao conectar ao servidor. Tente novamente mais tarde.', 'error');
-          console.error('Erro de autenticação:', error);
-        })
-        .finally(() => {
-          setLoadingState(false);
-        });
+async function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('username').value.trim(); // agora é o email!
+  const password = document.getElementById('password').value.trim();
+  if (!email || !password) {
+    showMessage('Por favor, preencha todos os campos.', 'error');
+    return false;
+  }
+  setLoadingState(true);
+
+  try {
+    // Consulta o usuário na tabela 'usuarios' pelo email
+    const { data, error } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (error || !data) {
+      showMessage('Usuário ou senha incorretos.', 'error');
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+      setLoadingState(false);
       return false;
     }
 
-    // Adicione aqui as permissões de cada usuário
-    const permissoesUsuarios = {
-      'tryvia': ['inicio', 'painel-setor', 'dashboard', 'clients', 'homologacao', 'release', 'reunioes', 'documents', 'evaluations', 'relatorioVisita', 'gestao'],
-      'Julyana': ['inicio', 'dashboard', 'clients'],
-      'Marlos': ['inicio', 'dashboard'],
-      'Renata': ['inicio', 'dashboard', 'clients', 'homologacao'],
-      'Larissa': ['inicio', 'dashboard', 'clients'],
-      'Victor': ['inicio', 'dashboard', 'clients'],
-      'Marciele': ['inicio', 'dashboard', 'clients'],
-      'Brenda': ['inicio', 'dashboard', 'clients'],
-      'Beatriz': ['inicio', 'dashboard', 'clients'],
-      'Reunidas': ['inicio', 'dashboard', 'clients'],
-      'Cezar': ['inicio', 'dashboard', 'clients'],
-      'Suzantur': ['inicio', 'dashboard', 'clients']
-    };
-
-    function simulateApiCall(username, password) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          const validCredentials = {
-            'tryvia': '1303',
-            'Julyana': '1303',
-            'Marlos': '1303',
-            'Renata': '1303',
-            'Larissa': '1303',
-            'Victor': '1303',
-            'Marciele': '1303',
-            'Brenda': '1303',
-            'Beatriz': '1303',
-            'Reunidas': '1303',
-            'Cezar': '1303',
-            'Suzantur': '1303'
-          };
-          const redirectionUrls = {
-            'Reunidas': 'https://tryvia.github.io/TryviaBI/reunidas.html',
-            'Suzantur': 'https://tryvia.github.io/TryviaBI/suzantur.html',
-            'tryvia': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Julyana': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Marlos': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Renata': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Larissa': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Victor': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Marciele': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Brenda': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Cezar': 'https://tryvia.github.io/TryviaBI/Portal.html',
-            'Beatriz': 'https://tryvia.github.io/TryviaBI/Portal.html'
-          };
-          if (validCredentials[username] && validCredentials[username] === password) {
-            const fakeToken = generateFakeToken(username);
-            const redirectUrl = redirectionUrls[username] || "https://tryvia.github.io/TryviaBI/Portal.html";
-            // Retorna também as permissões do usuário
-            resolve({
-              success: true,
-              token: fakeToken,
-              redirectUrl: redirectUrl,
-              permissoes: permissoesUsuarios[username] || []
-            });
-          } else {
-            resolve({
-              success: false,
-              message: 'Usuário ou senha incorretos.'
-            });
-          }
-        }, 1000);
-      });
+    // Verifica a senha (atenção: senha em texto puro, ideal é hash!)
+    if (data.senha !== password) {
+      showMessage('Usuário ou senha incorretos.', 'error');
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+      setLoadingState(false);
+      return false;
     }
+
+    // Permissões e redirecionamento
+    const permissoes = data.permissoes || [];
+    const redirectUrl = 'https://tryvia.github.io/TryviaBI/Portal.html';
+
+    // Gera token fake só para manter compatibilidade
+    const fakeToken = generateFakeToken(email);
+
+    storeAuthToken(fakeToken);
+    localStorage.setItem('username', data.nome); // Salva o nome do usuário
+    localStorage.setItem('user_email', email);   // Salva o email do usuário
+    sessionStorage.setItem('tryvia_logged', '1');
+    localStorage.setItem('permissoes', JSON.stringify(permissoes));
+    showMessage('Login bem-sucedido! Redirecionando...', 'success');
+    setTimeout(() => {
+      window.location.href = redirectUrl;
+    }, 1500);
+
+  } catch (err) {
+    showMessage('Erro ao conectar ao servidor. Tente novamente mais tarde.', 'error');
+    console.error('Erro de autenticação:', err);
+  } finally {
+    setLoadingState(false);
+  }
+  return false;
+}
 
     function generateFakeToken(username) {
       const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
