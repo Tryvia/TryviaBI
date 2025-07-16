@@ -1501,48 +1501,48 @@ Abrir WhatsApp
 </div>
 <ul class="nav-list">
 <li class="nav-item">
-<button onclick="showTab('inicio')"><i class="fas fa-home"></i> Início</button>
+<button onclick="showTab('inicio')"data-permissao="inicio"><i class="fas fa-home"></i> Início</button>
 </li>
 <li class="nav-item">
-<button onclick="showTab('painel-setor')"><i class="fas fa-chart-pie"></i> Painel do Setor</button>
+<button onclick="showTab('painel-setor')"data-permissao="painel-setor"><i class="fas fa-chart-pie"></i> Painel do Setor</button>
 </li>
 <li class="nav-item">
-<button onclick="showTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboards</button>
+<button onclick="showTab('dashboard')"data-permissao="dashboard"><i class="fas fa-chart-line"></i> Dashboards</button>
 </li>
 <li class="nav-item">
-<button onclick="showTab('clients')"><i class="fas fa-users"></i> Clientes</button>
+<button onclick="showTab('clients')"data-permissao="clients"><i class="fas fa-users"></i> Clientes</button>
 </li>
 <li class="nav-item">
-<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/mapa_visitas.html'"><i class="fas fa-calendar-check"></i> Visitas</button>
+<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/mapa_visitas.html'"data-permissao="https://tryvia.github.io/TryviaBI/mapa_visitas.html"><i class="fas fa-calendar-check"></i> Visitas</button>
 </li>
 <li class="nav-item">
-<button onclick="showTab('relatorioVisita')">
+<button onclick="showTab('relatorioVisita')"data-permissao="relatorioVisita">
 <i class="fas fa-file-signature"></i> Relatório de Visita
   </button>
-<li class="nav-item"><button onclick="showTab('homologacao')"><i class="fas fa-clipboard-check"></i> Homologação</button></li>
+<li class="nav-item"><button onclick="showTab('homologacao')"data-permissao="homologacao"><i class="fas fa-clipboard-check"></i> Homologação</button></li>
 <li class="nav-item">
-  <button onclick="showTab('release')"><i class="fas fa-rocket"></i> Release</button>
+  <button onclick="showTab('release')"data-permissao="release"><i class="fas fa-rocket"></i> Release</button>
 </li>
 <li class="nav-item">
-  <button onclick="showTab('reunioes')"><i class="fas fa-users"></i> Reuniões</button>
+  <button onclick="showTab('reunioes')"data-permissao="reunioes"><i class="fas fa-users"></i> Reuniões</button>
 </li>
 <li class="nav-item">
-  <button onclick="showTab('documents')"><i class="fas fa-file-alt"></i> Time de Implantação</button>
+  <button onclick="showTab('documents')"data-permissao="documents"><i class="fas fa-file-alt"></i> Time de Implantação</button>
 </li>
 <li class="nav-item">
-  <button onclick="showTab('evaluations')"><i class="fas fa-star"></i> Avaliações</button>
+  <button onclick="showTab('evaluations')"data-permissao="evaluation"><i class="fas fa-star"></i> Avaliações</button>
 </li>
 <li class="nav-item">
-<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/calendario.html'"><i class="fas fa-calendar"></i> Calendário</button>
+<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/calendario.html'"data-permissao="https://tryvia.github.io/TryviaBI/calendario.html"><i class="fas fa-calendar"></i> Calendário</button>
 </li>
 <li class="nav-item">
-<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html'"><i class="fas fa-clock"></i> MVP</button>
+<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html'"data-permissao="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html"><i class="fas fa-clock"></i> MVP</button>
 </li>
 <li class="nav-item">
-<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html'"><i class="fas fa-cogs"></i> Implantações</button>
+<button onclick="window.location.href='https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html'"data-permissao="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html"><i class="fas fa-cogs"></i> Implantações</button>
 </li>
 <li class="nav-item">
-<button onclick="showTab('gestao')"><i class="fas fa-users-cog"></i> Gestão</button>
+<button onclick="showTab('gestao')"data-permissao="gestao"><i class="fas fa-users-cog"></i> Gestão</button>
 </li>
 <li class="nav-item">
 <a href="#"><i class="fas fa-cog"></i> Configurações</a>
@@ -7202,6 +7202,26 @@ window.showTab = function(tabId) {
         loadEvaluations();
     }
 };
+
+// Script para esconder abas do menu lateral conforme as permissões do usuário
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Recupera as permissões do usuário do localStorage
+  let permissoes = [];
+  try {
+    permissoes = JSON.parse(localStorage.getItem('permissoes')) || [];
+  } catch (e) {
+    permissoes = [];
+  }
+
+  // Esconde abas do menu lateral conforme as permissões
+  document.querySelectorAll('.nav-item button[data-permissao]').forEach(btn => {
+    const perm = btn.getAttribute('data-permissao');
+    if (!permissoes.includes(perm)) {
+      btn.parentElement.style.display = 'none';
+    }
+  });
+});
 
 
 function logoutTryvia() {
