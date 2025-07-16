@@ -185,6 +185,7 @@
           if (response.success) {
             storeAuthToken(response.token);
             localStorage.setItem('username', username);
+            sessionStorage.setItem('tryvia_logged', '1');
             // Salvar as permissões do usuário no localStorage
             localStorage.setItem('permissoes', JSON.stringify(response.permissoes || []));
             showMessage('Login bem-sucedido! Redirecionando...', 'success');
