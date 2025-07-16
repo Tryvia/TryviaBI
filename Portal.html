@@ -6567,7 +6567,11 @@ document.addEventListener('keydown', function(event) {
 }
 </style>
 
-
+<script>
+if (!sessionStorage.getItem('tryvia_logged')) {
+    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+}
+</script>
 
 
 <script>
