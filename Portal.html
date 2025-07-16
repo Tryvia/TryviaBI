@@ -1416,6 +1416,11 @@ const PDF_SERVER_URL = 'https://servis-pdf.onrender.com';
 </script>
 </head>
 <body><script>
+// Proteção de login: redireciona se não estiver logado
+if (!sessionStorage.getItem('tryvia_logged')) {
+    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+}
+
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
 const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
 const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
@@ -1543,8 +1548,7 @@ Abrir WhatsApp
 <a href="#"><i class="fas fa-cog"></i> Configurações</a>
 </li>
 <li class="nav-item">
-<a href="https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html"><i class="fas fa-sign-out-alt"></i> Sair</a>
-<li class="nav-item">
+<a href="#" onclick="logoutTryvia()"><i class="fas fa-sign-out-alt"></i> Sair</a><li class="nav-item">
 </li>
 </li></li><li class="nav-item">
 </li></ul>
@@ -7198,6 +7202,11 @@ window.showTab = function(tabId) {
         loadEvaluations();
     }
 };
+function logoutTryvia() {
+    sessionStorage.removeItem('tryvia_logged');
+    localStorage.removeItem('username');
+    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+}
 </script>
 
 
