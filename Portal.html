@@ -2750,7 +2750,7 @@ select {
 
     <!-- Formulário para Adicionar Usuário -->
     <div class="form-container">
-        <h3 style="margin-bottom: 20px; color: var(--accent-color);">Adicionar Novo Usuário</h3>
+        <h3 style="margin-bottom: 20px; color: #333333;">Adicionar Novo Usuário</h3>
         <div class="form-row">
             <div class="form-group">
                 <label for="usuarioNome">Nome Completo</label>
@@ -2782,6 +2782,22 @@ select {
                     <input type="checkbox" id="perm-painel-setor" value="painel-setor">
                     <span>Painel do Setor</span>
                 </label>
+                 <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+            <input type="checkbox" id="perm-visitas" value="visitas">
+            <span>Visitas</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+            <input type="checkbox" id="perm-calendario" value="calendario">
+            <span>Calendário</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+            <input type="checkbox" id="perm-mvp" value="mvp">
+            <span>MVP</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+            <input type="checkbox" id="perm-implantacao" value="implantacao">
+            <span>Implantação</span>
+        </label>
                 <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
                     <input type="checkbox" id="perm-dashboard" value="dashboard">
                     <span>Dashboards</span>
@@ -2828,7 +2844,7 @@ select {
 
     <!-- Lista de Usuários -->
     <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
-        <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em;">
+        <h3 style="color: #333333; margin-bottom: 20px; font-size: 1.5em;">
             <i class="fas fa-users" style="margin-right: 10px;"></i>
             Usuários Cadastrados
         </h3>
