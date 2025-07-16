@@ -1545,6 +1545,9 @@ Abrir WhatsApp
 <button onclick="showTab('gestao')"data-permissao="gestao"><i class="fas fa-users-cog"></i> Gestão</button>
 </li>
 <li class="nav-item">
+<button onclick="showTab('gerenciar-logins')"data-permissao="gerenciar-logins"><i class="fas fa-user-shield"></i> Gerenciar Logins</button>
+</li>
+<li class="nav-item">
 <a href="#"><i class="fas fa-cog"></i> Configurações</a>
 </li>
 <li class="nav-item">
@@ -2654,6 +2657,145 @@ select {
         </div>
     </div>
 </div></div>
+
+<!-- Nova Seção: Gerenciar Logins -->
+<div class="content-section" id="gerenciar-logins">
+    <div style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
+        <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
+            <i class="fas fa-user-shield" style="margin-right: 15px;"></i>
+            Gerenciar Logins
+        </h2>
+        <p style="margin: 0; font-size: 1.2em; opacity: 0.9;">
+            Gerencie usuários e permissões do sistema
+        </p>
+    </div>
+
+    <!-- Formulário para Adicionar Usuário -->
+    <div class="form-container">
+        <h3 style="margin-bottom: 20px; color: var(--accent-color);">Adicionar Novo Usuário</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="usuarioNome">Nome Completo</label>
+                <input type="text" id="usuarioNome" placeholder="Digite o nome completo do usuário">
+            </div>
+            <div class="form-group">
+                <label for="usuarioEmail">Email</label>
+                <input type="email" id="usuarioEmail" placeholder="Digite o email do usuário">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="usuarioSenha">Senha</label>
+                <input type="password" id="usuarioSenha" placeholder="Digite a senha">
+            </div>
+            <div class="form-group">
+                <label for="usuarioConfirmarSenha">Confirmar Senha</label>
+                <input type="password" id="usuarioConfirmarSenha" placeholder="Confirme a senha">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Permissões</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-inicio" value="inicio" checked>
+                    <span>Início</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-painel-setor" value="painel-setor">
+                    <span>Painel do Setor</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-dashboard" value="dashboard">
+                    <span>Dashboards</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-clients" value="clients">
+                    <span>Clientes</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-homologacao" value="homologacao">
+                    <span>Homologação</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-release" value="release">
+                    <span>Release</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-reunioes" value="reunioes">
+                    <span>Reuniões</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-documents" value="documents">
+                    <span>Time de Implantação</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-evaluations" value="evaluations">
+                    <span>Avaliações</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-relatorioVisita" value="relatorioVisita">
+                    <span>Relatório de Visita</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="perm-gestao" value="gestao">
+                    <span>Gestão</span>
+                </label>
+            </div>
+        </div>
+        <button class="btn-primary" onclick="adicionarUsuario()">
+            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+            Adicionar Usuário
+        </button>
+    </div>
+
+    <!-- Lista de Usuários -->
+    <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+        <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em;">
+            <i class="fas fa-users" style="margin-right: 10px;"></i>
+            Usuários Cadastrados
+        </h3>
+        
+        <!-- Filtros -->
+        <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="filtroNomeUsuario">Filtrar por Nome</label>
+                    <input type="text" id="filtroNomeUsuario" placeholder="Digite o nome..." oninput="filtrarUsuarios()">
+                </div>
+                <div class="form-group">
+                    <label for="filtroEmailUsuario">Filtrar por Email</label>
+                    <input type="text" id="filtroEmailUsuario" placeholder="Digite o email..." oninput="filtrarUsuarios()">
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn-secondary" onclick="limparFiltrosUsuarios()">Limpar Filtros</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Usuários -->
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead style="background: #4fc3f7; color: white;">
+                    <tr>
+                        <th style="padding: 15px; text-align: left; font-weight: bold;">Nome</th>
+                        <th style="padding: 15px; text-align: left; font-weight: bold;">Email</th>
+                        <th style="padding: 15px; text-align: center; font-weight: bold;">Permissões</th>
+                        <th style="padding: 15px; text-align: center; font-weight: bold;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usuariosTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+                            <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
+                            Carregando usuários...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
         
@@ -2920,6 +3062,8 @@ function removeIntegration(idx, listName) {
                 fetchAndRenderDashboards(); 
             } else if (tabId === 'gestao') {
                 fetchAndRenderFuncionarios();
+            } else if (tabId === 'gerenciar-logins') {
+                fetchAndRenderUsuarios();
             }
         }
 
@@ -7228,6 +7372,368 @@ function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+}
+
+// ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
+
+// Variáveis globais para usuários
+let todosUsuarios = [];
+let usuariosFiltrados = [];
+
+// Função para buscar e renderizar usuários
+async function fetchAndRenderUsuarios() {
+    try {
+        const { data: usuarios, error } = await releaseClient
+            .from('usuarios')
+            .select('*')
+            .order('nome', { ascending: true });
+
+        if (error) {
+            console.error('Erro ao buscar usuários:', error);
+            showAlert('Erro', 'Erro ao carregar usuários: ' + error.message);
+            return;
+        }
+
+        todosUsuarios = usuarios || [];
+        usuariosFiltrados = [...todosUsuarios];
+        renderUsuarios();
+    } catch (error) {
+        console.error('Erro ao buscar usuários:', error);
+        showAlert('Erro', 'Erro ao carregar usuários: ' + error.message);
+    }
+}
+
+// Função para renderizar a tabela de usuários
+function renderUsuarios() {
+    const tbody = document.getElementById('usuariosTableBody');
+    
+    if (usuariosFiltrados.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+                    <i class="fas fa-users" style="margin-right: 8px;"></i>
+                    Nenhum usuário encontrado
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = usuariosFiltrados.map(usuario => `
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
+            <td style="padding: 15px;">${usuario.email}</td>
+            <td style="padding: 15px; text-align: center;">
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
+                    ${usuario.permissoes.map(perm => `
+                        <span style="background: #4fc3f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em;">
+                            ${getPermissaoLabel(perm)}
+                        </span>
+                    `).join('')}
+                </div>
+            </td>
+            <td style="padding: 15px; text-align: center;">
+                <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button onclick="excluirUsuario('${usuario.id}', '${usuario.nome}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Função para obter o label da permissão
+function getPermissaoLabel(permissao) {
+    const labels = {
+        'inicio': 'Início',
+        'painel-setor': 'Painel do Setor',
+        'dashboard': 'Dashboards',
+        'clients': 'Clientes',
+        'homologacao': 'Homologação',
+        'release': 'Release',
+        'reunioes': 'Reuniões',
+        'documents': 'Time de Implantação',
+        'evaluations': 'Avaliações',
+        'relatorioVisita': 'Relatório de Visita',
+        'gestao': 'Gestão'
+    };
+    return labels[permissao] || permissao;
+}
+
+// Função para adicionar usuário
+async function adicionarUsuario() {
+    const nome = document.getElementById('usuarioNome').value.trim();
+    const email = document.getElementById('usuarioEmail').value.trim();
+    const senha = document.getElementById('usuarioSenha').value;
+    const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
+
+    // Validações
+    if (!nome || !email || !senha || !confirmarSenha) {
+        showAlert('Erro', 'Todos os campos são obrigatórios.');
+        return;
+    }
+
+    if (senha !== confirmarSenha) {
+        showAlert('Erro', 'As senhas não coincidem.');
+        return;
+    }
+
+    if (senha.length < 6) {
+        showAlert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
+        return;
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showAlert('Erro', 'Por favor, insira um email válido.');
+        return;
+    }
+
+    // Coletar permissões selecionadas
+    const permissoes = [];
+    document.querySelectorAll('input[type="checkbox"][id^="perm-"]:checked').forEach(checkbox => {
+        permissoes.push(checkbox.value);
+    });
+
+    if (permissoes.length === 0) {
+        showAlert('Erro', 'Selecione pelo menos uma permissão.');
+        return;
+    }
+
+    try {
+        // Verificar se o email já existe
+        const { data: existingUser, error: checkError } = await releaseClient
+            .from('usuarios')
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        if (existingUser) {
+            showAlert('Erro', 'Já existe um usuário com este email.');
+            return;
+        }
+
+        // Inserir novo usuário
+        const { data, error } = await releaseClient
+            .from('usuarios')
+            .insert([{
+                nome: nome,
+                email: email,
+                senha: senha, // Em produção, a senha deveria ser hasheada
+                permissoes: permissoes
+            }])
+            .select();
+
+        if (error) {
+            console.error('Erro ao adicionar usuário:', error);
+            showAlert('Erro', 'Erro ao adicionar usuário: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Usuário adicionado com sucesso!');
+        
+        // Limpar formulário
+        document.getElementById('usuarioNome').value = '';
+        document.getElementById('usuarioEmail').value = '';
+        document.getElementById('usuarioSenha').value = '';
+        document.getElementById('usuarioConfirmarSenha').value = '';
+        document.querySelectorAll('input[type="checkbox"][id^="perm-"]').forEach(checkbox => {
+            checkbox.checked = checkbox.id === 'perm-inicio';
+        });
+
+        // Recarregar lista
+        fetchAndRenderUsuarios();
+
+    } catch (error) {
+        console.error('Erro ao adicionar usuário:', error);
+        showAlert('Erro', 'Erro ao adicionar usuário: ' + error.message);
+    }
+}
+
+// Função para filtrar usuários
+function filtrarUsuarios() {
+    const filtroNome = document.getElementById('filtroNomeUsuario').value.toLowerCase();
+    const filtroEmail = document.getElementById('filtroEmailUsuario').value.toLowerCase();
+
+    usuariosFiltrados = todosUsuarios.filter(usuario => {
+        const nomeMatch = usuario.nome.toLowerCase().includes(filtroNome);
+        const emailMatch = usuario.email.toLowerCase().includes(filtroEmail);
+        return nomeMatch && emailMatch;
+    });
+
+    renderUsuarios();
+}
+
+// Função para limpar filtros
+function limparFiltrosUsuarios() {
+    document.getElementById('filtroNomeUsuario').value = '';
+    document.getElementById('filtroEmailUsuario').value = '';
+    usuariosFiltrados = [...todosUsuarios];
+    renderUsuarios();
+}
+
+// Função para excluir usuário
+async function excluirUsuario(usuarioId, nomeUsuario) {
+    const confirmacao = await showConfirm(
+        'Confirmar Exclusão',
+        `Tem certeza que deseja excluir o usuário "${nomeUsuario}"? Esta ação não pode ser desfeita.`
+    );
+
+    if (!confirmacao) return;
+
+    try {
+        const { error } = await releaseClient
+            .from('usuarios')
+            .delete()
+            .eq('id', usuarioId);
+
+        if (error) {
+            console.error('Erro ao excluir usuário:', error);
+            showAlert('Erro', 'Erro ao excluir usuário: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Usuário excluído com sucesso!');
+        fetchAndRenderUsuarios();
+
+    } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        showAlert('Erro', 'Erro ao excluir usuário: ' + error.message);
+    }
+}
+
+// Função para editar usuário (implementação básica)
+async function editarUsuario(usuarioId) {
+    const usuario = todosUsuarios.find(u => u.id === usuarioId);
+    if (!usuario) {
+        showAlert('Erro', 'Usuário não encontrado.');
+        return;
+    }
+
+    // Por simplicidade, vamos apenas preencher o formulário com os dados do usuário
+    document.getElementById('usuarioNome').value = usuario.nome;
+    document.getElementById('usuarioEmail').value = usuario.email;
+    document.getElementById('usuarioSenha').value = '';
+    document.getElementById('usuarioConfirmarSenha').value = '';
+
+    // Marcar permissões
+    document.querySelectorAll('input[type="checkbox"][id^="perm-"]').forEach(checkbox => {
+        checkbox.checked = usuario.permissoes.includes(checkbox.value);
+    });
+
+    // Alterar o botão para modo edição
+    const botaoAdicionar = document.querySelector('button[onclick="adicionarUsuario()"]');
+    botaoAdicionar.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>Salvar Alterações';
+    botaoAdicionar.setAttribute('onclick', `salvarEdicaoUsuario('${usuarioId}')`);
+
+    // Scroll para o formulário
+    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Função para salvar edição do usuário
+async function salvarEdicaoUsuario(usuarioId) {
+    const nome = document.getElementById('usuarioNome').value.trim();
+    const email = document.getElementById('usuarioEmail').value.trim();
+    const senha = document.getElementById('usuarioSenha').value;
+    const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
+
+    // Validações
+    if (!nome || !email) {
+        showAlert('Erro', 'Nome e email são obrigatórios.');
+        return;
+    }
+
+    if (senha && senha !== confirmarSenha) {
+        showAlert('Erro', 'As senhas não coincidem.');
+        return;
+    }
+
+    if (senha && senha.length < 6) {
+        showAlert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
+        return;
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showAlert('Erro', 'Por favor, insira um email válido.');
+        return;
+    }
+
+    // Coletar permissões selecionadas
+    const permissoes = [];
+    document.querySelectorAll('input[type="checkbox"][id^="perm-"]:checked').forEach(checkbox => {
+        permissoes.push(checkbox.value);
+    });
+
+    if (permissoes.length === 0) {
+        showAlert('Erro', 'Selecione pelo menos uma permissão.');
+        return;
+    }
+
+    try {
+        // Verificar se o email já existe em outro usuário
+        const { data: existingUser, error: checkError } = await releaseClient
+            .from('usuarios')
+            .select('id')
+            .eq('email', email)
+            .neq('id', usuarioId);
+
+        if (existingUser && existingUser.length > 0) {
+            showAlert('Erro', 'Já existe outro usuário com este email.');
+            return;
+        }
+
+        // Preparar dados para atualização
+        const updateData = {
+            nome: nome,
+            email: email,
+            permissoes: permissoes
+        };
+
+        // Incluir senha apenas se foi fornecida
+        if (senha) {
+            updateData.senha = senha;
+        }
+
+        // Atualizar usuário
+        const { error } = await releaseClient
+            .from('usuarios')
+            .update(updateData)
+            .eq('id', usuarioId);
+
+        if (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Usuário atualizado com sucesso!');
+        
+        // Limpar formulário e voltar ao modo adicionar
+        document.getElementById('usuarioNome').value = '';
+        document.getElementById('usuarioEmail').value = '';
+        document.getElementById('usuarioSenha').value = '';
+        document.getElementById('usuarioConfirmarSenha').value = '';
+        document.querySelectorAll('input[type="checkbox"][id^="perm-"]').forEach(checkbox => {
+            checkbox.checked = checkbox.id === 'perm-inicio';
+        });
+
+        // Restaurar botão para modo adicionar
+        const botaoSalvar = document.querySelector('button[onclick^="salvarEdicaoUsuario"]');
+        botaoSalvar.innerHTML = '<i class="fas fa-user-plus" style="margin-right: 8px;"></i>Adicionar Usuário';
+        botaoSalvar.setAttribute('onclick', 'adicionarUsuario()');
+
+        // Recarregar lista
+        fetchAndRenderUsuarios();
+
+    } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+        showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
+    }
 }
 </script>
 </body>
