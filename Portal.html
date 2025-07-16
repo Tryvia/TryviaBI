@@ -1525,6 +1525,9 @@ Abrir WhatsApp
   <button onclick="showTab('documents')"><i class="fas fa-file-alt"></i> Time de Implantação</button>
 </li>
 <li class="nav-item">
+  <button onclick="showTab('evaluations')"><i class="fas fa-star"></i> Avaliações</button>
+</li>
+<li class="nav-item">
 <button onclick="window.location.href='https://tryvia.github.io/TryviaBI/calendario.html'"><i class="fas fa-calendar"></i> Calendário</button>
 </li>
 <li class="nav-item">
@@ -1742,6 +1745,16 @@ select {
                     <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #7b1fa2;" id="totalReunioes">-</p>
                 </div>
                 <div style="font-size: 3em; color: #7b1fa2; opacity: 0.7;">📅</div>
+            </div>
+        </div>
+
+        <div class="metric-card" style="background:linear-gradient(135deg, rgb(183, 177, 177) 0%, rgb(181, 176, 180) 100%); border-radius: 12px; padding: 24px; box-shadow:rgba(41, 182, 246, 0.3) 0px 4px 15px; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('evaluations')">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Avaliação Média</h3>
+                    <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #a65b0b;" id="averageRatingHome">-</p>
+                </div>
+                <div style="font-size: 3em; color: #f57c00; opacity: 0.7;">⭐</div>
             </div>
         </div>
     </div>
@@ -2219,7 +2232,7 @@ select {
 <form id="homologacaoForm">
 <div class="form-row">
 <div class="form-group">
-<label for="especialista">👨‍💻 Especialista Responsável</label>
+<label for="especialista"> Especialista Responsável</label>
 <select id="especialista" name="especialista" required="">
 <option value="">Selecione o especialista</option>
 <option value="Marlos">Marlos</option>
@@ -2228,22 +2241,22 @@ select {
 </select>
 </div>
 <div class="form-group">
-<label for="versao">📋 Versão</label>
+<label for="versao"> Versão</label>
 <input id="versao" name="versao" placeholder="Ex: v1.2.3" required="" type="text"/>
 </div>
 </div>
 <div class="form-row">
 <div class="form-group">
-<label for="dataLiberacao">📅 Data de Liberação</label>
+<label for="dataLiberacao"> Data de Liberação</label>
 <input id="dataLiberacao" name="dataLiberacao" required="" type="date"/>
 </div>
 <div class="form-group">
-<label for="dataHomologacao">✅ Data de Homologação</label>
+<label for="dataHomologacao"> Data de Homologação</label>
 <input id="dataHomologacao" name="dataHomologacao" type="date"/>
 </div>
 </div>
 <div class="form-group">
-<label for="sistema">🖥️ Sistema</label>
+<label for="sistema"> Sistema</label>
 <select id="sistema" name="sistema" required="">
 <option value="">Selecione o sistema</option>
 <option value="Sistema Web">Sistema Web</option>
@@ -2255,11 +2268,11 @@ select {
 </select>
 </div>
 <div class="form-group">
-<label for="observacao">📝 Observações</label>
+<label for="observacao"> Observações</label>
 <textarea id="observacao" name="observacao" placeholder="Descreva detalhes da homologação, testes realizados, bugs encontrados, etc."></textarea>
 </div>
 <div class="form-group">
-<label>📁 Arquivos de Homologação</label>
+<label> Arquivos de Homologação</label>
 <div class="upload-area" id="uploadAreaHomologacao">
 <div class="upload-icon">☁️</div>
 <div class="upload-text">Clique aqui ou arraste arquivos</div>
@@ -2270,10 +2283,10 @@ select {
 </div>
 <div class="btn-group">
 <button class="btn btn-secondary" onclick="limparHomologacaoForm()" type="button">
-                                🔄 Limpar
+                                 Limpar
                             </button>
 <button class="btn btn-primary" type="submit">
-                                💾 Salvar Homologação
+                                 Salvar Homologação
                             </button>
 </div>
 </form>
@@ -2282,7 +2295,7 @@ select {
 <div class="filters-section">
 <div class="form-row">
 <div class="form-group">
-<label for="filtroSistema">🔍 Filtrar por Sistema</label>
+<label for="filtroSistema"> Filtrar por Sistema</label>
 <select id="filtroSistema" onchange="filtrarHomologacoes()">
 <option value="">Todos os sistemas</option>
 <option value="Sistema Web">Sistema Web</option>
@@ -2294,7 +2307,7 @@ select {
 </select>
 </div>
 <div class="form-group">
-<label for="filtroEspecialista">👨‍💻 Filtrar por Especialista</label>
+<label for="filtroEspecialista"> Filtrar por Especialista</label>
 <input id="filtroEspecialista" onkeyup="filtrarHomologacoes()" placeholder="Nome do especialista" type="text"/>
 </div>
 </div>
@@ -2313,18 +2326,18 @@ select {
 <div class="form-container">
 <h3 style="margin-bottom: 20px;">Cadastro de Release</h3>
 <div class="form-row">
-<div class="form-group"><label for="releaseDate">📅 Data de Liberação</label><input class="input-padrao" id="releaseDate" placeholder="Selecione a data" type="date" readonly/></div>
-<div class="form-group"><label for="releaseStatus">📌 Status</label><input id="releaseStatus" type="text"/></div>
+<div class="form-group"><label for="releaseDate"> Data de Liberação</label><input class="input-padrao" id="releaseDate" placeholder="Selecione a data" type="date" readonly/></div>
+<div class="form-group"><label for="releaseStatus"> Status</label><input id="releaseStatus" type="text"/></div>
 </div>
 <div class="form-row">
-<div class="form-group"><label for="releaseSystem">🖥️ Sistema</label><input id="releaseSystem" type="text"/></div>
-<div class="form-group"><label for="releaseVersion">🧾 Versão</label><input id="releaseVersion" type="text"/></div>
+<div class="form-group"><label for="releaseSystem"> Sistema</label><input id="releaseSystem" type="text"/></div>
+<div class="form-group"><label for="releaseVersion"> Versão</label><input id="releaseVersion" type="text"/></div>
 </div>
 <div class="form-row">
-<div class="form-group"><label for="releaseAnalyst">👤 Analista</label><input id="releaseAnalyst" type="text"/></div>
-<div class="form-group"><label for="releaseHomologDate">✅ Data de Homologação</label><input class="input-padrao" id="releaseHomologDate" placeholder="Selecione a data" type="date"/></div>
+<div class="form-group"><label for="releaseAnalyst"> Analista</label><input id="releaseAnalyst" type="text"/></div>
+<div class="form-group"><label for="releaseHomologDate"> Data de Homologação</label><input class="input-padrao" id="releaseHomologDate" placeholder="Selecione a data" type="date"/></div>
 </div>
-<div class="form-group"><label for="releaseType">📂 Tipo</label>
+<div class="form-group"><label for="releaseType"> Tipo</label>
 <select id="releaseType">
 <option value="">Selecione o tipo</option>
 <option value="bug">Bug</option>
@@ -2343,8 +2356,8 @@ select {
 <button class="btn-primary" onclick="salvarRelease()">Salvar Release</button>
 </div>
 <div class="form-row" style="margin-top: 40px; align-items: flex-end;">
-<div class="form-group"><label for="filtroSistema">🔍 Sistema</label><input id="filtroSistema" type="text"/></div>
-<div class="form-group"><label for="filtroTipo">📂 Tipo</label>
+<div class="form-group"><label for="filtroSistema"> Sistema</label><input id="filtroSistema" type="text"/></div>
+<div class="form-group"><label for="filtroTipo"> Tipo</label>
 <select id="filtroTipo">
 <option value="">Todos</option>
 <option value="bug">Bug</option>
@@ -2357,7 +2370,7 @@ select {
 </div>
 <h3 style="margin-top: 20px;">Releases Salvos</h3>
 <div class="documents-grid" id="releaseList">
-<div class="empty-state"><div class="empty-state-icon">🚀</div><p>Nenhum release salvo</p></div>
+<div class="empty-state"><div class="empty-state-icon"></div><p>Nenhum release salvo</p></div>
 </div>
 </div>
 <div class="content-section" id="reunioes">
@@ -3063,7 +3076,7 @@ function removeIntegration(idx, listName) {
                             <select id="clientDocumentType">
                                 <option value="">Selecione o tipo</option>
                                 <option value="apresentacao">Apresentação</option>
-                                <option value="relatorio">Relatório</option>
+                                <option value="relatorio">Relatório de Visita</option>
                                 <option value="atas">Atas</option>
                                 <option value="planilha">Planilha</option>
                                 <option value="outro">Outro</option>
@@ -3527,7 +3540,7 @@ function removeIntegration(idx, listName) {
 
   <div class="client-card-vertical" data-client-id="${client.id}">
     <div class="client-card-top">
-      <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_path || ''}')"><span style="font-size: 16px;">🗑️</span></button>
+      <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_path || ''}')"><span style="font-size: 16px;">X</span></button>
     </div>
 
     <div class="client-logo-vertical">
@@ -3576,6 +3589,8 @@ function removeIntegration(idx, listName) {
                 filterClientsByGroup();
             }, 100);
 
+            // Popular dropdown de clientes no relatório de visita
+            populateClientDropdown();
             
         }
         async function deleteClient(id, logoPath) {
@@ -3606,6 +3621,26 @@ function removeIntegration(idx, listName) {
                 showAlert('Sucesso', 'Cliente deletado com sucesso!');
                 fetchAndRenderClients(); 
             }
+        }
+
+        // Função para popular o dropdown de clientes no relatório de visita
+        function populateClientDropdown() {
+            const clientSelect = document.getElementById('rvEmpresa');
+            if (!clientSelect || !clients) return;
+            
+            // Limpar opções existentes (exceto a primeira)
+            clientSelect.innerHTML = '<option value="">Selecione um cliente...</option>';
+            
+            // Adicionar clientes ativos ao dropdown
+            clients
+                .filter(client => client.status !== 'Cliente Inativo')
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .forEach(client => {
+                    const option = document.createElement('option');
+                    option.value = client.name;
+                    option.textContent = client.name;
+                    clientSelect.appendChild(option);
+                });
         }
 
         async function editClient(clientId) {
@@ -3809,7 +3844,15 @@ if (editingIntegrations.length > 0) {
                 return;
             }
 
-            container.innerHTML = data.map(doc => `
+            // Verificar quais documentos já foram avaliados
+            const documentsWithEvaluationStatus = await Promise.all(
+                data.map(async (doc) => {
+                    const isEvaluated = await isDocumentEvaluated(doc.id);
+                    return { ...doc, isEvaluated };
+                })
+            );
+
+            container.innerHTML = documentsWithEvaluationStatus.map(doc => `
                 <div class="document-card">
                     <div class="document-header">
                         <span class="document-type">${doc.type}</span>
@@ -3818,6 +3861,16 @@ if (editingIntegrations.length > 0) {
                     <div class="document-title">${doc.title}</div>
                     <div class="document-author">ID do Cliente: ${doc.client_id}</div>
                     <a href="${doc.file_url}" download="${doc.title}.${doc.file_url.split('.').pop()}" target="_blank" class="btn-secondary" style="margin-top: 15px; display: block; text-align: center;">Download</a>
+                    ${(doc.type === 'relatorio' || doc.title.toLowerCase().includes('relatório') || doc.title.toLowerCase().includes('relatorio') || doc.title.toLowerCase().includes('visita')) ? 
+                        (doc.isEvaluated ? 
+                            `<button class="btn-evaluated" style="margin-top: 10px; display: block; width: 100%; text-align: center; background: #6c757d; color: white; border: none; padding: 10px; border-radius: 5px; cursor: not-allowed;" disabled>
+                                ✅ Visita Avaliada
+                            </button>` :
+                            `<button onclick="openEvaluationModal('${doc.id}', '${doc.title}', '${doc.client_id}')" class="btn-evaluation" style="margin-top: 10px; display: block; width: 100%; text-align: center; background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                                ⭐ Avaliar Visita
+                            </button>`
+                        ) : ''
+                    }
                 </div>
             `).join('');
         }
@@ -4259,6 +4312,8 @@ if (editingIntegrations.length > 0) {
         
         document.addEventListener('DOMContentLoaded', () => {
             showTab('dashboard'); 
+            // Carregar clientes para popular o dropdown
+            fetchAndRenderClients();
         });
     </script>
 <!-- Início do Relatório de Visita -->
@@ -4271,8 +4326,10 @@ if (editingIntegrations.length > 0) {
 <h3 style="margin-bottom: 20px; color: var(--accent-color);">Relatório de Visita</h3>
 <div class="form-row">
 <div class="form-group">
-<label>Empresa</label>
-<input id="rvEmpresa" type="text"/>
+<label>Cliente</label>
+<select id="rvEmpresa">
+<option value="">Selecione um cliente...</option>
+</select>
 </div>
 <div class="form-group">
 <label>Data</label>
@@ -4497,7 +4554,20 @@ async function gerarPDFVisita() {
     doc.addImage(imgData2, 'PNG', 10, 30, 180, 90);
   }
 
+  // Salvar o PDF para download
   doc.save('relatorio_visita_completo.pdf');
+  
+  // Salvar automaticamente no cliente se houver um cliente selecionado
+  const clienteEmpresa = document.getElementById('rvEmpresa')?.value;
+  if (clienteEmpresa) {
+    // Buscar o ID do cliente pela empresa
+    const clienteId = await buscarClienteIdPorEmpresa(clienteEmpresa);
+    if (clienteId) {
+      // Gerar o blob do PDF para salvar no cliente
+      const pdfBlob = doc.output('blob');
+      await salvarPDFNoCliente(pdfBlob, clienteId);
+    }
+  }
 }
 </script>
 <script>
@@ -4660,6 +4730,7 @@ let dashboardData = {
     totalHomologacoes: 0,
     totalReleases: 0,
     totalReunioes: 0,
+    averageRating: 0.0,
     recentActivities: [],
     highlightClients: [],
     notifications: []
@@ -4701,11 +4772,12 @@ function updateDateTime() {
 async function loadDashboardMetrics() {
     try {
         // Carregar contadores de cada tabela
-        const [clientsResult, homologacoesResult, releasesResult, reunioesResult] = await Promise.all([
+        const [clientsResult, homologacoesResult, releasesResult, reunioesResult, evaluationsResult] = await Promise.all([
             supabase.from('clients').select('id', { count: 'exact', head: true }),
             supabase.from('homologacoes').select('id', { count: 'exact', head: true }),
             releaseClient.from('releases').select('id', { count: 'exact', head: true }),
-            releaseClient.from('reunioes').select('id', { count: 'exact', head: true })
+            releaseClient.from('reunioes').select('id', { count: 'exact', head: true }),
+            supabase.from('visit_evaluations').select('rating')
         ]);
 
         dashboardData.totalClients = clientsResult.count || 0;
@@ -4713,11 +4785,20 @@ async function loadDashboardMetrics() {
         dashboardData.totalReleases = releasesResult.count || 0;
         dashboardData.totalReunioes = reunioesResult.count || 0;
 
+        // Calcular avaliação média
+        if (evaluationsResult.data && evaluationsResult.data.length > 0) {
+            const totalRating = evaluationsResult.data.reduce((sum, evaluation) => sum + evaluation.rating, 0);
+            dashboardData.averageRating = (totalRating / evaluationsResult.data.length).toFixed(1);
+        } else {
+            dashboardData.averageRating = '0.0';
+        }
+
         // Atualizar UI
         document.getElementById('totalClients').textContent = dashboardData.totalClients;
         document.getElementById('totalHomologacoes').textContent = dashboardData.totalHomologacoes;
         document.getElementById('totalReleases').textContent = dashboardData.totalReleases;
         document.getElementById('totalReunioes').textContent = dashboardData.totalReunioes;
+        document.getElementById('averageRatingHome').textContent = dashboardData.averageRating;
 
         // Adicionar animação aos cards
         document.querySelectorAll('.metric-card').forEach(card => {
@@ -4733,6 +4814,12 @@ async function loadDashboardMetrics() {
 
     } catch (error) {
         console.error('Erro ao carregar métricas:', error);
+        // Valores padrão em caso de erro
+        document.getElementById('totalClients').textContent = '0';
+        document.getElementById('totalHomologacoes').textContent = '0';
+        document.getElementById('totalReleases').textContent = '0';
+        document.getElementById('totalReunioes').textContent = '0';
+        document.getElementById('averageRatingHome').textContent = '0.0';
     }
 }
 
@@ -6475,4 +6562,643 @@ document.addEventListener('keydown', function(event) {
     color: #f44336 !important; /* Vermelho */
 }
 </style>
+
+
+
+
+<script>
+async function buscarClienteIdPorEmpresa(nomeEmpresa) {
+    try {
+        const { data, error } = await supabase
+            .from('clients')
+            .select('id')
+            .eq('name', nomeEmpresa)
+            .single();
+
+        if (error) {
+            console.error('Erro ao buscar cliente por empresa:', error.message);
+            return null;
+        }
+
+        return data ? data.id : null;
+    } catch (error) {
+        console.error('Erro ao buscar cliente:', error);
+        return null;
+    }
+}
+
+// Função para sanitizar nomes de arquivo removendo caracteres inválidos
+function sanitizeFileName(fileName) {
+    return fileName
+        .replace(/[\/\\:*?"<>|]/g, '-') // Substitui caracteres inválidos por hífen
+        .replace(/\s+/g, '_') // Substitui espaços por underscore
+        .replace(/[^\w\-_.]/g, '') // Remove outros caracteres especiais, mantendo apenas letras, números, hífen, underscore e ponto
+        .replace(/_+/g, '_') // Remove underscores duplicados
+        .replace(/-+/g, '-'); // Remove hífens duplicados
+}
+
+async function salvarPDFNoCliente(pdfBlob, clientId) {
+    const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-'); // Substitui barras por hífens
+    const title = `Relatório de Visita - ${dateStr}`;
+    const type = 'relatorio';
+    const sanitizedFileName = sanitizeFileName(`${title}.pdf`);
+    const file = new File([pdfBlob], sanitizedFileName, { type: 'application/pdf' });
+
+    if (title && type && file) {
+        const filePath = `client_documents/${clientId}/${Date.now()}_${file.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('clientdocumentfiles')
+            .upload(filePath, file);
+
+        if (uploadError) {
+            console.error('Erro ao fazer upload do arquivo do cliente:', uploadError.message);
+            showAlert('Erro', 'Erro ao fazer upload do documento do cliente. Verifique as permissões do bucket.');
+            return;
+        }
+
+        const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
+
+        const { data, error } = await supabase
+            .from('client_documents')
+            .insert([
+                { client_id: clientId, title, type, file_url: publicURL, file_path: filePath }
+            ]);
+
+        if (error) {
+            console.error('Erro ao adicionar documento do cliente no banco de dados:', error.message);
+            showAlert('Erro', 'Erro ao adicionar documento do cliente. Verifique as permissões da tabela.');
+        } else {
+            showAlert('Sucesso', 'Relatório de visita salvo automaticamente no cliente!');
+        }
+    } else {
+        showAlert('Atenção', 'Não foi possível salvar o relatório, dados insuficientes.');
+    }
+}
+</script>
+
+<!-- Modal de Avaliação -->
+<div id="evaluationModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-content" style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 10px;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #333;">Avaliar Visita</h2>
+            <span class="close" onclick="closeEvaluationModal()" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        </div>
+        
+        <div class="modal-body">
+            <div style="margin-bottom: 15px;">
+                <strong>Documento:</strong> <span id="evalDocumentTitle"></span>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: bold;">Avaliação:</label>
+                <div class="star-rating" style="font-size: 30px; color: #ddd; cursor: pointer;">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <div id="ratingText" style="margin-top: 5px; font-size: 14px; color: #666;"></div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="evaluationObservations" style="display: block; margin-bottom: 5px; font-weight: bold;">Observações:</label>
+                <textarea id="evaluationObservations" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: vertical;" placeholder="Descreva sua experiência com a visita..."></textarea>
+            </div>
+            
+            <div style="text-align: right;">
+                <button onclick="closeEvaluationModal()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-right: 10px; cursor: pointer;">Cancelar</button>
+                <button onclick="submitEvaluation()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Salvar Avaliação</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Variáveis globais para o modal de avaliação
+let currentEvaluation = {
+    documentId: null,
+    documentTitle: null,
+    clientId: null,
+    rating: 0
+};
+
+// Função para abrir o modal de avaliação
+function openEvaluationModal(documentId, documentTitle, clientId) {
+    currentEvaluation.documentId = documentId;
+    currentEvaluation.documentTitle = documentTitle;
+    currentEvaluation.clientId = clientId;
+    currentEvaluation.rating = 0;
+    
+    document.getElementById('evalDocumentTitle').textContent = documentTitle;
+    document.getElementById('evaluationObservations').value = '';
+    document.getElementById('ratingText').textContent = '';
+    
+    // Reset das estrelas
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.style.color = '#ddd';
+    });
+    
+    document.getElementById('evaluationModal').style.display = 'block';
+}
+
+// Função para fechar o modal de avaliação
+function closeEvaluationModal() {
+    document.getElementById('evaluationModal').style.display = 'none';
+}
+
+// Sistema de avaliação por estrelas
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    const ratingTexts = ['', 'Muito Ruim', 'Ruim', 'Regular', 'Bom', 'Excelente'];
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            currentEvaluation.rating = rating;
+            
+            // Atualizar visual das estrelas
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#ddd';
+                }
+            });
+            
+            // Atualizar texto da avaliação
+            document.getElementById('ratingText').textContent = ratingTexts[rating];
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+    });
+    
+    // Restaurar avaliação atual ao sair do hover
+    document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+        stars.forEach((s, index) => {
+            if (index < currentEvaluation.rating) {
+                s.style.color = '#ffc107';
+            } else {
+                s.style.color = '#ddd';
+            }
+        });
+    });
+});
+
+// Função para salvar a avaliação
+async function submitEvaluation() {
+    if (currentEvaluation.rating === 0) {
+        showAlert('Atenção', 'Por favor, selecione uma avaliação de 1 a 5 estrelas.');
+        return;
+    }
+    
+    const observations = document.getElementById('evaluationObservations').value.trim();
+    
+    const evaluation = {
+        document_id: currentEvaluation.documentId,
+        document_title: currentEvaluation.documentTitle,
+        client_id: currentEvaluation.clientId,
+        rating: currentEvaluation.rating,
+        observations: observations,
+        created_at: new Date().toISOString()
+    };
+    
+    try {
+        // Salvar no Supabase
+        const { data, error } = await supabase
+            .from('visit_evaluations')
+            .insert([evaluation]);
+        
+        if (error) {
+            console.error('Erro ao salvar avaliação:', error);
+            showAlert('Erro', 'Erro ao salvar avaliação. Tente novamente.');
+            return;
+        }
+        
+        showAlert('Sucesso', 'Avaliação salva com sucesso!');
+        closeEvaluationModal();
+        
+        // Atualizar a aba de avaliações se estiver aberta
+        if (currentSection === 'evaluations') {
+            loadEvaluations();
+        }
+        
+        // Atualizar a visualização de documentos do cliente para mostrar botão como "Visita Avaliada"
+        if (currentSection === 'clients') {
+            // Recarregar documentos do cliente atual se estiver visualizando
+            const currentClientId = getCurrentClientId();
+            if (currentClientId) {
+                viewClientDocuments(currentClientId);
+            }
+        }
+        
+    } catch (error) {
+        console.error('Erro ao salvar avaliação:', error);
+        showAlert('Erro', 'Erro ao salvar avaliação. Verifique sua conexão.');
+    }
+}
+
+// Fechar modal ao clicar fora dele
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('evaluationModal');
+    if (event.target === modal) {
+        closeEvaluationModal();
+    }
+});
+</script>
+
+<!-- Seção de Avaliações -->
+<div class="content-section" id="evaluations">
+    <div class="form-container">
+        <h3 style="margin-bottom: 20px; color: var(--accent-color);">
+            <i class="fas fa-star" style="margin-right: 10px;"></i>
+            Avaliações de Visitas
+        </h3>
+        
+        <!-- Filtros -->
+        <div class="form-row" style="margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
+            <div class="form-group">
+                <label for="filterClient">Filtrar por Cliente:</label>
+                <select id="filterClient" onchange="filterEvaluations()">
+                    <option value="">Todos os clientes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="filterRating">Filtrar por Avaliação:</label>
+                <select id="filterRating" onchange="filterEvaluations()">
+                    <option value="">Todas as avaliações</option>
+                    <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
+                    <option value="4">⭐⭐⭐⭐ Bom</option>
+                    <option value="3">⭐⭐⭐ Regular</option>
+                    <option value="2">⭐⭐ Ruim</option>
+                    <option value="1">⭐ Muito Ruim</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="searchEvaluations">Buscar:</label>
+                <input type="text" id="searchEvaluations" placeholder="Buscar por documento ou observações..." onkeyup="filterEvaluations()">
+            </div>
+        </div>
+        
+        <!-- Estatísticas -->
+        <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div class="stat-card" style="background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h4 style="margin: 0; font-size: 2em;" id="totalEvaluations">0</h4>
+                <p style="margin: 5px 0 0 0;">Total de Avaliações</p>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #66bb6a, #4caf50); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h4 style="margin: 0; font-size: 2em;" id="averageRating">0.0</h4>
+                <p style="margin: 5px 0 0 0;">Avaliação Média</p>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ffa726, #ff9800); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h4 style="margin: 0; font-size: 2em;" id="lastMonthEvaluations">0</h4>
+                <p style="margin: 5px 0 0 0;">Último Mês</p>
+            </div>
+        </div>
+        
+        <!-- Lista de Avaliações -->
+        <div id="evaluationsList">
+            <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                <div style="font-size: 4em; margin-bottom: 20px;">⭐</div>
+                <h3>Nenhuma avaliação encontrada</h3>
+                <p>As avaliações de visitas aparecerão aqui quando forem criadas.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Variável global para controlar a seção atual
+let currentSection = 'inicio';
+
+// Função para carregar e exibir avaliações
+async function loadEvaluations() {
+    currentSection = 'evaluations';
+    const container = document.getElementById('evaluationsList');
+    
+    try {
+        // Carregar avaliações do Supabase
+        const { data: evaluations, error } = await supabase
+            .from('visit_evaluations')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) {
+            console.error('Erro ao carregar avaliações:', error);
+            container.innerHTML = `
+                <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">❌</div>
+                    <h3>Erro ao carregar avaliações</h3>
+                    <p>Verifique sua conexão com o banco de dados.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Atualizar estatísticas
+        updateEvaluationStats(evaluations || []);
+        
+        // Carregar filtro de clientes
+        loadClientFilter(evaluations || []);
+        
+        if (!evaluations || evaluations.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">⭐</div>
+                    <h3>Nenhuma avaliação encontrada</h3>
+                    <p>As avaliações de visitas aparecerão aqui quando forem criadas.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = evaluations.map(evaluation => `
+            <div class="evaluation-card" style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 5px solid ${getRatingColor(evaluation.rating)};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <h4 style="margin: 0 0 5px 0; color: #333;">${evaluation.document_title}</h4>
+                        <p style="margin: 0; color: #666; font-size: 0.9em;">${clients.find(c => c.id === evaluation.client_id)?.name || `Cliente ID: ${evaluation.client_id}`} • ${new Date(evaluation.created_at).toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.2em; color: #ffc107; margin-bottom: 5px;">
+                            ${generateStars(evaluation.rating)}
+                        </div>
+                        <span style="font-size: 0.9em; color: #666;">${getRatingText(evaluation.rating)}</span>
+                    </div>
+                </div>
+                ${evaluation.observations ? `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 3px solid #007bff;">
+                        <strong style="color: #333;">Observações:</strong>
+                        <p style="margin: 5px 0 0 0; color: #555; line-height: 1.5;">${evaluation.observations}</p>
+                    </div>
+                ` : ''}
+                <div style="margin-top: 15px; text-align: right;">
+                    <button onclick="deleteEvaluation(${evaluation.id})" style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erro ao carregar avaliações:', error);
+        container.innerHTML = `
+            <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                <div style="font-size: 4em; margin-bottom: 20px;">❌</div>
+                <h3>Erro ao carregar avaliações</h3>
+                <p>Verifique sua conexão com o banco de dados.</p>
+            </div>
+        `;
+    }
+}
+
+// Função para atualizar estatísticas
+function updateEvaluationStats(evaluations) {
+    const total = evaluations.length;
+    const average = total > 0 ? (evaluations.reduce((sum, e) => sum + e.rating, 0) / total).toFixed(1) : '0.0';
+    
+    // Calcular avaliações do último mês
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    const lastMonthCount = evaluations.filter(e => new Date(e.date) >= lastMonth).length;
+    
+    document.getElementById('totalEvaluations').textContent = total;
+    document.getElementById('averageRating').textContent = average;
+    document.getElementById('lastMonthEvaluations').textContent = lastMonthCount;
+}
+
+// Função para carregar filtro de clientes
+async function loadClientFilter(evaluations) {
+    const clientIds = [...new Set(evaluations.map(e => e.client_id))].sort();
+    const filterSelect = document.getElementById('filterClient');
+    
+    try {
+        // Buscar os nomes dos clientes na tabela 'clients'
+        const { data: clients, error } = await supabase
+            .from('clients')
+            .select('id, name')
+            .in('id', clientIds);
+        
+        if (error) {
+            console.error('Erro ao carregar clientes:', error);
+            // Fallback para IDs se houver erro
+            filterSelect.innerHTML = '<option value="">Todos os clientes</option>' + 
+                clientIds.map(id => `<option value="${id}">Cliente ${id}</option>`).join('');
+            return;
+        }
+        
+        // Criar um mapa de ID para nome
+        const clientMap = {};
+        clients.forEach(client => {
+            clientMap[client.id] = client.name;
+        });
+        
+        // Gerar as opções com os nomes dos clientes
+        filterSelect.innerHTML = '<option value="">Todos os clientes</option>' + 
+            clientIds.map(id => {
+                const clientName = clientMap[id] || `Cliente ${id}`;
+                return `<option value="${id}">${clientName}</option>`;
+            }).join('');
+            
+    } catch (error) {
+        console.error('Erro ao carregar filtro de clientes:', error);
+        // Fallback para IDs se houver erro
+        filterSelect.innerHTML = '<option value="">Todos os clientes</option>' + 
+            clientIds.map(id => `<option value="${id}">Cliente ${id}</option>`).join('');
+    }
+}
+
+// Função para filtrar avaliações
+async function filterEvaluations() {
+    const clientFilter = document.getElementById('filterClient').value;
+    const ratingFilter = document.getElementById('filterRating').value;
+    const searchTerm = document.getElementById('searchEvaluations').value.toLowerCase();
+    
+    try {
+        // Carregar avaliações do Supabase
+        let query = supabase
+            .from('visit_evaluations')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        // Aplicar filtros
+        if (clientFilter) {
+            query = query.eq('client_id', clientFilter);
+        }
+        
+        if (ratingFilter) {
+            query = query.eq('rating', ratingFilter);
+        }
+        
+        const { data: evaluations, error } = await query;
+        
+        if (error) {
+            console.error('Erro ao filtrar avaliações:', error);
+            return;
+        }
+        
+        let filteredEvaluations = evaluations || [];
+        
+        // Aplicar filtro de busca por texto
+        if (searchTerm) {
+            filteredEvaluations = filteredEvaluations.filter(e => 
+                e.document_title.toLowerCase().includes(searchTerm) ||
+                (e.observations && e.observations.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        // Atualizar exibição
+        const container = document.getElementById('evaluationsList');
+        
+        if (filteredEvaluations.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">🔍</div>
+                    <h3>Nenhuma avaliação encontrada</h3>
+                    <p>Tente ajustar os filtros de busca.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = filteredEvaluations.map(evaluation => `
+            <div class="evaluation-card" style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 5px solid ${getRatingColor(evaluation.rating)};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <h4 style="margin: 0 0 5px 0; color: #333;">${evaluation.document_title}</h4>
+                        <p style="margin: 0; color: #666; font-size: 0.9em;">${clients.find(c => c.id === evaluation.client_id)?.name || `Cliente ID: ${evaluation.client_id}`} • ${new Date(evaluation.created_at).toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.2em; color: #ffc107; margin-bottom: 5px;">
+                            ${generateStars(evaluation.rating)}
+                        </div>
+                        <span style="font-size: 0.9em; color: #666;">${getRatingText(evaluation.rating)}</span>
+                    </div>
+                </div>
+                ${evaluation.observations ? `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 3px solid #007bff;">
+                        <strong style="color: #333;">Observações:</strong>
+                        <p style="margin: 5px 0 0 0; color: #555; line-height: 1.5;">${evaluation.observations}</p>
+                    </div>
+                ` : ''}
+                <div style="margin-top: 15px; text-align: right;">
+                    <button onclick="deleteEvaluation(${evaluation.id})" style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erro ao filtrar avaliações:', error);
+    }
+}
+
+// Funções auxiliares
+function generateStars(rating) {
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+}
+
+function getRatingText(rating) {
+    const texts = ['', 'Muito Ruim', 'Ruim', 'Regular', 'Bom', 'Excelente'];
+    return texts[rating] || '';
+}
+
+function getRatingColor(rating) {
+    const colors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997'];
+    return colors[rating] || '#6c757d';
+}
+
+// Função para excluir avaliação
+async function deleteEvaluation(evaluationId) {
+    if (!confirm('Tem certeza que deseja excluir esta avaliação?')) {
+        return;
+    }
+    
+    try {
+        const { error } = await supabase
+            .from('visit_evaluations')
+            .delete()
+            .eq('id', evaluationId);
+        
+        if (error) {
+            console.error('Erro ao excluir avaliação:', error);
+            showAlert('Erro', 'Erro ao excluir avaliação. Tente novamente.');
+            return;
+        }
+        
+        showAlert('Sucesso', 'Avaliação excluída com sucesso!');
+        loadEvaluations();
+        
+    } catch (error) {
+        console.error('Erro ao excluir avaliação:', error);
+        showAlert('Erro', 'Erro ao excluir avaliação. Verifique sua conexão.');
+    }
+}
+
+// Função para verificar se um documento já foi avaliado
+async function isDocumentEvaluated(documentId) {
+    try {
+        const { data, error } = await supabase
+            .from('visit_evaluations')
+            .select('id')
+            .eq('document_id', documentId)
+            .limit(1);
+        
+        if (error) {
+            console.error('Erro ao verificar avaliação:', error);
+            return false;
+        }
+        
+        return data && data.length > 0;
+    } catch (error) {
+        console.error('Erro ao verificar avaliação:', error);
+        return false;
+    }
+}
+
+// Função para obter o ID do cliente atual (usado para recarregar documentos)
+function getCurrentClientId() {
+    // Esta função deve retornar o ID do cliente que está sendo visualizado atualmente
+    // Pode ser implementada verificando qual cliente está sendo exibido na interface
+    const clientCards = document.querySelectorAll('.client-card');
+    for (let card of clientCards) {
+        if (card.style.display !== 'none') {
+            // Extrair ID do cliente do card visível
+            const viewButton = card.querySelector('button[onclick*="viewClientDocuments"]');
+            if (viewButton) {
+                const match = viewButton.getAttribute('onclick').match(/viewClientDocuments\((\d+)\)/);
+                if (match) {
+                    return parseInt(match[1]);
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// Atualizar função showTab para incluir avaliações
+const originalShowTab = window.showTab;
+window.showTab = function(tabId) {
+    if (originalShowTab) {
+        originalShowTab(tabId);
+    }
+    
+    if (tabId === 'evaluations') {
+        loadEvaluations();
+    }
+};
+</script>
+
+
 
