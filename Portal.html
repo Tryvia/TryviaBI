@@ -2998,6 +2998,58 @@ select {
         </button>
     </div>
 
+    <!-- Formulário para Criar Login de Cliente -->
+    <div class="form-container" style="margin-top: 30px;">
+        <h3 style="margin-bottom: 20px; color: #333333;">Criar Login para Cliente</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="clienteSelect">Cliente *</label>
+                <select id="clienteSelect" required>
+                    <option value="">Selecione um cliente</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="clienteLoginEmail">Email do Login</label>
+                <input type="email" id="clienteLoginEmail" placeholder="Digite o email para o login do cliente">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="clienteLoginSenha">Senha</label>
+                <input type="password" id="clienteLoginSenha" placeholder="Digite a senha">
+            </div>
+            <div class="form-group">
+                <label for="clienteLoginConfirmarSenha">Confirmar Senha</label>
+                <input type="password" id="clienteLoginConfirmarSenha" placeholder="Confirme a senha">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Permissões do Cliente</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="cliente-perm-inicio" value="inicio" checked>
+                    <span>Início</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="cliente-perm-dashboard" value="dashboard">
+                    <span>Dashboards</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="cliente-perm-relatorioVisita" value="relatorioVisita">
+                    <span>Relatório de Visita</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="cliente-perm-evaluations" value="evaluations">
+                    <span>Avaliações</span>
+                </label>
+            </div>
+        </div>
+        <button class="btn-primary" onclick="criarLoginCliente()">
+            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+            Criar Login de Cliente
+        </button>
+    </div>
+
     <!-- Lista de Usuários -->
     <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
         <h3 style="color: #333333; margin-bottom: 20px; font-size: 1.5em;">
@@ -8167,6 +8219,162 @@ async function salvarEdicaoUsuario(usuarioId) {
         showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
     }
 }
+
+// ===== FUNÇÕES PARA CRIAR LOGIN DE CLIENTE =====
+
+// Função para carregar clientes no select
+async function carregarClientesNoSelect() {
+    try {
+        const { data: clientes, error } = await supabase
+            .from('clients')
+            .select('id, name')
+            .order('name', { ascending: true });
+
+        if (error) {
+            console.error('Erro ao carregar clientes:', error);
+            return;
+        }
+
+        const select = document.getElementById('clienteSelect');
+        select.innerHTML = '<option value="">Selecione um cliente</option>';
+        
+        clientes.forEach(cliente => {
+            const option = document.createElement('option');
+            option.value = cliente.id;
+            option.textContent = cliente.name;
+            select.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Erro ao carregar clientes:', error);
+    }
+}
+
+// Função para criar login de cliente
+async function criarLoginCliente() {
+    const clienteId = document.getElementById('clienteSelect').value;
+    const email = document.getElementById('clienteLoginEmail').value.trim();
+    const senha = document.getElementById('clienteLoginSenha').value;
+    const confirmarSenha = document.getElementById('clienteLoginConfirmarSenha').value;
+
+    // Validações
+    if (!clienteId) {
+        showAlert('Erro', 'Por favor, selecione um cliente.');
+        return;
+    }
+
+    if (!email || !senha || !confirmarSenha) {
+        showAlert('Erro', 'Todos os campos são obrigatórios.');
+        return;
+    }
+
+    if (senha !== confirmarSenha) {
+        showAlert('Erro', 'As senhas não coincidem.');
+        return;
+    }
+
+    if (senha.length < 6) {
+        showAlert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
+        return;
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showAlert('Erro', 'Por favor, insira um email válido.');
+        return;
+    }
+
+    // Coletar permissões selecionadas para o cliente
+    const permissoes = [];
+    document.querySelectorAll('input[type="checkbox"][id^="cliente-perm-"]:checked').forEach(checkbox => {
+        permissoes.push(checkbox.value);
+    });
+
+    if (permissoes.length === 0) {
+        showAlert('Erro', 'Selecione pelo menos uma permissão para o cliente.');
+        return;
+    }
+
+    try {
+        // Verificar se o email já existe
+        const { data: existingUser, error: checkError } = await releaseClient
+            .from('usuarios')
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        if (existingUser) {
+            showAlert('Erro', 'Já existe um usuário com este email.');
+            return;
+        }
+
+        // Buscar nome do cliente
+        const { data: cliente, error: clientError } = await supabase
+            .from('clients')
+            .select('name')
+            .eq('id', clienteId)
+            .single();
+
+        if (clientError) {
+            console.error('Erro ao buscar cliente:', clientError);
+            showAlert('Erro', 'Erro ao buscar dados do cliente.');
+            return;
+        }
+
+        // Criar usuário com client_id
+        const novoUsuario = {
+            nome: `Cliente - ${cliente.name}`,
+            email: email,
+            senha: senha,
+            permissoes: permissoes,
+            client_id: parseInt(clienteId),
+            user_type: 'client'
+        };
+
+        const { data, error } = await releaseClient
+            .from('usuarios')
+            .insert([novoUsuario])
+            .select();
+
+        if (error) {
+            console.error('Erro ao criar login de cliente:', error);
+            showAlert('Erro', 'Erro ao criar login de cliente: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Login de cliente criado com sucesso!');
+
+        // Limpar formulário
+        document.getElementById('clienteSelect').value = '';
+        document.getElementById('clienteLoginEmail').value = '';
+        document.getElementById('clienteLoginSenha').value = '';
+        document.getElementById('clienteLoginConfirmarSenha').value = '';
+        document.querySelectorAll('input[type="checkbox"][id^="cliente-perm-"]').forEach(checkbox => {
+            checkbox.checked = checkbox.id === 'cliente-perm-inicio';
+        });
+
+        // Recarregar lista de usuários
+        fetchAndRenderUsuarios();
+
+    } catch (error) {
+        console.error('Erro ao criar login de cliente:', error);
+        showAlert('Erro', 'Erro ao criar login de cliente: ' + error.message);
+    }
+}
+
+// Carregar clientes quando a aba de gerenciar logins for aberta
+const originalShowTabFunction = window.showTab;
+window.showTab = function(tabId) {
+    if (originalShowTabFunction) {
+        originalShowTabFunction(tabId);
+    }
+    
+    if (tabId === 'gerenciar-logins') {
+        fetchAndRenderUsuarios();
+        carregarClientesNoSelect();
+    }
+};
 </script>
 </body>
 
