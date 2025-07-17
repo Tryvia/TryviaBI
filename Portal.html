@@ -1494,6 +1494,12 @@ const PDF_SERVER_URL = 'https://servis-pdf.onrender.com';
 </script>
 </head>
 <body><script>
+let permissoes = [];
+try {
+  permissoes = JSON.parse(localStorage.getItem('permissoes')) || [];
+} catch (e) {
+  permissoes = [];
+}
 // Proteção de login: redireciona se não estiver logado
 if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
