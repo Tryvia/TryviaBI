@@ -1403,84 +1403,6 @@ select {
     }
 }
 
-#gerenciar-logins.content-section {
-    margin-top: -31px !important;   
-    max-width: 1210px;
-    margin: 10px auto 0 280px;
-    padding: 0;
-    background: none;
-    border-radius: 15px;
-    box-shadow: none;
-    position: relative;
-    z-index: 2;
-}
-
-#gerenciar-logins > div:first-child {
-    background: #b3e5fc !important;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);
-    padding: 30px;
-    margin-bottom: 30px;
-    text-align: center;
-    color: #000;
-}
-
-#gerenciar-logins .form-container {
-    max-width: 1100px;
-    margin: 0 auto 30px auto;
-    background: #b3e5fc !important;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);
-    padding: 30px 25px;
-    position: relative;
-    z-index: 3;
-}
-
-#gerenciar-logins .form-row,
-#gerenciar-logins .form-group {
-    background: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-}
-
-#gerenciar-logins input,
-#gerenciar-logins select,
-#gerenciar-logins textarea {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #81d4fa !important;
-    border-radius: 6px;
-    padding: 10px;
-}
-
-#gerenciar-logins label {
-    color: #333 !important;
-    font-weight: bold;
-}
-
-#gerenciar-logins button.btn-primary {
-    background-color: #29b6f6 !important;
-    color: #fff !important;
-    border-radius: 8px;
-    padding: 12px 25px;
-    font-size: 1.1em;
-    box-shadow: 0 2px 5px #29b6f6;
-    margin-top: 10px;
-}
-
-#gerenciar-logins button.btn-primary:hover {
-    background-color: #4fc3f7 !important;
-}
-
-#gerenciar-logins > div:last-child {
-    background: #b3e5fc !important;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);
-    padding: 25px;
-    margin-top: 30px;
-}
-    
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <!-- EmailJS SDK -->
@@ -1608,7 +1530,7 @@ Abrir WhatsApp
   <button onclick="showTab('documents')"data-permissao="documents"><i class="fas fa-file-alt"></i> Time de Implantação</button>
 </li>
 <li class="nav-item">
-  <button onclick="showTab('evaluations')"data-permissao="evaluations"><i class="fas fa-star"></i> Avaliações</button>
+  <button onclick="showTab('evaluations')"data-permissao="evaluation"><i class="fas fa-star"></i> Avaliações</button>
 </li>
 <li class="nav-item">
 <button onclick="window.location.href='https://tryvia.github.io/TryviaBI/calendario.html'"data-permissao="https://tryvia.github.io/TryviaBI/calendario.html"><i class="fas fa-calendar"></i> Calendário</button>
@@ -2750,7 +2672,7 @@ select {
 
     <!-- Formulário para Adicionar Usuário -->
     <div class="form-container">
-        <h3 style="margin-bottom: 20px; color: #333333;">Adicionar Novo Usuário</h3>
+        <h3 style="margin-bottom: 20px; color: var(--accent-color);">Adicionar Novo Usuário</h3>
         <div class="form-row">
             <div class="form-group">
                 <label for="usuarioNome">Nome Completo</label>
@@ -2782,21 +2704,9 @@ select {
                     <input type="checkbox" id="perm-painel-setor" value="painel-setor">
                     <span>Painel do Setor</span>
                 </label>
-           <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-visitas" value="https://tryvia.github.io/TryviaBI/mapa_visitas.html">
-    <span>Visitas</span>
-</label>
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-calendario" value="https://tryvia.github.io/TryviaBI/calendario.html">
-    <span>Calendário</span>
-</label>
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html">
-    <span>MVP</span>
-</label>
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
-    <span>Implantações</span>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+    <input type="checkbox" id="perm-excluir-clientes" value="excluir-clientes">
+    <span>Permitir excluir clientes</span>
 </label>
                 <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
                     <input type="checkbox" id="perm-dashboard" value="dashboard">
@@ -2844,7 +2754,7 @@ select {
 
     <!-- Lista de Usuários -->
     <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
-        <h3 style="color: #333333; margin-bottom: 20px; font-size: 1.5em;">
+        <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em;">
             <i class="fas fa-users" style="margin-right: 10px;"></i>
             Usuários Cadastrados
         </h3>
@@ -3782,8 +3692,10 @@ function removeIntegration(idx, listName) {
 
   <div class="client-card-vertical" data-client-id="${client.id}">
     <div class="client-card-top">
-      <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_path || ''}')"><span style="font-size: 16px;">X</span></button>
-    </div>
+  ${permissoes.includes('excluir-clientes') ? `
+    <button class="delete-btn-card" onclick="deleteClient(${client.id}, '${client.logo_path || ''}')"><span style="font-size: 16px;">X</span></button>
+  ` : ''}
+</div>
 
     <div class="client-logo-vertical">
       ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
