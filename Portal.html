@@ -3917,11 +3917,11 @@ function addEditProduct() {
                 showAlert('Atenção', 'Por favor, preencha todos os campos obrigatórios do cliente.');
             }
         }
-
-        async function fetchAndRenderClients() {
-           const { data, error } = await supabase
-    .from('clients')
-    .select(`
+async function fetchAndRenderClients() {
+   const clientId = sessionStorage.getItem('client_id'); // ou localStorage, conforme seu login
+   const { data, error } = await supabase
+     .from('clients')
+     .select(`
         *,
         products (
             id, name, quantity
@@ -3929,7 +3929,10 @@ function addEditProduct() {
         integrations (
             id, type, system
         )
-    `);
+     `)
+     .eq('id', clientId); // <-- filtro pelo client_id
+   // ..restante do código...
+
             const container = document.getElementById('clientsList');
 
             if (error) {
