@@ -2467,7 +2467,7 @@ select {
 <div class="content-section" id="reunioes">
 <h2>Reuniões</h2>
 <div class="form-row">
-<div class="form-group"><label for="reuniaoCliente">Cliente</label><input id="reuniaoCliente" type="text"/></div>
+<div class="form-group"><label for="reuniaoCliente">Cliente</label><select id="reuniaoCliente"><option value="">Selecione um cliente...</option></select></div>
 <div class="form-group"><label for="reuniaoData">Data</label><input class="input-padrao" id="reuniaoData" type="date"/></div>
 <div class="form-group"><label for="reuniaoTipo">Tipo</label><input id="reuniaoTipo" type="text"/></div>
 </div>
@@ -5128,7 +5128,12 @@ async function salvarReuniao() {
         showAlert('Atenção', 'Você não tem permissão para salvar uma reunião.');
         return;
     }
-  const cliente = document.getElementById("reuniaoCliente").value;
+  const clientId = document.getElementById("reuniaoCliente").value;
+  let cliente = "";
+  if (window.clients && clientId) {
+    const obj = window.clients.find(c => String(c.id) === String(clientId));
+    if (obj) cliente = obj.name;
+  }
   const data = document.getElementById("reuniaoData").value;
   const tipo = document.getElementById("reuniaoTipo").value;
   const participantes = document.getElementById("reuniaoParticipantes").value;
@@ -5143,7 +5148,7 @@ async function salvarReuniao() {
     file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/reuniaofiles/${file_path}`;
   }
 
-  const { error: insertError } = await releaseClient.from("reunioes").insert([{ cliente, data, tipo, participantes, file_url, file_path }]);
+  const { error: insertError } = await releaseClient.from("reunioes").insert([{ client_id: clientId ? Number(clientId) : null, cliente, data, tipo, participantes, file_url, file_path }]);
   if (insertError) return alert("Erro ao salvar reunião.");
   carregarReunioes();
 }
@@ -5171,10 +5176,20 @@ const { data, error } = await query;
 
   const agrupado = {};
   data.forEach(r => {
-    const cli = r.cliente.toLowerCase();
+    const cli = r.cliente ? r.cliente.toLowerCase() : (r.client_id ? String(r.client_id) : '');
     if (!agrupado[cli]) agrupado[cli] = [];
     agrupado[cli].push(r);
   });
+// Função para popular o select de clientes na aba reuniões
+function populateReuniaoClientes() {
+  const select = document.getElementById('reuniaoCliente');
+  if (!select) return;
+  select.innerHTML = '<option value="">Selecione um cliente...</option>';
+  if (!window.clients || !Array.isArray(window.clients)) return;
+  window.clients.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+}
 
   Object.keys(agrupado).forEach(cli => {
     const blocos = agrupado[cli];
@@ -5207,7 +5222,16 @@ function filtrarReunioes() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", carregarReunioes);
+document.addEventListener("DOMContentLoaded", function() {
+  if (typeof fetchAndRenderClients === 'function') {
+    fetchAndRenderClients().then(() => {
+      populateReuniaoClientes();
+      carregarReunioes();
+    });
+  } else {
+    carregarReunioes();
+  }
+});
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
