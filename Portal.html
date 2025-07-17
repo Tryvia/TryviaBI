@@ -3918,7 +3918,12 @@ function addEditProduct() {
             }
         }
 async function fetchAndRenderClients() {
-   const clientId = sessionStorage.getItem('client_id'); // ou localStorage, conforme seu login
+   const clientId = sessionStorage.getItem('client_id'); // ou localStorage
+   if (!clientId) {
+      // Mostra mensagem ou não faz consulta
+      console.error('client_id não encontrado!');
+      return;
+   }
    const { data, error } = await supabase
      .from('clients')
      .select(`
@@ -7724,10 +7729,14 @@ let usuariosFiltrados = [];
 // Função para buscar e renderizar usuários
 async function fetchAndRenderUsuarios() {
     try {
-        const { data: usuarios, error } = await releaseClient
-            .from('usuarios')
-            .select('*')
-            .order('nome', { ascending: true });
+        // Verifica tipo de usuário para aplicar filtro
+        let query = releaseClient.from('usuarios').select('*').order('nome', { ascending: true });
+        const userType = localStorage.getItem('user_type');
+        const clientId = sessionStorage.getItem('client_id');
+        if (userType === 'client' && clientId) {
+            query = query.eq('client_id', clientId);
+        }
+        const { data: usuarios, error } = await query;
 
         if (error) {
             console.error('Erro ao buscar usuários:', error);
