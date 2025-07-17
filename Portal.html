@@ -4355,12 +4355,25 @@ if (editingIntegrations.length > 0) {
 
         // --- Dashboard  ---
         async function fetchAndRenderDashboards() {
-            const { data, error } = await supabase
-                .from('clients')
-                .select('id, name, logo_url, bi_link')
-                .not('bi_link', 'is', null)
-                .not('bi_link', 'eq', '');
-
+       const userType = localStorage.getItem('user_type');
+const clientId = sessionStorage.getItem('client_id');
+let query = supabase
+  .from('clients')
+  .select('id, name, logo_url, bi_link')
+  .not('bi_link', 'is', null)
+  .not('bi_link', 'eq', '');
+if (
+  userType === 'client' &&
+  clientId &&
+  clientId !== 'null' &&
+  clientId !== null &&
+  clientId !== undefined &&
+  clientId !== '' &&
+  !isNaN(Number(clientId))
+) {
+  query = query.eq('id', Number(clientId));
+}
+const { data, error } = await query;
             const container = document.getElementById('dashboardsList');
 
             if (error) {
@@ -5136,7 +5149,21 @@ async function salvarReuniao() {
 }
 
 async function carregarReunioes() {
-  const { data, error } = await releaseClient.from("reunioes").select("*").order("data", { ascending: false });
+  const userType = localStorage.getItem('user_type');
+const clientId = sessionStorage.getItem('client_id');
+let query = releaseClient.from("reunioes").select("*").order("data", { ascending: false });
+if (
+  userType === 'client' &&
+  clientId &&
+  clientId !== 'null' &&
+  clientId !== null &&
+  clientId !== undefined &&
+  clientId !== '' &&
+  !isNaN(Number(clientId))
+) {
+  query = query.eq('client_id', Number(clientId));
+}
+const { data, error } = await query;
   if (error) return console.error("Erro ao carregar reuniões", error);
 
   const container = document.getElementById("listaReunioes")
