@@ -151,6 +151,19 @@ select {
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Função global para popular o select de clientes na aba reuniões
+function populateReuniaoClientes() {
+  const select = document.getElementById('reuniaoCliente');
+  if (!select) return;
+  select.innerHTML = '<option value="">Selecione um cliente...</option>';
+  if (!window.clients || !Array.isArray(window.clients)) return;
+  window.clients.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+}
+// ...existing code...
+</script>
 <meta charset="utf-8"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
