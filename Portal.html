@@ -2771,71 +2771,576 @@ select {
                 <input type="password" id="usuarioConfirmarSenha" placeholder="Confirme a senha">
             </div>
         </div>
-        <div class="form-group">
-            <label>Permissões</label>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-inicio" value="inicio" checked>
-                    <span>Início</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-painel-setor" value="painel-setor">
-                    <span>Painel do Setor</span>
-                </label>
-           <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-visitas" value="https://tryvia.github.io/TryviaBI/mapa_visitas.html">
-    <span>Visitas</span>
-</label>
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-calendario" value="https://tryvia.github.io/TryviaBI/calendario.html">
-    <span>Calendário</span>
-</label>
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html">
-    <span>MVP</span>
-</label>
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
-    <span>Implantações</span>
-</label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-dashboard" value="dashboard">
-                    <span>Dashboards</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-clients" value="clients">
-                    <span>Clientes</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-homologacao" value="homologacao">
-                    <span>Homologação</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-release" value="release">
-                    <span>Release</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-reunioes" value="reunioes">
-                    <span>Reuniões</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-documents" value="documents">
-                    <span>Time de Implantação</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-evaluations" value="evaluations">
-                    <span>Avaliações</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-relatorioVisita" value="relatorioVisita">
-                    <span>Relatório de Visita</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="perm-gestao" value="gestao">
-                    <span>Gestão</span>
-                </label>
-            </div>
-        </div>
+                           <div class="form-group">
+                        <label>Permissões</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                            <!-- Permissões Básicas -->
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-inicio" value="inicio" checked>
+                                <span>Início</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-painel-setor" value="painel-setor">
+                                <span>Painel do Setor</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-dashboard" value="dashboard">
+                                <span>Dashboards</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clients" value="clients">
+                                <span>Clientes</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-homologacao" value="homologacao">
+                                <span>Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-release" value="release">
+                                <span>Release</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-reunioes" value="reunioes">
+                                <span>Reuniões</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-documents" value="documents">
+                                <span>Time de Implantação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-evaluations" value="evaluations">
+                                <span>Avaliações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-gestao" value="gestao">
+                                <span>Gestão</span>
+                            </label>
+
+                            <!-- Funções de Usuários e Permissões -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Usuários e Permissões</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-fetchAndRenderUsuarios" value="fetchAndRenderUsuarios">
+                                <span>Buscar e Renderizar Usuários</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-renderUsuarios" value="renderUsuarios">
+                                <span>Renderizar Usuários</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-getPermissaoLabel" value="getPermissaoLabel">
+                                <span>Obter Label de Permissão</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-adicionarUsuario" value="adicionarUsuario">
+                                <span>Adicionar Usuário</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-filtrarUsuarios" value="filtrarUsuarios">
+                                <span>Filtrar Usuários</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-limparFiltrosUsuarios" value="limparFiltrosUsuarios">
+                                <span>Limpar Filtros de Usuários</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-excluirUsuario" value="excluirUsuario">
+                                <span>Excluir Usuário</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-editarUsuario" value="editarUsuario">
+                                <span>Editar Usuário</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-salvarEdicaoUsuario" value="salvarEdicaoUsuario">
+                                <span>Salvar Edição de Usuário</span>
+                            </label>
+
+                            <!-- Funções de Clientes -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Clientes</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-fetchAndRenderClients" value="fetchAndRenderClients">
+                                <span>Buscar e Renderizar Clientes</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-saveClient" value="saveClient">
+                                <span>Salvar Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-editClient" value="editClient">
+                                <span>Editar Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-updateClient" value="updateClient">
+                                <span>Atualizar Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteClient" value="deleteClient">
+                                <span>Excluir Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-filterClientsByGroup" value="filterClientsByGroup">
+                                <span>Filtrar Clientes por Grupo</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clearClientFilters" value="clearClientFilters">
+                                <span>Limpar Filtros de Clientes</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-populateClientDropdown" value="populateClientDropdown">
+                                <span>Popular Dropdown de Clientes</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-viewClientDocuments" value="viewClientDocuments">
+                                <span>Visualizar Documentos do Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-addClientDocument" value="addClientDocument">
+                                <span>Adicionar Documento do Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-fetchAndRenderClientDocuments" value="fetchAndRenderClientDocuments">
+                                <span>Buscar e Renderizar Documentos do Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteClientDocument" value="deleteClientDocument">
+                                <span>Excluir Documento do Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-previewLogo" value="previewLogo">
+                                <span>Visualizar Logo</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-previewEditLogo" value="previewEditLogo">
+                                <span>Visualizar Edição de Logo</span>
+                            </label>
+
+                            <!-- Funções de Produtos e Integrações -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Produtos e Integrações</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-addProduct" value="addProduct">
+                                <span>Adicionar Produto</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-removeProduct" value="removeProduct">
+                                <span>Remover Produto</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-addEditProduct" value="addEditProduct">
+                                <span>Adicionar/Editar Produto</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-updateProductsList" value="updateProductsList">
+                                <span>Atualizar Lista de Produtos</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-addIntegration" value="addIntegration">
+                                <span>Adicionar Integração</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-addEditIntegration" value="addEditIntegration">
+                                <span>Adicionar/Editar Integração</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-renderIntegrations" value="renderIntegrations">
+                                <span>Renderizar Integrações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-removeIntegration" value="removeIntegration">
+                                <span>Remover Integração</span>
+                            </label>
+
+                            <!-- Funções de Funcionários -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Funcionários</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-adicionarFuncionario" value="adicionarFuncionario">
+                                <span>Adicionar Funcionário</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-fetchAndRenderFuncionarios" value="fetchAndRenderFuncionarios">
+                                <span>Buscar e Renderizar Funcionários</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-redirecionarFuncionario" value="redirecionarFuncionario">
+                                <span>Redirecionar Funcionário</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteFuncionario" value="deleteFuncionario">
+                                <span>Excluir Funcionário</span>
+                            </label>
+
+                            <!-- Funções de Documentos -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Documentos</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-addDocument" value="addDocument">
+                                <span>Adicionar Documento</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-fetchAndRenderDocuments" value="fetchAndRenderDocuments">
+                                <span>Buscar e Renderizar Documentos</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteDocument" value="deleteDocument">
+                                <span>Excluir Documento</span>
+                            </label>
+
+                            <!-- Funções de Homologação -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Homologação</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-openHomologacaoTab" value="openHomologacaoTab">
+                                <span>Abrir Aba de Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-adicionarArquivosHomologacao" value="adicionarArquivosHomologacao">
+                                <span>Adicionar Arquivos de Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-criarItemArquivoHomologacao" value="criarItemArquivoHomologacao">
+                                <span>Criar Item de Arquivo de Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-removerArquivoHomologacao" value="removerArquivoHomologacao">
+                                <span>Remover Arquivo de Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-formatarTamanho" value="formatarTamanho">
+                                <span>Formatar Tamanho</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-limparHomologacaoForm" value="limparHomologacaoForm">
+                                <span>Limpar Formulário de Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-fetchAndRenderHomologacoes" value="fetchAndRenderHomologacoes">
+                                <span>Buscar e Renderizar Homologações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-filtrarHomologacoes" value="filtrarHomologacoes">
+                                <span>Filtrar Homologações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-baixarArquivosHomologacao" value="baixarArquivosHomologacao">
+                                <span>Baixar Arquivos de Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteHomologacao" value="deleteHomologacao">
+                                <span>Excluir Homologação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-baixarArquivosHomologacaoFromButton" value="baixarArquivosHomologacaoFromButton">
+                                <span>Baixar Arquivos de Homologação (Botão)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteHomologacaoFromButton" value="deleteHomologacaoFromButton">
+                                <span>Excluir Homologação (Botão)</span>
+                            </label>
+
+                            <!-- Funções de Releases -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Releases</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-salvarRelease" value="salvarRelease">
+                                <span>Salvar Release</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-exibirRelease" value="exibirRelease">
+                                <span>Exibir Release</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteRelease" value="deleteRelease">
+                                <span>Excluir Release</span>
+                            </label>
+
+                            <!-- Funções de Reuniões -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Reuniões</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-salvarReuniao" value="salvarReuniao">
+                                <span>Salvar Reunião</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-carregarReunioes" value="carregarReunioes">
+                                <span>Carregar Reuniões</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-filtrarReunioes" value="filtrarReunioes">
+                                <span>Filtrar Reuniões</span>
+                            </label>
+
+                            <!-- Funções de Relatório de Visita -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Relatório de Visita</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-gerarPDFVisita" value="gerarPDFVisita">
+                                <span>Gerar PDF de Visita</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-buscarClienteIdPorEmpresa" value="buscarClienteIdPorEmpresa">
+                                <span>Buscar Cliente ID por Empresa</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-sanitizeFileName" value="sanitizeFileName">
+                                <span>Sanitizar Nome de Arquivo</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-salvarPDFNoCliente" value="salvarPDFNoCliente">
+                                <span>Salvar PDF no Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-enviarPorEmail" value="enviarPorEmail">
+                                <span>Enviar por Email</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-enviarPorWhatsapp" value="enviarPorWhatsapp">
+                                <span>Enviar por WhatsApp</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-closeEmailModal" value="closeEmailModal">
+                                <span>Fechar Modal de Email</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-closeWhatsappModal" value="closeWhatsappModal">
+                                <span>Fechar Modal de WhatsApp</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-enviarRelatorioPorEmail" value="enviarRelatorioPorEmail">
+                                <span>Enviar Relatório por Email</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-enviarRelatorioPorWhatsapp" value="enviarRelatorioPorWhatsapp">
+                                <span>Enviar Relatório por WhatsApp</span>
+                            </label>
+
+                            <!-- Funções de Avaliação -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Avaliação</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-openEvaluationModal" value="openEvaluationModal">
+                                <span>Abrir Modal de Avaliação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-closeEvaluationModal" value="closeEvaluationModal">
+                                <span>Fechar Modal de Avaliação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-submitEvaluation" value="submitEvaluation">
+                                <span>Enviar Avaliação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-isDocumentEvaluated" value="isDocumentEvaluated">
+                                <span>Verificar se Documento foi Avaliado</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-getCurrentClientId" value="getCurrentClientId">
+                                <span>Obter ID do Cliente Atual</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadEvaluations" value="loadEvaluations">
+                                <span>Carregar Avaliações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-updateEvaluationStats" value="updateEvaluationStats">
+                                <span>Atualizar Estatísticas de Avaliação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadClientFilter" value="loadClientFilter">
+                                <span>Carregar Filtro de Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-filterEvaluations" value="filterEvaluations">
+                                <span>Filtrar Avaliações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-generateStars" value="generateStars">
+                                <span>Gerar Estrelas</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-getRatingText" value="getRatingText">
+                                <span>Obter Texto de Avaliação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-getRatingColor" value="getRatingColor">
+                                <span>Obter Cor de Avaliação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-deleteEvaluation" value="deleteEvaluation">
+                                <span>Excluir Avaliação</span>
+                            </label>
+
+                            <!-- Funções de Painel do Setor -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções de Painel do Setor</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-alterarQuantidade" value="alterarQuantidade">
+                                <span>Alterar Quantidade</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-carregarContadoresDeTarefas" value="carregarContadoresDeTarefas">
+                                <span>Carregar Contadores de Tarefas</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-saveTasks" value="saveTasks">
+                                <span>Salvar Tarefas</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-initializeMap" value="initializeMap">
+                                <span>Inicializar Mapa</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadVisitasOnMap" value="loadVisitasOnMap">
+                                <span>Carregar Visitas no Mapa</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-geocodeAddress" value="geocodeAddress">
+                                <span>Geocodificar Endereço</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadPainelData" value="loadPainelData">
+                                <span>Carregar Dados do Painel</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadTimeData" value="loadTimeData">
+                                <span>Carregar Dados do Time</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadProjectsData" value="loadProjectsData">
+                                <span>Carregar Dados de Projetos</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadEntregasData" value="loadEntregasData">
+                                <span>Carregar Dados de Entregas</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-updateTaskCounters" value="updateTaskCounters">
+                                <span>Atualizar Contadores de Tarefas</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showAddTaskModal" value="showAddTaskModal">
+                                <span>Mostrar Modal de Adicionar Tarefa</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showAddTeamMemberModal" value="showAddTeamMemberModal">
+                                <span>Mostrar Modal de Adicionar Membro do Time</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showAddProjectModal" value="showAddProjectModal">
+                                <span>Mostrar Modal de Adicionar Projeto</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showAddVisitModal" value="showAddVisitModal">
+                                <span>Mostrar Modal de Adicionar Visita</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showAddEntregaModal" value="showAddEntregaModal">
+                                <span>Mostrar Modal de Adicionar Entrega</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-closeModal" value="closeModal">
+                                <span>Fechar Modal</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-saveTask" value="saveTask">
+                                <span>Salvar Tarefa</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-saveTeamMember" value="saveTeamMember">
+                                <span>Salvar Membro do Time</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-saveProject" value="saveProject">
+                                <span>Salvar Projeto</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-saveVisit" value="saveVisit">
+                                <span>Salvar Visita</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-saveEntrega" value="saveEntrega">
+                                <span>Salvar Entrega</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clearTaskForm" value="clearTaskForm">
+                                <span>Limpar Formulário de Tarefa</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clearTeamMemberForm" value="clearTeamMemberForm">
+                                <span>Limpar Formulário de Membro do Time</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clearProjectForm" value="clearProjectForm">
+                                <span>Limpar Formulário de Projeto</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clearVisitForm" value="clearVisitForm">
+                                <span>Limpar Formulário de Visita</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clearEntregaForm" value="clearEntregaForm">
+                                <span>Limpar Formulário de Entrega</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-excluirProjeto" value="excluirProjeto">
+                                <span>Excluir Projeto</span>
+                            </label>
+
+                            <!-- Funções Gerais e Utilitárias -->
+                            <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções Gerais e Utilitárias</h4>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showTab" value="showTab">
+                                <span>Mostrar Aba</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showClientTab" value="showClientTab">
+                                <span>Mostrar Aba de Cliente</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showAlert" value="showAlert">
+                                <span>Mostrar Alerta</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-showConfirm" value="showConfirm">
+                                <span>Mostrar Confirmação</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-logoutTryvia" value="logoutTryvia">
+                                <span>Logout Tryvia</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-updateDateTime" value="updateDateTime">
+                                <span>Atualizar Data e Hora</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-initializeInicio" value="initializeInicio">
+                                <span>Inicializar Início</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadDashboardMetrics" value="loadDashboardMetrics">
+                                <span>Carregar Métricas do Dashboard</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadRecentActivities" value="loadRecentActivities">
+                                <span>Carregar Atividades Recentes</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadHighlightClients" value="loadHighlightClients">
+                                <span>Carregar Clientes em Destaque</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-loadNotifications" value="loadNotifications">
+                                <span>Carregar Notificações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-createCharts" value="createCharts">
+                                <span>Criar Gráficos</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-createHomologacoesChart" value="createHomologacoesChart">
+                                <span>Criar Gráfico de Homologações</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-createReleasesChart" value="createReleasesChart">
+                                <span>Criar Gráfico de Releases</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-refreshActivities" value="refreshActivities">
+                                <span>Atualizar Atividades</span>
+                            </label>
+                        </div>
+                    </div>
         <button class="btn-primary" onclick="adicionarUsuario()">
             <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
             Adicionar Usuário
