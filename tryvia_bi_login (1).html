@@ -224,6 +224,8 @@ async function handleLogin(event) {
     localStorage.setItem('user_email', email);   // Salva o email do usuário
     sessionStorage.setItem('tryvia_logged', '1');
     localStorage.setItem('permissoes', JSON.stringify(permissoes));
+    // Salva o client_id do usuário logado na sessão
+    sessionStorage.setItem('client_id', data.client_id);
     showMessage('Login bem-sucedido! Redirecionando...', 'success');
     setTimeout(() => {
       window.location.href = redirectUrl;
