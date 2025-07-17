@@ -8077,3 +8077,105 @@ async function salvarEdicaoUsuario(usuarioId) {
 </body>
 
 
+
+
+
+<!-- Lógica de Controlo de Acesso -->
+<script>
+/**
+ * Verifica se utilizador tem acesso a um cliente específico
+ * @param {number} clientId - ID do cliente
+ * @returns {boolean} - true se tem acesso
+ */
+function hasAccessToClient(clientId) {
+    const userType = localStorage.getItem('user_type');
+    const userClientId = localStorage.getItem('user_client_id');
+    
+    // Utilizadores internos veem todos (ou conforme outras permissões)
+    if (userType === 'internal') {
+        return true;
+    }
+    
+    // Utilizadores cliente veem apenas o seu próprio cliente
+    if (userType === 'client') {
+        return parseInt(userClientId) === parseInt(clientId);
+    }
+    
+    return false;
+}
+
+/**
+ * Filtra clientes baseado no tipo de utilizador
+ * @param {Array} clients - Lista completa de clientes
+ * @returns {Array} - Lista filtrada
+ */
+function filterClientsByUserType(clients) {
+    const userType = localStorage.getItem('user_type');
+    const userClientId = localStorage.getItem('user_client_id');
+    
+    // Utilizadores internos veem todos
+    if (userType === 'internal') {
+        return clients;
+    }
+    
+    // Utilizadores cliente veem apenas o seu
+    if (userType === 'client' && userClientId) {
+        return clients.filter(client => client.id === parseInt(userClientId));
+    }
+    
+    return [];
+}
+
+// Interface Personalizada por Tipo de Utilizador
+function customizeInterfaceByUserType() {
+    const userType = localStorage.getItem('user_type');
+    const clientName = localStorage.getItem('client_name');
+    
+    if (userType === 'client') {
+        // Personalizar título
+        document.title = `Portal ${clientName}`;
+        
+        // Adicionar logo do cliente no header
+        const header = document.querySelector('.header');
+        if (header && localStorage.getItem('client_logo')) {
+            const logo = document.createElement('img');
+            logo.src = localStorage.getItem('client_logo');
+            logo.style.height = '40px';
+            logo.style.marginRight = '10px';
+            header.prepend(logo);
+        }
+        
+        // Esconder opções não relevantes para clientes
+        hideElementsForClientUser();
+        
+        // Mostrar mensagem de boas-vindas personalizada
+        showClientWelcomeMessage(clientName);
+    }
+}
+
+function hideElementsForClientUser() {
+    // Esconder botões de adicionar/editar/excluir clientes
+    const addClientBtn = document.querySelector('[onclick="openAddClientModal()"]');
+    if (addClientBtn) addClientBtn.style.display = 'none';
+    
+    // Esconder filtros de grupo (não fazem sentido para cliente individual)
+    const groupFilter = document.getElementById('filterClientGroup');
+    if (groupFilter) groupFilter.closest('.form-group').style.display = 'none';
+    
+    // Esconder gestão de utilizadores
+    const userManagementBtn = document.querySelector('[onclick="showUserManagement()"]');
+    if (userManagementBtn) userManagementBtn.style.display = 'none';
+}
+
+function showClientWelcomeMessage(clientName) {
+    const welcomeDiv = document.createElement('div');
+    welcomeDiv.innerHTML = `\n        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">\n            <h3 style="color: #1976d2; margin: 0;">Bem-vindo ao Portal ${clientName}</h3>\n            <p style="margin: 5px 0 0 0; color: #666;">Aqui pode consultar as informações da sua empresa</p>\n        </div>\n    `;
+    
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+        mainContent.insertBefore(welcomeDiv, mainContent.firstChild);
+    }
+}
+</script>
+
+
