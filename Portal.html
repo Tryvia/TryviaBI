@@ -3955,6 +3955,7 @@ async function fetchAndRenderClients() {
             }
 
             clients = data;
+            window.clients = data || [];
 
             if (clients.length === 0) {
                 container.innerHTML = `
