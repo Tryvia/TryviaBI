@@ -4341,10 +4341,10 @@ function removeIntegration(idx, listName) {
             
         }
         async function deleteClient(id, logoPath) {
-            const confirmed = await showConfirm('Confirmação', 'Tem certeza que deseja deletar este cliente e todos os seus produtos e documentos? Esta ação é irreversível.');
-            if (!confirmed) {
-                return;
-            }
+  if (!permissoes.includes('deleteClient')) {
+    showAlert('Atenção', 'Você não tem permissão para excluir clientes.');
+    return;
+  }
 
             if (logoPath) {
                 const { error: storageError } = await supabase.storage
