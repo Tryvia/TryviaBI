@@ -3918,13 +3918,9 @@ function addEditProduct() {
             }
         }
 async function fetchAndRenderClients() {
-   const clientId = sessionStorage.getItem('client_id'); // ou localStorage
-   if (!clientId) {
-      // Mostra mensagem ou não faz consulta
-      console.error('client_id não encontrado!');
-      return;
-   }
-   const { data, error } = await supabase
+   const userType = localStorage.getItem('user_type');
+   const clientId = sessionStorage.getItem('client_id');
+   let query = supabase
      .from('clients')
      .select(`
         *,
@@ -3934,8 +3930,20 @@ async function fetchAndRenderClients() {
         integrations (
             id, type, system
         )
-     `)
-     .eq('id', clientId); // <-- filtro pelo client_id
+     `);
+   // Só aplica filtro se for client e clientId válido
+   if (
+     userType === 'client' &&
+     clientId &&
+     clientId !== 'null' &&
+     clientId !== null &&
+     clientId !== undefined &&
+     clientId !== '' &&
+     !isNaN(Number(clientId))
+   ) {
+     query = query.eq('id', Number(clientId));
+   }
+   const { data, error } = await query;
    // ..restante do código...
 
             const container = document.getElementById('clientsList');
