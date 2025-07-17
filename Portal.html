@@ -7733,7 +7733,8 @@ async function fetchAndRenderUsuarios() {
         let query = releaseClient.from('usuarios').select('*').order('nome', { ascending: true });
         const userType = localStorage.getItem('user_type');
         const clientId = sessionStorage.getItem('client_id');
-        if (userType === 'client' && clientId) {
+        // Só filtra se for client e clientId válido
+        if (userType === 'client' && clientId && clientId !== 'null' && clientId !== null && clientId !== undefined && clientId !== '') {
             query = query.eq('client_id', clientId);
         }
         const { data: usuarios, error } = await query;
