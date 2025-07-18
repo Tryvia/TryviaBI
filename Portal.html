@@ -6184,7 +6184,7 @@ let painelData = {
 
 // Funções para mostrar modais
 function showAddTaskModal() {
-    if (!permissoes.includes('abrirModalTarefa')) {
+    if (!permissoes.includes('showAddTaskModal')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar tarefas.');
         return;
     }
@@ -6192,7 +6192,7 @@ function showAddTaskModal() {
 }
 
 function showAddTeamMemberModal() {
-    if (!permissoes.includes('abrirModalMembro')) {
+    if (!permissoes.includes('showAddTeamMemberModal')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar membros à equipe.');
         return;
     }
@@ -6200,7 +6200,7 @@ function showAddTeamMemberModal() {
 }
 
 function showAddProjectModal() {
-    if (!permissoes.includes('abrirModalProjeto')) {
+    if (!permissoes.includes('showAddProjectModal')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar projetos.');
         return;
     }
@@ -6208,7 +6208,7 @@ function showAddProjectModal() {
 }
 
 function showAddVisitModal() {
-    if (!permissoes.includes('abrirModalVisita')) {
+    if (!permissoes.includes('showAddVisitModal')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar visitas.');
         return;
     }
@@ -6216,7 +6216,7 @@ function showAddVisitModal() {
 }
 
 function showAddEntregaModal() {
-    if (!permissoes.includes('abrirModalEntrega')) {
+    if (!permissoes.includes('showAddEntregaModal')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar entregas.');
         return;
     }
