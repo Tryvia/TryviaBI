@@ -3539,7 +3539,23 @@ function addEditProduct() {
             `).join('');
         }
 
-        
+        function updateProductsList(listName, containerId) {
+    const products = listName === 'currentProducts' ? currentProducts : editingProducts;
+    const container = document.getElementById(containerId);
+
+    if (!products || products.length === 0) {
+        container.innerHTML = '<p style="color: rgba(0, 0, 0, 0.85);">Nenhum produto adicionado ainda.</p>';
+        return;
+    }
+
+    container.innerHTML = products.map((product, index) => `
+        <div class="product-item">
+            <span>${product.name} (x${product.quantity})</span>
+            <button class="delete-btn" onclick="removeProduct(${index}, '${listName}')">X</button>
+        </div>
+    `).join('');
+}
+
         async function viewClientDocuments(clientId) {
             const clientName = clients.find(c => c.id === clientId)?.name || `Cliente ID: ${clientId}`;
             
