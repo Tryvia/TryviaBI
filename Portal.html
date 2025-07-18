@@ -1494,6 +1494,355 @@ function populateReuniaoClientes() {
     margin-top: 30px;
 }
     
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(33, 150, 243, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1976d2 0%, #2196f3 50%, #42a5f5 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e3f2fd;
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(33, 150, 243, 0.15);
+        }
+
+        .form-container h3 {
+            color: #1565c0;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2196f3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #1565c0;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 16px;
+            border: 2px solid #e1f5fe;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e3f2fd;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .permission-item:hover {
+            background: #e3f2fd;
+            transform: translateX(3px);
+        }
+
+        .permission-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2196f3;
+            cursor: pointer;
+        }
+
+        .permission-item span {
+            font-weight: 500;
+            color: #424242;
+            cursor: pointer;
+        }
+
+        .section-title {
+            grid-column: 1 / -1;
+            margin: 25px 0 15px 0;
+            color: #1565c0;
+            border-bottom: 2px solid #2196f3;
+            padding-bottom: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64b5f6 0%, #90caf9 100%);
+            color: #1565c0;
+            border: 2px solid #2196f3;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%);
+            transform: translateY(-1px);
+        }
+
+        .users-section {
+            background: linear-gradient(135deg, #f3f9ff 0%, #e8f4fd 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.1);
+            border: 2px solid #e3f2fd;
+        }
+
+        .users-section h3 {
+            color: #1565c0;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filters-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e3f2fd;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.05);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(33, 150, 243, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+            color: white;
+        }
+
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e3f2fd;
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+            transform: scale(1.01);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .loading-cell {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .loading-cell i {
+            color: #2196f3;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .permissions-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .table-container {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 12px 8px;
+            }
+        }
+
+        .icon-blue {
+            color: #2196f3;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <!-- EmailJS SDK -->
@@ -2790,7 +3139,7 @@ select {
                 <input type="password" id="usuarioConfirmarSenha" placeholder="Confirme a senha">
             </div>
         </div>
-        <div class="form-row">
+         <div class="form-row">
         <div class="form-group">
             <label for="usuarioSetor">Setor</label>
             <select id="usuarioSetor">
@@ -2808,420 +3157,369 @@ select {
         </div>
     </div>
                            <div class="form-group">
-                        <label style="font-size: 1.2em; color: #333; margin-bottom: 15px; display: block;">
-                            <i class="fas fa-shield-alt" style="margin-right: 8px; color: #4fc3f7;"></i>
-                            Permissões do Sistema
-                        </label>
-                        
-                        <!-- Container principal das permissões -->
-                        <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 2px solid #e3f2fd;">
-                            
-                            <!-- Seção: Permissões Básicas -->
-                            <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #4fc3f7;">
-                                <h4 style="color: #4fc3f7; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
-                                    <i class="fas fa-home" style="margin-right: 8px;"></i>
-                                    Permissões
-                                </h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-inicio" value="inicio" checked style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Início</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-painel-setor" value="painel-setor" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Painel do Setor</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-dashboard" value="dashboard" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Dashboards</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-clients" value="clients" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Clientes</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-homologacao" value="homologacao" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Homologação</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-visitas" value="https://tryvia.github.io/TryviaBI/mapa_visitas.html" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Visitas</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-calendario" value="https://tryvia.github.io/TryviaBI/calendario.html" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Calendário</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">MVP</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Implantações</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-release" value="release" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Release</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-reunioes" value="reunioes" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Reuniões</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-relatorioVisita" value="relatorioVisita" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Relatório de Visita</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-documents" value="documents" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Time de Implantação</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-evaluations" value="evaluations" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Avaliações</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-gestao" value="gestao" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Gestão</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-gerenciar-logins" value="gerenciar-logins" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Gerenciar Logins</span>
-                                    </label>
-                                </div>
-                            </div>
+                    <label>
+                        <i class="fas fa-key icon-blue"></i>
+                        Permissões
+                    </label>
+                    <div class="permissions-grid">
+                        <!-- Permissões Básicas -->
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-inicio" value="inicio" checked>
+                            <span>Início</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-painel-setor" value="painel-setor">
+                            <span>Painel do Setor</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-dashboard" value="dashboard">
+                            <span>Dashboards</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-clients" value="clients">
+                            <span>Clientes</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-homologacao" value="homologacao">
+                            <span>Homologação</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-visitas" value="https://tryvia.github.io/TryviaBI/mapa_visitas.html">
+                            <span>Visitas</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-calendario" value="https://tryvia.github.io/TryviaBI/calendario.html">
+                            <span>Calendário</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html">
+                            <span>MVP</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
+                            <span>Implantações</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-release" value="release">
+                            <span>Release</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-reunioes" value="reunioes">
+                            <span>Reuniões</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-relatorioVisita" value="relatorioVisita">
+                            <span>Relatório de Visita</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-documents" value="documents">
+                            <span>Time de Implantação</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-evaluations" value="evaluations">
+                            <span>Avaliações</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-gestao" value="gestao">
+                            <span>Gestão</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-gerenciar-logins" value="gerenciar-logins">
+                            <span>Gerenciar Logins</span>
+                        </div>
 
-                            <!-- Seção: Funções da aba de clientes -->
-                            <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #28a745;">
-                                <h4 style="color: #28a745; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
-                                    <i class="fas fa-users" style="margin-right: 8px;"></i>
-                                    Funções da aba de clientes
-                                </h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-saveClient" value="saveClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Salvar Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-editClient" value="editClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Editar Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-updateClient" value="updateClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Atualizar Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-deleteClient" value="deleteClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addClientDocument" value="addClientDocument" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Documento do Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-deleteClientDocument" value="deleteClientDocument" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Documento do Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addProduct" value="addProduct" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Produto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-removeProduct" value="removeProduct" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Remover Produto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addEditProduct" value="addEditProduct" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar/Editar Produto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addIntegration" value="addIntegration" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Integração</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addEditIntegration" value="addEditIntegration" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar/Editar Integração</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-removeIntegration" value="removeIntegration" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Remover Integração</span>
-                                    </label>
-                                </div>
-                            </div>
+                        <!-- Funções da aba de clientes -->
+                        <h4 class="section-title">
+                            <i class="fas fa-users icon-blue"></i>
+                            Funções da aba de clientes
+                        </h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-saveClient" value="saveClient">
+                            <span>Salvar Cliente</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-editClient" value="editClient">
+                            <span>Editar Cliente</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-updateClient" value="updateClient">
+                            <span>Atualizar Cliente</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-deleteClient" value="deleteClient">
+                            <span>Excluir Cliente</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-addClientDocument" value="addClientDocument">
+                            <span>Adicionar Documento do Cliente</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-deleteClientDocument" value="deleteClientDocument">
+                            <span>Excluir Documento do Cliente</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-addProduct" value="addProduct">
+                            <span>Adicionar Produto</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-removeProduct" value="removeProduct">
+                            <span>Remover Produto</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-addEditProduct" value="addEditProduct">
+                            <span>Adicionar/Editar Produto</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-addIntegration" value="addIntegration">
+                            <span>Adicionar Integração</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-addEditIntegration" value="addEditIntegration">
+                            <span>Adicionar/Editar Integração</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-removeIntegration" value="removeIntegration">
+                            <span>Remover Integração</span>
+                        </div>
 
-                            <!-- Seção: Funções de Documentos do time -->
-                            <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
-                                <h4 style="color: #ffc107; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
-                                    <i class="fas fa-file-alt" style="margin-right: 8px;"></i>
-                                    Funções de Documentos do time
-                                </h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#fff3cd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addDocument" value="addDocument" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Documento do time</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#fff3cd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-deleteDocument" value="deleteDocument" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Documento do time</span>
-                                    </label>
-                                </div>
-                            </div>
+                        <!-- Funções de Documentos -->
+                        <h4 class="section-title">
+                            <i class="fas fa-file-alt icon-blue"></i>
+                            Funções de Documentos do time
+                        </h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-addDocument" value="addDocument">
+                            <span>Adicionar Documento do time</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-deleteDocument" value="deleteDocument">
+                            <span>Excluir Documento do time</span>
+                        </div>
 
-                            <!-- Seção: Funções de Homologação -->
-                            <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #17a2b8;">
-                                <h4 style="color: #17a2b8; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
-                                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
-                                    Funções de Homologação
-                                </h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d1ecf1'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-homologacaoForm" value="homologacaoForm" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar homologação</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d1ecf1'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-deleteHomologacaoFromButton" value="deleteHomologacaoFromButton" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Homologação</span>
-                                    </label>
-                                </div>
-                            </div>
+                        <!-- Funções de Homologação -->
+                        <h4 class="section-title">
+                            <i class="fas fa-check-circle icon-blue"></i>
+                            Funções de Homologação
+                        </h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-homologacaoForm" value="homologacaoForm">
+                            <span>Adicionar homologação</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-deleteHomologacaoFromButton" value="deleteHomologacaoFromButton">
+                            <span>Excluir Homologação</span>
+                        </div>
 
-                            <!-- Seção: Funções de Painel do Setor -->
-                            <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #6f42c1;">
-                                <h4 style="color: #6f42c1; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
-                                    <i class="fas fa-tachometer-alt" style="margin-right: 8px;"></i>
-                                    Funções de Painel do Setor
-                                </h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-salvarRelease" value="salvarRelease" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Salvar Release</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-deleteRelease" value="deleteRelease" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Release</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-salvarReuniao" value="salvarReuniao" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Salvar Reunião</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-alterarQuantidade" value="alterarQuantidade" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Alterar Quantidade nas tarefas</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-saveTasks" value="saveTasks" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Salvar Tarefas</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-showAddTaskModal" value="showAddTaskModal" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Tarefa</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-showAddTeamMemberModal" value="showAddTeamMemberModal" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Membro do Time</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-showAddProjectModal" value="showAddProjectModal" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Projeto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-showAddVisitModal" value="showAddVisitModal" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Visita</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-showAddEntregaModal" value="showAddEntregaModal" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Entrega</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-saveTask" value="saveTask" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Salvar Tarefa</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-saveProject" value="saveProject" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Salvar Projeto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-excluirProjeto" value="excluirProjeto" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Projeto</span>
-                                    </label>
-                                </div>
-                            </div>
+                        <!-- Funções de Releases -->
+                        <h4 class="section-title">
+                            <i class="fas fa-rocket icon-blue"></i>
+                            Funções de Releases
+                        </h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-salvarRelease" value="salvarRelease">
+                            <span>Salvar Release</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-deleteRelease" value="deleteRelease">
+                            <span>Excluir Release</span>
+                        </div>
+
+                        <!-- Funções de Reuniões -->
+                        <h4 class="section-title">
+                            <i class="fas fa-calendar-alt icon-blue"></i>
+                            Funções de Reuniões
+                        </h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-salvarReuniao" value="salvarReuniao">
+                            <span>Salvar Reunião</span>
+                        </div>
+
+                        <!-- Funções de Painel do Setor -->
+                        <h4 class="section-title">
+                            <i class="fas fa-chart-bar icon-blue"></i>
+                            Funções de Painel do Setor
+                        </h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-alterarQuantidade" value="alterarQuantidade">
+                            <span>Alterar Quantidade nas tarefas</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-saveTasks" value="saveTasks">
+                            <span>Salvar Tarefas</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-showAddTaskModal" value="showAddTaskModal">
+                            <span>Adicionar Tarefa</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-showAddTeamMemberModal" value="showAddTeamMemberModal">
+                            <span>Adicionar Membro do Time</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-showAddProjectModal" value="showAddProjectModal">
+                            <span>Adicionar Projeto</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-showAddVisitModal" value="showAddVisitModal">
+                            <span>Adicionar Visita</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-showAddEntregaModal" value="showAddEntregaModal">
+                            <span>Adicionar Entrega</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-saveTask" value="saveTask">
+                            <span>Salvar Tarefa</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-saveProject" value="saveProject">
+                            <span>Salvar Projeto</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm-excluirProjeto" value="excluirProjeto">
+                            <span>Excluir Projeto</span>
                         </div>
                     </div>
-        <button class="btn-primary" onclick="adicionarUsuario()">
-            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
-            Adicionar Usuário
-        </button>
-    </div>
+                </div>
 
-    <!-- Formulário para Criar Login de Cliente -->
-    <div class="form-container" style="margin-top: 30px;">
-        <h3 style="margin-bottom: 20px; color: #333333;">Criar Login para Cliente</h3>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="clienteSelect">Cliente *</label>
-                <select id="clienteSelect" required>
-                    <option value="">Selecione um cliente</option>
-                </select>
+                <button class="btn-primary" onclick="adicionarUsuario()">
+                    <i class="fas fa-user-plus"></i>
+                    Adicionar Usuário
+                </button>
             </div>
-            <div class="form-group">
-                <label for="clienteLoginEmail">Email do Login</label>
-                <input type="email" id="clienteLoginEmail" placeholder="Digite o email para o login do cliente">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="clienteLoginSenha">Senha</label>
-                <input type="password" id="clienteLoginSenha" placeholder="Digite a senha">
-            </div>
-            <div class="form-group">
-                <label for="clienteLoginConfirmarSenha">Confirmar Senha</label>
-                <input type="password" id="clienteLoginConfirmarSenha" placeholder="Confirme a senha">
-            </div>
-        </div>
-        <div class="form-group">
-            <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #4fc3f7;">
-                                <h4 style="color: #4fc3f7; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
-                                    <i class="fas fa-home" style="margin-right: 8px;"></i>
-                                    Permissões para cliente
-                                </h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-inicio" value="inicio" checked style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Início</span>
-                                    </label>
-               <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-dashboard" value="dashboard" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Dashboards</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-clients" value="clients" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Clientes</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">MVP</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Implantações</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-reunioes" value="reunioes" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Reuniões</span>
-                                    </label>
-                                    </div>
-                                    </div> 
 
-                                     <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #28a745;">
-                                <h4 style="color: #28a745; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
-                                    <i class="fas fa-users" style="margin-right: 8px;"></i>
-                                    Funções 
-                                </h4>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-saveClient" value="saveClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Salvar Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-editClient" value="editClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Editar Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-updateClient" value="updateClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Atualizar Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-deleteClient" value="deleteClient" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addClientDocument" value="addClientDocument" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Documento do Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-deleteClientDocument" value="deleteClientDocument" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Excluir Documento do Cliente</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addProduct" value="addProduct" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Produto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-removeProduct" value="removeProduct" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Remover Produto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addEditProduct" value="addEditProduct" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar/Editar Produto</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addIntegration" value="addIntegration" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar Integração</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-addEditIntegration" value="addEditIntegration" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Adicionar/Editar Integração</span>
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-removeIntegration" value="removeIntegration" style="transform: scale(1.2);">
-                                        <span style="font-weight: 500;">Remover Integração</span>
-                                    </label>
-            </div>
-        </div>
-        <button class="btn-primary" onclick="criarLoginCliente()">
-            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
-            Criar Login de Cliente
-        </button>
-    </div>
+            <!-- Formulário para Criar Login de Cliente -->
+            <div class="form-container">
+                <h3>
+                    <i class="fas fa-user-tie icon-blue"></i>
+                    Criar Login para Cliente
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clienteSelect">
+                            <i class="fas fa-building icon-blue"></i>
+                            Cliente *
+                        </label>
+                        <select id="clienteSelect" required>
+                            <option value="">Selecione um cliente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="clienteLoginEmail">
+                            <i class="fas fa-envelope icon-blue"></i>
+                            Email do Login
+                        </label>
+                        <input type="email" id="clienteLoginEmail" placeholder="Digite o email para o login do cliente">
+                    </div>
+                </div>
 
-    <!-- Lista de Usuários -->
-    <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
-        <h3 style="color: #333333; margin-bottom: 20px; font-size: 1.5em;">
-            <i class="fas fa-users" style="margin-right: 10px;"></i>
-            Usuários Cadastrados
-        </h3>
-        
-        <!-- Filtros -->
-        <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-            <div class="form-row">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clienteLoginSenha">
+                            <i class="fas fa-lock icon-blue"></i>
+                            Senha
+                        </label>
+                        <input type="password" id="clienteLoginSenha" placeholder="Digite a senha">
+                    </div>
+                    <div class="form-group">
+                        <label for="clienteLoginConfirmarSenha">
+                            <i class="fas fa-lock icon-blue"></i>
+                            Confirmar Senha
+                        </label>
+                        <input type="password" id="clienteLoginConfirmarSenha" placeholder="Confirme a senha">
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label for="filtroNomeUsuario">Filtrar por Nome</label>
-                    <input type="text" id="filtroNomeUsuario" placeholder="Digite o nome..." oninput="filtrarUsuarios()">
+                    <label>
+                        <i class="fas fa-key icon-blue"></i>
+                        Permissões do Cliente
+                    </label>
+                    <div class="permissions-grid">
+                        <div class="permission-item">
+                            <input type="checkbox" id="cliente-perm-inicio" value="inicio" checked>
+                            <span>Início</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="cliente-perm-dashboard" value="dashboard">
+                            <span>Dashboards</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="cliente-perm-relatorioVisita" value="relatorioVisita">
+                            <span>Relatório de Visita</span>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="cliente-perm-evaluations" value="evaluations">
+                            <span>Avaliações</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="filtroEmailUsuario">Filtrar por Email</label>
-                    <input type="text" id="filtroEmailUsuario" placeholder="Digite o email..." oninput="filtrarUsuarios()">
+
+                <button class="btn-primary" onclick="criarLoginCliente()">
+                    <i class="fas fa-user-plus"></i>
+                    Criar Login de Cliente
+                </button>
+            </div>
+
+            <!-- Lista de Usuários -->
+            <div class="users-section">
+                <h3>
+                    <i class="fas fa-users"></i>
+                    Usuários Cadastrados
+                </h3>
+                
+                <!-- Filtros -->
+                <div class="filters-container">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="filtroNomeUsuario">
+                                <i class="fas fa-search icon-blue"></i>
+                                Filtrar por Nome
+                            </label>
+                            <input type="text" id="filtroNomeUsuario" placeholder="Digite o nome..." oninput="filtrarUsuarios()">
+                        </div>
+                        <div class="form-group">
+                            <label for="filtroEmailUsuario">
+                                <i class="fas fa-search icon-blue"></i>
+                                Filtrar por Email
+                            </label>
+                            <input type="text" id="filtroEmailUsuario" placeholder="Digite o email..." oninput="filtrarUsuarios()">
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn-secondary" onclick="limparFiltrosUsuarios()">
+                                <i class="fas fa-eraser"></i>
+                                Limpar Filtros
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn-secondary" onclick="limparFiltrosUsuarios()">Limpar Filtros</button>
+
+                <!-- Tabela de Usuários -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-user"></i> Nome</th>
+                                <th><i class="fas fa-envelope"></i> Email</th>
+                                <th><i class="fas fa-building"></i> Setor</th>
+                                <th style="text-align: center;"><i class="fas fa-key"></i> Permissões</th>
+                                <th style="text-align: center;"><i class="fas fa-cogs"></i> Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <tr>
+                                <td colspan="5" class="loading-cell">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    Carregando usuários...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
-        <!-- Tabela de Usuários -->
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <thead style="background: #4fc3f7; color: white;">
-                    <tr>
-                        <th style="padding: 15px; text-align: left; font-weight: bold;">Nome</th>
-                        <th style="padding: 15px; text-align: left; font-weight: bold;">Email</th>
-                        <th style="padding: 15px; text-align: left; font-weight: bold;">Setor</th>
-                        <th style="padding: 15px; text-align: center; font-weight: bold;">Permissões</th>
-                        <th style="padding: 15px; text-align: center; font-weight: bold;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="usuariosTableBody">
-                    <tr>
-                        <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
-                            <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
-                            Carregando usuários...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -8077,6 +8375,7 @@ async function adicionarUsuario() {
     const email = document.getElementById('usuarioEmail').value.trim();
     const senha = document.getElementById('usuarioSenha').value;
     const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
+     const setor = document.getElementById('usuarioSetor').value;
 
     // Validações
     if (!nome || !email || !senha || !confirmarSenha) {
@@ -8248,6 +8547,7 @@ async function salvarEdicaoUsuario(usuarioId) {
     const email = document.getElementById('usuarioEmail').value.trim();
     const senha = document.getElementById('usuarioSenha').value;
     const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
+     const setor = document.getElementById('usuarioSetor').value;
 
     // Validações
     if (!nome || !email) {
