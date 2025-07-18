@@ -3579,7 +3579,20 @@ function removeIntegration(idx, listName) {
                 fetchAndRenderUsuarios();
             } else if (tabId === 'release') {
     carregarReleases();
-}
+            }else if (tabId === 'painel-setor') {
+    carregarTarefas();
+    carregarProjetos();
+    carregarMembros();
+    carregarVisitas();
+    carregarEntregas();
+            } else if (tabId === 'reunioes') {
+                carregarReunioes();
+            } else if (tabId === 'mvp') {
+                carregarMVP();
+            } else if (tabId === 'implantacao') {
+                carregarImplantacoes();
+            }
+
         }
 
       
