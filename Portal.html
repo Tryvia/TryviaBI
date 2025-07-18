@@ -8234,7 +8234,8 @@ async function adicionarUsuario() {
                 nome: nome,
                 email: email,
                 senha: senha, // Em produção, a senha deveria ser hasheada
-                permissoes: permissoes
+                permissoes: permissoes,
+                setor: setor
             }])
             .select();
 
