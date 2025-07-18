@@ -152,6 +152,122 @@ select {
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// Função para carregar tarefas do setor do usuário logado
+async function carregarTarefas() {
+    const { data, error } = await supabase
+        .from('tarefas')
+        .select('*')
+        .eq('setor', setorUsuario);
+
+    if (error) {
+        console.error('Erro ao buscar tarefas:', error.message);
+        return;
+    }
+
+    // Exemplo de renderização (ajuste conforme seu HTML)
+    const container = document.getElementById('tarefasList');
+    if (!container) return;
+    container.innerHTML = '';
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p style="color: #888;">Nenhuma tarefa encontrada para este setor.</p>';
+        return;
+    }
+    data.forEach(tarefa => {
+        container.innerHTML += `<div class="tarefa-item"><strong>${tarefa.titulo}</strong><br>${tarefa.descricao || ''}</div>`;
+    });
+}
+
+// Função para carregar projetos do setor do usuário logado
+async function carregarProjetos() {
+    const { data, error } = await supabase
+        .from('projetos')
+        .select('*')
+        .eq('setor', setorUsuario);
+
+    if (error) {
+        console.error('Erro ao buscar projetos:', error.message);
+        return;
+    }
+    const container = document.getElementById('projetosList');
+    if (!container) return;
+    container.innerHTML = '';
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p style="color: #888;">Nenhum projeto encontrado para este setor.</p>';
+        return;
+    }
+    data.forEach(projeto => {
+        container.innerHTML += `<div class="projeto-item"><strong>${projeto.nome}</strong><br>${projeto.descricao || ''}</div>`;
+    });
+}
+
+// Função para carregar membros do setor do usuário logado
+async function carregarMembros() {
+    const { data, error } = await supabase
+        .from('membros')
+        .select('*')
+        .eq('setor', setorUsuario);
+
+    if (error) {
+        console.error('Erro ao buscar membros:', error.message);
+        return;
+    }
+    const container = document.getElementById('membrosList');
+    if (!container) return;
+    container.innerHTML = '';
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p style="color: #888;">Nenhum membro encontrado para este setor.</p>';
+        return;
+    }
+    data.forEach(membro => {
+        container.innerHTML += `<div class="membro-item"><strong>${membro.nome}</strong><br>${membro.cargo || ''}</div>`;
+    });
+}
+
+// Função para carregar visitas do setor do usuário logado
+async function carregarVisitas() {
+    const { data, error } = await supabase
+        .from('visitas')
+        .select('*')
+        .eq('setor', setorUsuario);
+
+    if (error) {
+        console.error('Erro ao buscar visitas:', error.message);
+        return;
+    }
+    const container = document.getElementById('visitasList');
+    if (!container) return;
+    container.innerHTML = '';
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p style="color: #888;">Nenhuma visita encontrada para este setor.</p>';
+        return;
+    }
+    data.forEach(visita => {
+        container.innerHTML += `<div class="visita-item"><strong>${visita.titulo}</strong><br>${visita.descricao || ''}</div>`;
+    });
+}
+
+// Função para carregar entregas do setor do usuário logado
+async function carregarEntregas() {
+    const { data, error } = await supabase
+        .from('entregas')
+        .select('*')
+        .eq('setor', setorUsuario);
+
+    if (error) {
+        console.error('Erro ao buscar entregas:', error.message);
+        return;
+    }
+    const container = document.getElementById('entregasList');
+    if (!container) return;
+    container.innerHTML = '';
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p style="color: #888;">Nenhuma entrega encontrada para este setor.</p>';
+        return;
+    }
+    data.forEach(entrega => {
+        container.innerHTML += `<div class="entrega-item"><strong>${entrega.titulo}</strong><br>${entrega.descricao || ''}</div>`;
+    });
+}
 // Função global para popular o select de clientes na aba reuniões
 function populateReuniaoClientes() {
   const select = document.getElementById('reuniaoCliente');
@@ -1517,7 +1633,7 @@ try {
 if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
-
+const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
 const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
 const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
