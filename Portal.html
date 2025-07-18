@@ -151,6 +151,19 @@ select {
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Função global para popular o select de clientes na aba reuniões
+function populateReuniaoClientes() {
+  const select = document.getElementById('reuniaoCliente');
+  if (!select) return;
+  select.innerHTML = '<option value="">Selecione um cliente...</option>';
+  if (!window.clients || !Array.isArray(window.clients)) return;
+  window.clients.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+}
+// ...existing code...
+</script>
 <meta charset="utf-8"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -2467,7 +2480,7 @@ select {
 <div class="content-section" id="reunioes">
 <h2>Reuniões</h2>
 <div class="form-row">
-<div class="form-group"><label for="reuniaoCliente">Cliente</label><input id="reuniaoCliente" type="text"/></div>
+<div class="form-group"><label for="reuniaoCliente">Cliente</label><select id="reuniaoCliente"><option value="">Selecione um cliente...</option></select></div>
 <div class="form-group"><label for="reuniaoData">Data</label><input class="input-padrao" id="reuniaoData" type="date"/></div>
 <div class="form-group"><label for="reuniaoTipo">Tipo</label><input id="reuniaoTipo" type="text"/></div>
 </div>
@@ -2777,6 +2790,23 @@ select {
                 <input type="password" id="usuarioConfirmarSenha" placeholder="Confirme a senha">
             </div>
         </div>
+         <div class="form-row">
+        <div class="form-group">
+            <label for="usuarioSetor">Setor</label>
+            <select id="usuarioSetor">
+                <option value="">Selecione o setor</option>
+                <option value="Time de implantação">Time de implantação</option>
+                <option value="CS">CS</option>
+                <option value="Suporte">Suporte</option>
+                <option value="Tecnico">Técnico</option>
+                <option value="Dev">Dev</option>
+                <option value="Produto">Produto</option>
+                <option value="Comercial">Comercial</option>
+                <option value="Administrativo">Administrativo</option>
+                <option value="TI">TI</option>
+            </select>
+        </div>
+    </div>
                            <div class="form-group">
                         <label>Permissões</label>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
@@ -2985,6 +3015,62 @@ select {
         </button>
     </div>
 
+    <!-- Formulário para Criar Login de Cliente -->
+    <div class="form-container" style="margin-top: 30px;">
+        <h3 style="margin-bottom: 20px; color: #333333;">Criar Login para Cliente</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="clienteSelect">Cliente *</label>
+                <select id="clienteSelect" required>
+                    <option value="">Selecione um cliente</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="clienteLoginEmail">Email do Login</label>
+                <input type="email" id="clienteLoginEmail" placeholder="Digite o email para o login do cliente">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="clienteLoginSenha">Senha</label>
+                <input type="password" id="clienteLoginSenha" placeholder="Digite a senha">
+            </div>
+            <div class="form-group">
+                <label for="clienteLoginConfirmarSenha">Confirmar Senha</label>
+                <input type="password" id="clienteLoginConfirmarSenha" placeholder="Confirme a senha">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Permissões do Cliente</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="cliente-perm-inicio" value="inicio" checked>
+                    <span>Início</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    <input type="checkbox" id="cliente-perm-dashboard" value="dashboard">
+                    <span>Dashboards</span>
+                </label>
+               <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+    <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html">
+    <span>MVP</span>
+</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+    <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
+    <span>Implantações</span>
+</label>
+<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                <input type="checkbox" id="perm-clients" value="clients">
+                                <span>Clientes</span>
+                            </label>
+            </div>
+        </div>
+        <button class="btn-primary" onclick="criarLoginCliente()">
+            <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+            Criar Login de Cliente
+        </button>
+    </div>
+
     <!-- Lista de Usuários -->
     <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
         <h3 style="color: #333333; margin-bottom: 20px; font-size: 1.5em;">
@@ -3016,6 +3102,7 @@ select {
                     <tr>
                         <th style="padding: 15px; text-align: left; font-weight: bold;">Nome</th>
                         <th style="padding: 15px; text-align: left; font-weight: bold;">Email</th>
+                        <th style="padding: 15px; text-align: left; font-weight: bold;">Setor</th>
                         <th style="padding: 15px; text-align: center; font-weight: bold;">Permissões</th>
                         <th style="padding: 15px; text-align: center; font-weight: bold;">Ações</th>
                     </tr>
@@ -3456,7 +3543,23 @@ function addEditProduct() {
             `).join('');
         }
 
-        
+        function updateProductsList(listName, containerId) {
+    const products = listName === 'currentProducts' ? currentProducts : editingProducts;
+    const container = document.getElementById(containerId);
+
+    if (!products || products.length === 0) {
+        container.innerHTML = '<p style="color: rgba(0, 0, 0, 0.85);">Nenhum produto adicionado ainda.</p>';
+        return;
+    }
+
+    container.innerHTML = products.map((product, index) => `
+        <div class="product-item">
+            <span>${product.name} (x${product.quantity})</span>
+            <button class="delete-btn" onclick="removeProduct(${index}, '${listName}')">X</button>
+        </div>
+    `).join('');
+}
+
         async function viewClientDocuments(clientId) {
             const clientName = clients.find(c => c.id === clientId)?.name || `Cliente ID: ${clientId}`;
             
@@ -3917,11 +4020,12 @@ function addEditProduct() {
                 showAlert('Atenção', 'Por favor, preencha todos os campos obrigatórios do cliente.');
             }
         }
-
-        async function fetchAndRenderClients() {
-           const { data, error } = await supabase
-    .from('clients')
-    .select(`
+async function fetchAndRenderClients() {
+   const userType = localStorage.getItem('user_type');
+   const clientId = sessionStorage.getItem('client_id');
+   let query = supabase
+     .from('clients')
+     .select(`
         *,
         products (
             id, name, quantity
@@ -3929,7 +4033,22 @@ function addEditProduct() {
         integrations (
             id, type, system
         )
-    `);
+     `);
+   // Só aplica filtro se for client e clientId válido
+   if (
+     userType === 'client' &&
+     clientId &&
+     clientId !== 'null' &&
+     clientId !== null &&
+     clientId !== undefined &&
+     clientId !== '' &&
+     !isNaN(Number(clientId))
+   ) {
+     query = query.eq('id', Number(clientId));
+   }
+   const { data, error } = await query;
+   // ..restante do código...
+
             const container = document.getElementById('clientsList');
 
             if (error) {
@@ -3939,6 +4058,7 @@ function addEditProduct() {
             }
 
             clients = data;
+            window.clients = data || [];
 
             if (clients.length === 0) {
                 container.innerHTML = `
@@ -4339,12 +4459,25 @@ if (editingIntegrations.length > 0) {
 
         // --- Dashboard  ---
         async function fetchAndRenderDashboards() {
-            const { data, error } = await supabase
-                .from('clients')
-                .select('id, name, logo_url, bi_link')
-                .not('bi_link', 'is', null)
-                .not('bi_link', 'eq', '');
-
+       const userType = localStorage.getItem('user_type');
+const clientId = sessionStorage.getItem('client_id');
+let query = supabase
+  .from('clients')
+  .select('id, name, logo_url, bi_link')
+  .not('bi_link', 'is', null)
+  .not('bi_link', 'eq', '');
+if (
+  userType === 'client' &&
+  clientId &&
+  clientId !== 'null' &&
+  clientId !== null &&
+  clientId !== undefined &&
+  clientId !== '' &&
+  !isNaN(Number(clientId))
+) {
+  query = query.eq('id', Number(clientId));
+}
+const { data, error } = await query;
             const container = document.getElementById('dashboardsList');
 
             if (error) {
@@ -5099,7 +5232,12 @@ async function salvarReuniao() {
         showAlert('Atenção', 'Você não tem permissão para salvar uma reunião.');
         return;
     }
-  const cliente = document.getElementById("reuniaoCliente").value;
+  const clientId = document.getElementById("reuniaoCliente").value;
+  let cliente = "";
+  if (window.clients && clientId) {
+    const obj = window.clients.find(c => String(c.id) === String(clientId));
+    if (obj) cliente = obj.name;
+  }
   const data = document.getElementById("reuniaoData").value;
   const tipo = document.getElementById("reuniaoTipo").value;
   const participantes = document.getElementById("reuniaoParticipantes").value;
@@ -5114,13 +5252,27 @@ async function salvarReuniao() {
     file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/reuniaofiles/${file_path}`;
   }
 
-  const { error: insertError } = await releaseClient.from("reunioes").insert([{ cliente, data, tipo, participantes, file_url, file_path }]);
+  const { error: insertError } = await releaseClient.from("reunioes").insert([{ client_id: clientId ? Number(clientId) : null, cliente, data, tipo, participantes, file_url, file_path }]);
   if (insertError) return alert("Erro ao salvar reunião.");
   carregarReunioes();
 }
 
 async function carregarReunioes() {
-  const { data, error } = await releaseClient.from("reunioes").select("*").order("data", { ascending: false });
+  const userType = localStorage.getItem('user_type');
+const clientId = sessionStorage.getItem('client_id');
+let query = releaseClient.from("reunioes").select("*").order("data", { ascending: false });
+if (
+  userType === 'client' &&
+  clientId &&
+  clientId !== 'null' &&
+  clientId !== null &&
+  clientId !== undefined &&
+  clientId !== '' &&
+  !isNaN(Number(clientId))
+) {
+  query = query.eq('client_id', Number(clientId));
+}
+const { data, error } = await query;
   if (error) return console.error("Erro ao carregar reuniões", error);
 
   const container = document.getElementById("listaReunioes")
@@ -5128,10 +5280,20 @@ async function carregarReunioes() {
 
   const agrupado = {};
   data.forEach(r => {
-    const cli = r.cliente.toLowerCase();
+    const cli = r.cliente ? r.cliente.toLowerCase() : (r.client_id ? String(r.client_id) : '');
     if (!agrupado[cli]) agrupado[cli] = [];
     agrupado[cli].push(r);
   });
+// Função para popular o select de clientes na aba reuniões
+function populateReuniaoClientes() {
+  const select = document.getElementById('reuniaoCliente');
+  if (!select) return;
+  select.innerHTML = '<option value="">Selecione um cliente...</option>';
+  if (!window.clients || !Array.isArray(window.clients)) return;
+  window.clients.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+}
 
   Object.keys(agrupado).forEach(cli => {
     const blocos = agrupado[cli];
@@ -5164,7 +5326,16 @@ function filtrarReunioes() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", carregarReunioes);
+document.addEventListener("DOMContentLoaded", function() {
+  if (typeof fetchAndRenderClients === 'function') {
+    fetchAndRenderClients().then(() => {
+      populateReuniaoClientes();
+      carregarReunioes();
+    });
+  } else {
+    carregarReunioes();
+  }
+});
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -7721,10 +7892,23 @@ let usuariosFiltrados = [];
 // Função para buscar e renderizar usuários
 async function fetchAndRenderUsuarios() {
     try {
-        const { data: usuarios, error } = await releaseClient
-            .from('usuarios')
-            .select('*')
-            .order('nome', { ascending: true });
+        // Verifica tipo de usuário para aplicar filtro
+        let query = releaseClient.from('usuarios').select('*').order('nome', { ascending: true });
+        const userType = localStorage.getItem('user_type');
+        const clientId = sessionStorage.getItem('client_id');
+        // Só filtra se for client e clientId válido (evita null, undefined, string vazia ou 'null')
+        if (
+            userType === 'client' &&
+            clientId &&
+            clientId !== 'null' &&
+            clientId !== null &&
+            clientId !== undefined &&
+            clientId !== '' &&
+            !isNaN(Number(clientId))
+        ) {
+            query = query.eq('client_id', Number(clientId));
+        }
+        const { data: usuarios, error } = await query;
 
         if (error) {
             console.error('Erro ao buscar usuários:', error);
@@ -7806,6 +7990,7 @@ async function adicionarUsuario() {
     const email = document.getElementById('usuarioEmail').value.trim();
     const senha = document.getElementById('usuarioSenha').value;
     const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
+     const setor = document.getElementById('usuarioSetor').value;
 
     // Validações
     if (!nome || !email || !senha || !confirmarSenha) {
@@ -7977,6 +8162,7 @@ async function salvarEdicaoUsuario(usuarioId) {
     const email = document.getElementById('usuarioEmail').value.trim();
     const senha = document.getElementById('usuarioSenha').value;
     const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
+     const setor = document.getElementById('usuarioSetor').value;
 
     // Validações
     if (!nome || !email) {
@@ -8073,7 +8259,267 @@ async function salvarEdicaoUsuario(usuarioId) {
         showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
     }
 }
+
+// ===== FUNÇÕES PARA CRIAR LOGIN DE CLIENTE =====
+
+// Função para carregar clientes no select
+async function carregarClientesNoSelect() {
+    try {
+        const { data: clientes, error } = await supabase
+            .from('clients')
+            .select('id, name')
+            .order('name', { ascending: true });
+
+        if (error) {
+            console.error('Erro ao carregar clientes:', error);
+            return;
+        }
+
+        const select = document.getElementById('clienteSelect');
+        select.innerHTML = '<option value="">Selecione um cliente</option>';
+        
+        clientes.forEach(cliente => {
+            const option = document.createElement('option');
+            option.value = cliente.id;
+            option.textContent = cliente.name;
+            select.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Erro ao carregar clientes:', error);
+    }
+}
+
+// Função para criar login de cliente
+async function criarLoginCliente() {
+    const clienteId = document.getElementById('clienteSelect').value;
+    const email = document.getElementById('clienteLoginEmail').value.trim();
+    const senha = document.getElementById('clienteLoginSenha').value;
+    const confirmarSenha = document.getElementById('clienteLoginConfirmarSenha').value;
+
+    // Validações
+    if (!clienteId) {
+        showAlert('Erro', 'Por favor, selecione um cliente.');
+        return;
+    }
+
+    if (!email || !senha || !confirmarSenha) {
+        showAlert('Erro', 'Todos os campos são obrigatórios.');
+        return;
+    }
+
+    if (senha !== confirmarSenha) {
+        showAlert('Erro', 'As senhas não coincidem.');
+        return;
+    }
+
+    if (senha.length < 6) {
+        showAlert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
+        return;
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showAlert('Erro', 'Por favor, insira um email válido.');
+        return;
+    }
+
+    // Coletar permissões selecionadas para o cliente
+    const permissoes = [];
+    document.querySelectorAll('input[type="checkbox"][id^="cliente-perm-"]:checked').forEach(checkbox => {
+        permissoes.push(checkbox.value);
+    });
+
+    console.log('Permissões coletadas:', permissoes); // Debug
+
+    if (permissoes.length === 0) {
+        showAlert('Erro', 'Selecione pelo menos uma permissão para o cliente.');
+        return;
+    }
+
+    try {
+        // Verificar se o email já existe
+        const { data: existingUser, error: checkError } = await releaseClient
+            .from('usuarios')
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        if (existingUser) {
+            showAlert('Erro', 'Já existe um usuário com este email.');
+            return;
+        }
+
+        // Buscar nome do cliente
+        const { data: cliente, error: clientError } = await supabase
+            .from('clients')
+            .select('name')
+            .eq('id', clienteId)
+            .single();
+
+        if (clientError) {
+            console.error('Erro ao buscar cliente:', clientError);
+            showAlert('Erro', 'Erro ao buscar dados do cliente.');
+            return;
+        }
+
+        // Criar usuário com client_id
+        const novoUsuario = {
+            nome: `Cliente - ${cliente.name}`,
+            email: email,
+            senha: senha,
+            permissoes: permissoes,
+            client_id: parseInt(clienteId),
+            user_type: 'client'
+        };
+
+        const { data, error } = await releaseClient
+            .from('usuarios')
+            .insert([novoUsuario])
+            .select();
+
+        if (error) {
+            console.error('Erro ao criar login de cliente:', error);
+            showAlert('Erro', 'Erro ao criar login de cliente: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Login de cliente criado com sucesso!');
+
+        // Limpar formulário
+        document.getElementById('clienteSelect').value = '';
+        document.getElementById('clienteLoginEmail').value = '';
+        document.getElementById('clienteLoginSenha').value = '';
+        document.getElementById('clienteLoginConfirmarSenha').value = '';
+        document.querySelectorAll('input[type="checkbox"][id^="cliente-perm-"]').forEach(checkbox => {
+            checkbox.checked = checkbox.id === 'cliente-perm-inicio';
+        });
+
+        // Recarregar lista de usuários
+        fetchAndRenderUsuarios();
+
+    } catch (error) {
+        console.error('Erro ao criar login de cliente:', error);
+        showAlert('Erro', 'Erro ao criar login de cliente: ' + error.message);
+    }
+}
+
+// Carregar clientes quando a aba de gerenciar logins for aberta
+const originalShowTabFunction = window.showTab;
+window.showTab = function(tabId) {
+    if (originalShowTabFunction) {
+        originalShowTabFunction(tabId);
+    }
+    
+    if (tabId === 'gerenciar-logins') {
+        fetchAndRenderUsuarios();
+        carregarClientesNoSelect();
+    }
+};
 </script>
 </body>
+
+
+
+
+
+<!-- Lógica de Controlo de Acesso -->
+<script>
+/**
+ * Verifica se utilizador tem acesso a um cliente específico
+ * @param {number} clientId - ID do cliente
+ * @returns {boolean} - true se tem acesso
+ */
+function hasAccessToClient(clientId) {
+    const userType = localStorage.getItem('user_type');
+    const userClientId = localStorage.getItem('user_client_id');
+    
+    // Utilizadores internos veem todos (ou conforme outras permissões)
+    if (userType === 'internal') {
+        return true;
+    }
+    
+    // Utilizadores cliente veem apenas o seu próprio cliente
+    if (userType === 'client') {
+        return parseInt(userClientId) === parseInt(clientId);
+    }
+    
+    return false;
+}
+
+/**
+ * Filtra clientes baseado no tipo de utilizador
+ * @param {Array} clients - Lista completa de clientes
+ * @returns {Array} - Lista filtrada
+ */
+function filterClientsByUserType(clients) {
+    const userType = localStorage.getItem('user_type');
+    const userClientId = localStorage.getItem('user_client_id');
+    
+    // Utilizadores internos veem todos
+    if (userType === 'internal') {
+        return clients;
+    }
+    
+    // Utilizadores cliente veem apenas o seu
+    if (userType === 'client' && userClientId) {
+        return clients.filter(client => client.id === parseInt(userClientId));
+    }
+    
+    return [];
+}
+
+// Interface Personalizada por Tipo de Utilizador
+function customizeInterfaceByUserType() {
+    const userType = localStorage.getItem('user_type');
+    const clientName = localStorage.getItem('client_name');
+    
+    if (userType === 'client') {
+        // Personalizar título
+        document.title = `Portal ${clientName}`;
+        
+        // Adicionar logo do cliente no header
+        const header = document.querySelector('.header');
+        if (header && localStorage.getItem('client_logo')) {
+            const logo = document.createElement('img');
+            logo.src = localStorage.getItem('client_logo');
+            logo.style.height = '40px';
+            logo.style.marginRight = '10px';
+            header.prepend(logo);
+        }
+        
+        // Esconder opções não relevantes para clientes
+        hideElementsForClientUser();
+        
+        // Mostrar mensagem de boas-vindas personalizada
+        showClientWelcomeMessage(clientName);
+    }
+}
+
+function hideElementsForClientUser() {
+    // Esconder botões de adicionar/editar/excluir clientes
+    const addClientBtn = document.querySelector('[onclick="openAddClientModal()"]');
+    if (addClientBtn) addClientBtn.style.display = 'none';
+    
+    // Esconder filtros de grupo (não fazem sentido para cliente individual)
+    const groupFilter = document.getElementById('filterClientGroup');
+    if (groupFilter) groupFilter.closest('.form-group').style.display = 'none';
+    
+    // Esconder gestão de utilizadores
+    const userManagementBtn = document.querySelector('[onclick="showUserManagement()"]');
+    if (userManagementBtn) userManagementBtn.style.display = 'none';
+}
+
+function showClientWelcomeMessage(clientName) {
+    const welcomeDiv = document.createElement('div');
+    welcomeDiv.innerHTML = `\n        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">\n            <h3 style="color: #1976d2; margin: 0;">Bem-vindo ao Portal ${clientName}</h3>\n            <p style="margin: 5px 0 0 0; color: #666;">Aqui pode consultar as informações da sua empresa</p>\n        </div>\n    `;
+    
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+        mainContent.insertBefore(welcomeDiv, mainContent.firstChild);
+    }
+}
+</script>
 
 
