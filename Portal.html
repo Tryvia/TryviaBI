@@ -3062,24 +3062,93 @@ select {
             </div>
         </div>
         <div class="form-group">
-            <label>Permissões do Cliente</label>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="cliente-perm-inicio" value="inicio" checked>
-                    <span>Início</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="cliente-perm-dashboard" value="dashboard">
-                    <span>Dashboards</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="cliente-perm-relatorioVisita" value="relatorioVisita">
-                    <span>Relatório de Visita</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="cliente-perm-evaluations" value="evaluations">
-                    <span>Avaliações</span>
-                </label>
+            <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #4fc3f7;">
+                                <h4 style="color: #4fc3f7; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
+                                    <i class="fas fa-home" style="margin-right: 8px;"></i>
+                                    Permissões para cliente
+                                </h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-inicio" value="inicio" checked style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Início</span>
+                                    </label>
+               <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-dashboard" value="dashboard" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Dashboards</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-clients" value="clients" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Clientes</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">MVP</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Implantações</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-reunioes" value="reunioes" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Reuniões</span>
+                                    </label>
+                                    </div>
+                                    </div> 
+
+                                     <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #28a745;">
+                                <h4 style="color: #28a745; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center;">
+                                    <i class="fas fa-users" style="margin-right: 8px;"></i>
+                                    Funções 
+                                </h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-saveClient" value="saveClient" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Salvar Cliente</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-editClient" value="editClient" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Editar Cliente</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-updateClient" value="updateClient" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Atualizar Cliente</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-deleteClient" value="deleteClient" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Excluir Cliente</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-addClientDocument" value="addClientDocument" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Adicionar Documento do Cliente</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-deleteClientDocument" value="deleteClientDocument" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Excluir Documento do Cliente</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-addProduct" value="addProduct" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Adicionar Produto</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-removeProduct" value="removeProduct" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Remover Produto</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-addEditProduct" value="addEditProduct" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Adicionar/Editar Produto</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-addIntegration" value="addIntegration" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Adicionar Integração</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-addEditIntegration" value="addEditIntegration" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Adicionar/Editar Integração</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#f8f9fa'">
+                                        <input type="checkbox" id="perm-removeIntegration" value="removeIntegration" style="transform: scale(1.2);">
+                                        <span style="font-weight: 500;">Remover Integração</span>
+                                    </label>
             </div>
         </div>
         <button class="btn-primary" onclick="criarLoginCliente()">
