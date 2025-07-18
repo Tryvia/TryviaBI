@@ -3012,7 +3012,7 @@ select {
                                         <span style="font-weight: 500;">Salvar Tarefas</span>
                                     </label>
                                     <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
-                                        <input type="checkbox" id="perm-showAddTaskModal" value="showAddTaskModal" style="transform: scale(1.2);">
+                                        <input type="checkbox" id="perm-abrirModalTarefa" value="abrirModalTarefa" style="transform: scale(1.2);">
                                         <span style="font-weight: 500;">Adicionar Tarefa</span>
                                     </label>
                                     <label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid #e9ecef;" onmouseover="this.style.background='#e2d9f3'" onmouseout="this.style.background='#f8f9fa'">
@@ -6185,7 +6185,7 @@ let painelData = {
 
 // Funções para mostrar modais
 function showAddTaskModal() {
-    if (!permissoes.includes('showAddTaskModal')) {
+    if (!permissoes.includes('abrirModalTarefa')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar tarefas.');
         return;
     }
@@ -6193,7 +6193,7 @@ function showAddTaskModal() {
 }
 
 function showAddTeamMemberModal() {
-    if (!permissoes.includes('showAddTeamMemberModal')) {
+    if (!permissoes.includes('abrirModalMembro')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar membros à equipe.');
         return;
     }
@@ -6201,7 +6201,7 @@ function showAddTeamMemberModal() {
 }
 
 function showAddProjectModal() {
-    if (!permissoes.includes('showAddProjectModal')) {
+    if (!permissoes.includes('abrirModalProjeto')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar projetos.');
         return;
     }
@@ -6209,7 +6209,7 @@ function showAddProjectModal() {
 }
 
 function showAddVisitModal() {
-    if (!permissoes.includes('showAddVisitModal')) {
+    if (!permissoes.includes('abrirModalVisita')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar visitas.');
         return;
     }
@@ -6217,7 +6217,7 @@ function showAddVisitModal() {
 }
 
 function showAddEntregaModal() {
-    if (!permissoes.includes('showAddEntregaModal')) {
+    if (!permissoes.includes('abrirModalEntrega')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar entregas.');
         return;
     }
