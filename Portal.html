@@ -2790,23 +2790,6 @@ select {
                 <input type="password" id="usuarioConfirmarSenha" placeholder="Confirme a senha">
             </div>
         </div>
-        <div class="form-row">
-        <div class="form-group">
-            <label for="usuarioSetor">Setor</label>
-            <select id="usuarioSetor">
-                <option value="">Selecione o setor</option>
-                <option value="Time de implantação">Time de implantação</option>
-                <option value="CS">CS</option>
-                <option value="Suporte">Suporte</option>
-                <option value="Tecnico">Técnico</option>
-                <option value="Dev">Dev</option>
-                <option value="Produto">Produto</option>
-                <option value="Comercial">Comercial</option>
-                <option value="Administrativo">Administrativo</option>
-                <option value="TI">TI</option>
-            </select>
-        </div>
-    </div>
                            <div class="form-group">
                         <label style="font-size: 1.2em; color: #333; margin-bottom: 15px; display: block;">
                             <i class="fas fa-shield-alt" style="margin-right: 8px; color: #4fc3f7;"></i>
@@ -3205,7 +3188,6 @@ select {
                     <tr>
                         <th style="padding: 15px; text-align: left; font-weight: bold;">Nome</th>
                         <th style="padding: 15px; text-align: left; font-weight: bold;">Email</th>
-                        <th style="padding: 15px; text-align: left; font-weight: bold;">Setor</th>
                         <th style="padding: 15px; text-align: center; font-weight: bold;">Permissões</th>
                         <th style="padding: 15px; text-align: center; font-weight: bold;">Ações</th>
                     </tr>
@@ -5985,7 +5967,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Modais para Painel do Setor -->
 <!-- Modal para Adicionar Tarefa -->
-<div id="showAddTaskModal" class="modal-overlay">
+<div id="addTaskModal" class="modal-overlay">
     <div class="modal-content" style="max-width: 500px;">
         <h3>Adicionar Nova Tarefa</h3>
         <div class="form-group">
@@ -6185,7 +6167,7 @@ let painelData = {
 
 // Funções para mostrar modais
 function showAddTaskModal() {
-    if (!permissoes.includes('showAddTaskModal')) {
+    if (!permissoes.includes('abrirModalTarefa')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar tarefas.');
         return;
     }
@@ -6193,7 +6175,7 @@ function showAddTaskModal() {
 }
 
 function showAddTeamMemberModal() {
-    if (!permissoes.includes('showAddTeamMemberModal')) {
+    if (!permissoes.includes('abrirModalMembro')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar membros à equipe.');
         return;
     }
@@ -6201,7 +6183,7 @@ function showAddTeamMemberModal() {
 }
 
 function showAddProjectModal() {
-    if (!permissoes.includes('showAddProjectModal')) {
+    if (!permissoes.includes('abrirModalProjeto')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar projetos.');
         return;
     }
@@ -6209,7 +6191,7 @@ function showAddProjectModal() {
 }
 
 function showAddVisitModal() {
-    if (!permissoes.includes('showAddVisitModal')) {
+    if (!permissoes.includes('abrirModalVisita')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar visitas.');
         return;
     }
@@ -6217,7 +6199,7 @@ function showAddVisitModal() {
 }
 
 function showAddEntregaModal() {
-    if (!permissoes.includes('showAddEntregaModal')) {
+    if (!permissoes.includes('abrirModalEntrega')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar entregas.');
         return;
     }
@@ -8029,28 +8011,27 @@ function renderUsuarios() {
     }
 
     tbody.innerHTML = usuariosFiltrados.map(usuario => `
-           <tr style="border-bottom: 1px solid #eee;">
-        <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
-        <td style="padding: 15px;">${usuario.email}</td>
-        <td style="padding: 15px;">${usuario.setor || '-'}</td>
-        <td style="padding: 15px; text-align: center;">
-            <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
-                ${usuario.permissoes.map(perm => `
-                    <span style="background: #4fc3f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em;">
-                        ${getPermissaoLabel(perm)}
-                    </span>
-                `).join('')}
-            </div>
-        </td>
-        <td style="padding: 15px; text-align: center;">
-            <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
-                <i class="fas fa-edit"></i> Editar
-            </button>
-            <button onclick="excluirUsuario('${usuario.id}', '${usuario.nome}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
-                <i class="fas fa-trash"></i> Excluir
-            </button>
-        </td>
-    </tr>
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
+            <td style="padding: 15px;">${usuario.email}</td>
+            <td style="padding: 15px; text-align: center;">
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
+                    ${usuario.permissoes.map(perm => `
+                        <span style="background: #4fc3f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em;">
+                            ${getPermissaoLabel(perm)}
+                        </span>
+                    `).join('')}
+                </div>
+            </td>
+            <td style="padding: 15px; text-align: center;">
+                <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button onclick="excluirUsuario('${usuario.id}', '${usuario.nome}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </td>
+        </tr>
     `).join('');
 }
 
@@ -8078,7 +8059,7 @@ async function adicionarUsuario() {
     const email = document.getElementById('usuarioEmail').value.trim();
     const senha = document.getElementById('usuarioSenha').value;
     const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
-    const setor = document.getElementById('usuarioSetor').value;
+
     // Validações
     if (!nome || !email || !senha || !confirmarSenha) {
         showAlert('Erro', 'Todos os campos são obrigatórios.');
@@ -8087,11 +8068,6 @@ async function adicionarUsuario() {
 
     if (senha !== confirmarSenha) {
         showAlert('Erro', 'As senhas não coincidem.');
-        return;
-    }
-    
-    if (!setor) {
-        showAlert('Erro', 'Por favor, selecione o setor do usuário.');
         return;
     }
 
@@ -8137,9 +8113,8 @@ async function adicionarUsuario() {
             .insert([{
                 nome: nome,
                 email: email,
-                senha: senha, 
-                permissoes: permissoes,
-                setor: setor
+                senha: senha, // Em produção, a senha deveria ser hasheada
+                permissoes: permissoes
             }])
             .select();
 
