@@ -6662,7 +6662,6 @@ async function loadProjectsData() {
         const { data, error } = await supabase
             .from('projetos')
             .select('*')
-            .eq('status', 'Em Andamento')
             .eq('setor', setorUsuario)
             .order('created_at', { ascending: false });
 
