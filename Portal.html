@@ -6021,14 +6021,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Modais para Painel do Setor -->
 <!-- Modal para Adicionar Tarefa -->
+<div id="addTaskModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>Adicionar Nova Tarefa</h3>
         <div class="form-group">
             <label for="taskType">Tipo</label>
             <input type="text" id="taskType" placeholder="Digite o tipo da tarefa" required>
         </div>
-<div id="addTaskModal" class="modal-overlay">
-    <div class="modal-content" style="max-width: 500px;">
-        <h3>Adicionar Nova Tarefa</h3>
-        <!-- Campo removido: agora o usuário só digita a tarefa -->
         <div class="form-group">
             <label for="taskTitle">Tarefa</label>
             <input type="text" id="taskTitle" placeholder="Descreva a tarefa" required>
