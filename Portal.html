@@ -3285,29 +3285,46 @@ select {
 
         //  alterar quantidade de tarefas
        async function alterarQuantidade(tipoHtml, incremento) {
-    if (!permissoes.includes('alterarQuantidade')) {
-        showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
-        return;
-    }
-
-    const elemento = document.getElementById(tipoHtml + '-count');
-    if (!elemento) {
-        console.error('Elemento não encontrado:', tipoHtml + '-count');
-        return;
-    }
-
-            let valorAtual = parseInt(elemento.textContent) || 0;
-            let novoValor = Math.max(0, valorAtual + incremento);
-
-            elemento.textContent = novoValor.toString().padStart(2, '0');
-
-         
-            const tipoDb = tipoMap[tipoHtml];
-            if (!tipoDb) {
-                console.error('Tipo não encontrado no mapeamento:', tipoHtml);
+            if (!permissoes.includes('alterarQuantidade')) {
+                showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
                 return;
             }
 
+            const elemento = document.getElementById(tipoHtml + '-count');
+            if (!elemento) {
+                console.error('Elemento não encontrado:', tipoHtml + '-count');
+                return;
+            }
+            let valorAtual = parseInt(elemento.textContent) || 0;
+            let novoValor = Math.max(0, valorAtual + incremento);
+            elemento.textContent = novoValor.toString().padStart(2, '0');
+
+            // Se for tipo personalizado (id começa com tarefa-), salva no banco usando o texto do label
+            if (tipoHtml.startsWith('tarefa-')) {
+                // Recupera o texto do label do tipo personalizado
+                const labelSpan = elemento.closest('div').parentElement.querySelector('span');
+                let tipoPersonalizado = labelSpan ? labelSpan.textContent.trim() : tipoHtml;
+                try {
+                    const { error } = await supabase
+                        .from('tarefas')
+                        .upsert([
+                            { tipo: tipoPersonalizado, quantidade: novoValor }
+                        ], { onConflict: ['tipo'] });
+                    if (error) throw error;
+                    //console.log('Quantidade salva com sucesso (personalizado):', tipoPersonalizado, novoValor);
+                } catch (err) {
+                    console.error('Erro ao salvar quantidade personalizada:', err);
+                    showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
+                }
+                return;
+            }
+
+            // Lógica original para tipos do tipoMap
+            const tipoDb = tipoMap[tipoHtml];
+            if (!tipoDb) {
+                // Não exibe erro para tipos personalizados
+                return;
+            }
             try {
                 const { error } = await supabase
                     .from('tarefas')
@@ -3316,7 +3333,7 @@ select {
                     ], { onConflict: ['tipo'] });
 
                 if (error) throw error;
-                console.log('Quantidade salva com sucesso:', tipoDb, novoValor);
+                //console.log('Quantidade salva com sucesso:', tipoDb, novoValor);
             } catch (err) {
                 console.error('Erro ao salvar quantidade:', err);
                 showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
