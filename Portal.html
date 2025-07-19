@@ -6024,23 +6024,10 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="addTaskModal" class="modal-overlay">
     <div class="modal-content" style="max-width: 500px;">
         <h3>Adicionar Nova Tarefa</h3>
+        <!-- Campo removido: agora o usuário só digita a tarefa -->
         <div class="form-group">
-            <label for="taskType">Tipo de Tarefa</label>
-            <select id="taskType">
-                <option value="treinamento">Treinamento</option>
-                <option value="migracao">Migração</option>
-                <option value="reuniao">Reunião</option>
-                <option value="mvp">MVP</option>
-                <option value="homologacao">Homologação</option>
-                <option value="acompanhamento">Acompanhamento</option>
-                <option value="implantacao">Implantação</option>
-                <option value="projeto">Projeto em andamento</option>
-                <option value="ticket">Ticket</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="taskTitle">Título da Tarefa</label>
-            <input type="text" id="taskTitle" placeholder="Digite o título da tarefa">
+            <label for="taskTitle">Tarefa</label>
+            <input type="text" id="taskTitle" placeholder="Descreva a tarefa" required>
         </div>
         <div class="form-group">
             <label for="taskDescription">Descrição</label>
@@ -6272,7 +6259,6 @@ async function saveTask() {
     }
     const setorUsuario = sessionStorage.getItem('setor');
     const taskData = {
-        tipo: document.getElementById('taskType').value,
         titulo: document.getElementById('taskTitle').value,
         descricao: document.getElementById('taskDescription').value,
         responsavel: document.getElementById('taskResponsible').value,
@@ -6470,7 +6456,6 @@ async function saveEntrega() {
 
 // Funções para limpar formulários
 function clearTaskForm() {
-    document.getElementById('taskType').value = 'treinamento';
     document.getElementById('taskTitle').value = '';
     document.getElementById('taskDescription').value = '';
     document.getElementById('taskResponsible').value = '';
