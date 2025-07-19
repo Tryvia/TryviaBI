@@ -185,18 +185,21 @@ async function carregarTarefas() {
         'tickets': { icon: 'fa-ticket-alt', label: 'Tickets', id: 'tickets' }
     };
     data.forEach(tarefa => {
-        const tipo = tarefa.tipo && tipoMap[tarefa.tipo] ? tarefa.tipo : 'migracoes';
-        const info = tipoMap[tipo];
+        let tipo = tarefa.tipo ? tarefa.tipo.trim() : '';
+        let info = tipoMap[tipo];
+        let icon = info ? info.icon : 'fa-tasks';
+        let label = info ? info.label : tipo || 'Tipo não informado';
+        let id = info ? info.id : 'tarefa-generica';
         grid.innerHTML += `
             <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="fas ${info.icon}" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
-                    <span style="color: #4fc3f7; font-weight: bold;">${info.label}</span>
+                    <i class="fas ${icon}" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                    <span style="color: #4fc3f7; font-weight: bold;">${label}</span>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <button onclick="alterarQuantidade('${info.id}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
-                    <div id="${info.id}-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
-                    <button onclick="alterarQuantidade('${info.id}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    <button onclick="alterarQuantidade('${id}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                    <div id="${id}-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                    <button onclick="alterarQuantidade('${id}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
                 </div>
             </div>
         `;
