@@ -6969,6 +6969,7 @@ async function geocodeAddress(address) {
 
 //  função saveVisit para atualizar o mapa
 async function saveVisit() {
+    const setorUsuario = sessionStorage.getItem('setor');
     const visitData = {
         empresa: document.getElementById('visitCompany').value,
         endereco: document.getElementById('visitAddress').value,
