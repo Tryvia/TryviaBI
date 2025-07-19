@@ -227,6 +227,7 @@ async function handleLogin(event) {
       // Salva o tipo de usuário e client_id
       localStorage.setItem('user_type', data.tipo_de_usuario || 'client');
       sessionStorage.setItem('client_id', data.client_id);
+      sessionStorage.setItem('setor', data.setor);
     showMessage('Login bem-sucedido! Redirecionando...', 'success');
     setTimeout(() => {
       window.location.href = redirectUrl;
