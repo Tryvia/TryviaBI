@@ -172,17 +172,32 @@ async function carregarTarefas() {
         grid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">Nenhuma tarefa encontrada para este setor.</p>';
         return;
     }
+    // Mapeamento de tipo para ícone e id
+    const tipoMap = {
+        'treinamentos': { icon: 'fa-graduation-cap', label: 'Treinamentos', id: 'treinamentos' },
+        'migracoes': { icon: 'fa-exchange-alt', label: 'Migrações', id: 'migracoes' },
+        'reunioes': { icon: 'fa-users', label: 'Reuniões', id: 'reunioes' },
+        'mvp': { icon: 'fa-trophy', label: 'MVP', id: 'mvp' },
+        'homologacoes': { icon: 'fa-check-circle', label: 'Homologações', id: 'homologacoes' },
+        'acompanhamentos': { icon: 'fa-handshake', label: 'Acompanhamentos', id: 'acompanhamentos' },
+        'implantacoes': { icon: 'fa-cogs', label: 'Implantações', id: 'implantacoes' },
+        'projetos': { icon: 'fa-star', label: 'Projetos em andamento', id: 'projetos' },
+        'tickets': { icon: 'fa-ticket-alt', label: 'Tickets', id: 'tickets' }
+    };
     data.forEach(tarefa => {
+        const tipo = tarefa.tipo && tipoMap[tarefa.tipo] ? tarefa.tipo : 'migracoes';
+        const info = tipoMap[tipo];
         grid.innerHTML += `
             <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <span style="color: #4fc3f7; font-weight: bold; font-size: 1.1em;">${tarefa.tipo || 'Tarefa'}</span>
+                    <i class="fas ${info.icon}" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                    <span style="color: #4fc3f7; font-weight: bold;">${info.label}</span>
                 </div>
-                <div style="font-size: 1.2em; font-weight: bold; color: #000; margin-bottom: 8px;">${tarefa.titulo}</div>
-                <div style="color: #333; margin-bottom: 8px;">${tarefa.descricao || ''}</div>
-                <div style="font-size: 0.95em; color: #666;">Responsável: ${tarefa.responsavel || '-'}</div>
-                <div style="font-size: 0.95em; color: #666;">Prazo: ${tarefa.prazo ? new Date(tarefa.prazo).toLocaleDateString('pt-BR') : '-'}</div>
-                <div style="font-size: 0.95em; color: #666;">Status: ${tarefa.status || '-'}</div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <button onclick="alterarQuantidade('${info.id}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                    <div id="${info.id}-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                    <button onclick="alterarQuantidade('${info.id}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                </div>
             </div>
         `;
     });
