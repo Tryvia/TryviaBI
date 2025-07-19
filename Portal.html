@@ -6502,6 +6502,9 @@ function clearEntregaForm() {
 // Função para carregar dados do painel
 async function loadPainelData() {
     try {
+        // Carregar tarefas
+        await carregarTarefas();
+
         // Carregar time
         await loadTimeData();
         
