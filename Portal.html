@@ -165,16 +165,26 @@ async function carregarTarefas() {
         return;
     }
 
-    // Exemplo de renderização (ajuste conforme seu HTML)
-    const container = document.getElementById('tarefasList');
-    if (!container) return;
-    container.innerHTML = '';
+    const grid = document.getElementById('tarefasGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
     if (!data || data.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Nenhuma tarefa encontrada para este setor.</p>';
+        grid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">Nenhuma tarefa encontrada para este setor.</p>';
         return;
     }
     data.forEach(tarefa => {
-        container.innerHTML += `<div class="tarefa-item"><strong>${tarefa.titulo}</strong><br>${tarefa.descricao || ''}</div>`;
+        grid.innerHTML += `
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <span style="color: #4fc3f7; font-weight: bold; font-size: 1.1em;">${tarefa.tipo || 'Tarefa'}</span>
+                </div>
+                <div style="font-size: 1.2em; font-weight: bold; color: #000; margin-bottom: 8px;">${tarefa.titulo}</div>
+                <div style="color: #333; margin-bottom: 8px;">${tarefa.descricao || ''}</div>
+                <div style="font-size: 0.95em; color: #666;">Responsável: ${tarefa.responsavel || '-'}</div>
+                <div style="font-size: 0.95em; color: #666;">Prazo: ${tarefa.prazo ? new Date(tarefa.prazo).toLocaleDateString('pt-BR') : '-'}</div>
+                <div style="font-size: 0.95em; color: #666;">Status: ${tarefa.status || '-'}</div>
+            </div>
+        `;
     });
 }
 
