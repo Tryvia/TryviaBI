@@ -6353,6 +6353,7 @@ async function saveTask() {
         showAlert('Atenção', 'Você não tem permissão para salvar uma tarefa.');
         return;
     }
+    const setorUsuario = sessionStorage.getItem('setor');
     const taskData = {
         tipo: document.getElementById('taskType').value,
         titulo: document.getElementById('taskTitle').value,
@@ -6360,6 +6361,7 @@ async function saveTask() {
         responsavel: document.getElementById('taskResponsible').value,
         prazo: document.getElementById('taskDeadline').value,
         status: 'pendente',
+        setor: setorUsuario,
         created_at: new Date().toISOString()
     };
 
@@ -6381,11 +6383,13 @@ async function saveTask() {
 }
 
 async function saveTeamMember() {
+    const setorUsuario = sessionStorage.getItem('setor');
     const memberData = {
         nome: document.getElementById('memberName').value,
         cargo: document.getElementById('memberRole').value,
         email: document.getElementById('memberEmail').value,
         ativo: true,
+        setor: setorUsuario,
         created_at: new Date().toISOString()
     };
 
@@ -6426,12 +6430,14 @@ async function saveProject() {
         showAlert('Atenção', 'Você não tem permissão para salvar um projeto.');
         return;
     }
+    const setorUsuario = sessionStorage.getItem('setor');
     const projectData = {
         nome: document.getElementById('projectName').value,
         empresa: document.getElementById('projectCompany').value,
         especialista: document.getElementById('projectSpecialist').value,
         descricao: document.getElementById('projectDescription').value,
         status: document.getElementById('projectStatus').value,
+        setor: setorUsuario,
         created_at: new Date().toISOString()
     };
 
@@ -6453,6 +6459,7 @@ async function saveProject() {
 }
 
 async function saveVisit() {
+    const setorUsuario = sessionStorage.getItem('setor');
     const visitData = {
         empresa: document.getElementById('visitCompany').value,
         endereco: document.getElementById('visitAddress').value,
@@ -6460,6 +6467,7 @@ async function saveVisit() {
         estado: document.getElementById('visitState').value,
         data_visita: document.getElementById('visitDate').value,
         objetivo: document.getElementById('visitPurpose').value,
+        setor: setorUsuario,
         created_at: new Date().toISOString()
     };
 
@@ -6488,6 +6496,7 @@ async function saveEntrega() {
     };
 
     const selectedMonth = document.getElementById('entregaMonth').value;
+    const setorUsuario = sessionStorage.getItem('setor');
     const entregaData = {
         mes: monthMap[selectedMonth],
         marlos: parseInt(document.getElementById('entregaMarlos').value),
@@ -6495,6 +6504,7 @@ async function saveEntrega() {
         renata: parseInt(document.getElementById('entregaRenata').value),
         victor: parseInt(document.getElementById('entregaVictor').value),
         ano: new Date().getFullYear(),
+        setor: setorUsuario,
         created_at: new Date().toISOString()
     };
 
