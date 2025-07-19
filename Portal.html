@@ -7044,30 +7044,55 @@ async function excluirProjeto(projetoId) {
         }
     }
 }
-</script>
+    try {
+        const setorUsuario = sessionStorage.getItem('setor');
+        const { data: visitas, error } = await supabase
+            .from('visitas_setor')
+            .select('*')
+            .eq('setor', setorUsuario);
 
-</body>>
-    </script>
-</body>
-</html>
+        if (error) throw error;
+
+        // Limpar marcadores existentes
+        visitasMap.eachLayer(function (layer) {
+            // Mantém apenas o tileLayer
+            if (layer instanceof L.Marker) {
+                visitasMap.removeLayer(layer);
+            }
+        });
+
+        let empresasCount = 0;
 
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const releaseDateInput = document.getElementById('releaseDate');
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    releaseDateInput.value = `${year}-${month}-${day}`;
-  });
-</script>
+        // Adicionar marcadores para cada visita
+        let empresasSet = new Set();
+        for (const visita of visitas) {
+            if (visita.endereco && visita.cidade && visita.estado) {
+                const enderecoCompleto = `${visita.endereco}, ${visita.cidade}, ${visita.estado}`;
+                const coords = await geocodeAddress(enderecoCompleto);
+                if (coords) {
+                    L.marker([coords.lat, coords.lng])
+                        .addTo(visitasMap)
+                        .bindPopup(`<b>${visita.empresa}</b><br>${enderecoCompleto}<br>${visita.objetivo || ''}`);
+                    empresasSet.add(visita.empresa);
+                }
+            }
+        }
 
+        // Atualizar contador de empresas
+        const empresasCountElement = document.getElementById('empresasCount');
+        if (empresasCountElement) {
+            empresasCountElement.textContent = empresasSet.size;
+        }
 
+        // Se quiser lógica extra quando houver empresas:
+        if (empresasSet.size > 0) {
+            // ...
+        }
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const rvDateInput = document.getElementById("rvData");
+    } catch (error) {
+        console.error('Erro ao carregar visitas no mapa:', error);
+    }
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0");
