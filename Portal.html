@@ -6869,9 +6869,11 @@ async function initializeMap() {
 // Função para carregar visitas no mapa
 async function loadVisitasOnMap() {
     try {
+        const setorUsuario = sessionStorage.getItem('setor');
         const { data: visitas, error } = await supabase
             .from('visitas_setor')
             .select('*')
+            .eq('setor', setorUsuario)
             .order('created_at', { ascending: false });
 
         if (error) throw error;
