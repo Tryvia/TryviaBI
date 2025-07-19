@@ -6615,10 +6615,12 @@ async function loadPainelData() {
 // Carregar dados do time
 async function loadTimeData() {
     try {
+        const setorUsuario = sessionStorage.getItem('setor');
         const { data, error } = await supabase
             .from('time')
             .select('*')
             .eq('ativo', true)
+            .eq('setor', setorUsuario)
             .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -6656,10 +6658,12 @@ async function loadTimeData() {
 // Carregar dados dos projetos
 async function loadProjectsData() {
     try {
+        const setorUsuario = sessionStorage.getItem('setor');
         const { data, error } = await supabase
             .from('projetos')
             .select('*')
             .eq('status', 'Em Andamento')
+            .eq('setor', setorUsuario)
             .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -6696,10 +6700,12 @@ async function loadProjectsData() {
 // Carregar dados das entregas
 async function loadEntregasData() {
     try {
+        const setorUsuario = sessionStorage.getItem('setor');
         const { data, error } = await supabase
             .from('entregas')
             .select('*')
             .eq('ano', new Date().getFullYear())
+            .eq('setor', setorUsuario)
             .order('mes', { ascending: true });
 
         if (error) throw error;
