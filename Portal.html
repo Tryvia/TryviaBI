@@ -6021,6 +6021,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Modais para Painel do Setor -->
 <!-- Modal para Adicionar Tarefa -->
+        <div class="form-group">
+            <label for="taskType">Tipo</label>
+            <input type="text" id="taskType" placeholder="Digite o tipo da tarefa" required>
+        </div>
 <div id="addTaskModal" class="modal-overlay">
     <div class="modal-content" style="max-width: 500px;">
         <h3>Adicionar Nova Tarefa</h3>
@@ -6259,6 +6263,7 @@ async function saveTask() {
     }
     const setorUsuario = sessionStorage.getItem('setor');
     const taskData = {
+        tipo: document.getElementById('taskType').value,
         titulo: document.getElementById('taskTitle').value,
         descricao: document.getElementById('taskDescription').value,
         responsavel: document.getElementById('taskResponsible').value,
@@ -6456,6 +6461,7 @@ async function saveEntrega() {
 
 // Funções para limpar formulários
 function clearTaskForm() {
+    document.getElementById('taskType').value = '';
     document.getElementById('taskTitle').value = '';
     document.getElementById('taskDescription').value = '';
     document.getElementById('taskResponsible').value = '';
