@@ -189,7 +189,8 @@ async function carregarTarefas() {
         let info = tipoMap[tipo];
         let icon = info ? info.icon : 'fa-tasks';
         let label = info ? info.label : tipo || 'Tipo não informado';
-        let id = info ? info.id : 'tarefa-generica';
+        // Gera um id único para cada tarefa, mesmo as personalizadas
+        let id = info ? info.id : 'tarefa-' + tipo.toLowerCase().replace(/[^a-z0-9]/g, '-');
         grid.innerHTML += `
             <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
@@ -197,9 +198,9 @@ async function carregarTarefas() {
                     <span style="color: #4fc3f7; font-weight: bold;">${label}</span>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <button onclick="alterarQuantidade('${id}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                    <button onclick="alterarQuantidade('${id}','${tipo}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
                     <div id="${id}-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
-                    <button onclick="alterarQuantidade('${id}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                    <button onclick="alterarQuantidade('${id}','${tipo}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
                 </div>
             </div>
         `;
@@ -3284,56 +3285,30 @@ select {
         };
 
         //  alterar quantidade de tarefas
-       async function alterarQuantidade(tipoHtml, incremento) {
+       async function alterarQuantidade(idHtml, tipo, incremento) {
             if (!permissoes.includes('alterarQuantidade')) {
                 showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
                 return;
             }
 
-            const elemento = document.getElementById(tipoHtml + '-count');
+            const elemento = document.getElementById(idHtml + '-count');
             if (!elemento) {
-                console.error('Elemento não encontrado:', tipoHtml + '-count');
+                console.error('Elemento não encontrado:', idHtml + '-count');
                 return;
             }
             let valorAtual = parseInt(elemento.textContent) || 0;
             let novoValor = Math.max(0, valorAtual + incremento);
             elemento.textContent = novoValor.toString().padStart(2, '0');
 
-            // Se for tipo personalizado (id começa com tarefa-), salva no banco usando o texto do label
-            if (tipoHtml.startsWith('tarefa-')) {
-                // Recupera o texto do label do tipo personalizado
-                const labelSpan = elemento.closest('div').parentElement.querySelector('span');
-                let tipoPersonalizado = labelSpan ? labelSpan.textContent.trim() : tipoHtml;
-                try {
-                    const { error } = await supabase
-                        .from('tarefas')
-                        .upsert([
-                            { tipo: tipoPersonalizado, quantidade: novoValor }
-                        ], { onConflict: ['tipo'] });
-                    if (error) throw error;
-                    //console.log('Quantidade salva com sucesso (personalizado):', tipoPersonalizado, novoValor);
-                } catch (err) {
-                    console.error('Erro ao salvar quantidade personalizada:', err);
-                    showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
-                }
-                return;
-            }
-
-            // Lógica original para tipos do tipoMap
-            const tipoDb = tipoMap[tipoHtml];
-            if (!tipoDb) {
-                // Não exibe erro para tipos personalizados
-                return;
-            }
+            // Salva no banco usando o tipo correto
             try {
                 const { error } = await supabase
                     .from('tarefas')
                     .upsert([
-                        { tipo: tipoDb, quantidade: novoValor }
+                        { tipo: tipo, quantidade: novoValor }
                     ], { onConflict: ['tipo'] });
-
                 if (error) throw error;
-                //console.log('Quantidade salva com sucesso:', tipoDb, novoValor);
+                //console.log('Quantidade salva com sucesso:', tipo, novoValor);
             } catch (err) {
                 console.error('Erro ao salvar quantidade:', err);
                 showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
