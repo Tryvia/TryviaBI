@@ -3325,13 +3325,13 @@ select {
                 if (error) throw error;
 
                 data.forEach(item => {
-                    
-                    const tipoHtml = Object.keys(tipoMap).find(key => tipoMap[key] === item.tipo);
-                    if (tipoHtml) {
-                        const elemento = document.getElementById(tipoHtml + '-count');
-                        if (elemento) {
-                            elemento.textContent = item.quantidade.toString().padStart(2, '0');
-                        }
+                    // Verifica se é tarefa padrão ou personalizada
+                    let tipo = item.tipo ? item.tipo.trim() : '';
+                    let info = tipoMap[tipo];
+                    let id = info ? info.id : 'tarefa-' + tipo.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                    const elemento = document.getElementById(id + '-count');
+                    if (elemento) {
+                        elemento.textContent = item.quantidade.toString().padStart(2, '0');
                     }
                 });
 
