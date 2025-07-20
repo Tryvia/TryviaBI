@@ -199,7 +199,7 @@ async function carregarTarefas() {
                 </div>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                     <button onclick="alterarQuantidade('${id}','${tipo}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
-                    <div id="${id}-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                    <div id="${id}-count" style="font-size: 2em; font-weight: bold; color: #000;">${tarefa.quantidade || 0}</div>
                     <button onclick="alterarQuantidade('${id}','${tipo}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
                 </div>
             </div>
