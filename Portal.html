@@ -152,9 +152,7 @@ select {
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// Inicializacao do Supabase
-
-// Funcao para carregar tarefas do setor do usuario logado
+// Função para carregar tarefas do setor do usuário logado
 async function carregarTarefas() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
@@ -174,44 +172,42 @@ async function carregarTarefas() {
         grid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">Nenhuma tarefa encontrada para este setor.</p>';
         return;
     }
-    // Mapeamento de tipo para icone e id
+    // Mapeamento de tipo para ícone e id
     const tipoMap = {
         'treinamentos': { icon: 'fa-graduation-cap', label: 'Treinamentos', id: 'treinamentos' },
-        'migracoes': { icon: 'fa-exchange-alt', label: 'Migra&ccedil;&otilde;es', id: 'migracoes' },
-        'reunioes': { icon: 'fa-users', label: 'Reuni&otilde;es', id: 'reunioes' },
+        'migracoes': { icon: 'fa-exchange-alt', label: 'Migrações', id: 'migracoes' },
+        'reunioes': { icon: 'fa-users', label: 'Reuniões', id: 'reunioes' },
         'mvp': { icon: 'fa-trophy', label: 'MVP', id: 'mvp' },
-        'homologacoes': { icon: 'fa-check-circle', label: 'Homologa&ccedil;&otilde;es', id: 'homologacoes' },
+        'homologacoes': { icon: 'fa-check-circle', label: 'Homologações', id: 'homologacoes' },
         'acompanhamentos': { icon: 'fa-handshake', label: 'Acompanhamentos', id: 'acompanhamentos' },
-        'implantacoes': { icon: 'fa-cogs', label: 'Implanta&ccedil;&otilde;es', id: 'implantacoes' },
+        'implantacoes': { icon: 'fa-cogs', label: 'Implantações', id: 'implantacoes' },
         'projetos': { icon: 'fa-star', label: 'Projetos em andamento', id: 'projetos' },
         'tickets': { icon: 'fa-ticket-alt', label: 'Tickets', id: 'tickets' }
     };
-   data.forEach(tarefa => {
-    let tipo = tarefa.tipo ? tarefa.tipo.trim() : '';
-    let info = tipoMap[tipo];
-    let icon = info ? info.icon : 'fa-tasks';
-    let label = info ? info.label : tipo || 'Tipo nao informado';
-    
-    const tarefaId = tarefa.id;
-    const quantidade = tarefa.quantidade || 0;
-    
-    grid.innerHTML += `
-        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;" data-tarefa-id="${tarefaId}">
-            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                <i class="fas ${icon}" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
-                <span style="color: #4fc3f7; font-weight: bold;">${label}</span>
+    data.forEach(tarefa => {
+        let tipo = tarefa.tipo ? tarefa.tipo.trim() : '';
+        let info = tipoMap[tipo];
+        let icon = info ? info.icon : 'fa-tasks';
+        let label = info ? info.label : tipo || 'Tipo não informado';
+        // Gera um id único para cada tarefa, mesmo as personalizadas
+        let id = info ? info.id : 'tarefa-' + tipo.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        grid.innerHTML += `
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="fas ${icon}" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                    <span style="color: #4fc3f7; font-weight: bold;">${label}</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <button onclick="alterarQuantidade('${id}','${tipo}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                    <div id="${id}-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
+                    <button onclick="alterarQuantidade('${id}','${tipo}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+                </div>
             </div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <button onclick="alterarQuantidade(${tarefaId}, -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
-                <div id="tarefa-${tarefaId}-count" style="font-size: 2em; font-weight: bold; color: #000;">${quantidade.toString().padStart(2, '0')}</div>
-                <button onclick="alterarQuantidade(${tarefaId}, 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
-            </div>
-        </div>
-    `;
-});
+        `;
+    });
 }
 
-// Funcao para carregar projetos do setor do usuario logado
+// Função para carregar projetos do setor do usuário logado
 async function carregarProjetos() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
@@ -235,7 +231,7 @@ async function carregarProjetos() {
     });
 }
 
-// Funcao para carregar membros do setor do usuario logado
+// Função para carregar membros do setor do usuário logado
 async function carregarMembros() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
@@ -259,7 +255,7 @@ async function carregarMembros() {
     });
 }
 
-// Funcao para carregar visitas do setor do usuario logado
+// Função para carregar visitas do setor do usuário logado
 async function carregarVisitas() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
@@ -283,7 +279,7 @@ async function carregarVisitas() {
     });
 }
 
-// Funcao para carregar entregas do setor do usuario logado
+// Função para carregar entregas do setor do usuário logado
 async function carregarEntregas() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
@@ -306,7 +302,7 @@ async function carregarEntregas() {
         container.innerHTML += `<div class="entrega-item"><strong>${entrega.titulo}</strong><br>${entrega.descricao || ''}</div>`;
     });
 }
-// Funcao global para popular o select de clientes na aba reunioes
+// Função global para popular o select de clientes na aba reuniões
 function populateReuniaoClientes() {
   const select = document.getElementById('reuniaoCliente');
   if (!select) return;
@@ -1674,7 +1670,7 @@ if (!sessionStorage.getItem('tryvia_logged')) {
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
 const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
-const releaseClient = window.supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
+const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
 </script>
 <div class="modal-overlay" id="customModal">
 <div class="modal-content">
@@ -3289,36 +3285,35 @@ select {
         };
 
         //  alterar quantidade de tarefas
-       async function alterarQuantidade(tarefaId, incremento) {
-    if (!permissoes.includes('alterarQuantidade')) {
-        showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
-        return;
-    }
+       async function alterarQuantidade(idHtml, tipo, incremento) {
+            if (!permissoes.includes('alterarQuantidade')) {
+                showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
+                return;
+            }
 
-    const elemento = document.getElementById(`tarefa-${tarefaId}-count`);
-    if (!elemento) {
-        console.error('Elemento não encontrado:', `tarefa-${tarefaId}-count`);
-        return;
-    }
+            const elemento = document.getElementById(idHtml + '-count');
+            if (!elemento) {
+                console.error('Elemento não encontrado:', idHtml + '-count');
+                return;
+            }
+            let valorAtual = parseInt(elemento.textContent) || 0;
+            let novoValor = Math.max(0, valorAtual + incremento);
+            elemento.textContent = novoValor.toString().padStart(2, '0');
 
-    let valorAtual = parseInt(elemento.textContent) || 0;
-    let novoValor = Math.max(0, valorAtual + incremento);
-    elemento.textContent = novoValor.toString().padStart(2, '0');
-
-    try {
-        const { error } = await supabase
-            .from('tarefas')
-            .update({ quantidade: novoValor })
-            .eq('id', tarefaId);
-
-        if (error) throw error;
-        console.log('Quantidade atualizada com sucesso para tarefa ID:', tarefaId);
-    } catch (err) {
-        console.error('Erro ao salvar quantidade:', err);
-        showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
-        elemento.textContent = valorAtual.toString().padStart(2, '0');
-    }
-}
+            // Salva no banco usando o tipo correto
+            try {
+                const { error } = await supabase
+                    .from('tarefas')
+                    .upsert([
+                        { tipo: tipo, quantidade: novoValor }
+                    ], { onConflict: ['tipo'] });
+                if (error) throw error;
+                //console.log('Quantidade salva com sucesso:', tipo, novoValor);
+            } catch (err) {
+                console.error('Erro ao salvar quantidade:', err);
+                showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
+            }
+        }
 
         // Função para carregar contadores de tarefas
         async function carregarContadoresDeTarefas() {
@@ -3346,7 +3341,7 @@ select {
         }
 
         // Função para salvar tarefas
-   async function saveTasks() {
+    async function saveTasks() {
     if (!permissoes.includes('saveTasks')) {
         showAlert('Atenção', 'Você não tem permissão para salvar as tarefas.');
         return;
@@ -3354,41 +3349,38 @@ select {
 
     try {
         const updates = [];
-        const setorUsuario = sessionStorage.getItem('setor');
-        const { data: tarefas, error: fetchError } = await supabase
-            .from('tarefas')
-            .select('id')
-            .eq('setor', setorUsuario);
 
-        if (fetchError) throw fetchError;
-
-        tarefas.forEach(tarefa => {
-            const elemento = document.getElementById(`tarefa-${tarefa.id}-count`);
-            if (elemento) {
-                const quantidade = parseInt(elemento.textContent) || 0;
-                updates.push({ id: tarefa.id, quantidade: quantidade });
+        for (const tipoHtml in tipoMap) {
+            const element = document.getElementById(tipoHtml + '-count');
+            if (element) {
+                updates.push({
+                    tipo: tipoMap[tipoHtml],
+                    quantidade: parseInt(element.textContent) || 0
+                });
+            } else {
+                console.warn('Elemento não encontrado para salvar:', tipoHtml + '-count');
             }
-        });
+        }
 
         if (updates.length === 0) {
-            showAlert('Aviso', 'Nenhuma tarefa encontrada para salvar.');
+            showAlert('Aviso', 'Nenhum contador de tarefa encontrado para salvar.');
             return;
         }
 
-        for (const update of updates) {
-            const { error } = await supabase
-                .from('tarefas')
-                .update({ quantidade: update.quantidade })
-                .eq('id', update.id);
-            if (error) throw error;
-        }
+                for (const update of updates) {
+                    const { error } = await supabase
+                        .from('tarefas')
+                        .upsert([update], { onConflict: ['tipo'] });
 
-        showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso!');
-    } catch (error) {
-        console.error('Erro ao salvar quantidades:', error);
-        showAlert('Erro', 'Erro ao salvar as quantidades das tarefas.');
-    }
-}
+                    if (error) throw error;
+                }
+
+                showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso!');
+            } catch (error) {
+                console.error('Erro ao salvar quantidades:', error);
+                showAlert('Erro', 'Erro ao salvar as quantidades das tarefas.');
+            }
+        }
 
         
         let documents = [];
