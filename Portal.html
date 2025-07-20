@@ -184,27 +184,29 @@ async function carregarTarefas() {
         'projetos': { icon: 'fa-star', label: 'Projetos em andamento', id: 'projetos' },
         'tickets': { icon: 'fa-ticket-alt', label: 'Tickets', id: 'tickets' }
     };
-    data.forEach(tarefa => {
-        let tipo = tarefa.tipo ? tarefa.tipo.trim() : '';
-        let info = tipoMap[tipo];
-        let icon = info ? info.icon : 'fa-tasks';
-        let label = info ? info.label : tipo || 'Tipo não informado';
-        // Gera um id único para cada tarefa, mesmo as personalizadas
-        let id = info ? info.id : 'tarefa-' + tipo.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        grid.innerHTML += `
-            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
-                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="fas ${icon}" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
-                    <span style="color: #4fc3f7; font-weight: bold;">${label}</span>
-                </div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <button onclick="alterarQuantidade('${id}','${tipo}', -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
-                    <div id="${id}-count" style="font-size: 2em; font-weight: bold; color: #000;">00</div>
-                    <button onclick="alterarQuantidade('${id}','${tipo}', 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
-                </div>
+   data.forEach(tarefa => {
+    let tipo = tarefa.tipo ? tarefa.tipo.trim() : '';
+    let info = tipoMap[tipo];
+    let icon = info ? info.icon : 'fa-tasks';
+    let label = info ? info.label : tipo || 'Tipo não informado';
+    
+    const tarefaId = tarefa.id;
+    const quantidade = tarefa.quantidade || 0;
+    
+    grid.innerHTML += `
+        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;" data-tarefa-id="${tarefaId}">
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                <i class="fas ${icon}" style="color: #4fc3f7; font-size: 1.5em; margin-right: 8px;"></i>
+                <span style="color: #4fc3f7; font-weight: bold;">${label}</span>
             </div>
-        `;
-    });
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <button onclick="alterarQuantidade(${tarefaId}, -1)" style="background: #f44336; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">-</button>
+                <div id="tarefa-${tarefaId}-count" style="font-size: 2em; font-weight: bold; color: #000;">${quantidade.toString().padStart(2, '0')}</div>
+                <button onclick="alterarQuantidade(${tarefaId}, 1)" style="background: #4caf50; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 14px;">+</button>
+            </div>
+        </div>
+    `;
+});
 }
 
 // Função para carregar projetos do setor do usuário logado
@@ -3285,35 +3287,36 @@ select {
         };
 
         //  alterar quantidade de tarefas
-       async function alterarQuantidade(idHtml, tipo, incremento) {
-            if (!permissoes.includes('alterarQuantidade')) {
-                showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
-                return;
-            }
+       async function alterarQuantidade(tarefaId, incremento) {
+    if (!permissoes.includes('alterarQuantidade')) {
+        showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
+        return;
+    }
 
-            const elemento = document.getElementById(idHtml + '-count');
-            if (!elemento) {
-                console.error('Elemento não encontrado:', idHtml + '-count');
-                return;
-            }
-            let valorAtual = parseInt(elemento.textContent) || 0;
-            let novoValor = Math.max(0, valorAtual + incremento);
-            elemento.textContent = novoValor.toString().padStart(2, '0');
+    const elemento = document.getElementById(`tarefa-${tarefaId}-count`);
+    if (!elemento) {
+        console.error('Elemento não encontrado:', `tarefa-${tarefaId}-count`);
+        return;
+    }
 
-            // Salva no banco usando o tipo correto
-            try {
-                const { error } = await supabase
-                    .from('tarefas')
-                    .upsert([
-                        { tipo: tipo, quantidade: novoValor }
-                    ], { onConflict: ['tipo'] });
-                if (error) throw error;
-                //console.log('Quantidade salva com sucesso:', tipo, novoValor);
-            } catch (err) {
-                console.error('Erro ao salvar quantidade:', err);
-                showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
-            }
-        }
+    let valorAtual = parseInt(elemento.textContent) || 0;
+    let novoValor = Math.max(0, valorAtual + incremento);
+    elemento.textContent = novoValor.toString().padStart(2, '0');
+
+    try {
+        const { error } = await supabase
+            .from('tarefas')
+            .update({ quantidade: novoValor })
+            .eq('id', tarefaId);
+
+        if (error) throw error;
+        console.log('Quantidade atualizada com sucesso para tarefa ID:', tarefaId);
+    } catch (err) {
+        console.error('Erro ao salvar quantidade:', err);
+        showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
+        elemento.textContent = valorAtual.toString().padStart(2, '0');
+    }
+}
 
         // Função para carregar contadores de tarefas
         async function carregarContadoresDeTarefas() {
@@ -3341,7 +3344,7 @@ select {
         }
 
         // Função para salvar tarefas
-    async function saveTasks() {
+   async function saveTasks() {
     if (!permissoes.includes('saveTasks')) {
         showAlert('Atenção', 'Você não tem permissão para salvar as tarefas.');
         return;
@@ -3349,38 +3352,41 @@ select {
 
     try {
         const updates = [];
+        const setorUsuario = sessionStorage.getItem('setor');
+        const { data: tarefas, error: fetchError } = await supabase
+            .from('tarefas')
+            .select('id')
+            .eq('setor', setorUsuario);
 
-        for (const tipoHtml in tipoMap) {
-            const element = document.getElementById(tipoHtml + '-count');
-            if (element) {
-                updates.push({
-                    tipo: tipoMap[tipoHtml],
-                    quantidade: parseInt(element.textContent) || 0
-                });
-            } else {
-                console.warn('Elemento não encontrado para salvar:', tipoHtml + '-count');
+        if (fetchError) throw fetchError;
+
+        tarefas.forEach(tarefa => {
+            const elemento = document.getElementById(`tarefa-${tarefa.id}-count`);
+            if (elemento) {
+                const quantidade = parseInt(elemento.textContent) || 0;
+                updates.push({ id: tarefa.id, quantidade: quantidade });
             }
-        }
+        });
 
         if (updates.length === 0) {
-            showAlert('Aviso', 'Nenhum contador de tarefa encontrado para salvar.');
+            showAlert('Aviso', 'Nenhuma tarefa encontrada para salvar.');
             return;
         }
 
-                for (const update of updates) {
-                    const { error } = await supabase
-                        .from('tarefas')
-                        .upsert([update], { onConflict: ['tipo'] });
-
-                    if (error) throw error;
-                }
-
-                showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso!');
-            } catch (error) {
-                console.error('Erro ao salvar quantidades:', error);
-                showAlert('Erro', 'Erro ao salvar as quantidades das tarefas.');
-            }
+        for (const update of updates) {
+            const { error } = await supabase
+                .from('tarefas')
+                .update({ quantidade: update.quantidade })
+                .eq('id', update.id);
+            if (error) throw error;
         }
+
+        showAlert('Sucesso', 'Quantidades das tarefas salvas com sucesso!');
+    } catch (error) {
+        console.error('Erro ao salvar quantidades:', error);
+        showAlert('Erro', 'Erro ao salvar as quantidades das tarefas.');
+    }
+}
 
         
         let documents = [];
