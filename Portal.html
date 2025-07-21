@@ -8219,17 +8219,19 @@ async function salvarEdicaoUsuario(usuarioId) {
 
         // Debug: mostrar dados enviados para update
         console.log('Update usuário:', updateData);
-        // Atualizar usuário
+        console.log('Dados de atualização para Supabase:', updateData);
         const { error } = await releaseClient
             .from('usuarios')
             .update(updateData)
             .eq('id', usuarioId);
 
         if (error) {
-            console.error('Erro ao atualizar usuário:', error);
+            console.error('Erro ao atualizar usuário no Supabase:', error);
             showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
             return;
         }
+
+        console.log('Usuário atualizado com sucesso no Supabase!');
 
         showAlert('Sucesso', 'Usuário atualizado com sucesso!');
         
