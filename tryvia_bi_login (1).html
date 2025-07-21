@@ -229,10 +229,11 @@ async function handleLogin(event) {
       sessionStorage.setItem('client_id', data.client_id);
       sessionStorage.setItem('setor', data.setor);
     // Atualiza o campo lastLogin no Supabase
-    await supabase
+    const { error: updateError, data: updateData } = await supabase
       .from('usuarios')
       .update({ lastLogin: new Date().toISOString() })
       .eq('id', data.id);
+    console.log('Update lastLogin:', updateError, updateData);
     showMessage('Login bem-sucedido! Redirecionando...', 'success');
     setTimeout(() => {
       window.location.href = redirectUrl;
