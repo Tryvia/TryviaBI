@@ -8395,8 +8395,17 @@ function esconderAbasPorPermissao() {
   });
 }
 
-// Chama ao carregar e após login
-document.addEventListener('DOMContentLoaded', esconderAbasPorPermissao);
+
+// Chama ao carregar e sempre que as permissões mudarem
+document.addEventListener('DOMContentLoaded', () => {
+  esconderAbasPorPermissao();
+  // Também escuta mudanças no localStorage para atualizar abas dinamicamente
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'permissoes') {
+      esconderAbasPorPermissao();
+    }
+  });
+});
 window.esconderAbasPorPermissao = esconderAbasPorPermissao;
 
 
