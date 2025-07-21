@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <style>
-    /* ...seu CSS permanece igual... */
     :root {
       --primary-color: #0d47a1;
       --secondary-color: #1976d2;
@@ -179,12 +178,14 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function handleLogin(event) {
   event.preventDefault();
-  const email = document.getElementById('username').value.trim(); // agora é o email!
+  const email = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
+  
   if (!email || !password) {
     showMessage('Por favor, preencha todos os campos.', 'error');
     return false;
   }
+  
   setLoadingState(true);
 
   try {
@@ -203,7 +204,7 @@ async function handleLogin(event) {
       return false;
     }
 
-    // Verifica a senha (atenção: senha em texto puro, ideal é hash!)
+    // Verifica a senha
     if (data.senha !== password) {
       showMessage('Usuário ou senha incorretos.', 'error');
       document.getElementById('password').value = '';
@@ -212,37 +213,55 @@ async function handleLogin(event) {
       return false;
     }
 
-    // Permissões e redirecionamento
+    // LÓGICA DE REDIRECIONAMENTO APRIMORADA
     const permissoes = data.permissoes || [];
-    let redirectUrl = 'https://tryvia.github.io/TryviaBI/Portal.html';
-    // Debug: mostrar tipo_de_usuario
-    console.log('Tipo de usuário:', data.tipo_de_usuario);
-    // Se for cliente, redireciona para portal_cliente.html
     const tipoUsuario = (data.tipo_de_usuario || '').toLowerCase().trim();
-    if (tipoUsuario === 'client' || tipoUsuario === 'cliente') {
+    
+    // URL padrão para administradores e usuários internos
+    let redirectUrl = 'https://tryvia.github.io/TryviaBI/Portal.html';
+    
+    // Verifica se é cliente e redireciona para portal_cliente
+    if (tipoUsuario === 'client' || tipoUsuario === 'cliente' || tipoUsuario === 'customer') {
       redirectUrl = 'https://tryvia.github.io/TryviaBI/portal_cliente.html';
+      console.log('Cliente detectado - redirecionando para portal_cliente.html');
+    } else {
+      console.log('Usuário interno detectado - redirecionando para Portal.html');
     }
 
-    // Gera token fake só para manter compatibilidade
-    const fakeToken = generateFakeToken(email);
+    // Debug: mostrar informações do usuário
+    console.log('Dados do usuário:', {
+      nome: data.nome,
+      email: email,
+      tipo: data.tipo_de_usuario,
+      redirectUrl: redirectUrl
+    });
 
+    // Gera token e salva dados do usuário
+    const fakeToken = generateFakeToken(email);
     storeAuthToken(fakeToken);
-    localStorage.setItem('username', data.nome); // Salva o nome do usuário
-    localStorage.setItem('user_email', email);   // Salva o email do usuário
+    localStorage.setItem('username', data.nome);
+    localStorage.setItem('user_email', email);
     sessionStorage.setItem('tryvia_logged', '1');
     localStorage.setItem('permissoes', JSON.stringify(permissoes));
-    // Salva o tipo de usuário e client_id
     localStorage.setItem('user_type', data.tipo_de_usuario || 'client');
     sessionStorage.setItem('client_id', data.client_id);
     sessionStorage.setItem('setor', data.setor);
+
     // Atualiza o campo lastLogin no Supabase
-    const { error: updateError, data: updateData } = await supabase
+    const { error: updateError } = await supabase
       .from('usuarios')
       .update({ lastLogin: new Date().toISOString() })
       .eq('id', data.id);
-    console.log('Update lastLogin:', updateError, updateData);
+
+    if (updateError) {
+      console.warn('Erro ao atualizar lastLogin:', updateError);
+    }
+
     showMessage('Login bem-sucedido! Redirecionando...', 'success');
+    
+    // Redirecionamento com delay para mostrar mensagem de sucesso
     setTimeout(() => {
+      console.log('Redirecionando para:', redirectUrl);
       window.location.href = redirectUrl;
     }, 1500);
 
@@ -252,6 +271,7 @@ async function handleLogin(event) {
   } finally {
     setLoadingState(false);
   }
+  
   return false;
 }
 
@@ -314,3 +334,5 @@ async function handleLogin(event) {
     }
   </script>
 </body>
+</html>
+
