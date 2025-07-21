@@ -213,28 +213,34 @@ async function handleLogin(event) {
       return false;
     }
 
-    // LÓGICA DE REDIRECIONAMENTO APRIMORADA
+    // LÓGICA DE REDIRECIONAMENTO CORRIGIDA
     const permissoes = data.permissoes || [];
-    const tipoUsuario = (data.tipo_de_usuario || '').toLowerCase().trim();
+    const userType = (data.user_type || '').toLowerCase().trim();
     
     // URL padrão para administradores e usuários internos
     let redirectUrl = 'https://tryvia.github.io/TryviaBI/Portal.html';
     
     // Verifica se é cliente e redireciona para portal_cliente
-    if (tipoUsuario === 'client' || tipoUsuario === 'cliente' || tipoUsuario === 'customer') {
+    // Baseado na estrutura do banco: user_type com valor padrão 'internal'
+    if (userType === 'client' || userType === 'cliente' || userType === 'customer' || userType === 'external') {
       redirectUrl = 'https://tryvia.github.io/TryviaBI/portal_cliente.html';
       console.log('Cliente detectado - redirecionando para portal_cliente.html');
+      console.log('Tipo de usuário:', userType);
     } else {
       console.log('Usuário interno detectado - redirecionando para Portal.html');
+      console.log('Tipo de usuário:', userType);
     }
 
-    // Debug: mostrar informações do usuário
+    // Debug: mostrar informações completas do usuário
+    console.log('=== DEBUG LOGIN ===');
     console.log('Dados do usuário:', {
       nome: data.nome,
       email: email,
-      tipo: data.tipo_de_usuario,
+      user_type: data.user_type,
+      client_id: data.client_id,
       redirectUrl: redirectUrl
     });
+    console.log('==================');
 
     // Gera token e salva dados do usuário
     const fakeToken = generateFakeToken(email);
@@ -243,25 +249,29 @@ async function handleLogin(event) {
     localStorage.setItem('user_email', email);
     sessionStorage.setItem('tryvia_logged', '1');
     localStorage.setItem('permissoes', JSON.stringify(permissoes));
-    localStorage.setItem('user_type', data.tipo_de_usuario || 'client');
+    localStorage.setItem('user_type', data.user_type || 'internal');
     sessionStorage.setItem('client_id', data.client_id);
     sessionStorage.setItem('setor', data.setor);
 
-    // Atualiza o campo lastLogin no Supabase
-    const { error: updateError } = await supabase
-      .from('usuarios')
-      .update({ lastLogin: new Date().toISOString() })
-      .eq('id', data.id);
+    // Atualiza o campo lastLogin no Supabase (se existir)
+    try {
+      const { error: updateError } = await supabase
+        .from('usuarios')
+        .update({ lastLogin: new Date().toISOString() })
+        .eq('id', data.id);
 
-    if (updateError) {
-      console.warn('Erro ao atualizar lastLogin:', updateError);
+      if (updateError) {
+        console.warn('Erro ao atualizar lastLogin (campo pode não existir):', updateError);
+      }
+    } catch (updateErr) {
+      console.warn('Campo lastLogin não existe na tabela');
     }
 
     showMessage('Login bem-sucedido! Redirecionando...', 'success');
     
     // Redirecionamento com delay para mostrar mensagem de sucesso
     setTimeout(() => {
-      console.log('Redirecionando para:', redirectUrl);
+      console.log('Executando redirecionamento para:', redirectUrl);
       window.location.href = redirectUrl;
     }, 1500);
 
