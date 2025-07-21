@@ -214,7 +214,11 @@ async function handleLogin(event) {
 
     // Permissões e redirecionamento
     const permissoes = data.permissoes || [];
-    const redirectUrl = 'https://tryvia.github.io/TryviaBI/Portal.html';
+    let redirectUrl = 'https://tryvia.github.io/TryviaBI/Portal.html';
+    // Se for cliente, redireciona para portal_cliente.html
+    if ((data.tipo_de_usuario || '').toLowerCase() === 'client') {
+      redirectUrl = 'https://tryvia.github.io/TryviaBI/portal_cliente.html';
+    }
 
     // Gera token fake só para manter compatibilidade
     const fakeToken = generateFakeToken(email);
@@ -224,10 +228,10 @@ async function handleLogin(event) {
     localStorage.setItem('user_email', email);   // Salva o email do usuário
     sessionStorage.setItem('tryvia_logged', '1');
     localStorage.setItem('permissoes', JSON.stringify(permissoes));
-      // Salva o tipo de usuário e client_id
-      localStorage.setItem('user_type', data.tipo_de_usuario || 'client');
-      sessionStorage.setItem('client_id', data.client_id);
-      sessionStorage.setItem('setor', data.setor);
+    // Salva o tipo de usuário e client_id
+    localStorage.setItem('user_type', data.tipo_de_usuario || 'client');
+    sessionStorage.setItem('client_id', data.client_id);
+    sessionStorage.setItem('setor', data.setor);
     // Atualiza o campo lastLogin no Supabase
     const { error: updateError, data: updateData } = await supabase
       .from('usuarios')
