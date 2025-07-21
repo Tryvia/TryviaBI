@@ -5774,9 +5774,8 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const nome = localStorage.getItem('username') || 'TRYVIA';
-    document.getElementById('nomeUsuario').innerText = nome;
-  });
+    // A inicialização da aba correta é feita por detectUserTypeAndShowCorrectTab()
+    // Não chamar showTab('inicio') aqui para evitar mostrar aba interna para clientes
 </script>
 
 <!-- Chart.js para gráficos -->
