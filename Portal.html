@@ -8358,7 +8358,7 @@ async function salvarEdicaoUsuario(usuarioId) {
         // Debug: mostrar dados enviados para update
         console.log('Update usuário:', updateData);
         // Atualizar usuário
-        const { error } = await supabase
+        const { error } = await releaseClient
             .from('usuarios')
             .update(updateData)
             .eq('id', usuarioId);
