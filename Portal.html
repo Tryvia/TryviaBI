@@ -1667,6 +1667,122 @@ try {
 if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
+
+// Função para detectar tipo de usuário e mostrar aba correta
+function detectUserTypeAndShowCorrectTab() {
+    const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
+    const isClient = userType === 'client' || userType === 'cliente';
+    
+    // Esconder/mostrar abas baseado no tipo de usuário
+    const inicioCliente = document.getElementById('inicio-cliente');
+    const inicioInterno = document.getElementById('inicio');
+    
+    if (isClient) {
+        // Usuário é cliente - mostrar aba cliente
+        if (inicioCliente) {
+            inicioCliente.style.display = 'block';
+            inicioCliente.classList.add('active');
+        }
+        if (inicioInterno) {
+            inicioInterno.style.display = 'none';
+            inicioInterno.classList.remove('active');
+        }
+        
+        // Esconder abas que não são para clientes
+        hideInternalTabs();
+        
+        // Atualizar título do header
+        const headerTitle = document.querySelector('.header h1');
+        if (headerTitle) {
+            headerTitle.textContent = 'Portal Cliente - Tryvia';
+        }
+        
+    } else {
+        // Usuário é interno - mostrar aba interna
+        if (inicioInterno) {
+            inicioInterno.style.display = 'block';
+            inicioInterno.classList.add('active');
+        }
+        if (inicioCliente) {
+            inicioCliente.style.display = 'none';
+            inicioCliente.classList.remove('active');
+        }
+        
+        // Mostrar todas as abas para usuários internos
+        showAllTabs();
+        
+        // Manter título original
+        const headerTitle = document.querySelector('.header h1');
+        if (headerTitle) {
+            headerTitle.textContent = 'Portal - Time de Implantação';
+        }
+    }
+}
+
+// Função para esconder abas internas para clientes
+function hideInternalTabs() {
+    const internalTabs = [
+        'clients', 'homologacao', 'release', 'reunioes', 'documents', 
+        'relatorio-visita', 'relatorioVisita', 'gestao', 'painel-setor',
+        'gerenciar-logins', 'funcionarios', 'evaluations'
+    ];
+    
+    internalTabs.forEach(tabId => {
+        const tabButton = document.querySelector(`button[onclick*="${tabId}"]`);
+        if (tabButton) {
+            tabButton.parentElement.style.display = 'none';
+        }
+    });
+}
+
+// Função para mostrar todas as abas para usuários internos
+function showAllTabs() {
+    const allNavItems = document.querySelectorAll('.nav-item');
+    allNavItems.forEach(item => {
+        item.style.display = 'block';
+    });
+}
+
+// Função showTab atualizada para gerenciar ambos os tipos de usuário
+function showTab(tabId) {
+    const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
+    const isClient = userType === 'client' || userType === 'cliente';
+    
+    // Se cliente tentar acessar aba restrita, redirecionar para dashboard
+    if (isClient && ['clients', 'homologacao', 'release', 'reunioes', 'documents', 'relatorio-visita', 'gestao'].includes(tabId)) {
+        tabId = 'dashboard';
+    }
+    
+    // Esconder todas as seções
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Mostrar seção solicitada
+    const targetSection = document.getElementById(tabId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+    
+    // Atualizar navegação ativa
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    const activeNavItem = document.querySelector(`.nav-item button[onclick*="${tabId}"]`);
+    if (activeNavItem) {
+        activeNavItem.parentElement.classList.add('active');
+    }
+    
+    // Carregar dados específicos da aba
+    if (tabId === 'dashboard') {
+        fetchAndRenderDashboards();
+    } else if (tabId === 'clients' && !isClient) {
+        fetchAndRenderClients();
+    } else if (tabId === 'homologacao' && !isClient) {
+        fetchAndRenderHomologacoes();
+    }
+}
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
 const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
@@ -1948,6 +2064,139 @@ select {
 </header>
 
 <!-- Aba Início -->
+<!-- Aba Início - Versão Cliente -->
+<div class="content-section" id="inicio-cliente" style="display: none;">
+    <!-- Cabeçalho de Boas-vindas -->
+    <div class="welcome-header" style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
+        <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
+            <i class="fas fa-home" style="margin-right: 15px;"></i>
+            Bem-vindo ao Portal Cliente Tryvia
+        </h2>
+        <p style="margin: 0; font-size: 1.2em; opacity: 0.9;" id="welcomeMessageCliente">
+            Acesse seus dashboards, acompanhe projetos e muito mais
+        </p>
+    </div>
+
+    <!-- Seções de Acesso Rápido -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 25px; margin-bottom: 30px;">
+        <!-- Acesso Rápido -->
+        <div class="quick-access" style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h3 style="margin: 0 0 20px 0; color: #000; font-size: 1.4em;">
+                <i class="fas fa-bolt" style="margin-right: 10px; color: #ff9800;"></i>
+                Acesso Rápido
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                <button onclick="showTab('dashboard')" style="background: #4fc3f7; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-chart-line" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Meus Dashboards
+                </button>
+                <button onclick="window.open('https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html', '_blank')" style="background: #ab47bc; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-clock" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    MVP
+                </button>
+                <button onclick="window.open('https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html', '_blank')" style="background: #26a69a; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-cogs" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Implantações
+                </button>
+                <button onclick="alert('Em breve!')" style="background: #5c6bc0; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-headset" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Suporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informações do Cliente -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+        
+        <!-- Status do Projeto -->
+        <div style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                <i class="fas fa-project-diagram" style="margin-right: 10px;"></i>
+                Status do Projeto
+            </h3>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#4fc3f7 0deg 252deg, #e0e0e0 252deg 360deg); margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 1.5em; font-weight: bold; color: #4fc3f7;">
+                        70%
+                    </div>
+                </div>
+                <p style="margin-top: 15px; font-size: 1.1em; color: #333;">Projeto em Andamento</p>
+            </div>
+            
+            <div style="background: white; border-radius: 8px; padding: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #333;">Próximas Etapas:</h4>
+                <ul style="margin: 0; padding-left: 20px; color: #666;">
+                    <li>Homologação do sistema</li>
+                    <li>Treinamento da equipe</li>
+                    <li>Go-live programado</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Informações de Contato -->
+        <div style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                <i class="fas fa-user-tie" style="margin-right: 10px;"></i>
+                Seu Consultor
+            </h3>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: #4fc3f7; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">
+                    👨‍💼
+                </div>
+                <h4 style="margin: 0; color: #333;">João Silva</h4>
+                <p style="margin: 5px 0; color: #666;">Consultor Sênior</p>
+            </div>
+            
+            <div style="background: white; border-radius: 8px; padding: 15px;">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <i class="fas fa-envelope" style="color: #4fc3f7; margin-right: 10px;"></i>
+                    <span style="color: #333;">joao.silva@tryvia.com</span>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <i class="fas fa-phone" style="color: #4fc3f7; margin-right: 10px;"></i>
+                    <span style="color: #333;">(11) 99999-9999</span>
+                </div>
+                <button style="width: 100%; background: #25d366; color: white; border: none; padding: 10px; border-radius: 5px; margin-top: 10px; cursor: pointer;">
+                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i>
+                    Conversar no WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Últimas Atualizações -->
+    <div style="background: rgba(179, 229, 252, 0.95); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+        <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em;">
+            <i class="fas fa-bell" style="margin-right: 10px;"></i>
+            Últimas Atualizações
+        </h3>
+        
+        <div style="background: white; border-radius: 8px; padding: 20px;">
+            <div style="border-left: 4px solid #4fc3f7; padding-left: 15px; margin-bottom: 15px;">
+                <h4 style="margin: 0 0 5px 0; color: #333;">Sistema em Homologação</h4>
+                <p style="margin: 0; color: #666; font-size: 0.9em;">Há 2 dias</p>
+                <p style="margin: 10px 0 0 0; color: #555;">O sistema está passando pelos testes finais de homologação. Previsão de conclusão: próxima semana.</p>
+            </div>
+            
+            <div style="border-left: 4px solid #66bb6a; padding-left: 15px; margin-bottom: 15px;">
+                <h4 style="margin: 0 0 5px 0; color: #333;">Treinamento Agendado</h4>
+                <p style="margin: 0; color: #666; font-size: 0.9em;">Há 5 dias</p>
+                <p style="margin: 10px 0 0 0; color: #555;">Treinamento da equipe agendado para a próxima segunda-feira às 14h.</p>
+            </div>
+            
+            <div style="border-left: 4px solid #ff9800; padding-left: 15px;">
+                <h4 style="margin: 0 0 5px 0; color: #333;">Documentação Atualizada</h4>
+                <p style="margin: 0; color: #666; font-size: 0.9em;">Há 1 semana</p>
+                <p style="margin: 10px 0 0 0; color: #555;">Nova versão da documentação do sistema disponível na área de downloads.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Aba Início - Versão Interna -->
 <div class="content-section active" id="inicio">
     <!-- Cabeçalho de Boas-vindas -->
     <div class="welcome-header" style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
@@ -8651,6 +8900,24 @@ function showClientWelcomeMessage(clientName) {
         mainContent.insertBefore(welcomeDiv, mainContent.firstChild);
     }
 }
+
+// Inicializar detecção de tipo de usuário quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Detectar tipo de usuário e mostrar aba correta
+    detectUserTypeAndShowCorrectTab();
+    
+    // Configurar nome do usuário no header
+    const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
+    const isClient = userType === 'client' || userType === 'cliente';
+    
+    if (isClient) {
+        const clientName = localStorage.getItem('client_name') || sessionStorage.getItem('client_name') || 'Cliente';
+        document.getElementById('nomeUsuario').innerText = clientName;
+    } else {
+        const username = localStorage.getItem('username') || sessionStorage.getItem('username') || 'Usuário';
+        document.getElementById('nomeUsuario').innerText = username;
+    }
+});
 </script>
 
 
