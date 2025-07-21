@@ -465,7 +465,7 @@ function populateReuniaoClientes() {
         }
 
         .content-section {
-            display: none;
+            display: none !important;
             background-color: #000000;
             padding: 30px;
             border-radius: 12px;
@@ -474,7 +474,7 @@ function populateReuniaoClientes() {
         }
 
         .content-section.active {
-            display: block;
+            display: block !important;
         }
 
         #gestao.active {
@@ -1785,15 +1785,31 @@ function showTab(tabId) {
         }
     }
     
-    // Esconder todas as seções
+    // Esconder TODAS as seções primeiro - incluindo as duas abas de início
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
+        section.style.display = 'none';
     });
     
-    // Mostrar seção solicitada
+    // Esconder especificamente as duas abas de início
+    const inicioInterno = document.getElementById('inicio');
+    const inicioCliente = document.getElementById('inicio-cliente');
+    
+    if (inicioInterno) {
+        inicioInterno.classList.remove('active');
+        inicioInterno.style.display = 'none';
+    }
+    
+    if (inicioCliente) {
+        inicioCliente.classList.remove('active');
+        inicioCliente.style.display = 'none';
+    }
+    
+    // Mostrar APENAS a seção solicitada
     const targetSection = document.getElementById(tabId);
     if (targetSection) {
         targetSection.classList.add('active');
+        targetSection.style.display = 'block';
         console.log('Aba ativada:', tabId);
     } else {
         console.error('Aba não encontrada:', tabId);
