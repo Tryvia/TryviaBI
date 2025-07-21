@@ -465,7 +465,7 @@ function populateReuniaoClientes() {
         }
 
         .content-section {
-            display: none;
+            display: none !important;
             background-color: #000000;
             padding: 30px;
             border-radius: 12px;
@@ -474,7 +474,7 @@ function populateReuniaoClientes() {
         }
 
         .content-section.active {
-            display: block;
+            display: block !important;
         }
 
         #gestao.active {
@@ -1670,14 +1670,28 @@ if (!sessionStorage.getItem('tryvia_logged')) {
 
 // Função para detectar tipo de usuário e mostrar aba correta
 function detectUserTypeAndShowCorrectTab() {
+    // Verificar múltiplas fontes para determinar o tipo de usuário
     const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
-    const isClient = userType === 'client' || userType === 'cliente';
+    const clientId = localStorage.getItem('client_id') || sessionStorage.getItem('client_id');
+    const clientName = localStorage.getItem('client_name') || sessionStorage.getItem('client_name');
     
-    // Esconder/mostrar abas baseado no tipo de usuário
+    // Determinar se é cliente baseado em múltiplos critérios
+    const isClient = (userType === 'client' || userType === 'cliente') && (clientId && clientId !== 'null' && clientId !== '');
+    
+    console.log('Detectando tipo de usuário:', {
+        userType,
+        clientId,
+        clientName,
+        isClient
+    });
+    
+    // Obter elementos das abas
     const inicioCliente = document.getElementById('inicio-cliente');
     const inicioInterno = document.getElementById('inicio');
     
     if (isClient) {
+        console.log('Configurando interface para CLIENTE');
+        
         // Usuário é cliente - mostrar aba cliente
         if (inicioCliente) {
             inicioCliente.style.display = 'block';
@@ -1698,6 +1712,8 @@ function detectUserTypeAndShowCorrectTab() {
         }
         
     } else {
+        console.log('Configurando interface para USUÁRIO INTERNO');
+        
         // Usuário é interno - mostrar aba interna
         if (inicioInterno) {
             inicioInterno.style.display = 'block';
@@ -1717,6 +1733,8 @@ function detectUserTypeAndShowCorrectTab() {
             headerTitle.textContent = 'Portal - Time de Implantação';
         }
     }
+    
+    return isClient;
 }
 
 // Função para esconder abas internas para clientes
@@ -1745,23 +1763,56 @@ function showAllTabs() {
 
 // Função showTab atualizada para gerenciar ambos os tipos de usuário
 function showTab(tabId) {
+    // Usar a mesma lógica robusta de detecção
     const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
-    const isClient = userType === 'client' || userType === 'cliente';
+    const clientId = localStorage.getItem('client_id') || sessionStorage.getItem('client_id');
+    const isClient = (userType === 'client' || userType === 'cliente') && (clientId && clientId !== 'null' && clientId !== '');
+    
+    console.log('showTab chamado:', { tabId, userType, clientId, isClient });
     
     // Se cliente tentar acessar aba restrita, redirecionar para dashboard
-    if (isClient && ['clients', 'homologacao', 'release', 'reunioes', 'documents', 'relatorio-visita', 'gestao'].includes(tabId)) {
+    if (isClient && ['clients', 'homologacao', 'release', 'reunioes', 'documents', 'relatorio-visita', 'gestao', 'painel-setor', 'gerenciar-logins', 'funcionarios', 'evaluations'].includes(tabId)) {
+        console.log('Cliente tentou acessar aba restrita, redirecionando para dashboard');
         tabId = 'dashboard';
     }
     
-    // Esconder todas as seções
+    // Se for aba início, determinar qual mostrar
+    if (tabId === 'inicio') {
+        if (isClient) {
+            tabId = 'inicio-cliente';
+        } else {
+            tabId = 'inicio';
+        }
+    }
+    
+    // Esconder TODAS as seções primeiro - incluindo as duas abas de início
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
+        section.style.display = 'none';
     });
     
-    // Mostrar seção solicitada
+    // Esconder especificamente as duas abas de início
+    const inicioInterno = document.getElementById('inicio');
+    const inicioCliente = document.getElementById('inicio-cliente');
+    
+    if (inicioInterno) {
+        inicioInterno.classList.remove('active');
+        inicioInterno.style.display = 'none';
+    }
+    
+    if (inicioCliente) {
+        inicioCliente.classList.remove('active');
+        inicioCliente.style.display = 'none';
+    }
+    
+    // Mostrar APENAS a seção solicitada
     const targetSection = document.getElementById(tabId);
     if (targetSection) {
         targetSection.classList.add('active');
+        targetSection.style.display = 'block';
+        console.log('Aba ativada:', tabId);
+    } else {
+        console.error('Aba não encontrada:', tabId);
     }
     
     // Atualizar navegação ativa
@@ -1769,7 +1820,15 @@ function showTab(tabId) {
         item.classList.remove('active');
     });
     
-    const activeNavItem = document.querySelector(`.nav-item button[onclick*="${tabId}"]`);
+    // Encontrar o botão de navegação correto
+    let activeNavItem = null;
+    if (tabId === 'inicio-cliente') {
+        // Para aba cliente, ativar o botão "início"
+        activeNavItem = document.querySelector(`.nav-item button[onclick*="inicio"]`);
+    } else {
+        activeNavItem = document.querySelector(`.nav-item button[onclick*="${tabId}"]`);
+    }
+    
     if (activeNavItem) {
         activeNavItem.parentElement.classList.add('active');
     }
@@ -1864,7 +1923,7 @@ Abrir WhatsApp
 </div>
 <ul class="nav-list">
 <li class="nav-item">
-<button onclick="showTab('inicio')"data-permissao="inicio"><i class="fas fa-home"></i> Início</button>
+<button onclick="showTab('inicio-cliente')"data-permissao="inicio-cliente"><i class="fas fa-home"></i> Início</button>
 </li>
 <li class="nav-item">
 <button onclick="showTab('painel-setor')"data-permissao="painel-setor"><i class="fas fa-chart-pie"></i> Painel do Setor</button>
@@ -8903,20 +8962,40 @@ function showClientWelcomeMessage(clientName) {
 
 // Inicializar detecção de tipo de usuário quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== INICIALIZANDO PORTAL ===');
+    
+    // Debug: mostrar todos os dados armazenados
+    console.log('localStorage:', {
+        user_type: localStorage.getItem('user_type'),
+        client_id: localStorage.getItem('client_id'),
+        client_name: localStorage.getItem('client_name'),
+        username: localStorage.getItem('username'),
+        tryvia_logged: localStorage.getItem('tryvia_logged')
+    });
+    
+    console.log('sessionStorage:', {
+        user_type: sessionStorage.getItem('user_type'),
+        client_id: sessionStorage.getItem('client_id'),
+        client_name: sessionStorage.getItem('client_name'),
+        username: sessionStorage.getItem('username'),
+        tryvia_logged: sessionStorage.getItem('tryvia_logged')
+    });
+    
     // Detectar tipo de usuário e mostrar aba correta
-    detectUserTypeAndShowCorrectTab();
+    const isClient = detectUserTypeAndShowCorrectTab();
     
     // Configurar nome do usuário no header
-    const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
-    const isClient = userType === 'client' || userType === 'cliente';
-    
     if (isClient) {
         const clientName = localStorage.getItem('client_name') || sessionStorage.getItem('client_name') || 'Cliente';
         document.getElementById('nomeUsuario').innerText = clientName;
+        console.log('Nome do cliente configurado:', clientName);
     } else {
         const username = localStorage.getItem('username') || sessionStorage.getItem('username') || 'Usuário';
         document.getElementById('nomeUsuario').innerText = username;
+        console.log('Nome do usuário interno configurado:', username);
     }
+    
+    console.log('=== INICIALIZAÇÃO CONCLUÍDA ===');
 });
 </script>
 
