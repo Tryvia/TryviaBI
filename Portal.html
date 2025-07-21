@@ -8355,8 +8355,10 @@ async function salvarEdicaoUsuario(usuarioId) {
             updateData.senha = senha;
         }
 
+        // Debug: mostrar dados enviados para update
+        console.log('Update usuário:', updateData);
         // Atualizar usuário
-        const { error } = await releaseClient
+        const { error } = await supabase
             .from('usuarios')
             .update(updateData)
             .eq('id', usuarioId);
