@@ -1670,121 +1670,67 @@ if (!sessionStorage.getItem('tryvia_logged')) {
 
 // Executar detecção de tipo de usuário assim que a página carregar
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Página carregada, detectando tipo de usuário...');
-    detectUserTypeAndShowCorrectTab();
+    console.log('DOM carregado, inicializando portal...');
+    // Inicializar o portal com detecção automática
+    const isClient = detectUserTypeAndShowCorrectTab();
+    // Se for cliente, garantir que a aba interna nunca seja exibida
+    if (isClient) {
+        const inicioInterno = document.getElementById('inicio');
+        if (inicioInterno) {
+            inicioInterno.style.display = 'none';
+            inicioInterno.classList.remove('active');
+        }
+    }
 });
 
 // Função para detectar tipo de usuário e mostrar aba correta
 function detectUserTypeAndShowCorrectTab() {
     console.log('Detectando tipo de usuário...');
-    
-    // Verificar múltiplas fontes para determinar o tipo de usuário
     const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
     const clientId = localStorage.getItem('client_id') || sessionStorage.getItem('client_id');
     const clientName = localStorage.getItem('client_name') || sessionStorage.getItem('client_name');
-    
-    // Determinar se é cliente baseado em múltiplos critérios
-    const isClient = (userType === 'client' || userType === 'cliente') && 
-                     (clientId && clientId !== 'null' && clientId !== '' && clientId !== 'undefined');
-    
-    console.log('Dados do usuário:', {
-        userType,
-        clientId,
-        clientName,
-        isClient
-    });
-    
-    // CORREÇÃO PRINCIPAL: Esconder TODAS as seções primeiro
+    const isClient = (userType === 'client' || userType === 'cliente') && (clientId && clientId !== 'null' && clientId !== '' && clientId !== 'undefined');
+    console.log('Dados do usuário:', { userType, clientId, clientName, isClient });
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
         section.style.display = 'none';
     });
-    
-    // Obter elementos das abas
     const inicioCliente = document.getElementById('inicio-cliente');
     const inicioInterno = document.getElementById('inicio');
-    
     if (isClient) {
         console.log('Configurando interface para CLIENTE');
-        
-        // Mostrar aba cliente
         if (inicioCliente) {
             inicioCliente.style.display = 'block';
             inicioCliente.classList.add('active');
         }
-        
-        // Garantir que aba interna está escondida
         if (inicioInterno) {
             inicioInterno.style.display = 'none';
             inicioInterno.classList.remove('active');
         }
-        
-        // Esconder abas que não são para clientes
         hideInternalTabs();
-        
-        // Atualizar título do header
         const headerTitle = document.querySelector('.header h1');
         if (headerTitle) {
             headerTitle.textContent = 'Portal Cliente - Tryvia';
         }
-        
-        // Atualizar navegação ativa
         updateActiveNavigation('inicio-cliente');
-        
     } else {
         console.log('Configurando interface para USUÁRIO INTERNO');
-        
-        // Mostrar aba interna
         if (inicioInterno) {
             inicioInterno.style.display = 'block';
             inicioInterno.classList.add('active');
         }
-        
-        // Garantir que aba cliente está escondida
         if (inicioCliente) {
             inicioCliente.style.display = 'none';
             inicioCliente.classList.remove('active');
         }
-        
-        // Mostrar todas as abas para usuários internos
         showAllTabs();
-        
-        // Manter título original
         const headerTitle = document.querySelector('.header h1');
         if (headerTitle) {
             headerTitle.textContent = 'Portal - Time de Implantação';
         }
-        
-        // Atualizar navegação ativa
         updateActiveNavigation('inicio');
     }
-    
     return isClient;
-}
-
-// Função para atualizar navegação ativa
-function updateActiveNavigation(activeTabId) {
-    // Remover classe active de todos os itens de navegação
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    // Encontrar e ativar o botão correto
-    let activeNavItem = null;
-    if (activeTabId === 'inicio-cliente') {
-        // Para aba cliente, ativar o botão "início" visível para clientes
-        activeNavItem = document.querySelector(`.nav-item button[onclick*="inicio-cliente"]`);
-        if (!activeNavItem) {
-            // Fallback: procurar qualquer botão de início
-            activeNavItem = document.querySelector(`.nav-item button[onclick*="inicio"]`);
-        }
-    } else {
-        activeNavItem = document.querySelector(`.nav-item button[onclick*="${activeTabId}"]`);
-    }
-    
-    if (activeNavItem) {
-        activeNavItem.parentElement.classList.add('active');
-    }
 }
 
 // Função para esconder abas internas para clientes
@@ -1796,11 +1742,21 @@ function hideInternalTabs() {
     ];
     
     internalTabs.forEach(tabId => {
-        const tabButton = document.querySelector(`button[onclick*="${tabId}"]`);
-        if (tabButton) {
-            tabButton.parentElement.style.display = 'none';
-        }
+        const tabButtons = document.querySelectorAll(`button[onclick*="${tabId}"]`);
+        tabButtons.forEach(button => {
+            if (button.parentElement) {
+                button.parentElement.style.display = 'none';
+            }
+        });
     });
+    const inicioInternoBtn = document.querySelector(`button[onclick*="inicio"][onclick*="'inicio'"]`);
+    const inicioClienteBtn = document.querySelector(`button[onclick*="inicio-cliente"]`);
+    if (inicioInternoBtn) {
+        inicioInternoBtn.parentElement.style.display = 'none';
+    }
+    if (inicioClienteBtn) {
+        inicioClienteBtn.parentElement.style.display = 'block';
+    }
 }
 
 // Função para mostrar todas as abas para usuários internos
@@ -1809,27 +1765,23 @@ function showAllTabs() {
     allNavItems.forEach(item => {
         item.style.display = 'block';
     });
+    const inicioClienteBtn = document.querySelector(`button[onclick*="inicio-cliente"]`);
+    if (inicioClienteBtn) {
+        inicioClienteBtn.parentElement.style.display = 'none';
+    }
 }
 
 // Função showTab atualizada para gerenciar ambos os tipos de usuário
 function showTab(tabId) {
     console.log('showTab chamado com:', tabId);
-    
-    // Detectar tipo de usuário
     const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
     const clientId = localStorage.getItem('client_id') || sessionStorage.getItem('client_id');
-    const isClient = (userType === 'client' || userType === 'cliente') && 
-                     (clientId && clientId !== 'null' && clientId !== '' && clientId !== 'undefined');
-    
+    const isClient = (userType === 'client' || userType === 'cliente') && (clientId && clientId !== 'null' && clientId !== '' && clientId !== 'undefined');
     console.log('showTab - Tipo de usuário:', { userType, clientId, isClient });
-    
-    // Se cliente tentar acessar aba restrita, redirecionar para dashboard
     if (isClient && ['clients', 'homologacao', 'release', 'reunioes', 'documents', 'relatorio-visita', 'gestao', 'painel-setor', 'gerenciar-logins', 'funcionarios', 'evaluations'].includes(tabId)) {
         console.log('Cliente tentou acessar aba restrita, redirecionando para dashboard');
         tabId = 'dashboard';
     }
-    
-    // CORREÇÃO PRINCIPAL: Se for aba início, determinar qual mostrar baseado no tipo de usuário
     if (tabId === 'inicio') {
         if (isClient) {
             tabId = 'inicio-cliente';
@@ -1839,14 +1791,10 @@ function showTab(tabId) {
             console.log('Mantendo usuário interno em inicio');
         }
     }
-    
-    // Esconder TODAS as seções primeiro
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
         section.style.display = 'none';
     });
-    
-    // Mostrar APENAS a seção solicitada
     const targetSection = document.getElementById(tabId);
     if (targetSection) {
         targetSection.classList.add('active');
@@ -1856,30 +1804,29 @@ function showTab(tabId) {
         console.error('Aba não encontrada:', tabId);
         return;
     }
-    
-    // Atualizar navegação ativa
+    updateActiveNavigation(tabId);
+    loadTabSpecificData(tabId, isClient);
+}
+
+function updateActiveNavigation(activeTabId) {
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
-    
-    // Encontrar e ativar o botão correto
     let activeNavItem = null;
-    if (tabId === 'inicio-cliente') {
-        // Para aba cliente, ativar o botão "início" visível para clientes
+    if (activeTabId === 'inicio-cliente') {
         activeNavItem = document.querySelector(`.nav-item button[onclick*="inicio-cliente"]`);
         if (!activeNavItem) {
-            // Fallback: procurar qualquer botão de início
             activeNavItem = document.querySelector(`.nav-item button[onclick*="inicio"]`);
         }
     } else {
-        activeNavItem = document.querySelector(`.nav-item button[onclick*="${tabId}"]`);
+        activeNavItem = document.querySelector(`.nav-item button[onclick*="${activeTabId}"]`);
     }
-    
     if (activeNavItem) {
         activeNavItem.parentElement.classList.add('active');
     }
-    
-    // Carregar dados específicos da aba
+}
+
+function loadTabSpecificData(tabId, isClient) {
     if (tabId === 'dashboard') {
         fetchAndRenderDashboards();
     } else if (tabId === 'clients' && !isClient) {
@@ -1889,15 +1836,39 @@ function showTab(tabId) {
         fetchAndRenderHomologacoes();
     } else if (tabId === 'inicio') {
         setTimeout(() => {
-            if (typeof initializeInicio === 'function') {
-                initializeInicio();
-            }
+            initializeInicio();
         }, 100);
     } else if (tabId === 'inicio-cliente') {
-        // Inicializar dados específicos do cliente se necessário
         console.log('Inicializando dados do cliente...');
     }
 }
+
+function initializePortal() {
+    console.log('Inicializando portal...');
+    const isClient = detectUserTypeAndShowCorrectTab();
+    if (typeof fetchAndRenderClients === 'function') {
+        fetchAndRenderClients();
+    }
+    if (!isClient) {
+        console.log('Carregando dados para usuário interno...');
+    } else {
+        console.log('Carregando dados para cliente...');
+    }
+}
+
+function debugPortalState() {
+    const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
+    const clientId = localStorage.getItem('client_id') || sessionStorage.getItem('client_id');
+    const activeSection = document.querySelector('.content-section.active');
+    console.log('=== DEBUG PORTAL STATE ===');
+    console.log('User Type:', userType);
+    console.log('Client ID:', clientId);
+    console.log('Active Section:', activeSection ? activeSection.id : 'none');
+    console.log('Visible Sections:', Array.from(document.querySelectorAll('.content-section')).filter(s => s.style.display !== 'none').map(s => s.id));
+    console.log('========================');
+}
+
+window.debugPortalState = debugPortalState;
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
 const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
@@ -1978,7 +1949,6 @@ Abrir WhatsApp
 <img alt="Sua Logo" class="your-custom-logo" src="logo1.png"/>
 </div>
 <ul class="nav-list">
-<li class="nav-item">
 <button onclick="showTab('inicio')"data-permissao="inicio"><i class="fas fa-home"></i> Início</button>
 </li>
 <li class="nav-item">
@@ -5349,13 +5319,10 @@ const { data, error } = await query;
 }
 
         
-        // CORREÇÃO: Não forçar nenhuma aba específica na inicialização
-        // A detecção automática já é feita pela função detectUserTypeAndShowCorrectTab()
         document.addEventListener('DOMContentLoaded', () => {
+            showTab('dashboard'); 
             // Carregar clientes para popular o dropdown
-            if (typeof fetchAndRenderClients === 'function') {
-                fetchAndRenderClients();
-            }
+            fetchAndRenderClients();
         });
     </script>
 <!-- Início do Relatório de Visita -->
@@ -5827,8 +5794,9 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // A inicialização da aba correta é feita por detectUserTypeAndShowCorrectTab()
-    // Não chamar showTab('inicio') aqui para evitar mostrar aba interna para clientes
+    const nome = localStorage.getItem('username') || 'TRYVIA';
+    document.getElementById('nomeUsuario').innerText = nome;
+  });
 </script>
 
 <!-- Chart.js para gráficos -->
@@ -9056,8 +9024,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Nome do usuário interno configurado:', username);
     }
 
-    // Remover chamada automática de showTab('inicio') ou showTab('dashboard') aqui
-    // Se quiser garantir que a aba correta seja exibida, deixe a lógica apenas na detectUserTypeAndShowCorrectTab()
 
     console.log('=== INICIALIZAÇÃO CONCLUÍDA ===');
 });
@@ -9066,3 +9032,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <script src="fix_login.js"></script>
+
+
