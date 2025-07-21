@@ -2,43 +2,6 @@
 
 <html lang="pt-BR">
 <head>
-<style>
-  .permissoes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
-    margin-top: 10px;
-    align-items: start;
-    background: #f7fafd;
-    border-radius: 8px;
-    padding: 16px 10px;
-  }
-  .permissoes-grid label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: normal;
-    background: #fff;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    padding: 6px 10px;
-    transition: box-shadow 0.2s;
-  }
-  .permissoes-grid label:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .permissoes-grid h4 {
-    grid-column: 1 / -1;
-    margin: 18px 0 8px 0;
-    color: #333;
-    border-bottom: 2px solid #4fc3f7;
-    padding-bottom: 4px;
-    font-size: 1.08em;
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-  }
-</style>
 <link rel="icon" type="image/png" href="tryvia.png" />
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -1705,39 +1668,6 @@ if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
-// Função para registrar último login
-async function registrarUltimoLogin() {
-    try {
-        const userEmail = sessionStorage.getItem('user_email') || localStorage.getItem('user_email');
-        if (!userEmail) return;
-
-        const agora = new Date().toISOString();
-        
-        // Atualizar último login na tabela de usuários
-        const { error } = await releaseClient
-            .from('usuarios')
-            .update({ ultimo_login: agora })
-            .eq('email', userEmail);
-
-        if (error) {
-            console.warn('Erro ao registrar último login:', error.message);
-        }
-    } catch (error) {
-        console.warn('Erro ao registrar último login:', error);
-    }
-}
-
-// Registrar último login quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    registrarUltimoLogin();
-});
-
-// Executar detecção de tipo de usuário assim que a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Página carregada, detectando tipo de usuário...');
-    detectUserTypeAndShowCorrectTab();
-});
-
 // Função para detectar tipo de usuário e mostrar aba correta
 function detectUserTypeAndShowCorrectTab() {
     // Verificar múltiplas fontes para determinar o tipo de usuário
@@ -1996,9 +1926,6 @@ Abrir WhatsApp
 <button onclick="showTab('inicio')"data-permissao="inicio"><i class="fas fa-home"></i> Início</button>
 </li>
 <li class="nav-item">
-<button onclick="showTab('inicio-cliente')"data-permissao="inicio-cliente"><i class="fas fa-home"></i> Início</button>
-</li>
-<li class="nav-item">
 <button onclick="showTab('painel-setor')"data-permissao="painel-setor"><i class="fas fa-chart-pie"></i> Painel do Setor</button>
 </li>
 <li class="nav-item">
@@ -2230,9 +2157,9 @@ select {
                     <i class="fas fa-cogs" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
                     Implantações
                 </button>
-                <button onclick="window.open('https://sing.newsgps.com.br/pt-br/ModuloAcesso', '_blank')" style="background: #5c6bc0; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
-                    <i class="fas fa-bus" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
-                    Sing
+                <button onclick="alert('Em breve!')" style="background: #5c6bc0; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-size: 0.9em;">
+                    <i class="fas fa-headset" style="display: block; font-size: 1.5em; margin-bottom: 5px;"></i>
+                    Suporte
                 </button>
             </div>
         </div>
@@ -2329,7 +2256,7 @@ select {
 </div>
 
 <!-- Aba Início - Versão Interna -->
-<div class="content-section" id="inicio" style="display: none;">
+<div class="content-section active" id="inicio">
     <!-- Cabeçalho de Boas-vindas -->
     <div class="welcome-header" style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
         <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
@@ -2873,8 +2800,6 @@ select {
 <option value="Marlos">Marlos</option>
 <option value="Renata">Renata</option>
 <option value="Larissa">Larissa</option>
-<option value="GabrielCS">GabrielCS</option>
-<option value="AdrielCS">AdrielCS</option>
 </select>
 </div>
 <div class="form-group">
@@ -2896,11 +2821,11 @@ select {
 <label for="sistema"> Sistema</label>
 <select id="sistema" name="sistema" required="">
 <option value="">Selecione o sistema</option>
-<option value="Sistema Web">SING</option>
-<option value="Sistema Mobile">Telemetria</option>
-<option value="API Rest">Opt+z</option>
-<option value="Sistema Desktop">Portal</option>
-<option value="Microserviço">Etrip</option>
+<option value="Sistema Web">Sistema Web</option>
+<option value="Sistema Mobile">Sistema Mobile</option>
+<option value="API Rest">API Rest</option>
+<option value="Sistema Desktop">Sistema Desktop</option>
+<option value="Microserviço">Microserviço</option>
 <option value="Outro">Outro</option>
 </select>
 </div>
@@ -3241,10 +3166,6 @@ select {
                                 <span>Início</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                            <input type="checkbox" id="cliente-perm-inicio-cliente" value="inicio-cliente" checked>
-                            <span>Início (cliente)</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
                                 <input type="checkbox" id="perm-painel-setor" value="painel-setor">
                                 <span>Painel do Setor</span>
                             </label>
@@ -3583,13 +3504,12 @@ select {
                         <th style="padding: 15px; text-align: left; font-weight: bold;">Email</th>
                         <th style="padding: 15px; text-align: left; font-weight: bold;">Setor</th>
                         <th style="padding: 15px; text-align: center; font-weight: bold;">Permissões</th>
-                        <th style="padding: 15px; text-align: center; font-weight: bold;">Último Login</th>
                         <th style="padding: 15px; text-align: center; font-weight: bold;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="usuariosTableBody">
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 20px; color: #666;">
+                        <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
                             <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
                             Carregando usuários...
                         </td>
@@ -8376,7 +8296,8 @@ window.showTab = function(tabId) {
 
 // Script para esconder abas do menu lateral conforme as permissões do usuário
 
-function esconderAbasPorPermissao() {
+document.addEventListener('DOMContentLoaded', function() {
+  // Recupera as permissões do usuário do localStorage
   let permissoes = [];
   try {
     permissoes = JSON.parse(localStorage.getItem('permissoes')) || [];
@@ -8384,28 +8305,14 @@ function esconderAbasPorPermissao() {
     permissoes = [];
   }
 
+  // Esconde abas do menu lateral conforme as permissões
   document.querySelectorAll('.nav-item button[data-permissao]').forEach(btn => {
     const perm = btn.getAttribute('data-permissao');
     if (!permissoes.includes(perm)) {
       btn.parentElement.style.display = 'none';
-    } else {
-      btn.parentElement.style.display = '';
-    }
-  });
-}
-
-
-// Chama ao carregar e sempre que as permissões mudarem
-document.addEventListener('DOMContentLoaded', () => {
-  esconderAbasPorPermissao();
-  // Também escuta mudanças no localStorage para atualizar abas dinamicamente
-  window.addEventListener('storage', function(e) {
-    if (e.key === 'permissoes') {
-      esconderAbasPorPermissao();
     }
   });
 });
-window.esconderAbasPorPermissao = esconderAbasPorPermissao;
 
 
 function logoutTryvia() {
@@ -8463,7 +8370,7 @@ function renderUsuarios() {
     if (usuariosFiltrados.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align: center; padding: 20px; color: #666;">
+                <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
                     <i class="fas fa-users" style="margin-right: 8px;"></i>
                     Nenhum usuário encontrado
                 </td>
@@ -8476,7 +8383,6 @@ function renderUsuarios() {
         <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
             <td style="padding: 15px;">${usuario.email}</td>
-            <td style="padding: 15px;">${usuario.setor || '-'}</td>
             <td style="padding: 15px; text-align: center;">
                 <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
                     ${usuario.permissoes.map(perm => `
@@ -8485,9 +8391,6 @@ function renderUsuarios() {
                         </span>
                     `).join('')}
                 </div>
-            </td>
-            <td style="padding: 15px; text-align: center;">
-                ${formatarUltimoLogin(usuario.ultimo_login)}
             </td>
             <td style="padding: 15px; text-align: center;">
                 <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
@@ -8499,44 +8402,6 @@ function renderUsuarios() {
             </td>
         </tr>
     `).join('');
-}
-
-// Função para formatar a data do último login
-function formatarUltimoLogin(ultimoLogin) {
-    if (!ultimoLogin) {
-        return '<span style="color: #999; font-style: italic;">Nunca logou</span>';
-    }
-    
-    const dataLogin = new Date(ultimoLogin);
-    const agora = new Date();
-    const diffMs = agora - dataLogin;
-    const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffMinutos = Math.floor(diffMs / (1000 * 60));
-    
-    let textoTempo;
-    if (diffMinutos < 1) {
-        textoTempo = 'Agora mesmo';
-    } else if (diffMinutos < 60) {
-        textoTempo = `Há ${diffMinutos} min`;
-    } else if (diffHoras < 24) {
-        textoTempo = `Há ${diffHoras}h`;
-    } else if (diffDias === 1) {
-        textoTempo = 'Ontem';
-    } else if (diffDias < 7) {
-        textoTempo = `Há ${diffDias} dias`;
-    } else {
-        textoTempo = dataLogin.toLocaleDateString('pt-BR');
-    }
-    
-    const dataFormatada = dataLogin.toLocaleString('pt-BR');
-    
-    return `
-        <div style="text-align: center;">
-            <div style="font-weight: bold; color: #4fc3f7;">${textoTempo}</div>
-            <div style="font-size: 0.8em; color: #666;">${dataFormatada}</div>
-        </div>
-    `;
 }
 
 // Função para obter o label da permissão
@@ -9118,7 +8983,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Detectar tipo de usuário e mostrar aba correta
     const isClient = detectUserTypeAndShowCorrectTab();
-
+    
     // Configurar nome do usuário no header
     if (isClient) {
         const clientName = localStorage.getItem('client_name') || sessionStorage.getItem('client_name') || 'Cliente';
@@ -9129,11 +8994,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('nomeUsuario').innerText = username;
         console.log('Nome do usuário interno configurado:', username);
     }
-
     
     console.log('=== INICIALIZAÇÃO CONCLUÍDA ===');
 });
 </script>
-
 
 
