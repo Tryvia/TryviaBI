@@ -1668,6 +1668,12 @@ if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
+// Executar detecção de tipo de usuário assim que a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página carregada, detectando tipo de usuário...');
+    detectUserTypeAndShowCorrectTab();
+});
+
 // Função para detectar tipo de usuário e mostrar aba correta
 function detectUserTypeAndShowCorrectTab() {
     // Verificar múltiplas fontes para determinar o tipo de usuário
@@ -1924,6 +1930,9 @@ Abrir WhatsApp
 <ul class="nav-list">
 <li class="nav-item">
 <button onclick="showTab('inicio')"data-permissao="inicio"><i class="fas fa-home"></i> Início</button>
+</li>
+<li class="nav-item">
+<button onclick="showTab('inicio-cliente')"data-permissao="inicio-cliente"><i class="fas fa-home"></i> Início</button>
 </li>
 <li class="nav-item">
 <button onclick="showTab('painel-setor')"data-permissao="painel-setor"><i class="fas fa-chart-pie"></i> Painel do Setor</button>
@@ -2256,7 +2265,7 @@ select {
 </div>
 
 <!-- Aba Início - Versão Interna -->
-<div class="content-section active" id="inicio">
+<div class="content-section" id="inicio" style="display: none;">
     <!-- Cabeçalho de Boas-vindas -->
     <div class="welcome-header" style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
         <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
@@ -8983,7 +8992,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Detectar tipo de usuário e mostrar aba correta
     const isClient = detectUserTypeAndShowCorrectTab();
-    
+
     // Configurar nome do usuário no header
     if (isClient) {
         const clientName = localStorage.getItem('client_name') || sessionStorage.getItem('client_name') || 'Cliente';
@@ -8994,9 +9003,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('nomeUsuario').innerText = username;
         console.log('Nome do usuário interno configurado:', username);
     }
-    
+
+    // Remover chamada automática de showTab('inicio') ou showTab('dashboard') aqui
+    // Se quiser garantir que a aba correta seja exibida, deixe a lógica apenas na detectUserTypeAndShowCorrectTab()
+
     console.log('=== INICIALIZAÇÃO CONCLUÍDA ===');
 });
 </script>
+
+
+
+<script src="fix_login.js"></script>
 
 
