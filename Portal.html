@@ -8376,8 +8376,7 @@ window.showTab = function(tabId) {
 
 // Script para esconder abas do menu lateral conforme as permissões do usuário
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Recupera as permissões do usuário do localStorage
+function esconderAbasPorPermissao() {
   let permissoes = [];
   try {
     permissoes = JSON.parse(localStorage.getItem('permissoes')) || [];
@@ -8385,14 +8384,20 @@ document.addEventListener('DOMContentLoaded', function() {
     permissoes = [];
   }
 
-  // Esconde abas do menu lateral conforme as permissões
   document.querySelectorAll('.nav-item button[data-permissao]').forEach(btn => {
     const perm = btn.getAttribute('data-permissao');
-    if (!permissoes.includes(perm)) {
+    // Normaliza para comparar sem espaços extras
+    if (!permissoes.map(p => p.trim()).includes(perm.trim())) {
       btn.parentElement.style.display = 'none';
+    } else {
+      btn.parentElement.style.display = '';
     }
   });
-});
+}
+
+// Chama ao carregar e após login
+document.addEventListener('DOMContentLoaded', esconderAbasPorPermissao);
+window.esconderAbasPorPermissao = esconderAbasPorPermissao;
 
 
 function logoutTryvia() {
