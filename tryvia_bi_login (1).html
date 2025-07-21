@@ -228,6 +228,11 @@ async function handleLogin(event) {
       localStorage.setItem('user_type', data.tipo_de_usuario || 'client');
       sessionStorage.setItem('client_id', data.client_id);
       sessionStorage.setItem('setor', data.setor);
+
+    if ((data.tipo_de_usuario || 'client') === 'client') {
+    window.location.href = "portal_cliente.html";
+    return false; // impede execução do restante do script
+}
     showMessage('Login bem-sucedido! Redirecionando...', 'success');
     setTimeout(() => {
       window.location.href = redirectUrl;
