@@ -1705,6 +1705,33 @@ if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
+// Função para registrar último login
+async function registrarUltimoLogin() {
+    try {
+        const userEmail = sessionStorage.getItem('user_email') || localStorage.getItem('user_email');
+        if (!userEmail) return;
+
+        const agora = new Date().toISOString();
+        
+        // Atualizar último login na tabela de usuários
+        const { error } = await releaseClient
+            .from('usuarios')
+            .update({ ultimo_login: agora })
+            .eq('email', userEmail);
+
+        if (error) {
+            console.warn('Erro ao registrar último login:', error.message);
+        }
+    } catch (error) {
+        console.warn('Erro ao registrar último login:', error);
+    }
+}
+
+// Registrar último login quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    registrarUltimoLogin();
+});
+
 // Executar detecção de tipo de usuário assim que a página carregar
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Página carregada, detectando tipo de usuário...');
@@ -3214,6 +3241,10 @@ select {
                                 <span>Início</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="cliente-perm-inicio-cliente" value="inicio-cliente" checked>
+                            <span>Início (cliente)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
                                 <input type="checkbox" id="perm-painel-setor" value="painel-setor">
                                 <span>Painel do Setor</span>
                             </label>
@@ -3558,7 +3589,7 @@ select {
                 </thead>
                 <tbody id="usuariosTableBody">
                     <tr>
-                        <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+                        <td colspan="6" style="text-align: center; padding: 20px; color: #666;">
                             <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
                             Carregando usuários...
                         </td>
@@ -8419,7 +8450,7 @@ function renderUsuarios() {
     if (usuariosFiltrados.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+                <td colspan="6" style="text-align: center; padding: 20px; color: #666;">
                     <i class="fas fa-users" style="margin-right: 8px;"></i>
                     Nenhum usuário encontrado
                 </td>
@@ -8442,7 +8473,9 @@ function renderUsuarios() {
                     `).join('')}
                 </div>
             </td>
-            <td style="padding: 15px; text-align: center;">${usuario.lastLogin ? new Date(usuario.lastLogin).toLocaleDateString('pt-BR') : '-'}</td>
+            <td style="padding: 15px; text-align: center;">
+                ${formatarUltimoLogin(usuario.ultimo_login)}
+            </td>
             <td style="padding: 15px; text-align: center;">
                 <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
                     <i class="fas fa-edit"></i> Editar
@@ -8453,6 +8486,44 @@ function renderUsuarios() {
             </td>
         </tr>
     `).join('');
+}
+
+// Função para formatar a data do último login
+function formatarUltimoLogin(ultimoLogin) {
+    if (!ultimoLogin) {
+        return '<span style="color: #999; font-style: italic;">Nunca logou</span>';
+    }
+    
+    const dataLogin = new Date(ultimoLogin);
+    const agora = new Date();
+    const diffMs = agora - dataLogin;
+    const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutos = Math.floor(diffMs / (1000 * 60));
+    
+    let textoTempo;
+    if (diffMinutos < 1) {
+        textoTempo = 'Agora mesmo';
+    } else if (diffMinutos < 60) {
+        textoTempo = `Há ${diffMinutos} min`;
+    } else if (diffHoras < 24) {
+        textoTempo = `Há ${diffHoras}h`;
+    } else if (diffDias === 1) {
+        textoTempo = 'Ontem';
+    } else if (diffDias < 7) {
+        textoTempo = `Há ${diffDias} dias`;
+    } else {
+        textoTempo = dataLogin.toLocaleDateString('pt-BR');
+    }
+    
+    const dataFormatada = dataLogin.toLocaleString('pt-BR');
+    
+    return `
+        <div style="text-align: center;">
+            <div style="font-weight: bold; color: #4fc3f7;">${textoTempo}</div>
+            <div style="font-size: 0.8em; color: #666;">${dataFormatada}</div>
+        </div>
+    `;
 }
 
 // Função para obter o label da permissão
@@ -9054,4 +9125,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <script src="fix_login.js"></script>
+
 
