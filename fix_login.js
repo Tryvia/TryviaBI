@@ -2,8 +2,6 @@
 // Este arquivo foi criado para evitar erro 404 no portal.
 // Adicione aqui qualquer lógica de login customizada se necessário.
 
-console.log('fix_login.js carregado. Nenhuma lógica implementada.');
-
 // Esconde a aba de início interna para clientes ao carregar a página
 function esconderInicioParaCliente() {
     const userType = localStorage.getItem('user_type') || sessionStorage.getItem('user_type');
