@@ -2919,6 +2919,29 @@ select {
                 </tbody>
             </table>
         </div>
+        <!-- Modal de Edição de Usuário -->
+        <div id="modalEditarUsuario" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.4);">
+          <div style="background:#fff; margin:10% auto; padding:20px; border:1px solid #888; width:400px; border-radius:8px; position:relative;">
+            <span id="fecharModalEditar" style="position:absolute; top:10px; right:20px; font-size:28px; cursor:pointer;">&times;</span>
+            <h2>Editar Usuário</h2>
+            <form id="formEditarUsuario">
+              <input type="hidden" id="editarIdUsuario" name="id">
+              <div style="margin-bottom:10px;">
+                <label for="editarNomeUsuario">Nome:</label>
+                <input type="text" id="editarNomeUsuario" name="nome" required style="width:100%;">
+              </div>
+              <div style="margin-bottom:10px;">
+                <label for="editarEmailUsuario">E-mail:</label>
+                <input type="email" id="editarEmailUsuario" name="email" required style="width:100%;">
+              </div>
+              <div style="margin-bottom:10px;">
+                <label for="editarSenhaUsuario">Senha:</label>
+                <input type="password" id="editarSenhaUsuario" name="senha" style="width:100%;">
+              </div>
+              <button type="submit" style="background:#007bff; color:#fff; border:none; padding:10px 20px; border-radius:4px; cursor:pointer;">Salvar</button>
+            </form>
+          </div>
+        </div>
         
         <!-- Botão para adicionar projeto -->
         <button class="btn-primary" onclick="showAddProjectModal()" style="margin-top: 15px;">
