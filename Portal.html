@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="pt-BR">
@@ -8434,7 +8435,7 @@ function renderUsuarios() {
                 <button onclick="editarUsuario(${usuario.id})" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
                     <i class="fas fa-edit"></i> Editar
                 </button>
-                <button onclick="excluirUsuario(${usuario.id}, '${nomeSeguro}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                <button onclick="excluirUsuario(${usuario.id})" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
             </td>
@@ -8576,35 +8577,7 @@ function limparFiltrosUsuarios() {
     renderUsuarios();
 }
 
-// Função para excluir usuário
-async function excluirUsuario(usuarioId, nomeUsuario) {
-    const confirmacao = await showConfirm(
-        'Confirmar Exclusão',
-        `Tem certeza que deseja excluir o usuário "${nomeUsuario}"? Esta ação não pode ser desfeita.`
-    );
-
-    if (!confirmacao) return;
-
-    try {
-        const { error } = await releaseClient
-            .from('usuarios')
-            .delete()
-            .eq('id', usuarioId);
-
-        if (error) {
-            console.error('Erro ao excluir usuário:', error);
-            showAlert('Erro', 'Erro ao excluir usuário: ' + error.message);
-            return;
-        }
-
-        showAlert('Sucesso', 'Usuário excluído com sucesso!');
-        fetchAndRenderUsuarios();
-
-    } catch (error) {
-        console.error('Erro ao excluir usuário:', error);
-        showAlert('Erro', 'Erro ao excluir usuário: ' + error.message);
-    }
-}
+// Função duplicada removida - usando apenas a versão unificada mais abaixo
 
 // Função para editar usuário (implementação básica)
 async function editarUsuario(usuarioId) {
@@ -9356,7 +9329,15 @@ function limparFiltrosUsuarios() {
 
 // Função para excluir usuário
 async function excluirUsuario(userId) {
-    const confirmed = await showConfirm('Confirmação', 'Tem certeza que deseja excluir este usuário?');
+    // Buscar o usuário na lista para obter o nome
+    const usuario = usuarios.find(u => u.id === userId);
+    const nomeUsuario = usuario ? usuario.nome : 'usuário';
+    
+    const confirmed = await showConfirm(
+        'Confirmar Exclusão', 
+        `Tem certeza que deseja excluir o usuário "${nomeUsuario}"? Esta ação não pode ser desfeita.`
+    );
+    
     if (!confirmed) {
         return;
     }
