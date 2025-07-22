@@ -2663,6 +2663,77 @@ select {
 </div>
 <div class="content-section" id="dashboard">
 <h3 style="margin-bottom: 20px;">Dashboards de Clientes</h3>
+
+<!-- Seção de Filtros BI -->
+<div style="background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h4 style="color: #0277bd; margin-bottom: 15px; font-size: 1.2em;">
+        <i class="fas fa-filter"></i> Filtros de Dashboard
+    </h4>
+    
+    <div class="form-row" style="align-items: end;">
+        <div class="form-group">
+            <label style="margin-bottom: 8px; font-weight: bold;">Status do BI</label>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <label class="toggle-switch" style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                    <input type="checkbox" id="biStatusFilter" checked onchange="applyBIFilters()" style="opacity: 0; width: 0; height: 0;">
+                    <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+                <span id="biStatusLabel" style="font-weight: bold; color: #4fc3f7;">BI Ativo</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="dashboardClientNameFilter">Nome do Cliente</label>
+            <input type="text" id="dashboardClientNameFilter" placeholder="Digite o nome do cliente..." oninput="applyBIFilters()">
+        </div>
+        
+        <div class="form-group">
+            <label for="dashboardGroupFilter">Grupo</label>
+            <select id="dashboardGroupFilter" onchange="applyBIFilters()">
+                <option value="">Todos os grupos</option>
+                <option value="JCA">JCA</option>
+                <option value="Guanabara">Guanabara</option>
+                <option value="Águia Branca">Águia Branca</option>
+                <option value="Nenhum">Nenhum</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+            <button class="btn-secondary" onclick="clearBIFilters()">Limpar Filtros</button>
+        </div>
+    </div>
+    
+    <!-- Estatísticas -->
+    <div style="display: flex; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
+            <div style="font-size: 1.8em; font-weight: bold; color: #4fc3f7;" id="totalDashboardClients">0</div>
+            <div style="color: #666; margin-top: 5px;">Total de Clientes</div>
+        </div>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
+            <div style="font-size: 1.8em; font-weight: bold; color: #4caf50;" id="activeBIDashboardClients">0</div>
+            <div style="color: #666; margin-top: 5px;">BI Ativo</div>
+        </div>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
+            <div style="font-size: 1.8em; font-weight: bold; color: #f44336;" id="inactiveBIDashboardClients">0</div>
+            <div style="color: #666; margin-top: 5px;">BI Inativo</div>
+        </div>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
+            <div style="font-size: 1.8em; font-weight: bold; color: #ff9800;" id="filteredDashboardClients">0</div>
+            <div style="color: #666; margin-top: 5px;">Exibindo</div>
+        </div>
+    </div>
+    
+    <!-- Informações Capturadas -->
+    <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin-top: 20px; border-radius: 5px;">
+        <h5 style="color: #1976d2; margin-bottom: 10px;">
+            <i class="fas fa-info-circle"></i> Informações Capturadas do Filtro
+        </h5>
+        <div style="font-family: monospace; background: #f5f5f5; padding: 10px; border-radius: 5px; font-size: 0.85em; max-height: 150px; overflow-y: auto;" id="biFilterCaptureData">
+            Aguardando interação com os filtros...
+        </div>
+    </div>
+</div>
+
 <div class="dashboards-grid" id="dashboardsList">
 <div class="empty-state">
 <div class="empty-state-icon">📊</div>
