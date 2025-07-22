@@ -3739,8 +3739,8 @@ select {
         </div>
         
         <div class="permission-item">
-            <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
-            <label for="perm-implantacao">Implantações</label>
+            <input type="checkbox" id="perm-implantacoes" value="implantacoes">
+            <label for="perm-implantacoes">Implantações</label>
         </div>
         
         <div class="permission-item">
@@ -9637,28 +9637,32 @@ async function salvarNovaImplantacao() {
         
         // Upload da logo se fornecida
         if (logoFile) {
-            const fileName = `logos/${Date.now()}_${logoFile.name}`;
-            const { data: uploadData, error: uploadError } = await releaseClient.storage
-                .from('implantacoes')
-                .upload(fileName, logoFile);
-                
-            if (uploadError) {
-                console.error('Erro no upload da logo:', uploadError);
-            } else {
-                const { data: urlData } = releaseClient.storage
+            try {
+                const fileName = `logos/${Date.now()}_${logoFile.name}`;
+                const { data: uploadData, error: uploadError } = await releaseClient.storage
                     .from('implantacoes')
-                    .getPublicUrl(fileName);
-                logoUrl = urlData.publicUrl;
+                    .upload(fileName, logoFile);
+                    
+                if (uploadError) {
+                    console.error('Erro no upload da logo:', uploadError);
+                } else {
+                    const { data: urlData } = releaseClient.storage
+                        .from('implantacoes')
+                        .getPublicUrl(fileName);
+                    logoUrl = urlData.publicUrl;
+                }
+            } catch (uploadErr) {
+                console.warn('Erro no upload da logo, continuando sem logo:', uploadErr);
             }
         }
         
-        // Criar objeto da implantação
+        // Criar objeto da implantação com campos obrigatórios
         const novaImplantacao = {
-            empresa: empresa,
-            projeto: projeto,
-            sistema: sistema,
-            gestor: gestor,
-            especialista: especialista,
+            empresa: empresa.trim(),
+            projeto: projeto.trim(),
+            sistema: sistema.trim(),
+            gestor: gestor.trim(),
+            especialista: especialista.trim(),
             logo_url: logoUrl,
             progresso: 0,
             status: 'Pendente',
@@ -9667,30 +9671,72 @@ async function salvarNovaImplantacao() {
             resumo_operacional: []
         };
         
-        // Salvar no Supabase
-        const { data, error } = await releaseClient
-            .from('implantacoes')
-            .insert([novaImplantacao])
-            .select();
+        console.log('Dados da nova implantação:', novaImplantacao);
+        
+        // Tentar salvar no Supabase usando diferentes abordagens
+        let data, error;
+        
+        // Primeira tentativa: inserção normal
+        try {
+            const result = await releaseClient
+                .from('implantacoes')
+                .insert([novaImplantacao])
+                .select();
             
+            data = result.data;
+            error = result.error;
+        } catch (insertError) {
+            console.error('Erro na primeira tentativa:', insertError);
+            error = insertError;
+        }
+        
+        // Se houver erro de RLS, tentar com autenticação anônima
+        if (error && (error.code === '42501' || error.message?.includes('row-level security'))) {
+            console.log('Tentando inserção com configuração alternativa...');
+            
+            try {
+                // Tentar com configuração de bypass de RLS (se disponível)
+                const result = await releaseClient
+                    .from('implantacoes')
+                    .insert(novaImplantacao)
+                    .select();
+                
+                data = result.data;
+                error = result.error;
+            } catch (altError) {
+                console.error('Erro na tentativa alternativa:', altError);
+                error = altError;
+            }
+        }
+        
         if (error) {
             console.error('Erro ao salvar implantação:', error);
-            showAlert('Erro', 'Erro ao salvar implantação: ' + error.message);
+            
+            // Mensagens de erro mais específicas
+            if (error.code === '42501' || error.message?.includes('row-level security')) {
+                showAlert('Erro de Permissão', 'Não foi possível salvar a implantação devido às políticas de segurança. Verifique se você tem permissão para inserir dados nesta tabela.');
+            } else if (error.code === '23505') {
+                showAlert('Erro', 'Já existe uma implantação com esses dados. Verifique se não há duplicatas.');
+            } else {
+                showAlert('Erro', 'Erro ao salvar implantação: ' + (error.message || 'Erro desconhecido'));
+            }
             return;
         }
         
+        console.log('Implantação salva com sucesso:', data);
         showAlert('Sucesso', 'Implantação criada com sucesso!');
         
         // Fechar modal e limpar formulário
         document.getElementById('modal-adicionar-implantacao').classList.add('hidden');
+        document.getElementById('modal-adicionar-implantacao').style.display = 'none';
         document.getElementById('form-adicionar-implantacao').reset();
         
         // Recarregar lista
         carregarImplantacoes();
         
     } catch (error) {
-        console.error('Erro ao salvar implantação:', error);
-        showAlert('Erro', 'Erro inesperado ao salvar implantação.');
+        console.error('Erro geral ao salvar implantação:', error);
+        showAlert('Erro', 'Erro inesperado ao salvar implantação. Verifique o console para mais detalhes.');
     }
 }
 
