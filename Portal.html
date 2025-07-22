@@ -8414,7 +8414,10 @@ function renderUsuarios() {
         return;
     }
 
-    tbody.innerHTML = usuariosFiltrados.map(usuario => `
+    tbody.innerHTML = usuariosFiltrados.map(usuario => {
+        // Escapa aspas simples e caracteres especiais do nome para evitar erro de sintaxe
+        const nomeSeguro = String(usuario.nome).replace(/'/g, "\\'").replace(/\n/g, ' ');
+        return `
         <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
             <td style="padding: 15px;">${usuario.email}</td>
@@ -8431,12 +8434,13 @@ function renderUsuarios() {
                 <button onclick="editarUsuario(${usuario.id})" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
                     <i class="fas fa-edit"></i> Editar
                 </button>
-                <button onclick="excluirUsuario(${usuario.id}, '${usuario.nome}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                <button onclick="excluirUsuario(${usuario.id}, '${nomeSeguro}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
             </td>
         </tr>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Função para obter o label da permissão
