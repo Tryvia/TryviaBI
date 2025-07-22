@@ -8614,12 +8614,12 @@ async function editarUsuario(usuarioId) {
         return;
     }
     // Preencher campos do modal de edição
-    document.getElementById('editarIdUsuario1').value = usuario.id;
-    document.getElementById('editarNomeUsuario1').value = usuario.nome;
-    document.getElementById('editarEmailUsuario1').value = usuario.email;
-    document.getElementById('editarSenhaUsuario1').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario1').value = '';
-    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
+    document.getElementById('editarIdUsuario').value = usuario.id;
+    document.getElementById('editarNomeUsuario').value = usuario.nome;
+    document.getElementById('editarEmailUsuario').value = usuario.email;
+    document.getElementById('editarSenhaUsuario').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario').value = '';
+    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
     // Permissões (se aplicável)
     if (usuario.permissoes && Array.isArray(usuario.permissoes)) {
         document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]').forEach(checkbox => {
@@ -9078,12 +9078,12 @@ function editarUsuario(userId) {
     }
 
     // Preencher campos do formulário
-    document.getElementById('editarIdUsuario1').value = usuario.id;
-    document.getElementById('editarNomeUsuario1').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario1').value = usuario.email || '';
-    document.getElementById('editarSenhaUsuario1').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario1').value = '';
-    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
+    document.getElementById('editarIdUsuario').value = usuario.id;
+    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
+    document.getElementById('editarEmailUsuario').value = usuario.email || '';
+    document.getElementById('editarSenhaUsuario').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario').value = '';
+    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
 
     // Carregar permissões do usuário
     carregarPermissoesEdicao(usuario.permissoes || []);
@@ -9563,12 +9563,12 @@ function editarUsuario(userId) {
     }
 
     // Preencher campos do formulário
-    document.getElementById('editarIdUsuario1').value = usuario.id;
-    document.getElementById('editarNomeUsuario1').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario1').value = usuario.email || '';
-    document.getElementById('editarSenhaUsuario1').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario1').value = '';
-    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
+    document.getElementById('editarIdUsuario').value = usuario.id;
+    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
+    document.getElementById('editarEmailUsuario').value = usuario.email || '';
+    document.getElementById('editarSenhaUsuario').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario').value = '';
+    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
 
     // Carregar permissões do usuário
     carregarPermissoesEdicao(usuario.permissoes || []);
