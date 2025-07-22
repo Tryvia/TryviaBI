@@ -9526,7 +9526,10 @@ function setupImplantacoesEvents() {
     if (btnAdicionar) {
         btnAdicionar.onclick = function() {
             const modal = document.getElementById('modal-adicionar-implantacao');
-            if (modal) modal.classList.remove('hidden');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex'; // Garante que o modal aparece
+            }
         };
     }
     
