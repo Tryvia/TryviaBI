@@ -9428,7 +9428,61 @@ window.showTab = function(tabId) {
         fetchAndRenderUsuarios();
         carregarClientesNoSelect();
     }
+    
+    // Inicializar seção de implantações
+    if (tabId === 'implantacoes') {
+        initImplantacoes();
+    }
 };
+
+// Função para inicializar a seção de implantações
+function initImplantacoes() {
+    // Garantir que todos os modais estejam fechados
+    const modals = document.querySelectorAll('#implantacoes .modal');
+    modals.forEach(modal => {
+        modal.classList.add('hidden');
+    });
+    
+    // Mostrar painel principal
+    const painelPrincipal = document.getElementById('painel-projetos-implantacao');
+    const statusImplantacao = document.getElementById('status-implantacao');
+    
+    if (painelPrincipal) painelPrincipal.style.display = 'block';
+    if (statusImplantacao) statusImplantacao.style.display = 'none';
+    
+    // Configurar eventos dos botões
+    setupImplantacoesEvents();
+}
+
+// Configurar eventos para a seção de implantações
+function setupImplantacoesEvents() {
+    // Botão adicionar implantação
+    const btnAdicionar = document.getElementById('btn-adicionar-implantacao');
+    if (btnAdicionar) {
+        btnAdicionar.onclick = function() {
+            const modal = document.getElementById('modal-adicionar-implantacao');
+            if (modal) modal.classList.remove('hidden');
+        };
+    }
+    
+    // Botões de fechar modais
+    const closeButtons = document.querySelectorAll('#implantacoes .modal-close');
+    closeButtons.forEach(btn => {
+        btn.onclick = function() {
+            const modal = btn.closest('.modal');
+            if (modal) modal.classList.add('hidden');
+        };
+    });
+    
+    // Botões cancelar
+    const cancelButtons = document.querySelectorAll('#implantacoes .btn-cancelar');
+    cancelButtons.forEach(btn => {
+        btn.onclick = function() {
+            const modal = btn.closest('.modal');
+            if (modal) modal.classList.add('hidden');
+        };
+    });
+}
 </script>
 </body>
 
