@@ -3239,6 +3239,7 @@ select {
                 <h1>Status de Implantação</h1>
                 <div class="header-actions">
                     <button id="btn-editar-timeline" class="btn-action btn-editar">✏️ Editar Timeline</button>
+                    <button id="btn-editar-implantacao-detalhes" class="btn-action btn-editar">📝 Editar Implantação</button>
                 </div>
             </div>
             <div class="logo">
@@ -3416,6 +3417,72 @@ select {
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Implantação -->
+    <div id="modal-editar-implantacao" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Implantação</h2>
+                <button class="modal-close" id="modal-editar-implantacao-close">&times;</button>
+            </div>
+            <form id="form-editar-implantacao">
+                <input type="hidden" id="editar-implantacao-id">
+                
+                <div class="form-group">
+                    <label for="editar-empresa-implantacao">Empresa:</label>
+                    <input type="text" id="editar-empresa-implantacao" required>
+                </div>
+                <div class="form-group">
+                    <label for="editar-projeto-implantacao">Projeto:</label>
+                    <input type="text" id="editar-projeto-implantacao" required>
+                </div>
+                <div class="form-group">
+                    <label for="editar-sistema-implantacao">Sistema:</label>
+                    <select id="editar-sistema-implantacao" required>
+                        <option value="">Selecione um sistema</option>
+                        <option value="OPTZ">OPTZ</option>
+                        <option value="E-Clock">E-Clock</option>
+                        <option value="Telemetria">Telemetria</option>
+                        <option value="SING / Etrip">SING / Etrip</option>
+                        <option value="E-check">E-check</option>
+                        <option value="Sing Rastreamento">Sing Rastreamento</option>
+                        <option value="Videotelemetria">Videotelemetria</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editar-gestor-implantacao">Gestor:</label>
+                    <input type="text" id="editar-gestor-implantacao" required>
+                </div>
+                <div class="form-group">
+                    <label for="editar-especialista-implantacao">Especialista Responsável:</label>
+                    <input type="text" id="editar-especialista-implantacao" required>
+                </div>
+                <div class="form-group">
+                    <label for="editar-progresso-implantacao">Progresso (%):</label>
+                    <input type="number" id="editar-progresso-implantacao" min="0" max="100" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="editar-status-implantacao">Status:</label>
+                    <select id="editar-status-implantacao">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em Andamento">Em Andamento</option>
+                        <option value="Atrasado">Atrasado</option>
+                        <option value="Concluído">Concluído</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editar-resumo-implantacao">Resumo Operacional:</label>
+                    <textarea id="editar-resumo-implantacao" rows="4" placeholder="Digite o resumo operacional (uma linha por item)"></textarea>
+                    <small>Digite cada item do resumo em uma linha separada</small>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-edicao-implantacao">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Alterações</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -3672,8 +3739,8 @@ select {
         </div>
         
         <div class="permission-item">
-            <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
-            <label for="perm-implantacao">Implantações</label>
+            <input type="checkbox" id="perm-implantacoes" value="implantacoes">
+            <label for="perm-implantacoes">Implantações</label>
         </div>
         
         <div class="permission-item">
@@ -9480,6 +9547,519 @@ function setupImplantacoesEvents() {
             if (modal) modal.classList.add('hidden');
         };
     });
+    
+    // Formulário de adicionar implantação
+    const formAdicionar = document.getElementById('form-adicionar-implantacao');
+    if (formAdicionar) {
+        formAdicionar.onsubmit = function(e) {
+            e.preventDefault();
+            salvarNovaImplantacao();
+        };
+    }
+    
+    // Formulário de editar implantação
+    const formEditar = document.getElementById('form-editar-implantacao');
+    if (formEditar) {
+        formEditar.onsubmit = function(e) {
+            e.preventDefault();
+            salvarEdicaoImplantacao();
+        };
+    }
+    
+    // Filtro de busca
+    const filtroBusca = document.getElementById('filtro-busca-implantacao');
+    if (filtroBusca) {
+        filtroBusca.oninput = function() {
+            filtrarImplantacoes(this.value);
+        };
+    }
+    
+    // Carregar implantações ao inicializar
+    carregarImplantacoes();
+}
+
+// Função para salvar nova implantação
+async function salvarNovaImplantacao() {
+    try {
+        const empresa = document.getElementById('nova-empresa-implantacao').value;
+        const projeto = document.getElementById('novo-projeto-implantacao').value;
+        const sistema = document.getElementById('novo-sistema-implantacao').value;
+        const gestor = document.getElementById('novo-gestor-implantacao').value;
+        const especialista = document.getElementById('especialista-implantacao').value;
+        const logoFile = document.getElementById('logo-cliente-implantacao').files[0];
+        
+        if (!empresa || !projeto || !sistema || !gestor || !especialista) {
+            showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+        
+        let logoUrl = null;
+        
+        // Upload da logo se fornecida
+        if (logoFile) {
+            const fileName = `logos/${Date.now()}_${logoFile.name}`;
+            const { data: uploadData, error: uploadError } = await releaseClient.storage
+                .from('implantacoes')
+                .upload(fileName, logoFile);
+                
+            if (uploadError) {
+                console.error('Erro no upload da logo:', uploadError);
+            } else {
+                const { data: urlData } = releaseClient.storage
+                    .from('implantacoes')
+                    .getPublicUrl(fileName);
+                logoUrl = urlData.publicUrl;
+            }
+        }
+        
+        // Criar objeto da implantação
+        const novaImplantacao = {
+            empresa: empresa,
+            projeto: projeto,
+            sistema: sistema,
+            gestor: gestor,
+            especialista: especialista,
+            logo_url: logoUrl,
+            progresso: 0,
+            status: 'Pendente',
+            status_meses: {},
+            fases: [],
+            resumo_operacional: []
+        };
+        
+        // Salvar no Supabase
+        const { data, error } = await releaseClient
+            .from('implantacoes')
+            .insert([novaImplantacao])
+            .select();
+            
+        if (error) {
+            console.error('Erro ao salvar implantação:', error);
+            showAlert('Erro', 'Erro ao salvar implantação: ' + error.message);
+            return;
+        }
+        
+        showAlert('Sucesso', 'Implantação criada com sucesso!');
+        
+        // Fechar modal e limpar formulário
+        document.getElementById('modal-adicionar-implantacao').classList.add('hidden');
+        document.getElementById('form-adicionar-implantacao').reset();
+        
+        // Recarregar lista
+        carregarImplantacoes();
+        
+    } catch (error) {
+        console.error('Erro ao salvar implantação:', error);
+        showAlert('Erro', 'Erro inesperado ao salvar implantação.');
+    }
+}
+
+// Função para carregar implantações do Supabase
+async function carregarImplantacoes() {
+    try {
+        const { data: implantacoes, error } = await releaseClient
+            .from('implantacoes')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.error('Erro ao carregar implantações:', error);
+            showAlert('Erro', 'Erro ao carregar implantações: ' + error.message);
+            return;
+        }
+        
+        renderizarTabelaImplantacoes(implantacoes);
+        
+    } catch (error) {
+        console.error('Erro ao carregar implantações:', error);
+        showAlert('Erro', 'Erro inesperado ao carregar implantações.');
+    }
+}
+
+// Função para renderizar tabela de implantações
+function renderizarTabelaImplantacoes(implantacoes) {
+    const tbody = document.getElementById('tabela-body-implantacao');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (!implantacoes || implantacoes.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="15" style="text-align: center; padding: 40px; color: #666;">
+                    Nenhuma implantação encontrada
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    implantacoes.forEach(implantacao => {
+        const row = document.createElement('tr');
+        row.style.cursor = 'pointer';
+        row.onclick = () => visualizarDetalhesImplantacao(implantacao.id);
+        
+        // Gerar células dos meses com status
+        const mesesCells = gerarCelulasMeses(implantacao.status_meses || {});
+        
+        row.innerHTML = `
+            <td style="font-weight: 500;">${implantacao.empresa}</td>
+            <td>${implantacao.projeto}</td>
+            <td>
+                <span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+                    ${implantacao.sistema}
+                </span>
+            </td>
+            ${mesesCells}
+        `;
+        
+        tbody.appendChild(row);
+    });
+}
+
+// Função para gerar células dos meses
+function gerarCelulasMeses(statusMeses) {
+    const meses = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 
+                   'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+    
+    return meses.map(mes => {
+        const status = statusMeses[mes] || 'vazio';
+        const cor = getCorStatus(status);
+        return `<td style="background-color: ${cor}; width: 30px; height: 30px;"></td>`;
+    }).join('');
+}
+
+// Função para obter cor do status
+function getCorStatus(status) {
+    const cores = {
+        'pendente': '#ffc107',
+        'andamento': '#2196f3',
+        'atrasado': '#f44336',
+        'concluido_prazo': '#4caf50',
+        'concluido_fora': '#ff9800',
+        'reuniao': '#9c27b0',
+        'final_semana': '#607d8b',
+        'vazio': '#f5f5f5'
+    };
+    return cores[status] || cores.vazio;
+}
+
+// Função para filtrar implantações
+function filtrarImplantacoes(termo) {
+    const rows = document.querySelectorAll('#tabela-body-implantacao tr');
+    
+    rows.forEach(row => {
+        const texto = row.textContent.toLowerCase();
+        const mostrar = texto.includes(termo.toLowerCase());
+        row.style.display = mostrar ? '' : 'none';
+    });
+}
+
+// Função para visualizar detalhes da implantação
+async function visualizarDetalhesImplantacao(id) {
+    try {
+        implantacaoAtualId = parseInt(id); // Armazenar ID atual
+        
+        const { data: implantacao, error } = await releaseClient
+            .from('implantacoes')
+            .select('*')
+            .eq('id', id)
+            .single();
+            
+        if (error) {
+            console.error('Erro ao carregar detalhes:', error);
+            showAlert('Erro', 'Erro ao carregar detalhes da implantação.');
+            return;
+        }
+        
+        // Esconder painel principal e mostrar detalhes
+        document.getElementById('painel-projetos-implantacao').style.display = 'none';
+        document.getElementById('status-implantacao').style.display = 'block';
+        
+        // Preencher dados da empresa
+        preencherDadosEmpresa(implantacao);
+        
+        // Atualizar progresso
+        atualizarBarraProgresso(implantacao.progresso || 0);
+        
+        // Renderizar timeline
+        renderizarTimeline(implantacao.fases || []);
+        
+        // Mostrar resumo operacional
+        mostrarResumoOperacional(implantacao.resumo_operacional || []);
+        
+        // Mostrar status
+        mostrarStatusFinal(implantacao.status || 'Pendente');
+        
+        // Configurar botão voltar
+        const btnVoltar = document.getElementById('btn-voltar-status');
+        if (btnVoltar) {
+            btnVoltar.onclick = () => voltarParaPainelPrincipal();
+        }
+        
+        // Configurar botão editar implantação
+        const btnEditarImplantacao = document.getElementById('btn-editar-implantacao-detalhes');
+        if (btnEditarImplantacao) {
+            btnEditarImplantacao.onclick = () => abrirModalEdicao(id);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao visualizar detalhes:', error);
+        showAlert('Erro', 'Erro inesperado ao carregar detalhes.');
+    }
+}
+
+// Função para preencher dados da empresa
+function preencherDadosEmpresa(implantacao) {
+    const empresaDados = document.getElementById('empresa-dados');
+    if (empresaDados) {
+        empresaDados.innerHTML = `
+            <td>${implantacao.empresa}</td>
+            <td>${implantacao.sistema}</td>
+            <td>${implantacao.gestor}</td>
+            <td>${implantacao.especialista}</td>
+        `;
+    }
+    
+    // Atualizar logo
+    const logoImg = document.getElementById('logo-img');
+    const logoText = document.getElementById('logo-text');
+    
+    if (implantacao.logo_url) {
+        logoImg.src = implantacao.logo_url;
+        logoImg.style.display = 'block';
+        logoText.style.display = 'none';
+    } else {
+        logoImg.style.display = 'none';
+        logoText.style.display = 'block';
+        logoText.textContent = implantacao.empresa.substring(0, 3).toUpperCase();
+    }
+}
+
+// Função para atualizar barra de progresso
+function atualizarBarraProgresso(progresso) {
+    const progressoFill = document.getElementById('progresso-fill');
+    const progressoTexto = document.getElementById('progresso-texto');
+    
+    if (progressoFill) {
+        progressoFill.style.width = `${progresso}%`;
+    }
+    
+    if (progressoTexto) {
+        progressoTexto.textContent = `${progresso}%`;
+    }
+}
+
+// Função para renderizar timeline
+function renderizarTimeline(fases) {
+    const timelineBody = document.getElementById('timeline-body');
+    if (!timelineBody) return;
+    
+    timelineBody.innerHTML = '';
+    
+    if (!fases || fases.length === 0) {
+        timelineBody.innerHTML = `
+            <tr>
+                <td colspan="100%" style="text-align: center; padding: 20px; color: #666;">
+                    Nenhuma fase configurada
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    fases.forEach(fase => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="font-weight: 500; background: #f5f5f5;">${fase.nome || 'Fase'}</td>
+            <td>${fase.etapas ? fase.etapas.join(', ') : 'Sem etapas'}</td>
+        `;
+        timelineBody.appendChild(row);
+    });
+}
+
+// Função para mostrar resumo operacional
+function mostrarResumoOperacional(resumo) {
+    const resumoConteudo = document.getElementById('resumo-conteudo');
+    if (!resumoConteudo) return;
+    
+    if (!resumo || resumo.length === 0) {
+        resumoConteudo.innerHTML = '<p style="color: #666;">Nenhum resumo operacional disponível.</p>';
+        return;
+    }
+    
+    resumoConteudo.innerHTML = resumo.map(item => `<p>• ${item}</p>`).join('');
+}
+
+// Função para mostrar status final
+function mostrarStatusFinal(status) {
+    const statusBadge = document.getElementById('status-badge');
+    if (!statusBadge) return;
+    
+    const cores = {
+        'Pendente': '#ffc107',
+        'Em Andamento': '#2196f3',
+        'Atrasado': '#f44336',
+        'Concluído': '#4caf50'
+    };
+    
+    const cor = cores[status] || '#6c757d';
+    
+    statusBadge.innerHTML = `
+        <span style="background: ${cor}; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 500;">
+            ${status}
+        </span>
+    `;
+}
+
+// Função para voltar ao painel principal
+function voltarParaPainelPrincipal() {
+    document.getElementById('status-implantacao').style.display = 'none';
+    document.getElementById('painel-projetos-implantacao').style.display = 'block';
+}
+
+// Variável global para armazenar ID da implantação atual
+let implantacaoAtualId = null;
+
+// Função para abrir modal de edição
+async function abrirModalEdicao(id) {
+    try {
+        const { data: implantacao, error } = await releaseClient
+            .from('implantacoes')
+            .select('*')
+            .eq('id', id)
+            .single();
+            
+        if (error) {
+            console.error('Erro ao carregar dados para edição:', error);
+            showAlert('Erro', 'Erro ao carregar dados da implantação.');
+            return;
+        }
+        
+        // Preencher formulário de edição
+        document.getElementById('editar-implantacao-id').value = implantacao.id;
+        document.getElementById('editar-empresa-implantacao').value = implantacao.empresa;
+        document.getElementById('editar-projeto-implantacao').value = implantacao.projeto;
+        document.getElementById('editar-sistema-implantacao').value = implantacao.sistema;
+        document.getElementById('editar-gestor-implantacao').value = implantacao.gestor;
+        document.getElementById('editar-especialista-implantacao').value = implantacao.especialista;
+        document.getElementById('editar-progresso-implantacao').value = implantacao.progresso || 0;
+        document.getElementById('editar-status-implantacao').value = implantacao.status || 'Pendente';
+        
+        // Preencher resumo operacional
+        const resumo = implantacao.resumo_operacional || [];
+        document.getElementById('editar-resumo-implantacao').value = resumo.join('\n');
+        
+        // Mostrar modal
+        document.getElementById('modal-editar-implantacao').classList.remove('hidden');
+        
+    } catch (error) {
+        console.error('Erro ao abrir modal de edição:', error);
+        showAlert('Erro', 'Erro inesperado ao carregar dados.');
+    }
+}
+
+// Função para salvar edições da implantação
+async function salvarEdicaoImplantacao() {
+    try {
+        const id = document.getElementById('editar-implantacao-id').value;
+        const empresa = document.getElementById('editar-empresa-implantacao').value;
+        const projeto = document.getElementById('editar-projeto-implantacao').value;
+        const sistema = document.getElementById('editar-sistema-implantacao').value;
+        const gestor = document.getElementById('editar-gestor-implantacao').value;
+        const especialista = document.getElementById('editar-especialista-implantacao').value;
+        const progresso = parseInt(document.getElementById('editar-progresso-implantacao').value) || 0;
+        const status = document.getElementById('editar-status-implantacao').value;
+        const resumoTexto = document.getElementById('editar-resumo-implantacao').value;
+        
+        if (!empresa || !projeto || !sistema || !gestor || !especialista) {
+            showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+        
+        // Converter resumo em array
+        const resumoOperacional = resumoTexto
+            .split('\n')
+            .map(linha => linha.trim())
+            .filter(linha => linha.length > 0);
+        
+        // Objeto com dados atualizados
+        const dadosAtualizados = {
+            empresa: empresa,
+            projeto: projeto,
+            sistema: sistema,
+            gestor: gestor,
+            especialista: especialista,
+            progresso: progresso,
+            status: status,
+            resumo_operacional: resumoOperacional,
+            updated_at: new Date().toISOString()
+        };
+        
+        // Atualizar no Supabase
+        const { data, error } = await releaseClient
+            .from('implantacoes')
+            .update(dadosAtualizados)
+            .eq('id', id)
+            .select();
+            
+        if (error) {
+            console.error('Erro ao atualizar implantação:', error);
+            showAlert('Erro', 'Erro ao atualizar implantação: ' + error.message);
+            return;
+        }
+        
+        showAlert('Sucesso', 'Implantação atualizada com sucesso!');
+        
+        // Fechar modal
+        document.getElementById('modal-editar-implantacao').classList.add('hidden');
+        
+        // Recarregar dados se estivermos na tela de detalhes
+        if (implantacaoAtualId === parseInt(id)) {
+            visualizarDetalhesImplantacao(id);
+        }
+        
+        // Recarregar lista
+        carregarImplantacoes();
+        
+    } catch (error) {
+        console.error('Erro ao salvar edição:', error);
+        showAlert('Erro', 'Erro inesperado ao salvar alterações.');
+    }
+}
+
+// Função para excluir implantação
+async function excluirImplantacao(id) {
+    if (!confirm('Tem certeza que deseja excluir esta implantação? Esta ação não pode ser desfeita.')) {
+        return;
+    }
+    
+    try {
+        const { error } = await releaseClient
+            .from('implantacoes')
+            .delete()
+            .eq('id', id);
+            
+        if (error) {
+            console.error('Erro ao excluir implantação:', error);
+            showAlert('Erro', 'Erro ao excluir implantação: ' + error.message);
+            return;
+        }
+        
+        showAlert('Sucesso', 'Implantação excluída com sucesso!');
+        
+        // Voltar ao painel principal se estivermos na tela de detalhes
+        if (implantacaoAtualId === parseInt(id)) {
+            voltarParaPainelPrincipal();
+        }
+        
+        // Recarregar lista
+        carregarImplantacoes();
+        
+    } catch (error) {
+        console.error('Erro ao excluir implantação:', error);
+        showAlert('Erro', 'Erro inesperado ao excluir implantação.');
+    }
 }
 </script>
 </body>
