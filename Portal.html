@@ -3239,7 +3239,6 @@ select {
                 <h1>Status de Implantação</h1>
                 <div class="header-actions">
                     <button id="btn-editar-timeline" class="btn-action btn-editar">✏️ Editar Timeline</button>
-                    <button id="btn-excluir-implantacao" class="btn-action btn-excluir">🗑️ Excluir</button>
                 </div>
             </div>
             <div class="logo">
@@ -3415,24 +3414,6 @@ select {
                     <div id="fases-editor-implantacao" class="fases-editor">
                         <!-- Fases serão inseridas dinamicamente -->
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Confirmar Exclusão -->
-    <div id="modal-confirmar-exclusao-implantacao" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header modal-header-danger">
-                <h2>⚠️ Confirmar Exclusão</h2>
-                <button class="modal-close" id="modal-exclusao-close-implantacao">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Tem certeza que deseja excluir a implantação <strong id="exclusao-empresa-nome-implantacao"></strong>?</p>
-                <p class="warning-text">Esta ação não pode ser desfeita!</p>
-                <div class="form-buttons">
-                    <button type="button" class="btn-cancelar" id="btn-cancelar-exclusao-implantacao">Cancelar</button>
-                    <button type="button" class="btn-excluir-confirmar" id="btn-confirmar-exclusao-implantacao">Excluir Definitivamente</button>
                 </div>
             </div>
         </div>
@@ -3691,8 +3672,8 @@ select {
         </div>
         
         <div class="permission-item">
-            <input type="checkbox" id="perm-implantacoes" value="implantacoes">
-            <label for="perm-implantacoes">Implantações</label>
+            <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
+            <label for="perm-implantacao">Implantações</label>
         </div>
         
         <div class="permission-item">
@@ -9437,10 +9418,18 @@ window.showTab = function(tabId) {
 
 // Função para inicializar a seção de implantações
 function initImplantacoes() {
-    // Garantir que todos os modais estejam fechados
-    const modals = document.querySelectorAll('#implantacoes .modal');
-    modals.forEach(modal => {
+    // Garantir que TODOS os modais estejam fechados
+    const allModals = document.querySelectorAll('.modal');
+    allModals.forEach(modal => {
         modal.classList.add('hidden');
+        modal.style.display = 'none';
+    });
+    
+    // Fechar especificamente modais de exclusão
+    const exclusionModals = document.querySelectorAll('[id*="exclusao"], [id*="confirmar"]');
+    exclusionModals.forEach(modal => {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
     });
     
     // Mostrar painel principal
@@ -9452,6 +9441,15 @@ function initImplantacoes() {
     
     // Configurar eventos dos botões
     setupImplantacoesEvents();
+    
+    // Aguardar um pouco e fechar novamente qualquer modal que possa ter aparecido
+    setTimeout(() => {
+        const allModalsAgain = document.querySelectorAll('.modal');
+        allModalsAgain.forEach(modal => {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        });
+    }, 100);
 }
 
 // Configurar eventos para a seção de implantações
