@@ -4632,30 +4632,30 @@ async function editClient(clientId) {
         return;
     }
 
-            document.getElementById('editClientId').value = clientToEdit.id;
-            document.getElementById('editClientName').value = clientToEdit.name;
-            document.getElementById('editClientEmail').value = clientToEdit.email;
-            document.getElementById('editClientPhone').value = clientToEdit.phone;
-            document.getElementById('editClientStatus').value = clientToEdit.status || 'Cliente Ativo';
-            document.getElementById('editClientGroup').value = clientToEdit.group || 'Nenhum';
-            document.getElementById('editClientSubgroup').value = clientToEdit.subgroup || 'Nenhum';
-            document.getElementById('editClientBiLink').value = clientToEdit.bi_link || '';
+    document.getElementById('editClientId').value = clientToEdit.id;
+    document.getElementById('editClientName').value = clientToEdit.name;
+    document.getElementById('editClientEmail').value = clientToEdit.email;
+    document.getElementById('editClientPhone').value = clientToEdit.phone;
+    document.getElementById('editClientStatus').value = clientToEdit.status || 'Cliente Ativo';
+    document.getElementById('editClientGroup').value = clientToEdit.group || 'Nenhum';
+    document.getElementById('editClientSubgroup').value = clientToEdit.subgroup || 'Nenhum';
+    document.getElementById('editClientBiLink').value = clientToEdit.bi_link || '';
 
-            const editLogoPreview = document.getElementById('editLogoPreview');
-            if (clientToEdit.logo_url) {
-                editLogoPreview.innerHTML = `<img src="${clientToEdit.logo_url}" class="logo-preview" alt="Logo preview">`;
-            } else {
-                editLogoPreview.innerHTML = `
-                    <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
-                    <p>Clique para adicionar logo</p>
-                `;
-            }
+    const editLogoPreview = document.getElementById('editLogoPreview');
+    if (clientToEdit.logo_url) {
+        editLogoPreview.innerHTML = `<img src="${clientToEdit.logo_url}" class="logo-preview" alt="Logo preview">`;
+    } else {
+        editLogoPreview.innerHTML = `
+            <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
+            <p>Clique para adicionar logo</p>
+        `;
+    }
 
-            editingProducts = clientToEdit.products ? [...clientToEdit.products] : [];
-            updateProductsList('editingProducts', 'editProductsContainer');
+    editingProducts = clientToEdit.products ? [...clientToEdit.products] : [];
+    updateProductsList('editingProducts', 'editProductsContainer');
 
-            showClientTab('edit-client-tab');
-        }
+    showClientTab('edit-client-tab');
+}
 
        async function updateClient() {
     if (!permissoes.includes('updateClient')) {
