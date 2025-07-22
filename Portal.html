@@ -8609,25 +8609,21 @@ async function editarUsuario(usuarioId) {
         showAlert('Erro', 'Usuário não encontrado.');
         return;
     }
-
-    // Por simplicidade, vamos apenas preencher o formulário com os dados do usuário
-    document.getElementById('usuarioNome').value = usuario.nome;
-    document.getElementById('usuarioEmail').value = usuario.email;
-    document.getElementById('usuarioSenha').value = '';
-    document.getElementById('usuarioConfirmarSenha').value = '';
-
-    // Marcar permissões
-    document.querySelectorAll('input[type="checkbox"][id^="perm-"]').forEach(checkbox => {
-        checkbox.checked = usuario.permissoes.includes(checkbox.value);
-    });
-
-    // Alterar o botão para modo edição
-    const botaoAdicionar = document.querySelector('button[onclick="adicionarUsuario()"]');
-    botaoAdicionar.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>Salvar Alterações';
-    botaoAdicionar.setAttribute('onclick', `salvarEdicaoUsuario('${usuarioId}')`);
-
-    // Scroll para o formulário
-    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+    // Preencher campos do modal de edição
+    document.getElementById('editarIdUsuario').value = usuario.id;
+    document.getElementById('editarNomeUsuario').value = usuario.nome;
+    document.getElementById('editarEmailUsuario').value = usuario.email;
+    document.getElementById('editarSenhaUsuario').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario').value = '';
+    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
+    // Permissões (se aplicável)
+    if (usuario.permissoes && Array.isArray(usuario.permissoes)) {
+        document.querySelectorAll('#editarPermissoesGrid input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = usuario.permissoes.includes(checkbox.value);
+        });
+    }
+    // Abrir modal
+    document.getElementById('modalEditarUsuario').classList.add('visible');
 }
 
 // Função para salvar edição do usuário
