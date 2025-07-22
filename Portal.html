@@ -3739,8 +3739,8 @@ select {
         </div>
         
         <div class="permission-item">
-            <input type="checkbox" id="perm-implantacoes" value="implantacoes">
-            <label for="perm-implantacoes">Implantações</label>
+            <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
+            <label for="perm-implantacao">Implantações</label>
         </div>
         
         <div class="permission-item">
@@ -9485,8 +9485,11 @@ window.showTab = function(tabId) {
 
 // Função para inicializar a seção de implantações
 function initImplantacoes() {
+    console.log('Inicializando seção de implantações...');
+    
     // Garantir que TODOS os modais estejam fechados
     const allModals = document.querySelectorAll('.modal');
+    console.log('Modais encontrados:', allModals.length);
     allModals.forEach(modal => {
         modal.classList.add('hidden');
         modal.style.display = 'none';
@@ -9494,6 +9497,7 @@ function initImplantacoes() {
     
     // Fechar especificamente modais de exclusão
     const exclusionModals = document.querySelectorAll('[id*="exclusao"], [id*="confirmar"]');
+    console.log('Modais de exclusão encontrados:', exclusionModals.length);
     exclusionModals.forEach(modal => {
         modal.classList.add('hidden');
         modal.style.display = 'none';
@@ -9503,8 +9507,14 @@ function initImplantacoes() {
     const painelPrincipal = document.getElementById('painel-projetos-implantacao');
     const statusImplantacao = document.getElementById('status-implantacao');
     
-    if (painelPrincipal) painelPrincipal.style.display = 'block';
-    if (statusImplantacao) statusImplantacao.style.display = 'none';
+    if (painelPrincipal) {
+        painelPrincipal.style.display = 'block';
+        console.log('Painel principal exibido');
+    }
+    if (statusImplantacao) {
+        statusImplantacao.style.display = 'none';
+        console.log('Status implantação ocultado');
+    }
     
     // Configurar eventos dos botões
     setupImplantacoesEvents();
@@ -9516,38 +9526,62 @@ function initImplantacoes() {
             modal.classList.add('hidden');
             modal.style.display = 'none';
         });
+        console.log('Verificação final de modais concluída');
     }, 100);
+    
+    console.log('Inicialização de implantações concluída');
 }
 
 // Configurar eventos para a seção de implantações
 function setupImplantacoesEvents() {
+    console.log('Configurando eventos de implantações...');
+    
     // Botão adicionar implantação
     const btnAdicionar = document.getElementById('btn-adicionar-implantacao');
+    console.log('Botão adicionar encontrado:', btnAdicionar);
+    
     if (btnAdicionar) {
-        btnAdicionar.onclick = function() {
+        btnAdicionar.onclick = function(e) {
+            e.preventDefault();
+            console.log('Clique no botão adicionar detectado');
             const modal = document.getElementById('modal-adicionar-implantacao');
+            console.log('Modal encontrado:', modal);
             if (modal) {
                 modal.classList.remove('hidden');
-                modal.style.display = 'flex'; // Garante que o modal aparece
+                modal.style.display = 'flex';
+                console.log('Modal aberto');
+            } else {
+                console.error('Modal não encontrado!');
             }
         };
+        console.log('Evento onclick configurado para o botão adicionar');
+    } else {
+        console.error('Botão adicionar não encontrado!');
     }
     
     // Botões de fechar modais
     const closeButtons = document.querySelectorAll('#implantacoes .modal-close');
+    console.log('Botões de fechar encontrados:', closeButtons.length);
     closeButtons.forEach(btn => {
         btn.onclick = function() {
             const modal = btn.closest('.modal');
-            if (modal) modal.classList.add('hidden');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
         };
     });
     
     // Botões cancelar
     const cancelButtons = document.querySelectorAll('#implantacoes .btn-cancelar');
+    console.log('Botões cancelar encontrados:', cancelButtons.length);
     cancelButtons.forEach(btn => {
         btn.onclick = function() {
             const modal = btn.closest('.modal');
-            if (modal) modal.classList.add('hidden');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
         };
     });
     
@@ -9558,6 +9592,7 @@ function setupImplantacoesEvents() {
             e.preventDefault();
             salvarNovaImplantacao();
         };
+        console.log('Evento submit configurado para o formulário');
     }
     
     // Formulário de editar implantação
@@ -9579,6 +9614,8 @@ function setupImplantacoesEvents() {
     
     // Carregar implantações ao inicializar
     carregarImplantacoes();
+    
+    console.log('Configuração de eventos concluída');
 }
 
 // Função para salvar nova implantação
