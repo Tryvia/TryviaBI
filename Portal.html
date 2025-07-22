@@ -3505,30 +3505,30 @@ select {
             Editar Usuário
         </h3>
         <form id="formEditarUsuario">
-            <input type="hidden" id="editarIdUsuario" name="id">
+            <input type="hidden" id="editarIdUsuario1" name="id">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="editarNomeUsuario">Nome Completo</label>
-                    <input type="text" id="editarNomeUsuario" placeholder="Nome completo do usuário" required>
+                    <label for="editarNomeUsuario1">Nome Completo</label>
+                    <input type="text" id="editarNomeUsuario1" placeholder="Nome completo do usuário" required>
                 </div>
                 <div class="form-group">
-                    <label for="editarEmailUsuario">Email</label>
-                    <input type="email" id="editarEmailUsuario" placeholder="Email do usuário" required>
+                    <label for="editarEmailUsuario1">Email</label>
+                    <input type="email" id="editarEmailUsuario1" placeholder="Email do usuário" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="editarSenhaUsuario">Nova Senha (opcional)</label>
-                    <input type="password" id="editarSenhaUsuario" placeholder="Deixe em branco para não alterar">
+                    <label for="editarSenhaUsuario1">Nova Senha (opcional)</label>
+                    <input type="password" id="editarSenhaUsuario1" placeholder="Deixe em branco para não alterar">
                 </div>
                 <div class="form-group">
-                    <label for="editarConfirmarSenhaUsuario">Confirmar Nova Senha</label>
-                    <input type="password" id="editarConfirmarSenhaUsuario" placeholder="Confirme a nova senha">
+                    <label for="editarConfirmarSenhaUsuario1">Confirmar Nova Senha</label>
+                    <input type="password" id="editarConfirmarSenhaUsuario1" placeholder="Confirme a nova senha">
                 </div>
             </div>
             <div class="form-group">
-                <label for="editarSetorUsuario">Setor</label>
-                <select id="editarSetorUsuario">
+                <label for="editarSetorUsuario1">Setor</label>
+                <select id="editarSetorUsuario1">
                     <option value="">Selecione o setor</option>
                     <option value="Time de implantação">Time de implantação</option>
                     <option value="CS">CS</option>
@@ -3543,7 +3543,7 @@ select {
             </div>
             <div class="permissions-container">
                 <div class="section-title">Permissões</div>
-                <div class="permissions-grid" id="editarPermissoesGrid">
+                <div class="permissions-grid" id="editarPermissoesGrid1">
                     <!-- Permissões serão carregadas dinamicamente aqui -->
                 </div>
             </div>
@@ -8614,15 +8614,15 @@ async function editarUsuario(usuarioId) {
         return;
     }
     // Preencher campos do modal de edição
-    document.getElementById('editarIdUsuario').value = usuario.id;
-    document.getElementById('editarNomeUsuario').value = usuario.nome;
-    document.getElementById('editarEmailUsuario').value = usuario.email;
-    document.getElementById('editarSenhaUsuario').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario').value = '';
-    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
+    document.getElementById('editarIdUsuario1').value = usuario.id;
+    document.getElementById('editarNomeUsuario1').value = usuario.nome;
+    document.getElementById('editarEmailUsuario1').value = usuario.email;
+    document.getElementById('editarSenhaUsuario1').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario1').value = '';
+    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
     // Permissões (se aplicável)
     if (usuario.permissoes && Array.isArray(usuario.permissoes)) {
-        document.querySelectorAll('#editarPermissoesGrid input[type="checkbox"]').forEach(checkbox => {
+        document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]').forEach(checkbox => {
             checkbox.checked = usuario.permissoes.includes(checkbox.value);
         });
     }
@@ -9050,7 +9050,7 @@ function showClientWelcomeMessage(clientName) {
             </div>
             <div class="permissions-container">
                 <div class="section-title">Permissões</div>
-                <div class="permissions-grid" id="editarPermissoesGrid">
+                <div class="permissions-grid" id="editarPermissoesGrid1">
                     <!-- Permissões serão carregadas dinamicamente aqui -->
                 </div>
             </div>
@@ -9078,12 +9078,12 @@ function editarUsuario(userId) {
     }
 
     // Preencher campos do formulário
-    document.getElementById('editarIdUsuario').value = usuario.id;
-    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario').value = usuario.email || '';
-    document.getElementById('editarSenhaUsuario').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario').value = '';
-    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
+    document.getElementById('editarIdUsuario1').value = usuario.id;
+    document.getElementById('editarNomeUsuario1').value = usuario.nome || '';
+    document.getElementById('editarEmailUsuario1').value = usuario.email || '';
+    document.getElementById('editarSenhaUsuario1').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario1').value = '';
+    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
 
     // Carregar permissões do usuário
     carregarPermissoesEdicao(usuario.permissoes || []);
@@ -9094,7 +9094,7 @@ function editarUsuario(userId) {
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
-    const grid = document.getElementById('editarPermissoesGrid');
+    const grid = document.getElementById('editarPermissoesGrid1');
     
     // Lista de todas as permissões disponíveis
     const todasPermissoes = [
@@ -9198,12 +9198,12 @@ function closeEditarUsuarioModal() {
 async function salvarEdicaoUsuario(event) {
     event.preventDefault();
 
-    const userId = document.getElementById('editarIdUsuario').value;
-    const nome = document.getElementById('editarNomeUsuario').value.trim();
-    const email = document.getElementById('editarEmailUsuario').value.trim();
-    const novaSenha = document.getElementById('editarSenhaUsuario').value;
-    const confirmarSenha = document.getElementById('editarConfirmarSenhaUsuario').value;
-    const setor = document.getElementById('editarSetorUsuario').value;
+    const userId = document.getElementById('editarIdUsuario1').value;
+    const nome = document.getElementById('editarNomeUsuario1').value.trim();
+    const email = document.getElementById('editarEmailUsuario1').value.trim();
+    const novaSenha = document.getElementById('editarSenhaUsuario1').value;
+    const confirmarSenha = document.getElementById('editarConfirmarSenhaUsuario1').value;
+    const setor = document.getElementById('editarSetorUsuario1').value;
 
     // Validações
     if (!nome || !email) {
@@ -9218,7 +9218,7 @@ async function salvarEdicaoUsuario(event) {
 
     // Coletar permissões selecionadas
     const permissoesSelecionadas = [];
-    document.querySelectorAll('#editarPermissoesGrid input[type="checkbox"]:checked').forEach(checkbox => {
+    document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]:checked').forEach(checkbox => {
         permissoesSelecionadas.push(checkbox.value);
     });
 
@@ -9563,12 +9563,12 @@ function editarUsuario(userId) {
     }
 
     // Preencher campos do formulário
-    document.getElementById('editarIdUsuario').value = usuario.id;
-    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario').value = usuario.email || '';
-    document.getElementById('editarSenhaUsuario').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario').value = '';
-    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
+    document.getElementById('editarIdUsuario1').value = usuario.id;
+    document.getElementById('editarNomeUsuario1').value = usuario.nome || '';
+    document.getElementById('editarEmailUsuario1').value = usuario.email || '';
+    document.getElementById('editarSenhaUsuario1').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario1').value = '';
+    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
 
     // Carregar permissões do usuário
     carregarPermissoesEdicao(usuario.permissoes || []);
