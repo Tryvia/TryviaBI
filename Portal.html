@@ -9307,26 +9307,30 @@ function renderUsuarios(usuariosParaRender) {
         return;
     }
 
-    tbody.innerHTML = usuariosParaRender.map(usuario => `
-        <tr>
-            <td style="padding: 15px;">${usuario.nome || 'N/A'}</td>
-            <td style="padding: 15px;">${usuario.email || 'N/A'}</td>
-            <td style="padding: 15px;">${usuario.setor || 'N/A'}</td>
-            <td style="padding: 15px; text-align: center;">
-                <span style="background: #4fc3f7; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8em;">
-                    ${(usuario.permissoes || []).length} permissões
-                </span>
-            </td>
-            <td style="padding: 15px; text-align: center;">
-                <button onclick="editarUsuario(${usuario.id})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button onclick="excluirUsuario(${usuario.id})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
-                    <i class="fas fa-trash"></i> Excluir
-                </button>
-            </td>
-        </tr>
-    `).join('');
+    console.log(usuariosParaRender);
+    tbody.innerHTML = usuariosParaRender.map(usuario => {
+        const idSeguro = JSON.stringify(usuario.id);
+        return `
+            <tr>
+                <td style="padding: 15px;">${usuario.nome || 'N/A'}</td>
+                <td style="padding: 15px;">${usuario.email || 'N/A'}</td>
+                <td style="padding: 15px;">${usuario.setor || 'N/A'}</td>
+                <td style="padding: 15px; text-align: center;">
+                    <span style="background: #4fc3f7; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8em;">
+                        ${(usuario.permissoes || []).length} permissões
+                    </span>
+                </td>
+                <td style="padding: 15px; text-align: center;">
+                    <button onclick="editarUsuario(${idSeguro})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button onclick="excluirUsuario(${idSeguro})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
 // Função para filtrar usuários
