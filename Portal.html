@@ -1,28 +1,3 @@
-<!-- 
-CORREÇÕES APLICADAS:
-
-1. PROBLEMA IDENTIFICADO:
-   - Havia duas definições da função excluirUsuario() no código
-   - Uma esperava 2 parâmetros: excluirUsuario(usuarioId, nomeUsuario)
-   - Outra esperava 1 parâmetro: excluirUsuario(userId)
-   - Isso causava conflito e o erro "Uncaught SyntaxError: Unexpected end of input"
-
-2. CORREÇÕES REALIZADAS:
-   - Removida a função duplicada excluirUsuario() que esperava 2 parâmetros
-   - Mantida apenas uma função excluirUsuario(userId) que espera 1 parâmetro
-   - Corrigida a chamada do botão para usar apenas 1 parâmetro: onclick="excluirUsuario(${idSeguro})"
-   - Melhorada a função para buscar automaticamente o nome do usuário da lista carregada
-   - Mantida a funcionalidade de mostrar o nome do usuário na confirmação de exclusão
-
-3. RESULTADO:
-   - O botão "Excluir" agora funciona corretamente
-   - Não há mais conflito entre funções duplicadas
-   - A confirmação ainda mostra o nome do usuário
-   - O código está mais limpo e consistente
-
-ARQUIVO CORRIGIDO ABAIXO:
--->
-
 <!DOCTYPE html>
 
 <html lang="pt-BR">
