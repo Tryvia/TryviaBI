@@ -1745,6 +1745,107 @@ function populateReuniaoClientes() {
     }
 }
 
+.client-permissions-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.client-section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #4fc3f7;
+}
+
+.client-subsection-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #34495e;
+    margin: 30px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #4fc3f7;
+    grid-column: 1 / -1;
+}
+
+.client-permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.client-permission-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 50px;
+}
+
+.client-permission-item:hover {
+    background-color: #e3f2fd;
+    border-color: #4fc3f7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(79, 195, 247, 0.2);
+}
+
+.client-permission-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4fc3f7;
+    cursor: pointer;
+}
+
+.client-permission-item label {
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    flex: 1;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.client-permission-item.checked {
+    background-color: #e8f5e8;
+    border-color: #4caf50;
+}
+
+.client-permission-item.checked:hover {
+    background-color: #c8e6c9;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .client-permissions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .client-permissions-container {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .client-permission-item {
+        padding: 10px 12px;
+        min-height: 45px;
+    }
+    
+    .client-permission-item label {
+        font-size: 13px;
+    }
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <!-- EmailJS SDK -->
@@ -3244,81 +3345,101 @@ select {
                 <input type="password" id="clienteLoginConfirmarSenha" placeholder="Confirme a senha">
             </div>
         </div>
-        <div class="form-group">
-            <label>Permissões do Cliente</label>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="cliente-perm-inicio-cliente" value="inicio-cliente" checked>
-                    <span>Início</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                    <input type="checkbox" id="cliente-perm-dashboard" value="dashboard">
-                    <span>Dashboards</span>
-                </label>
-               <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html">
-    <span>MVP</span>
-</label>
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-    <input type="checkbox" id="perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
-    <span>Implantações</span>
-</label>
-
-<label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-clients" value="clients">
-                                <span>Clientes</span>
-                            </label>
-                             <h4 style="grid-column: 1 / -1; margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #4fc3f7; padding-bottom: 5px;">Funções da aba de clientes</h4>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-saveClient" value="saveClient">
-                                <span>Salvar Cliente</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-editClient" value="editClient">
-                                <span>Editar Cliente</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-updateClient" value="updateClient">
-                                <span>Atualizar Cliente</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-deleteClient" value="deleteClient">
-                                <span>Excluir Cliente</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-addClientDocument" value="addClientDocument">
-                                <span>Adicionar Documento do Cliente</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-deleteClientDocument" value="deleteClientDocument">
-                                <span>Excluir Documento do Cliente</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-addProduct" value="addProduct">
-                                <span>Adicionar Produto</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-removeProduct" value="removeProduct">
-                                <span>Remover Produto</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-addEditProduct" value="addEditProduct">
-                                <span>Adicionar/Editar Produto</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-addIntegration" value="addIntegration">
-                                <span>Adicionar Integração</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-addEditIntegration" value="addEditIntegration">
-                                <span>Adicionar/Editar Integração</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                <input type="checkbox" id="perm-removeIntegration" value="removeIntegration">
-                                <span>Remover Integração</span>
-                            </label>
-            </div>
+       <div class="client-permissions-container">
+    <div class="client-section-title">Permissões do Cliente</div>
+    <div class="client-permissions-grid">
+        <!-- Permissões Básicas do Cliente -->
+        <div class="client-permission-item checked">
+            <input type="checkbox" id="cliente-perm-inicio-cliente" value="inicio-cliente" checked>
+            <label for="cliente-perm-inicio-cliente">Início</label>
         </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-dashboard" value="dashboard">
+            <label for="cliente-perm-dashboard">Dashboards</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-mvp" value="https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html">
+            <label for="cliente-perm-mvp">MVP</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-implantacao" value="https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html">
+            <label for="cliente-perm-implantacao">Implantações</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-clients" value="clients">
+            <label for="cliente-perm-clients">Clientes</label>
+        </div>
+    </div>
+
+    <!-- Funções da aba de clientes -->
+    <div class="client-subsection-title">Funções da aba de clientes</div>
+    
+    <div class="client-permissions-grid">
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-saveClient" value="saveClient">
+            <label for="cliente-perm-saveClient">Salvar Cliente</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-editClient" value="editClient">
+            <label for="cliente-perm-editClient">Editar Cliente</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-updateClient" value="updateClient">
+            <label for="cliente-perm-updateClient">Atualizar Cliente</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-deleteClient" value="deleteClient">
+            <label for="cliente-perm-deleteClient">Excluir Cliente</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-addClientDocument" value="addClientDocument">
+            <label for="cliente-perm-addClientDocument">Adicionar Documento do Cliente</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-deleteClientDocument" value="deleteClientDocument">
+            <label for="cliente-perm-deleteClientDocument">Excluir Documento do Cliente</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-addProduct" value="addProduct">
+            <label for="cliente-perm-addProduct">Adicionar Produto</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-removeProduct" value="removeProduct">
+            <label for="cliente-perm-removeProduct">Remover Produto</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-addEditProduct" value="addEditProduct">
+            <label for="cliente-perm-addEditProduct">Adicionar/Editar Produto</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-addIntegration" value="addIntegration">
+            <label for="cliente-perm-addIntegration">Adicionar Integração</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-addEditIntegration" value="addEditIntegration">
+            <label for="cliente-perm-addEditIntegration">Adicionar/Editar Integração</label>
+        </div>
+        
+        <div class="client-permission-item">
+            <input type="checkbox" id="cliente-perm-removeIntegration" value="removeIntegration">
+            <label for="cliente-perm-removeIntegration">Remover Integração</label>
+        </div>
+    </div>
+</div>
         <button class="btn-primary" onclick="criarLoginCliente()">
             <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
             Criar Login de Cliente
