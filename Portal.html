@@ -1870,6 +1870,9 @@ if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 const setorUsuario = sessionStorage.getItem('setor');
+const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
+const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
+const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
 </script>
 <div class="modal-overlay" id="customModal">
 <div class="modal-content">
@@ -2556,7 +2559,7 @@ select {
         <form id="addProductForm">
             <div class="form-group">
                 <label for="productName">Nome do Produto</label>
-                <input type="text" id="productNameTreinamento" placeholder="Digite o nome do produto" required>
+                <input type="text" id="productName" placeholder="Digite o nome do produto" required>
             </div>
             <div class="form-group">
                 <label for="productIcon">Ícone</label>
@@ -2708,7 +2711,7 @@ select {
 <div class="form-row">
 <div class="form-group">
 <label for="productName">Nome do Produto/Serviço</label>
-<input id="productNameExample" placeholder="Ex: Software SaaS, Consultoria..." type="text"/>
+<input id="productName" placeholder="Ex: Software SaaS, Consultoria..." type="text"/>
 </div>
 <div class="form-group" style="flex: 0 0 100px;">
 <label for="productQuantity">Quantidade</label>
@@ -4169,13 +4172,13 @@ function removeIntegration(idx, listName) {
         showAlert('Atenção', 'Você não tem permissão para adicionar produtos.');
         return;
     }
-    const productName = document.getElementById('productNameTreinamento').value;
+    const productName = document.getElementById('productName').value;
     const productQuantity = document.getElementById('productQuantity').value;
 
     if (productName && productQuantity > 0) {
         currentProducts.push({ name: productName, quantity: parseInt(productQuantity) });
         updateProductsList('currentProducts', 'productsContainer');
-        document.getElementById('productNameTreinamento').value = '';
+        document.getElementById('productName').value = '';
         document.getElementById('productQuantity').value = '1';
         document.getElementById('productsList').style.display = 'block';
     } else {
@@ -5846,7 +5849,7 @@ function exibirRelease(d, url) {
 }
 
 async function carregarReleases() {
-    const { data, error } = await supabase
+    const { data, error } = await releaseClient
         .from('releases')
         .select('*')
         .order('data_liberacao', { ascending: false });
@@ -5878,7 +5881,7 @@ async function deleteRelease(id, arquivosJsonString) {
 
     if (arquivos && arquivos.length > 0) {
         const pathsToDelete = arquivos.map(a => a.path);
-        const { error: storageError } = await supabase.storage
+        const { error: storageError } = await releaseClient.storage
             .from('releasefiles')
             .remove(pathsToDelete);
 
@@ -5887,7 +5890,7 @@ async function deleteRelease(id, arquivosJsonString) {
         }
     }
 
-    const { error: dbError } = await supabase
+    const { error: dbError } = await releaseClient
         .from('releases')
         .delete()
         .eq('id', id);
@@ -5918,11 +5921,11 @@ async function salvarRelease() {
   };
   if (!d.arquivo) return alert('Selecione um arquivo.');
   const nome = Date.now() + '_' + d.arquivo.name.replace(/\s+/g, "_");
-  const { error: e1 } = await supabase.storage.from('releasefiles').upload(nome, d.arquivo);
+  const { error: e1 } = await releaseClient.storage.from('releasefiles').upload(nome, d.arquivo);
   if (e1) return alert("Erro upload");
   const file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/releasefiles/${nome}`;
   const { arquivo, ...dadosParaInsert } = d;
-  const { data, error: e2 } = await supabase.from("releases").insert([{ ...dadosParaInsert, file_url, file_path: nome }]).select();
+  const { data, error: e2 } = await releaseClient.from("releases").insert([{ ...dadosParaInsert, file_url, file_path: nome }]).select();
   if (e2) return alert("Erro insert");
   exibirRelease(data[0], file_url);
 }
@@ -5947,12 +5950,12 @@ async function salvarReuniao() {
 
   if (file) {
     file_path = Date.now() + '_' + file.name.replace(/\s+/g, "_");
-    const { error } = await supabase.storage.from("reuniaofiles").upload(file_path, file);
+    const { error } = await releaseClient.storage.from("reuniaofiles").upload(file_path, file);
     if (error) return alert("Erro ao fazer upload da ata");
     file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/reuniaofiles/${file_path}`;
   }
 
-  const { error: insertError } = await supabase.from("reunioes").insert([{ client_id: clientId ? Number(clientId) : null, cliente, data, tipo, participantes, file_url, file_path }]);
+  const { error: insertError } = await releaseClient.from("reunioes").insert([{ client_id: clientId ? Number(clientId) : null, cliente, data, tipo, participantes, file_url, file_path }]);
   if (insertError) return alert("Erro ao salvar reunião.");
   carregarReunioes();
 }
@@ -5960,7 +5963,7 @@ async function salvarReuniao() {
 async function carregarReunioes() {
   const userType = localStorage.getItem('user_type');
 const clientId = sessionStorage.getItem('client_id');
-let query = supabase.from("reunioes").select("*").order("data", { ascending: false });
+let query = releaseClient.from("reunioes").select("*").order("data", { ascending: false });
 if (
   userType === 'client' &&
   clientId &&
@@ -6100,8 +6103,8 @@ async function loadDashboardMetrics() {
         const [clientsResult, homologacoesResult, releasesResult, reunioesResult, evaluationsResult] = await Promise.all([
             supabase.from('clients').select('id', { count: 'exact', head: true }),
             supabase.from('homologacoes').select('id', { count: 'exact', head: true }),
-            supabase.from('releases').select('id', { count: 'exact', head: true }),
-            supabase.from('reunioes').select('id', { count: 'exact', head: true }),
+            releaseClient.from('releases').select('id', { count: 'exact', head: true }),
+            releaseClient.from('reunioes').select('id', { count: 'exact', head: true }),
             supabase.from('visit_evaluations').select('rating')
         ]);
 
@@ -6158,8 +6161,8 @@ async function loadRecentActivities() {
         const [clientsData, homologacoesData, releasesData, reunioesData] = await Promise.all([
             supabase.from('clients').select('id, name, created_at').order('created_at', { ascending: false }).limit(3),
             supabase.from('homologacoes').select('id, especialista, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
-            supabase.from('releases').select('id, sistema, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
-            supabase.from('reunioes').select('id, cliente, data, tipo').order('data', { ascending: false }).limit(3)
+            releaseClient.from('releases').select('id, sistema, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
+            releaseClient.from('reunioes').select('id, cliente, data, tipo').order('data', { ascending: false }).limit(3)
         ]);
 
         let activities = [];
@@ -6429,7 +6432,7 @@ async function createHomologacoesChart() {
 // Gráfico de Releases por Tipo
 async function createReleasesChart() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('releases')
             .select('tipo');
 
@@ -8764,7 +8767,7 @@ let usuariosFiltrados = [];
 async function fetchAndRenderUsuarios() {
     try {
         // Verifica tipo de usuário para aplicar filtro
-        let query = supabase.from('usuarios').select('*').order('nome', { ascending: true });
+        let query = releaseClient.from('usuarios').select('*').order('nome', { ascending: true });
         const userType = localStorage.getItem('user_type');
         const clientId = sessionStorage.getItem('client_id');
         // Só filtra se for client e clientId válido (evita null, undefined, string vazia ou 'null')
@@ -8903,7 +8906,7 @@ async function adicionarUsuario() {
 
     try {
         // Verificar se o email já existe
-        const { data: existingUser, error: checkError } = await supabase
+        const { data: existingUser, error: checkError } = await releaseClient
             .from('usuarios')
             .select('id')
             .eq('email', email)
@@ -8915,7 +8918,7 @@ async function adicionarUsuario() {
         }
 
         // Inserir novo usuário
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('usuarios')
             .insert([{
                 nome: nome,
@@ -9044,7 +9047,7 @@ async function salvarEdicaoUsuario(usuarioId) {
 
     try {
         // Verificar se o email já existe em outro usuário
-        const { data: existingUser, error: checkError } = await supabase
+        const { data: existingUser, error: checkError } = await releaseClient
             .from('usuarios')
             .select('id')
             .eq('email', email)
@@ -9071,7 +9074,7 @@ async function salvarEdicaoUsuario(usuarioId) {
         // Debug: mostrar dados enviados para update
         console.log('Update usuário:', updateData);
         console.log('Dados de atualização para Supabase:', updateData);
-        const { error } = await supabase
+        const { error } = await releaseClient
             .from('usuarios')
             .update(updateData)
             .eq('id', usuarioId);
@@ -9189,7 +9192,7 @@ async function criarLoginCliente() {
 
     try {
         // Verificar se o email já existe
-        const { data: existingUser, error: checkError } = await supabase
+        const { data: existingUser, error: checkError } = await releaseClient
             .from('usuarios')
             .select('id')
             .eq('email', email)
@@ -9223,7 +9226,7 @@ async function criarLoginCliente() {
             user_type: 'client'
         };
 
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('usuarios')
             .insert([novoUsuario])
             .select();
@@ -10375,12 +10378,12 @@ async function playTrainingVideo(videoId) {
 
 // Função para mostrar modal de adicionar produto
 function showAddProductModal() {
-    document.getElementById('addProductModal').classList.add('visible');
+    document.getElementById('addProductModal').style.display = 'flex';
 }
 
 // Função para fechar modal de adicionar produto
 function closeAddProductModal() {
-    document.getElementById('addProductModal').classList.remove('visible');
+    document.getElementById('addProductModal').style.display = 'none';
     document.getElementById('addProductForm').reset();
 }
 
@@ -10388,7 +10391,7 @@ function closeAddProductModal() {
 async function addTrainingProduct(event) {
     event.preventDefault();
     
-    const name = document.getElementById('productNameTreinamento').value.trim();
+    const name = document.getElementById('productName').value.trim();
     const icon = document.getElementById('productIcon').value;
     const description = document.getElementById('productDescription').value.trim();
     
