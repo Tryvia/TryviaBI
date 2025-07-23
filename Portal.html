@@ -10485,11 +10485,12 @@ async function addTrainingVideo(event) {
     const fileInput = document.getElementById('videoFile');
     const videoUrl = document.getElementById('videoUrl')?.value?.trim();
 
-    // Exige pelo menos um dos dois: arquivo OU URL
+    // Exige pelo menos um dos dois: arquivo OU URL (ou ambos)
     if (!title || !level || !duration || (!fileInput?.files[0] && !videoUrl)) {
-        showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios e selecione um arquivo ou informe uma URL.');
+        showAlert('Erro', 'Preencha todos os campos obrigatórios e selecione um arquivo ou informe uma URL.');
         return;
     }
+    // Permite envio de arquivo, URL ou ambos
 
     if (!currentProduct) {
         showAlert('Erro', 'Nenhum produto selecionado.');
