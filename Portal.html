@@ -10503,11 +10503,10 @@ async function addTrainingVideo(event) {
 let submitBtn = null;
 
     try {
-        submitBtn = event.target.querySelector('button[type="submit"]');
-if (submitBtn) {
-    originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Enviando...';
-    submitBtn.disabled = true;
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Enviando...';
+        submitBtn.disabled = true;
 
         let urlData = null;
         if (file) {
@@ -10577,6 +10576,7 @@ if (submitBtn) {
         showAlert('Erro', 'Erro inesperado. Tente novamente.');
     } finally {
         // Restaurar botão
+        const submitBtn = event.target.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
