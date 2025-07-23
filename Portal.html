@@ -3372,15 +3372,10 @@ select {
         </div>
         
         <div class="permission-item">
-            <input type="checkbox" id="perm-treinamento" value="treinamento">
-            <label for="perm-treinamento">Treinamentos</label>
-        </div>
-        
-         <div class="permission-item">
             <input type="checkbox" id="perm-gestao" value="gestao">
             <label for="perm-gestao">Gestão</label>
         </div>
-
+        
         <div class="permission-item">
             <input type="checkbox" id="perm-gerenciar-logins" value="gerenciar-logins">
             <label for="perm-gerenciar-logins">Gerenciar Logins</label>
@@ -10178,153 +10173,212 @@ let trainingVideos = {
     portal: []
 };
 
-// Dados de exemplo para demonstração
-trainingVideos.sing = [
-    {
-        id: 1,
-        title: "Introdução ao Sing",
-        description: "Visão geral das funcionalidades básicas do sistema Sing",
-        level: "basico",
-        duration: 15,
-        videoUrl: "#"
-    },
-    {
-        id: 2,
-        title: "Configurações Avançadas",
-        description: "Como configurar parâmetros avançados no Sing",
-        level: "avancado",
-        duration: 25,
-        videoUrl: "#"
-    }
-];
+// Dados dos produtos (carregados do banco)
+let trainingProducts = [];
 
-// Função para alternar entre produtos
-function selectTrainingProduct(productId) {
-    currentProduct = productId;
-    
-    // Atualizar visual dos produtos
-    document.querySelectorAll('.product-item-training').forEach(item => {
-        item.classList.remove('active');
-        if (item.dataset.product === productId) {
-            item.classList.add('active');
+// Função para carregar produtos do Supabase
+async function loadTrainingProducts() {
+    try {
+        const { data, error } = await supabase
+            .from('training_products')
+            .select('*')
+            .order('name');
+            
+        if (error) {
+            console.error('Erro ao carregar produtos:', error);
+            return;
         }
-    });
-    
-    // Atualizar título
-    const productNames = {
-        sing: 'Sing',
-        telemetria: 'Telemetria',
-        etrip: 'Etrip',
-        optz: 'OPT+z',
-        portal: 'Portal'
-    };
-    
-    const productIcons = {
-        sing: 'fas fa-desktop',
-        telemetria: 'fas fa-satellite-dish',
-        etrip: 'fas fa-route',
-        optz: 'fas fa-cogs',
-        portal: 'fas fa-globe'
-    };
-    
-    document.getElementById('currentProductTitle').innerHTML = 
-        `<i class="${productIcons[productId]}" style="margin-right: 10px;"></i>Treinamentos - ${productNames[productId]}`;
-    
-    // Carregar vídeos do produto
-    loadTrainingVideos(productId);
+        
+        trainingProducts = data || [];
+        renderProductsList();
+        
+        // Selecionar primeiro produto se existir
+        if (trainingProducts.length > 0) {
+            selectTrainingProduct(trainingProducts[0].id);
+        }
+    } catch (error) {
+        console.error('Erro ao conectar com Supabase:', error);
+    }
 }
 
-// Função para carregar vídeos do produto
-function loadTrainingVideos(productId) {
-    const videosList = document.getElementById('videosList');
-    const videos = trainingVideos[productId] || [];
+// Função para renderizar lista de produtos
+function renderProductsList() {
+    const productsList = document.getElementById('productsList');
     
-    if (videos.length === 0) {
-        videosList.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #666;">
-                <i class="fas fa-video" style="font-size: 3em; margin-bottom: 15px;"></i>
-                <p style="font-size: 1.2em;">Nenhum vídeo encontrado para este produto</p>
-                <p>Clique em "Adicionar Vídeo" para começar</p>
+    if (trainingProducts.length === 0) {
+        productsList.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #666;">
+                <i class="fas fa-box" style="font-size: 2em; margin-bottom: 10px;"></i>
+                <p>Nenhum produto cadastrado</p>
+                <p>Clique em "Adicionar Produto" para começar</p>
             </div>
         `;
         return;
     }
     
-    videosList.innerHTML = videos.map(video => `
-        <div class="video-card" onclick="playTrainingVideo(${video.id})">
-            <div class="video-title">${video.title}</div>
-            <div class="video-meta">
-                <span class="video-level ${video.level}">${video.level.charAt(0).toUpperCase() + video.level.slice(1)}</span>
-                <span>${video.duration} min</span>
-            </div>
-            <div class="video-description">${video.description}</div>
-            <div class="video-actions">
-                <button class="video-action-btn play-btn" onclick="event.stopPropagation(); playTrainingVideo(${video.id})">
-                    <i class="fas fa-play"></i> Reproduzir
-                </button>
-                <button class="video-action-btn edit-btn" onclick="event.stopPropagation(); editTrainingVideo(${video.id})">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button class="video-action-btn delete-video-btn" onclick="event.stopPropagation(); deleteTrainingVideo(${video.id})">
-                    <i class="fas fa-trash"></i> Excluir
-                </button>
-            </div>
+    productsList.innerHTML = trainingProducts.map((product, index) => `
+        <div class="product-item-training ${index === 0 ? 'active' : ''}" data-product="${product.id}" style="background: ${index === 0 ? '#4fc3f7' : 'white'}; color: ${index === 0 ? 'white' : '#333'}; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;">
+            <i class="${product.icon}" style="margin-right: 10px; font-size: 1.2em;"></i>
+            <span style="font-weight: bold;">${product.name}</span>
         </div>
     `).join('');
 }
 
-// Função para reproduzir vídeo
-function playTrainingVideo(videoId) {
-    const video = trainingVideos[currentProduct].find(v => v.id === videoId);
-    if (!video) return;
+// Função para alternar entre produtos
+function selectTrainingProduct(productId) {
+    currentProduct = productId;
     
-    // Remover classe playing de todos os cards
-    document.querySelectorAll('.video-card').forEach(card => {
-        card.classList.remove('playing');
+    // Encontrar produto atual
+    const product = trainingProducts.find(p => p.id === productId);
+    if (!product) return;
+    
+    // Atualizar visual dos produtos
+    document.querySelectorAll('.product-item-training').forEach(item => {
+        item.classList.remove('active');
+        item.style.background = 'white';
+        item.style.color = '#333';
+        
+        if (item.dataset.product == productId) {
+            item.classList.add('active');
+            item.style.background = '#4fc3f7';
+            item.style.color = 'white';
+        }
     });
     
-    // Adicionar classe playing ao card atual
-    event.target.closest('.video-card').classList.add('playing');
+    // Atualizar título
+    document.getElementById('currentProductTitle').innerHTML = 
+        `<i class="${product.icon}" style="margin-right: 10px;"></i>Treinamentos - ${product.name}`;
     
-    // Atualizar player
-    const playerContainer = document.getElementById('videoPlayerContainer');
+    // Carregar vídeos do produto
+    loadTrainingVideos(productId);
+}
+
+// Função para carregar vídeos do produto do Supabase
+async function loadTrainingVideos(productId) {
+    const videosList = document.getElementById('videosList');
     
-    if (video.videoUrl === '#') {
-        // Vídeo de demonstração
-        playerContainer.innerHTML = `
-            <div style="text-align: center; color: white; padding: 40px;">
-                <i class="fas fa-play-circle" style="font-size: 4em; margin-bottom: 15px;"></i>
-                <h3 style="margin-bottom: 10px;">${video.title}</h3>
-                <p style="opacity: 0.8;">Vídeo de demonstração - ${video.duration} minutos</p>
-                <p style="opacity: 0.6; font-size: 0.9em;">Faça upload de um vídeo real para reproduzir</p>
+    try {
+        const { data, error } = await supabase
+            .from('training_videos')
+            .select('*')
+            .eq('product_id', productId)
+            .order('order_index', { ascending: true });
+            
+        if (error) {
+            console.error('Erro ao carregar vídeos:', error);
+            videosList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #f44336;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3em; margin-bottom: 15px;"></i>
+                    <p style="font-size: 1.2em;">Erro ao carregar vídeos</p>
+                    <p>Tente novamente mais tarde</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const videos = data || [];
+        
+        if (videos.length === 0) {
+            videosList.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <i class="fas fa-video" style="font-size: 3em; margin-bottom: 15px;"></i>
+                    <p style="font-size: 1.2em;">Nenhum vídeo encontrado para este produto</p>
+                    <p>Clique em "Adicionar Vídeo" para começar</p>
+                </div>
+            `;
+            return;
+        }
+        
+        videosList.innerHTML = videos.map(video => `
+            <div class="video-card" onclick="playTrainingVideo(${video.id})">
+                <div class="video-title">${video.title}</div>
+                <div class="video-meta">
+                    <span class="video-level ${video.level}">${video.level.charAt(0).toUpperCase() + video.level.slice(1)}</span>
+                    <span>${video.duration} min</span>
+                </div>
+                <div class="video-description">${video.description}</div>
+                <div class="video-actions">
+                    <button class="video-action-btn play-btn" onclick="event.stopPropagation(); playTrainingVideo(${video.id})">
+                        <i class="fas fa-play"></i> Reproduzir
+                    </button>
+                    <button class="video-action-btn edit-btn" onclick="event.stopPropagation(); editTrainingVideo(${video.id})">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="video-action-btn delete-video-btn" onclick="event.stopPropagation(); deleteTrainingVideo(${video.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
             </div>
-        `;
-    } else {
-        // Vídeo real
-        playerContainer.innerHTML = `
-            <video controls style="width: 100%; height: 100%; border-radius: 10px;">
-                <source src="${video.videoUrl}" type="video/mp4">
-                Seu navegador não suporta o elemento de vídeo.
-            </video>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erro ao conectar com Supabase:', error);
+        videosList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #f44336;">
+                <i class="fas fa-wifi" style="font-size: 3em; margin-bottom: 15px;"></i>
+                <p style="font-size: 1.2em;">Erro de conexão</p>
+                <p>Verifique sua conexão com a internet</p>
+            </div>
         `;
     }
 }
 
-// Função para mostrar modal de adicionar vídeo
-function showAddVideoModal() {
-    document.getElementById('addVideoModal').style.display = 'flex';
-}
-
-// Função para fechar modal de adicionar vídeo
-function closeAddVideoModal() {
-    document.getElementById('addVideoModal').style.display = 'none';
-    document.getElementById('addVideoForm').reset();
+// Função para reproduzir vídeo
+async function playTrainingVideo(videoId) {
+    try {
+        const { data, error } = await supabase
+            .from('training_videos')
+            .select('*')
+            .eq('id', videoId)
+            .single();
+            
+        if (error || !data) {
+            console.error('Erro ao carregar vídeo:', error);
+            return;
+        }
+        
+        const video = data;
+        
+        // Remover classe playing de todos os cards
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.classList.remove('playing');
+        });
+        
+        // Adicionar classe playing ao card atual
+        if (event.target.closest('.video-card')) {
+            event.target.closest('.video-card').classList.add('playing');
+        }
+        
+        // Atualizar player
+        const playerContainer = document.getElementById('videoPlayerContainer');
+        
+        if (video.video_url) {
+            // Vídeo real do Supabase Storage
+            playerContainer.innerHTML = `
+                <video controls style="width: 100%; height: 100%; border-radius: 10px;">
+                    <source src="${video.video_url}" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+            `;
+        } else {
+            // Placeholder se não há vídeo
+            playerContainer.innerHTML = `
+                <div style="text-align: center; color: white; padding: 40px;">
+                    <i class="fas fa-play-circle" style="font-size: 4em; margin-bottom: 15px;"></i>
+                    <h3 style="margin-bottom: 10px;">${video.title}</h3>
+                    <p style="opacity: 0.8;">Duração: ${video.duration} minutos</p>
+                    <p style="opacity: 0.6; font-size: 0.9em;">Vídeo não disponível</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Erro ao reproduzir vídeo:', error);
+    }
 }
 
 // Função para mostrar modal de adicionar produto
 function showAddProductModal() {
-    document.getElementById('addProductModal').style.display = 'none';
-    showAlert('Informação', 'Funcionalidade de adicionar produto será implementada em breve.');
+    document.getElementById('addProductModal').style.display = 'flex';
 }
 
 // Função para fechar modal de adicionar produto
@@ -10333,62 +10387,260 @@ function closeAddProductModal() {
     document.getElementById('addProductForm').reset();
 }
 
+// Função para adicionar produto
+async function addTrainingProduct(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('productName').value.trim();
+    const icon = document.getElementById('productIcon').value;
+    const description = document.getElementById('productDescription').value.trim();
+    
+    if (!name || !icon) {
+        showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('training_products')
+            .insert([{
+                name: name,
+                icon: icon,
+                description: description
+            }])
+            .select()
+            .single();
+            
+        if (error) {
+            console.error('Erro ao adicionar produto:', error);
+            showAlert('Erro', 'Erro ao adicionar produto. Tente novamente.');
+            return;
+        }
+        
+        // Recarregar lista de produtos
+        await loadTrainingProducts();
+        closeAddProductModal();
+        showAlert('Sucesso', 'Produto adicionado com sucesso!');
+        
+    } catch (error) {
+        console.error('Erro ao conectar com Supabase:', error);
+        showAlert('Erro', 'Erro de conexão. Verifique sua internet.');
+    }
+}
+
+// Função para mostrar modal de adicionar vídeo
+function showAddVideoModal() {
+    if (!currentProduct) {
+        showAlert('Aviso', 'Selecione um produto primeiro.');
+        return;
+    }
+    document.getElementById('addVideoModal').style.display = 'flex';
+}
+
+// Função para fechar modal de adicionar vídeo
+function closeAddVideoModal() {
+    document.getElementById('addVideoModal').style.display = 'none';
+    document.getElementById('addVideoForm').reset();
+    // Resetar área de upload
+    const uploadArea = document.querySelector('#addVideoModal .upload-area');
+    if (uploadArea) {
+        uploadArea.innerHTML = `
+            <div class="upload-icon">🎥</div>
+            <p>Clique para selecionar o arquivo de vídeo</p>
+            <small>Formatos suportados: MP4, AVI, MOV (máx. 500MB)</small>
+            <input type="file" id="videoFile" style="display: none;" accept="video/*" required>
+        `;
+    }
+}
+
+// Função para adicionar vídeo
+async function addTrainingVideo(event) {
+    event.preventDefault();
+    
+    const title = document.getElementById('videoTitle').value.trim();
+    const description = document.getElementById('videoDescription').value.trim();
+    const level = document.getElementById('videoLevel').value;
+    const duration = document.getElementById('videoDuration').value;
+    const fileInput = document.getElementById('videoFile');
+    
+    if (!title || !level || !duration || !fileInput.files[0]) {
+        showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios e selecione um arquivo.');
+        return;
+    }
+    
+    const file = fileInput.files[0];
+    
+    // Verificar tamanho do arquivo (500MB = 500 * 1024 * 1024 bytes)
+    if (file.size > 500 * 1024 * 1024) {
+        showAlert('Erro', 'O arquivo deve ter no máximo 500MB.');
+        return;
+    }
+    
+    try {
+        // Mostrar loading
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Enviando...';
+        submitBtn.disabled = true;
+        
+        // Gerar nome único para o arquivo
+        const fileExtension = file.name.split('.').pop();
+        const fileName = `training-videos/${currentProduct}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExtension}`;
+        
+        // Upload do arquivo para Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('training-videos')
+            .upload(fileName, file);
+            
+        if (uploadError) {
+            console.error('Erro no upload:', uploadError);
+            showAlert('Erro', 'Erro ao fazer upload do vídeo. Tente novamente.');
+            return;
+        }
+        
+        // Obter URL pública do arquivo
+        const { data: urlData } = supabase.storage
+            .from('training-videos')
+            .getPublicUrl(fileName);
+            
+        // Obter próximo order_index
+        const { data: maxOrderData } = await supabase
+            .from('training_videos')
+            .select('order_index')
+            .eq('product_id', currentProduct)
+            .order('order_index', { ascending: false })
+            .limit(1);
+            
+        const nextOrderIndex = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].order_index + 1 : 1;
+        
+        // Inserir registro no banco
+        const { data, error } = await supabase
+            .from('training_videos')
+            .insert([{
+                product_id: currentProduct,
+                title: title,
+                description: description,
+                video_url: urlData.publicUrl,
+                video_path: fileName,
+                duration: parseInt(duration),
+                level: level,
+                order_index: nextOrderIndex
+            }])
+            .select()
+            .single();
+            
+        if (error) {
+            console.error('Erro ao salvar vídeo:', error);
+            // Remover arquivo do storage se falhou ao salvar no banco
+            await supabase.storage.from('training-videos').remove([fileName]);
+            showAlert('Erro', 'Erro ao salvar informações do vídeo. Tente novamente.');
+            return;
+        }
+        
+        // Recarregar lista de vídeos
+        await loadTrainingVideos(currentProduct);
+        closeAddVideoModal();
+        showAlert('Sucesso', 'Vídeo adicionado com sucesso!');
+        
+    } catch (error) {
+        console.error('Erro ao adicionar vídeo:', error);
+        showAlert('Erro', 'Erro inesperado. Tente novamente.');
+    } finally {
+        // Restaurar botão
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+}
+
 // Função para editar vídeo
 function editTrainingVideo(videoId) {
     showAlert('Informação', 'Funcionalidade de edição será implementada em breve.');
 }
 
 // Função para excluir vídeo
-function deleteTrainingVideo(videoId) {
-    if (confirm('Tem certeza que deseja excluir este vídeo?')) {
-        trainingVideos[currentProduct] = trainingVideos[currentProduct].filter(v => v.id !== videoId);
-        loadTrainingVideos(currentProduct);
-        showAlert('Sucesso', 'Vídeo excluído com sucesso!');
+async function deleteTrainingVideo(videoId) {
+    if (!confirm('Tem certeza que deseja excluir este vídeo? Esta ação não pode ser desfeita.')) {
+        return;
     }
-}
-
-// Event listeners para produtos
-document.addEventListener('DOMContentLoaded', function() {
-    // Adicionar event listeners aos produtos
-    document.querySelectorAll('.product-item-training').forEach(item => {
-        item.addEventListener('click', function() {
-            selectTrainingProduct(this.dataset.product);
-        });
-    });
     
-    // Form de adicionar vídeo
-    document.getElementById('addVideoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const title = document.getElementById('videoTitle').value;
-        const description = document.getElementById('videoDescription').value;
-        const level = document.getElementById('videoLevel').value;
-        const duration = document.getElementById('videoDuration').value;
-        const fileInput = document.getElementById('videoFile');
-        
-        if (!fileInput.files[0]) {
-            showAlert('Erro', 'Por favor, selecione um arquivo de vídeo.');
+    try {
+        // Buscar informações do vídeo para obter o caminho do arquivo
+        const { data: videoData, error: fetchError } = await supabase
+            .from('training_videos')
+            .select('video_path')
+            .eq('id', videoId)
+            .single();
+            
+        if (fetchError) {
+            console.error('Erro ao buscar vídeo:', fetchError);
+            showAlert('Erro', 'Erro ao buscar informações do vídeo.');
             return;
         }
         
-        // Simular upload (em produção, seria feito upload real)
-        const newVideo = {
-            id: Date.now(),
-            title: title,
-            description: description,
-            level: level,
-            duration: parseInt(duration),
-            videoUrl: '#' // Em produção, seria a URL real do vídeo
-        };
+        // Excluir registro do banco
+        const { error: deleteError } = await supabase
+            .from('training_videos')
+            .delete()
+            .eq('id', videoId);
+            
+        if (deleteError) {
+            console.error('Erro ao excluir vídeo:', deleteError);
+            showAlert('Erro', 'Erro ao excluir vídeo do banco de dados.');
+            return;
+        }
         
-        trainingVideos[currentProduct].push(newVideo);
-        loadTrainingVideos(currentProduct);
-        closeAddVideoModal();
-        showAlert('Sucesso', 'Vídeo adicionado com sucesso!');
-    });
+        // Excluir arquivo do storage
+        if (videoData.video_path) {
+            const { error: storageError } = await supabase.storage
+                .from('training-videos')
+                .remove([videoData.video_path]);
+                
+            if (storageError) {
+                console.error('Erro ao excluir arquivo:', storageError);
+                // Não mostrar erro para o usuário pois o registro já foi excluído
+            }
+        }
+        
+        // Recarregar lista de vídeos
+        await loadTrainingVideos(currentProduct);
+        showAlert('Sucesso', 'Vídeo excluído com sucesso!');
+        
+        // Limpar player se estava reproduzindo este vídeo
+        const playerContainer = document.getElementById('videoPlayerContainer');
+        playerContainer.innerHTML = `
+            <div style="text-align: center; color: #666;">
+                <i class="fas fa-play-circle" style="font-size: 4em; margin-bottom: 15px;"></i>
+                <p style="font-size: 1.2em;">Selecione um vídeo para reproduzir</p>
+            </div>
+        `;
+        
+    } catch (error) {
+        console.error('Erro ao excluir vídeo:', error);
+        showAlert('Erro', 'Erro inesperado ao excluir vídeo.');
+    }
+}
+
+// Event listeners e inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    // Carregar produtos iniciais
+    loadTrainingProducts();
     
-    // Carregar vídeos iniciais
-    loadTrainingVideos(currentProduct);
+    // Form de adicionar produto
+    document.getElementById('addProductForm').addEventListener('submit', addTrainingProduct);
+    
+    // Form de adicionar vídeo
+    document.getElementById('addVideoForm').addEventListener('submit', addTrainingVideo);
+    
+    // Event listener para cliques nos produtos (delegação de eventos)
+    document.getElementById('productsList').addEventListener('click', function(e) {
+        const productItem = e.target.closest('.product-item-training');
+        if (productItem && productItem.dataset.product) {
+            selectTrainingProduct(parseInt(productItem.dataset.product));
+        }
+    });
 });
 
 // Atualizar área de upload quando arquivo é selecionado
