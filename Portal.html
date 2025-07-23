@@ -10378,12 +10378,12 @@ async function playTrainingVideo(videoId) {
 
 // Função para mostrar modal de adicionar produto
 function showAddProductModal() {
-    document.getElementById('addProductModal').style.display = 'flex';
+    document.getElementById('addProductModal').classList.add('visible');
 }
 
 // Função para fechar modal de adicionar produto
 function closeAddProductModal() {
-    document.getElementById('addProductModal').style.display = 'none';
+    document.getElementById('addProductModal').classList.remove('visible');
     document.getElementById('addProductForm').reset();
 }
 
