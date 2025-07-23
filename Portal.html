@@ -10357,9 +10357,10 @@ async function playTrainingVideo(videoId) {
         });
         
         // Adicionar classe playing ao card atual
-        if (event.target.closest('.video-card')) {
-            event.target.closest('.video-card').classList.add('playing');
-        }
+        const cardAtual = document.querySelector(`.video-card[data-video-id="${videoId}"]`);
+if (cardAtual) {
+    cardAtual.classList.add('playing');
+}
         
         // Atualizar player
         const playerContainer = document.getElementById('videoPlayerContainer');
@@ -10498,12 +10499,15 @@ async function addTrainingVideo(event) {
     let file = fileInput?.files[0];
     let videoUrlToSave = videoUrl;
     let videoPathToSave = null;
+    let originalText = '';
+let submitBtn = null;
 
     try {
-        const submitBtn = event.target.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Enviando...';
-        submitBtn.disabled = true;
+        submitBtn = event.target.querySelector('button[type="submit"]');
+if (submitBtn) {
+    originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Enviando...';
+    submitBtn.disabled = true;
 
         let urlData = null;
         if (file) {
@@ -10573,7 +10577,6 @@ async function addTrainingVideo(event) {
         showAlert('Erro', 'Erro inesperado. Tente novamente.');
     } finally {
         // Restaurar botão
-        const submitBtn = event.target.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
