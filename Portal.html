@@ -1871,7 +1871,7 @@ if (!sessionStorage.getItem('tryvia_logged')) {
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
-const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
+const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODIzMzAzNSwiZXhwIjoyMDYzODA5MDM1fQ.CVXkKh9yul_Mv2YMhPsDo4CmkQevxpkeI1CtitORpJ0';
 const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
 </script>
 <div class="modal-overlay" id="customModal">
@@ -2559,7 +2559,7 @@ select {
         <form id="addProductForm">
             <div class="form-group">
                 <label for="productName">Nome do Produto</label>
-                <input type="text" id="productName" placeholder="Digite o nome do produto" required>
+                <input type="text" id="productNameTreinamento" placeholder="Digite o nome do produto" required>
             </div>
             <div class="form-group">
                 <label for="productIcon">Ícone</label>
@@ -2711,7 +2711,7 @@ select {
 <div class="form-row">
 <div class="form-group">
 <label for="productName">Nome do Produto/Serviço</label>
-<input id="productName" placeholder="Ex: Software SaaS, Consultoria..." type="text"/>
+<input id="productNameExample" placeholder="Ex: Software SaaS, Consultoria..." type="text"/>
 </div>
 <div class="form-group" style="flex: 0 0 100px;">
 <label for="productQuantity">Quantidade</label>
@@ -3847,7 +3847,7 @@ select {
 
        
         const SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co'; 
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODIzMzAzNSwiZXhwIjoyMDYzODA5MDM1fQ.CVXkKh9yul_Mv2YMhPsDo4CmkQevxpkeI1CtitORpJ0'; 
         
        
         if (!window.supabaseClient) {
@@ -4172,13 +4172,13 @@ function removeIntegration(idx, listName) {
         showAlert('Atenção', 'Você não tem permissão para adicionar produtos.');
         return;
     }
-    const productName = document.getElementById('productName').value;
+    const productName = document.getElementById('productNameTreinamento').value;
     const productQuantity = document.getElementById('productQuantity').value;
 
     if (productName && productQuantity > 0) {
         currentProducts.push({ name: productName, quantity: parseInt(productQuantity) });
         updateProductsList('currentProducts', 'productsContainer');
-        document.getElementById('productName').value = '';
+        document.getElementById('productNameTreinamento').value = '';
         document.getElementById('productQuantity').value = '1';
         document.getElementById('productsList').style.display = 'block';
     } else {
@@ -10378,12 +10378,12 @@ async function playTrainingVideo(videoId) {
 
 // Função para mostrar modal de adicionar produto
 function showAddProductModal() {
-    document.getElementById('addProductModal').style.display = 'flex';
+    document.getElementById('addProductModal').classList.add('visible');
 }
 
 // Função para fechar modal de adicionar produto
 function closeAddProductModal() {
-    document.getElementById('addProductModal').style.display = 'none';
+    document.getElementById('addProductModal').classList.remove('visible');
     document.getElementById('addProductForm').reset();
 }
 
@@ -10391,7 +10391,7 @@ function closeAddProductModal() {
 async function addTrainingProduct(event) {
     event.preventDefault();
     
-    const name = document.getElementById('productName').value.trim();
+    const name = document.getElementById('productNameTreinamento').value.trim();
     const icon = document.getElementById('productIcon').value;
     const description = document.getElementById('productDescription').value.trim();
     
