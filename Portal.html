@@ -10442,7 +10442,15 @@ function showAddVideoModal() {
         showAlert('Aviso', 'Selecione um produto primeiro.');
         return;
     }
-    document.getElementById('addVideoModal').style.display = 'flex';
+    const modal = document.getElementById('addVideoModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Garantir que o formulário está limpo
+        const form = document.getElementById('addVideoForm');
+        if (form) {
+            form.reset();
+        }
+    }
 }
 
 // Função para fechar modal de adicionar vídeo
@@ -10465,14 +10473,19 @@ function closeAddVideoModal() {
 async function addTrainingVideo(event) {
     event.preventDefault();
     
-    const title = document.getElementById('videoTitle').value.trim();
-    const description = document.getElementById('videoDescription').value.trim();
-    const level = document.getElementById('videoLevel').value;
-    const duration = document.getElementById('videoDuration').value;
+    const title = document.getElementById('videoTitle')?.value?.trim();
+    const description = document.getElementById('videoDescription')?.value?.trim();
+    const level = document.getElementById('videoLevel')?.value;
+    const duration = document.getElementById('videoDuration')?.value;
     const fileInput = document.getElementById('videoFile');
     
-    if (!title || !level || !duration || !fileInput.files[0]) {
+    if (!title || !level || !duration || !fileInput?.files[0]) {
         showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios e selecione um arquivo.');
+        return;
+    }
+    
+    if (!currentProduct) {
+        showAlert('Erro', 'Nenhum produto selecionado.');
         return;
     }
     
@@ -10640,7 +10653,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('addProductForm').addEventListener('submit', addTrainingProduct);
     
     // Form de adicionar vídeo
-    document.getElementById('addVideoForm').addEventListener('submit', addTrainingVideo);
+    const addVideoForm = document.getElementById('addVideoForm');
+    if (addVideoForm) {
+        addVideoForm.addEventListener('submit', addTrainingVideo);
+    }
     
     // Event listener para cliques nos produtos (delegação de eventos)
     document.getElementById('productsList').addEventListener('click', function(e) {
