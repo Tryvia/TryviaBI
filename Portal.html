@@ -4623,50 +4623,30 @@ function addEditProduct() {
             let logoUrl = null;
             let logoPath = null;
 
-            if (name && email && phone) {
-                const logoFileInput = document.getElementById('clientLogo'); 
-                
-                if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
-                    const logoFile = logoFileInput.files[0]; 
-                    const logoFilePath = `logos/${Date.now()}_${logoFile.name}`;
-                    
-                    const { data: uploadData, error: uploadError } = await supabase.storage
-                        .from('clientlogos') 
-                        .upload(logoFilePath, logoFile);
+if (name && email && phone) {
+    const logoFileInput = document.getElementById('clientLogo');
+    if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
+        const logoFile = logoFileInput.files[0];
+        const logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('clientlogos')
+            .upload(logoFilePath, logoFile);
 
-                    if (uploadError) {
-                        console.error('Erro ao fazer upload do logo:', uploadError.message);
-                        showAlert('Erro', 'Erro ao fazer upload do logo. Verifique as permissões do bucket e o console.');
-                        return;
-                    }
-                    
-                    logoUrl = `${SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
-                    logoPath = logoFilePath;
-                }
+        if (uploadError) {
+            console.error('Erro ao fazer upload do logo:', uploadError.message);
+            showAlert('Erro', 'Erro ao fazer upload do logo.');
+            return;
+        }
 
-                const { data: clientData, error: clientError } = await supabase
-                    .from('clients') 
-                    .insert([
-                        { name, email, phone, status, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
-                    ])
-                    .select(); 
+        logoUrl = `${SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
+        logoPath = logoFilePath;
+    }
 
-                if (clientError) {
-                    console.error('Erro ao salvar cliente no banco de dados:', clientError.message);
-                    showAlert('Erro', 'Erro ao salvar cliente. Verifique as permissões da tabela e o console.');
-                    return;
-                }
-
-                const clientId = clientData[0].id;
-                
-                if (currentIntegrations.length > 0) {
-  const integrationsToInsert = currentIntegrations.map(i => ({
-    client_id: clientId,
-    type: i.type,
-    system: i.system
-  }));
-  await supabase.from('integrations').insert(integrationsToInsert);
-}
+    const { data: clientData, error: clientError } = await supabase
+        .from('clients') 
+        .insert([
+            { name, email, phone, status, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
+        ]);
 
                 if (currentProducts.length > 0) {
                     const productsToInsert = currentProducts.map(p => ({
