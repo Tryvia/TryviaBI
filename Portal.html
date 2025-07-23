@@ -10482,23 +10482,26 @@ async function addTrainingVideo(event) {
     const level = document.getElementById('videoLevel')?.value;
     const duration = document.getElementById('videoDuration')?.value;
     const fileInput = document.getElementById('videoFile');
-    
-    if (!title || !level || !duration || !fileInput?.files[0]) {
-        showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios e selecione um arquivo.');
+    const videoUrl = document.getElementById('videoUrl')?.value?.trim();
+
+    // Exige pelo menos um dos dois: arquivo OU URL
+    if (!title || !level || !duration || (!fileInput?.files[0] && !videoUrl)) {
+        showAlert('Erro', 'Por favor, preencha todos os campos obrigatórios e selecione um arquivo ou informe uma URL.');
         return;
     }
-    
+
     if (!currentProduct) {
         showAlert('Erro', 'Nenhum produto selecionado.');
         return;
     }
-    
-    const file = fileInput.files[0];
-    
-    // Verificar tamanho do arquivo (500MB = 500 * 1024 * 1024 bytes)
-    if (file.size > 500 * 1024 * 1024) {
-        showAlert('Erro', 'O arquivo deve ter no máximo 500MB.');
-        return;
+
+    let file = fileInput?.files[0];
+    if (file) {
+        // Verificar tamanho do arquivo (500MB = 500 * 1024 * 1024 bytes)
+        if (file.size > 500 * 1024 * 1024) {
+            showAlert('Erro', 'O arquivo deve ter no máximo 500MB.');
+            return;
+        }
     }
     
     try {
