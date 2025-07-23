@@ -1979,6 +1979,9 @@ Abrir WhatsApp
   <button onclick="showTab('documents')"data-permissao="documents"><i class="fas fa-file-alt"></i> Time de Implantação</button>
 </li>
 <li class="nav-item">
+  <button onclick="showTab('treinamento')"data-permissao="treinamento"><i class="fas fa-graduation-cap"></i> Treinamento</button>
+</li>
+<li class="nav-item">
   <button onclick="showTab('evaluations')"data-permissao="evaluations"><i class="fas fa-star"></i> Avaliações</button>
 </li>
 <li class="nav-item">
@@ -2415,6 +2418,174 @@ select {
 </div>
 </div>
 </div>
+
+<!-- Nova Seção: Treinamento -->
+<div class="content-section" id="treinamento">
+    <div style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
+        <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
+            <i class="fas fa-graduation-cap" style="margin-right: 15px;"></i>
+            Centro de Treinamento
+        </h2>
+        <p style="margin: 0; font-size: 1.2em; opacity: 0.9;">
+            Organize e acesse vídeos de treinamento por produto
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; min-height: 600px;">
+        <!-- Sidebar de Produtos -->
+        <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+            <h3 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.5em; text-align: center;">
+                <i class="fas fa-list" style="margin-right: 10px;"></i>Produtos
+            </h3>
+            
+            <!-- Lista de Produtos -->
+            <div id="productsList" style="margin-bottom: 20px;">
+                <div class="product-item-training active" data-product="sing" style="background: #4fc3f7; color: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;">
+                    <i class="fas fa-desktop" style="margin-right: 10px; font-size: 1.2em;"></i>
+                    <span style="font-weight: bold;">Sing</span>
+                </div>
+                <div class="product-item-training" data-product="telemetria" style="background: white; color: #333; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;">
+                    <i class="fas fa-satellite-dish" style="margin-right: 10px; font-size: 1.2em;"></i>
+                    <span style="font-weight: bold;">Telemetria</span>
+                </div>
+                <div class="product-item-training" data-product="etrip" style="background: white; color: #333; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;">
+                    <i class="fas fa-route" style="margin-right: 10px; font-size: 1.2em;"></i>
+                    <span style="font-weight: bold;">Etrip</span>
+                </div>
+                <div class="product-item-training" data-product="optz" style="background: white; color: #333; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;">
+                    <i class="fas fa-cogs" style="margin-right: 10px; font-size: 1.2em;"></i>
+                    <span style="font-weight: bold;">OPT+z</span>
+                </div>
+                <div class="product-item-training" data-product="portal" style="background: white; color: #333; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;">
+                    <i class="fas fa-globe" style="margin-right: 10px; font-size: 1.2em;"></i>
+                    <span style="font-weight: bold;">Portal</span>
+                </div>
+            </div>
+            
+            <!-- Botão Adicionar Produto -->
+            <button onclick="showAddProductModal()" style="width: 100%; background: #29b6f6; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: background 0.3s ease;">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i>Adicionar Produto
+            </button>
+        </div>
+
+        <!-- Área Principal de Conteúdo -->
+        <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);">
+            <!-- Cabeçalho da Área de Conteúdo -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 id="currentProductTitle" style="color: #4fc3f7; margin: 0; font-size: 1.8em;">
+                    <i class="fas fa-desktop" style="margin-right: 10px;"></i>Treinamentos - Sing
+                </h3>
+                <button onclick="showAddVideoModal()" style="background: #4caf50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s ease;">
+                    <i class="fas fa-video" style="margin-right: 8px;"></i>Adicionar Vídeo
+                </button>
+            </div>
+
+            <!-- Player de Vídeo -->
+            <div id="videoPlayerContainer" style="background: #000; border-radius: 10px; margin-bottom: 25px; min-height: 300px; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center; color: #666;">
+                    <i class="fas fa-play-circle" style="font-size: 4em; margin-bottom: 15px;"></i>
+                    <p style="font-size: 1.2em;">Selecione um vídeo para reproduzir</p>
+                </div>
+            </div>
+
+            <!-- Lista de Vídeos -->
+            <div id="videosList">
+                <!-- Vídeos serão carregados aqui dinamicamente -->
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <i class="fas fa-video" style="font-size: 3em; margin-bottom: 15px;"></i>
+                    <p style="font-size: 1.2em;">Nenhum vídeo encontrado para este produto</p>
+                    <p>Clique em "Adicionar Vídeo" para começar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Adicionar Vídeo -->
+<div class="modal-overlay" id="addVideoModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <h3 style="color: #4fc3f7; margin-bottom: 20px;">
+            <i class="fas fa-video" style="margin-right: 10px;"></i>
+            Adicionar Novo Vídeo de Treinamento
+        </h3>
+        <form id="addVideoForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="videoTitle">Título do Vídeo</label>
+                    <input type="text" id="videoTitle" placeholder="Digite o título do vídeo" required>
+                </div>
+                <div class="form-group">
+                    <label for="videoLevel">Nível</label>
+                    <select id="videoLevel" required>
+                        <option value="">Selecione o nível</option>
+                        <option value="basico">Básico</option>
+                        <option value="intermediario">Intermediário</option>
+                        <option value="avancado">Avançado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="videoDescription">Descrição</label>
+                <textarea id="videoDescription" rows="3" placeholder="Descreva o conteúdo do vídeo"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="videoDuration">Duração (minutos)</label>
+                <input type="number" id="videoDuration" placeholder="Ex: 15" min="1">
+            </div>
+            <div class="form-group">
+                <label for="videoFile">Arquivo de Vídeo</label>
+                <div class="upload-area" onclick="document.getElementById('videoFile').click()">
+                    <div class="upload-icon">🎥</div>
+                    <p>Clique para selecionar o arquivo de vídeo</p>
+                    <small>Formatos suportados: MP4, AVI, MOV (máx. 500MB)</small>
+                    <input type="file" id="videoFile" style="display: none;" accept="video/*" required>
+                </div>
+            </div>
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button type="button" class="modal-button cancel" onclick="closeAddVideoModal()">Cancelar</button>
+                <button type="submit" class="modal-button confirm">Adicionar Vídeo</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para Adicionar Produto -->
+<div class="modal-overlay" id="addProductModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color: #4fc3f7; margin-bottom: 20px;">
+            <i class="fas fa-plus" style="margin-right: 10px;"></i>
+            Adicionar Novo Produto
+        </h3>
+        <form id="addProductForm">
+            <div class="form-group">
+                <label for="productName">Nome do Produto</label>
+                <input type="text" id="productName" placeholder="Digite o nome do produto" required>
+            </div>
+            <div class="form-group">
+                <label for="productIcon">Ícone</label>
+                <select id="productIcon" required>
+                    <option value="">Selecione um ícone</option>
+                    <option value="fas fa-desktop">💻 Desktop</option>
+                    <option value="fas fa-mobile-alt">📱 Mobile</option>
+                    <option value="fas fa-globe">🌐 Web</option>
+                    <option value="fas fa-database">🗄️ Database</option>
+                    <option value="fas fa-cloud">☁️ Cloud</option>
+                    <option value="fas fa-cogs">⚙️ Sistema</option>
+                    <option value="fas fa-chart-line">📊 Analytics</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="productDescription">Descrição</label>
+                <textarea id="productDescription" rows="3" placeholder="Descreva o produto"></textarea>
+            </div>
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button type="button" class="modal-button cancel" onclick="closeAddProductModal()">Cancelar</button>
+                <button type="submit" class="modal-button confirm">Adicionar Produto</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="content-section" id="clients">
 <div class="client-tabs">
 <button class="client-tab-button active" onclick="showClientTab('view-clients')">Visualizar Clientes</button>
@@ -7762,6 +7933,165 @@ document.addEventListener('keydown', function(event) {
 .client-status-text.inactive {
     color: #f44336 !important; /* Vermelho */
 }
+
+/* Estilos para a Seção de Treinamento */
+.product-item-training:hover {
+    background: #29b6f6 !important;
+    color: white !important;
+    transform: translateX(5px);
+}
+
+.product-item-training.active {
+    background: #4fc3f7 !important;
+    color: white !important;
+}
+
+.upload-area {
+    border: 2px dashed #4fc3f7;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(79, 195, 247, 0.1);
+}
+
+.upload-area:hover {
+    border-color: #29b6f6;
+    background: rgba(41, 182, 246, 0.2);
+}
+
+.upload-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.video-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-left: 4px solid #4fc3f7;
+}
+
+.video-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.video-card.playing {
+    border-left-color: #4caf50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.video-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.video-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.video-level {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.video-level.basico {
+    background: #e8f5e8;
+    color: #4caf50;
+}
+
+.video-level.intermediario {
+    background: #fff3e0;
+    color: #ff9800;
+}
+
+.video-level.avancado {
+    background: #ffebee;
+    color: #f44336;
+}
+
+.video-description {
+    color: #666;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.video-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.video-action-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.play-btn {
+    background: #4caf50;
+    color: white;
+}
+
+.play-btn:hover {
+    background: #45a049;
+}
+
+.edit-btn {
+    background: #2196f3;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #1976d2;
+}
+
+.delete-video-btn {
+    background: #f44336;
+    color: white;
+}
+
+.delete-video-btn:hover {
+    background: #d32f2f;
+}
+
+/* Responsividade para Treinamento */
+@media (max-width: 768px) {
+    #treinamento > div:nth-child(2) {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    
+    #treinamento .product-item-training {
+        display: inline-block !important;
+        margin-right: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    #productsList {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+}
 </style>
 
 
@@ -9830,6 +10160,248 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+});
+
+// ===== FUNCIONALIDADES DE TREINAMENTO =====
+
+let currentProduct = 'sing';
+let trainingVideos = {
+    sing: [],
+    telemetria: [],
+    etrip: [],
+    optz: [],
+    portal: []
+};
+
+// Dados de exemplo para demonstração
+trainingVideos.sing = [
+    {
+        id: 1,
+        title: "Introdução ao Sing",
+        description: "Visão geral das funcionalidades básicas do sistema Sing",
+        level: "basico",
+        duration: 15,
+        videoUrl: "#"
+    },
+    {
+        id: 2,
+        title: "Configurações Avançadas",
+        description: "Como configurar parâmetros avançados no Sing",
+        level: "avancado",
+        duration: 25,
+        videoUrl: "#"
+    }
+];
+
+// Função para alternar entre produtos
+function selectTrainingProduct(productId) {
+    currentProduct = productId;
+    
+    // Atualizar visual dos produtos
+    document.querySelectorAll('.product-item-training').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.product === productId) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Atualizar título
+    const productNames = {
+        sing: 'Sing',
+        telemetria: 'Telemetria',
+        etrip: 'Etrip',
+        optz: 'OPT+z',
+        portal: 'Portal'
+    };
+    
+    const productIcons = {
+        sing: 'fas fa-desktop',
+        telemetria: 'fas fa-satellite-dish',
+        etrip: 'fas fa-route',
+        optz: 'fas fa-cogs',
+        portal: 'fas fa-globe'
+    };
+    
+    document.getElementById('currentProductTitle').innerHTML = 
+        `<i class="${productIcons[productId]}" style="margin-right: 10px;"></i>Treinamentos - ${productNames[productId]}`;
+    
+    // Carregar vídeos do produto
+    loadTrainingVideos(productId);
+}
+
+// Função para carregar vídeos do produto
+function loadTrainingVideos(productId) {
+    const videosList = document.getElementById('videosList');
+    const videos = trainingVideos[productId] || [];
+    
+    if (videos.length === 0) {
+        videosList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-video" style="font-size: 3em; margin-bottom: 15px;"></i>
+                <p style="font-size: 1.2em;">Nenhum vídeo encontrado para este produto</p>
+                <p>Clique em "Adicionar Vídeo" para começar</p>
+            </div>
+        `;
+        return;
+    }
+    
+    videosList.innerHTML = videos.map(video => `
+        <div class="video-card" onclick="playTrainingVideo(${video.id})">
+            <div class="video-title">${video.title}</div>
+            <div class="video-meta">
+                <span class="video-level ${video.level}">${video.level.charAt(0).toUpperCase() + video.level.slice(1)}</span>
+                <span>${video.duration} min</span>
+            </div>
+            <div class="video-description">${video.description}</div>
+            <div class="video-actions">
+                <button class="video-action-btn play-btn" onclick="event.stopPropagation(); playTrainingVideo(${video.id})">
+                    <i class="fas fa-play"></i> Reproduzir
+                </button>
+                <button class="video-action-btn edit-btn" onclick="event.stopPropagation(); editTrainingVideo(${video.id})">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="video-action-btn delete-video-btn" onclick="event.stopPropagation(); deleteTrainingVideo(${video.id})">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Função para reproduzir vídeo
+function playTrainingVideo(videoId) {
+    const video = trainingVideos[currentProduct].find(v => v.id === videoId);
+    if (!video) return;
+    
+    // Remover classe playing de todos os cards
+    document.querySelectorAll('.video-card').forEach(card => {
+        card.classList.remove('playing');
+    });
+    
+    // Adicionar classe playing ao card atual
+    event.target.closest('.video-card').classList.add('playing');
+    
+    // Atualizar player
+    const playerContainer = document.getElementById('videoPlayerContainer');
+    
+    if (video.videoUrl === '#') {
+        // Vídeo de demonstração
+        playerContainer.innerHTML = `
+            <div style="text-align: center; color: white; padding: 40px;">
+                <i class="fas fa-play-circle" style="font-size: 4em; margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 10px;">${video.title}</h3>
+                <p style="opacity: 0.8;">Vídeo de demonstração - ${video.duration} minutos</p>
+                <p style="opacity: 0.6; font-size: 0.9em;">Faça upload de um vídeo real para reproduzir</p>
+            </div>
+        `;
+    } else {
+        // Vídeo real
+        playerContainer.innerHTML = `
+            <video controls style="width: 100%; height: 100%; border-radius: 10px;">
+                <source src="${video.videoUrl}" type="video/mp4">
+                Seu navegador não suporta o elemento de vídeo.
+            </video>
+        `;
+    }
+}
+
+// Função para mostrar modal de adicionar vídeo
+function showAddVideoModal() {
+    document.getElementById('addVideoModal').style.display = 'flex';
+}
+
+// Função para fechar modal de adicionar vídeo
+function closeAddVideoModal() {
+    document.getElementById('addVideoModal').style.display = 'none';
+    document.getElementById('addVideoForm').reset();
+}
+
+// Função para mostrar modal de adicionar produto
+function showAddProductModal() {
+    document.getElementById('addProductModal').style.display = 'none';
+    showAlert('Informação', 'Funcionalidade de adicionar produto será implementada em breve.');
+}
+
+// Função para fechar modal de adicionar produto
+function closeAddProductModal() {
+    document.getElementById('addProductModal').style.display = 'none';
+    document.getElementById('addProductForm').reset();
+}
+
+// Função para editar vídeo
+function editTrainingVideo(videoId) {
+    showAlert('Informação', 'Funcionalidade de edição será implementada em breve.');
+}
+
+// Função para excluir vídeo
+function deleteTrainingVideo(videoId) {
+    if (confirm('Tem certeza que deseja excluir este vídeo?')) {
+        trainingVideos[currentProduct] = trainingVideos[currentProduct].filter(v => v.id !== videoId);
+        loadTrainingVideos(currentProduct);
+        showAlert('Sucesso', 'Vídeo excluído com sucesso!');
+    }
+}
+
+// Event listeners para produtos
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar event listeners aos produtos
+    document.querySelectorAll('.product-item-training').forEach(item => {
+        item.addEventListener('click', function() {
+            selectTrainingProduct(this.dataset.product);
+        });
+    });
+    
+    // Form de adicionar vídeo
+    document.getElementById('addVideoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const title = document.getElementById('videoTitle').value;
+        const description = document.getElementById('videoDescription').value;
+        const level = document.getElementById('videoLevel').value;
+        const duration = document.getElementById('videoDuration').value;
+        const fileInput = document.getElementById('videoFile');
+        
+        if (!fileInput.files[0]) {
+            showAlert('Erro', 'Por favor, selecione um arquivo de vídeo.');
+            return;
+        }
+        
+        // Simular upload (em produção, seria feito upload real)
+        const newVideo = {
+            id: Date.now(),
+            title: title,
+            description: description,
+            level: level,
+            duration: parseInt(duration),
+            videoUrl: '#' // Em produção, seria a URL real do vídeo
+        };
+        
+        trainingVideos[currentProduct].push(newVideo);
+        loadTrainingVideos(currentProduct);
+        closeAddVideoModal();
+        showAlert('Sucesso', 'Vídeo adicionado com sucesso!');
+    });
+    
+    // Carregar vídeos iniciais
+    loadTrainingVideos(currentProduct);
+});
+
+// Atualizar área de upload quando arquivo é selecionado
+document.addEventListener('change', function(e) {
+    if (e.target.id === 'videoFile') {
+        const file = e.target.files[0];
+        const uploadArea = e.target.parentElement;
+        
+        if (file) {
+            uploadArea.innerHTML = `
+                <div class="upload-icon">✅</div>
+                <p><strong>Arquivo selecionado:</strong></p>
+                <p>${file.name}</p>
+                <small>Tamanho: ${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                <input type="file" id="videoFile" style="display: none;" accept="video/*" required>
+            `;
+        }
+    }
 });
 
 </script>
