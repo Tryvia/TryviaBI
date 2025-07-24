@@ -10502,7 +10502,7 @@ async function addTrainingProduct(event) {
 
 // Função para mostrar modal de adicionar vídeo
 function showAddVideoModal() {
-    if (!permissoes || !permissoes.includes('abrirModalVideo')) {
+    if (!permissoes || !permissoes.includes('showAddVideoModal')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar vídeos.');
         return;
     }
