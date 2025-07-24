@@ -3355,6 +3355,11 @@ select {
             <input type="checkbox" id="perm-release" value="release">
             <label for="perm-release">Release</label>
         </div>
+
+        <div class="permission-item">
+            <input type="checkbox" id="perm-treinamento" value="treinamento">
+            <label for="perm-treinamento">Treinamento</label>
+        </div>
         
         <div class="permission-item">
             <input type="checkbox" id="perm-reunioes" value="reunioes">
@@ -3504,6 +3509,30 @@ select {
         <div class="permission-item">
             <input type="checkbox" id="perm-salvarReuniao" value="salvarReuniao">
             <label for="perm-salvarReuniao">Salvar Reunião</label>
+        </div>
+    </div>
+
+    <!-- Funções de Treinamento -->
+    <div class="subsection-title">Funções de Treinamento</div>
+
+     <div class="permissions-grid">
+        <div class="permission-item">
+            <input type="checkbox" id="perm-showAddVideoModal" value="showAddVideoModal">
+            <label for="perm-showAddVideoModal">Adicionar Video</label>
+        </div>
+    </div>
+    
+    <div class="permissions-grid">
+        <div class="permission-item">
+            <input type="checkbox" id="perm-showAddProductModal" value="showAddProductModal">
+            <label for="perm-showAddProductModal">Adicionar Produto</label>
+        </div>
+    </div>
+ 
+    <div class="permissions-grid">
+        <div class="permission-item">
+            <input type="checkbox" id="perm-deleteTrainingVideo" value="deleteTrainingVideo">
+            <label for="perm-deleteTrainingVideo">Excluir Video</label>
         </div>
     </div>
 
@@ -10417,6 +10446,10 @@ if (cardAtual) {
 
 // Função para mostrar modal de adicionar produto
 function showAddProductModal() {
+    if (!permissoes || !permissoes.includes('addProduct')) {
+        showAlert('Atenção', 'Você não tem permissão para adicionar produtos.');
+        return;
+    }
     document.getElementById('addProductModal').classList.add('visible');
 }
 
@@ -10469,6 +10502,10 @@ async function addTrainingProduct(event) {
 
 // Função para mostrar modal de adicionar vídeo
 function showAddVideoModal() {
+    if (!permissoes || !permissoes.includes('abrirModalVideo')) {
+        showAlert('Atenção', 'Você não tem permissão para adicionar vídeos.');
+        return;
+    }
     if (!currentProduct) {
         showAlert('Aviso', 'Selecione um produto primeiro.');
         return;
@@ -10618,6 +10655,10 @@ function editTrainingVideo(videoId) {
 
 // Função para excluir vídeo
 async function deleteTrainingVideo(videoId) {
+    if (!permissoes || !permissoes.includes('deleteTrainingVideo')) {
+        showAlert('Atenção', 'Você não tem permissão para excluir vídeos.');
+        return;
+    }
     if (!confirm('Tem certeza que deseja excluir este vídeo? Esta ação não pode ser desfeita.')) {
         return;
     }
