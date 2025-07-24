@@ -3,9 +3,9 @@
 <html lang="pt-BR">
 <head>
 <link rel="icon" type="image/png" href="tryvia.png" />
-<!-- Leaflet CSS -->
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-<!-- Leaflet JS -->
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
 button, a.button, .btn {
@@ -172,7 +172,7 @@ async function carregarTarefas() {
         grid.innerHTML = '<p style="color: #888; grid-column: 1 / -1; text-align: center;">Nenhuma tarefa encontrada para este setor.</p>';
         return;
     }
-    // Mapeamento de tipo para ícone e id
+    
     const tipoMap = {
         'treinamentos': { icon: 'fa-graduation-cap', label: 'Treinamentos', id: 'treinamentos' },
         'migracoes': { icon: 'fa-exchange-alt', label: 'Migrações', id: 'migracoes' },
@@ -189,7 +189,7 @@ async function carregarTarefas() {
         let info = tipoMap[tipo];
         let icon = info ? info.icon : 'fa-tasks';
         let label = info ? info.label : tipo || 'Tipo não informado';
-        // Gera um id único para cada tarefa, mesmo as personalizadas
+        
         let id = info ? info.id : 'tarefa-' + tipo.toLowerCase().replace(/[^a-z0-9]/g, '-');
         grid.innerHTML += `
             <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; text-align: center;">
@@ -312,14 +312,14 @@ function populateReuniaoClientes() {
     select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
   });
 }
-// ...existing code...
+
 </script>
 <meta charset="utf-8"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Portal</title>
 <style>
-        /* CSS */
+        
         
 :root {
     --primary-color: #b3e5fc;
@@ -481,7 +481,7 @@ function populateReuniaoClientes() {
             display: block;
         }
 
-        /* Forms */
+        
         .form-container {
             max-width: 800px;
             margin: 0 auto;
@@ -789,7 +789,7 @@ function populateReuniaoClientes() {
             display: none;
         }
 
-        /* Client Card Vertical (for view-clients tab) */
+        
         .clients-grid {
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         }
@@ -1358,7 +1358,7 @@ function populateReuniaoClientes() {
   color: #000000 !important;
 }
 
-/* CSS */
+
 @media (max-width: 1200px) {
     #inicio .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1723,7 +1723,7 @@ function populateReuniaoClientes() {
     background-color: #c8e6c9;
 }
 
-/* Responsividade */
+
 @media (max-width: 768px) {
     .permissions-grid {
         grid-template-columns: 1fr;
@@ -1824,7 +1824,7 @@ function populateReuniaoClientes() {
     background-color: #c8e6c9;
 }
 
-/* Responsividade */
+
 @media (max-width: 768px) {
     .client-permissions-grid {
         grid-template-columns: 1fr;
@@ -1848,13 +1848,13 @@ function populateReuniaoClientes() {
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<!-- EmailJS SDK -->
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="text/javascript">
    (function(){
       emailjs.init("4DvVlBCto4HMC88CF");
    })();
-   // Configuração do servidor de armazenamento de PDF
+   
 const PDF_SERVER_URL = 'https://servis-pdf.onrender.com';
 </script>
 </head>
@@ -1865,7 +1865,7 @@ try {
 } catch (e) {
   permissoes = [];
 }
-// Proteção de login: redireciona se não estiver logado
+
 if (!sessionStorage.getItem('tryvia_logged')) {
     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
@@ -1982,7 +1982,10 @@ Abrir WhatsApp
   <button onclick="showTab('treinamento')"data-permissao="treinamento"><i class="fas fa-graduation-cap"></i> Treinamento</button>
 </li>
 <li class="nav-item">
-  <button onclick="showTab('evaluations')"data-permissao="evaluations"><i class="fas fa-star"></i> Avaliações</button>
+<button onclick="showTab('evaluations')"data-permissao="evaluations"><i class="fas fa-star"></i> Avaliações</button>
+</li>
+<li class="nav-item">
+<button onclick="showTab('cs')"data-permissao="cs"><i class="fas fa-headset"></i> CS</button>
 </li>
 <li class="nav-item">
 <button onclick="window.location.href='https://tryvia.github.io/TryviaBI/calendario.html'"data-permissao="https://tryvia.github.io/TryviaBI/calendario.html"><i class="fas fa-calendar"></i> Calendário</button>
@@ -2270,7 +2273,7 @@ select {
         </div>
     </div>
 
-    <!-- Layout Principal -->
+    
     <div class="main-layout" style="display: block; margin-bottom: 40px;">
         
         <!-- Atividades Recentes e Clientes em Destaque -->
@@ -2419,7 +2422,7 @@ select {
 </div>
 </div>
 
-<!-- Nova Seção: Treinamento -->
+<!-- Seção: Treinamento -->
 <div class="content-section" id="treinamento">
     <div style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
         <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
@@ -2504,7 +2507,7 @@ select {
     </div>
 </div>
 
-<!-- Modal para Adicionar Vídeo -->
+
 
     <!-- Modal para Adicionar Vídeo -->
     <div id="addVideoModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
@@ -3166,10 +3169,10 @@ select {
                 </tbody>
             </table>
         </div>
-        <!-- Modal de Edição de Usuário -->
         
         
-        <!-- Botão para adicionar projeto -->
+        
+        <!--  adicionar projeto -->
         <button class="btn-primary" onclick="showAddProjectModal()" style="margin-top: 15px;">
             <i class="fas fa-plus" style="margin-right: 8px;"></i>Adicionar Projeto
         </button>
@@ -3305,7 +3308,7 @@ select {
            <div class="permissions-container">
     <div class="section-title">Permissões</div>
     <div class="permissions-grid">
-        <!-- Permissões Básicas -->
+        
         <div class="permission-item checked">
             <input type="checkbox" id="perm-inicio" value="inicio" checked>
             <label for="perm-inicio">Início</label>
@@ -3903,7 +3906,7 @@ select {
             'implantacoes': 'implantacao'
         };
 
-        //  alterar quantidade de tarefas
+        
        async function alterarQuantidade(idHtml, tipo, incremento) {
             if (!permissoes.includes('alterarQuantidade')) {
                 showAlert('Atenção', 'Você não tem permissão para alterar a quantidade.');
@@ -3919,7 +3922,7 @@ select {
             let novoValor = Math.max(0, valorAtual + incremento);
             elemento.textContent = novoValor.toString().padStart(2, '0');
 
-            // Salva no banco usando o tipo correto
+            
             try {
                 const { error } = await supabase
                     .from('tarefas')
@@ -3927,7 +3930,7 @@ select {
                         { tipo: tipo, quantidade: novoValor }
                     ], { onConflict: ['tipo'] });
                 if (error) throw error;
-                //console.log('Quantidade salva com sucesso:', tipo, novoValor);
+                
             } catch (err) {
                 console.error('Erro ao salvar quantidade:', err);
                 showAlert('Erro', 'Erro ao salvar quantidade: ' + err.message);
@@ -3944,7 +3947,7 @@ select {
                 if (error) throw error;
 
                 data.forEach(item => {
-                    // Verifica se é tarefa padrão ou personalizada
+                
                     let tipo = item.tipo ? item.tipo.trim() : '';
                     let info = tipoMap[tipo];
                     let id = info ? info.id : 'tarefa-' + tipo.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -3959,7 +3962,7 @@ select {
             }
         }
 
-        // Função para salvar tarefas
+    
     async function saveTasks() {
     if (!permissoes.includes('saveTasks')) {
         showAlert('Atenção', 'Você não tem permissão para salvar as tarefas.');
@@ -4334,7 +4337,7 @@ function addEditProduct() {
             await fetchAndRenderClientDocuments(clientId);
         }
 
-        // --- Funcionarios Functions ---
+        // --- Funcionarios  ---
         async function adicionarFuncionario() {
             const nome = document.getElementById('funcionarioNome').value;
             const funcao = document.getElementById('funcionarioCargo').value;
@@ -4731,7 +4734,7 @@ async function fetchAndRenderClients() {
             id, type, system
         )
      `);
-   // Só aplica filtro se for client e clientId válido
+   
    if (
      userType === 'client' &&
      clientId &&
@@ -4744,7 +4747,7 @@ async function fetchAndRenderClients() {
      query = query.eq('id', Number(clientId));
    }
    const { data, error } = await query;
-   // ..restante do código...
+   
 
             const container = document.getElementById('clientsList');
 
@@ -4816,12 +4819,12 @@ async function fetchAndRenderClients() {
 
 `).join('');
 
-            // Aplicar filtros após renderizar
+            
             setTimeout(() => {
                 filterClientsByGroup();
             }, 100);
 
-            // Popular dropdown de clientes no relatório de visita
+        
             populateClientDropdown();
             
         }
@@ -4855,15 +4858,15 @@ async function fetchAndRenderClients() {
             }
         }
 
-        // Função para popular o dropdown de clientes no relatório de visita
+        
         function populateClientDropdown() {
             const clientSelect = document.getElementById('rvEmpresa');
             if (!clientSelect || !clients) return;
             
-            // Limpar opções existentes (exceto a primeira)
+            
             clientSelect.innerHTML = '<option value="">Selecione um cliente...</option>';
             
-            // Adicionar clientes ativos ao dropdown
+            
             clients
                 .filter(client => client.status !== 'Cliente Inativo')
                 .sort((a, b) => a.name.localeCompare(b.name))
@@ -5089,7 +5092,7 @@ if (editingIntegrations.length > 0) {
                 return;
             }
 
-            // Verificar quais documentos já foram avaliados
+            
             const documentsWithEvaluationStatus = await Promise.all(
                 data.map(async (doc) => {
                     const isEvaluated = await isDocumentEvaluated(doc.id);
@@ -5583,7 +5586,7 @@ const { data, error } = await query;
         
         document.addEventListener('DOMContentLoaded', () => {
             showTab('dashboard'); 
-            // Carregar clientes para popular o dropdown
+            
             fetchAndRenderClients();
         });
     </script>
@@ -5591,7 +5594,7 @@ const { data, error } = await query;
 <!-- Botão na barra lateral -->
 <li class="nav-item">
 </li>
-<!-- Nova Seção: Relatório de Visita -->
+<!--  Seção: Relatório de Visita -->
 <div class="content-section" id="relatorioVisita">
 <div class="form-container">
 <h3 style="margin-bottom: 20px; color: var(--accent-color);">Relatório de Visita</h3>
@@ -5825,16 +5828,16 @@ async function gerarPDFVisita() {
     doc.addImage(imgData2, 'PNG', 10, 30, 180, 90);
   }
 
-  // Salvar o PDF para download
+  
   doc.save('relatorio_visita_completo.pdf');
   
-  // Salvar automaticamente no cliente se houver um cliente selecionado
+  
   const clienteEmpresa = document.getElementById('rvEmpresa')?.value;
   if (clienteEmpresa) {
-    // Buscar o ID do cliente pela empresa
+    
     const clienteId = await buscarClienteIdPorEmpresa(clienteEmpresa);
     if (clienteId) {
-      // Gerar o blob do PDF para salvar no cliente
+     
       const pdfBlob = doc.output('blob');
       await salvarPDFNoCliente(pdfBlob, clienteId);
     }
@@ -6001,7 +6004,7 @@ const { data, error } = await query;
     if (!agrupado[cli]) agrupado[cli] = [];
     agrupado[cli].push(r);
   });
-// Função para popular o select de clientes na aba reuniões
+
 function populateReuniaoClientes() {
   const select = document.getElementById('reuniaoCliente');
   if (!select) return;
@@ -6087,7 +6090,7 @@ async function initializeInicio() {
     loadNotifications();
     createCharts();
     
-    // Auto-refresh a cada 5 minutos
+    
     setInterval(async () => {
         await loadDashboardMetrics();
         await loadRecentActivities();
@@ -6156,7 +6159,7 @@ async function loadDashboardMetrics() {
 
     } catch (error) {
         console.error('Erro ao carregar métricas:', error);
-        // Valores padrão em caso de erro
+        
         document.getElementById('totalClients').textContent = '0';
         document.getElementById('totalHomologacoes').textContent = '0';
         document.getElementById('totalReleases').textContent = '0';
@@ -6171,7 +6174,7 @@ async function loadRecentActivities() {
         const activitiesList = document.getElementById('activitiesList');
         activitiesList.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
 
-        // Buscar atividades recentes de diferentes tabelas
+        
         const [clientsData, homologacoesData, releasesData, reunioesData] = await Promise.all([
             supabase.from('clients').select('id, name, created_at').order('created_at', { ascending: false }).limit(3),
             supabase.from('homologacoes').select('id, especialista, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
@@ -6318,7 +6321,7 @@ async function loadHighlightClients() {
                 </div>
             `).join('');
 
-            // Adicionar hover effects
+            
             document.querySelectorAll('.client-highlight-card').forEach(card => {
                 card.addEventListener('mouseenter', () => {
                     card.style.transform = 'scale(1.05)';
@@ -6343,7 +6346,7 @@ async function loadHighlightClients() {
 // Carregar notificações
 function loadNotifications() {
     
-    // Futuramente pode incluir lógica para verificar homologações vencendo, etc.
+   
     const notificationsList = document.getElementById('notificationsList');
     notificationsList.innerHTML = `
         <div style="text-align: center; padding: 20px; color: #666;">
@@ -6565,7 +6568,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chatToggleButton.style.display = "flex";
     }
 
-    // Event listeners para mostrar/esconder o chat
+    
     chatToggleButton.addEventListener("click", showChat);
     chatCloseButton.addEventListener("click", hideChat);
 
@@ -6603,7 +6606,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chatSendButton.click();
         }
     });
-    // Inicializar a mensagem de boas-vindas apenas quando o chat for aberto pela primeira vez
+    
     let chatInitialized = false;
     chatToggleButton.addEventListener("click", () => {
         if (!chatInitialized) {
@@ -6990,7 +6993,7 @@ async function saveVisit() {
 }
 
 async function saveEntrega() {
-    // Mapeamento de meses para números
+    
     const monthMap = {
         'JAN': 1, 'FEV': 2, 'MAR': 3, 'ABR': 4, 'MAI': 5, 'JUN': 6,
         'JUL': 7, 'AGO': 8, 'SET': 9, 'OUT': 10, 'NOV': 11, 'DEZ': 12
@@ -7009,7 +7012,7 @@ async function saveEntrega() {
         created_at: new Date().toISOString()
     };
 
-    // Calcular porcentagem do setor 
+     
     entregaData.percentual_setor = Math.round((entregaData.marlos + entregaData.larissa + entregaData.renata + entregaData.victor) / 4);
 
     try {
@@ -7052,7 +7055,7 @@ async function saveEntrega() {
     }
 }
 
-// Funções para limpar formulários
+
 function clearTaskForm() {
     document.getElementById('taskType').value = '';
     document.getElementById('taskTitle').value = '';
@@ -7224,7 +7227,7 @@ async function loadEntregasData() {
         
         const entregasMap = {};
         data.forEach(entrega => {
-            // Converter número do mês para string
+            
             const mesString = monthNumberMap[entrega.mes];
             if (mesString) {
                 entregasMap[mesString] = entrega;
@@ -7272,7 +7275,7 @@ async function updateTaskCounters() {
 
         if (error) throw error;
 
-        // Contar tarefas por tipo
+        
         const counters = {
             treinamento: 0,
             migracao: 0,
@@ -7299,7 +7302,7 @@ async function updateTaskCounters() {
 
 
 
-// Função para inicializar o carregamento de contadores quando a página carrega
+// Função para inicializar o carregamento de contadores 
 document.addEventListener('DOMContentLoaded', () => {
     carregarContadoresDeTarefas();
 });
@@ -7312,7 +7315,7 @@ document.addEventListener('DOMContentLoaded', function() {
         painelButton.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Mostrar a aba do painel do setor
+            
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
@@ -7321,13 +7324,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 painelSection.classList.add('active');
             }
 
-            // Atualizar navegação ativa
+            
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             painelButton.parentElement.classList.add('active');
             
-            // Carregar dados do painel
+            
             setTimeout(() => {
                 loadPainelData();
                 initializeMap();
@@ -7382,7 +7385,7 @@ async function loadVisitasOnMap() {
 
         if (error) throw error;
 
-        // Limpar marcadores existentes
+        
         visitasMap.eachLayer(function (layer) {
             if (layer instanceof L.Marker) {
                 visitasMap.removeLayer(layer);
@@ -7391,7 +7394,7 @@ async function loadVisitasOnMap() {
 
         let empresasCount = 0;
 
-        // Adicionar marcadores para cada visita
+       
         for (const visita of visitas) {
             let lat = visita.latitude;
             let lng = visita.longitude;
@@ -7403,7 +7406,7 @@ async function loadVisitasOnMap() {
                     lat = coords.lat;
                     lng = coords.lng;
                     
-                    // Atualizar coordenadas no banco
+                    
                     await supabase
                         .from('visitas_setor')
                         .update({ latitude: lat, longitude: lng })
@@ -7412,7 +7415,7 @@ async function loadVisitasOnMap() {
             }
 
             if (lat && lng) {
-                // Criar marcador personalizado
+               
                 const marker = L.marker([lat, lng]).addTo(visitasMap);
                 
              
@@ -7430,7 +7433,7 @@ async function loadVisitasOnMap() {
             }
         }
 
-        // Atualizar contador de empresas
+        
         const empresasCountElement = document.getElementById('empresasCount');
         if (empresasCountElement) {
             empresasCountElement.textContent = empresasCount.toString().padStart(2, '0');
@@ -7533,10 +7536,10 @@ async function excluirProjeto(projetoId) {
 
             showAlert('Sucesso', 'Projeto excluído com sucesso!');
             
-            // Recarregar a lista de projetos
+           
             await loadProjectsData();
             
-            // Atualizar contador de projetos em andamento
+          
             const elemento = document.getElementById('projetos-count');
             if (elemento) {
                 let valorAtual = parseInt(elemento.textContent);
@@ -7587,7 +7590,7 @@ async function excluirProjeto(projetoId) {
 <script>
 // Funções para abrir os modais
 function enviarPorEmail() {
-  // Preencher campos padrão do modal
+  
   const empresa = document.getElementById('rvEmpresa').value || 'Empresa não informada';
   document.getElementById('emailSubject').value = `Relatório de Visita - ${empresa}`;
   
@@ -7605,7 +7608,7 @@ Equipe Tryvia`;
 }
 
 function enviarPorWhatsapp() {
-  // Preencher mensagem padrão do modal
+  
   const empresa = document.getElementById('rvEmpresa').value || 'Empresa não informada';
   const data = document.getElementById('rvData').value || 'Data não informada';
   const resumo = document.getElementById('rvResumo').value || 'Resumo não informado';
@@ -7739,7 +7742,7 @@ async function enviarRelatorioPorEmail() {
     let downloadLink = '';
     
     try {
-      // Tentar enviar para o servidor de armazenamento
+     
       const response = await fetch(`${PDF_SERVER_URL}/api/pdf/upload`, {
         method: 'POST',
         headers: {
@@ -7760,7 +7763,7 @@ async function enviarRelatorioPorEmail() {
       }
     } catch (error) {
       console.warn('Servidor de PDF não disponível, usando fallback local:', error);
-      // Fallback: usar blob URL local (funciona apenas na sessão atual)
+      
       const pdfBlob = doc.output('blob');
       downloadLink = URL.createObjectURL(pdfBlob);
     }
@@ -7802,7 +7805,7 @@ async function enviarRelatorioPorEmail() {
       </p>
     </div>`;
 
-    // Versão em texto simples como fallback
+    
     const emailBodyText = `${message || `Prezado(a),
 
 Segue o Relatório de Visita gerado pelo portal.`}
@@ -7817,7 +7820,7 @@ ${downloadLink}
 ---
 Gerado automaticamente pelo Portal Tryvia`;
 
-    // Enviar para cada email individualmente
+    
     let successCount = 0;
     let errorCount = 0;
     
@@ -7836,8 +7839,8 @@ Gerado automaticamente pelo Portal Tryvia`;
         const templateParams = {
           email: cleanEmail,
           subject: subject,
-          message_html: emailBodyHTML,  // Versão HTML com link clicável
-          message_text: emailBodyText   // Versão texto como fallback
+          message_html: emailBodyHTML,  
+          message_text: emailBodyText   
         };
 
         const response = await emailjs.send('service_g3ln0jh', 'template_waamyv4', templateParams);
@@ -7889,11 +7892,11 @@ function enviarRelatorioPorWhatsapp() {
   }
   
   try {
-    // Limpar e formatar número
+    
     const cleanNumber = number.replace(/\D/g, '');
     let formattedNumber = cleanNumber;
     
-    // Adicionar código do país se não tiver
+    
     if (cleanNumber.length === 11 && cleanNumber.startsWith('11')) {
       formattedNumber = '55' + cleanNumber;
     } else if (cleanNumber.length === 10) {
@@ -7952,7 +7955,7 @@ document.addEventListener('keydown', function(event) {
 }
 
 .client-status-text.inactive {
-    color: #f44336 !important; /* Vermelho */
+    color: #f44336 !important; 
 }
 
 /* Estilos para a Seção de Treinamento */
@@ -8142,15 +8145,15 @@ async function buscarClienteIdPorEmpresa(nomeEmpresa) {
 // Função para sanitizar nomes de arquivo removendo caracteres inválidos
 function sanitizeFileName(fileName) {
     return fileName
-        .replace(/[\/\\:*?"<>|]/g, '-') // Substitui caracteres inválidos por hífen
-        .replace(/\s+/g, '_') // Substitui espaços por underscore
-        .replace(/[^\w\-_.]/g, '') // Remove outros caracteres especiais, mantendo apenas letras, números, hífen, underscore e ponto
-        .replace(/_+/g, '_') // Remove underscores duplicados
-        .replace(/-+/g, '-'); // Remove hífens duplicados
+        .replace(/[\/\\:*?"<>|]/g, '-') 
+        .replace(/\s+/g, '_') 
+        .replace(/[^\w\-_.]/g, '') 
+        .replace(/_+/g, '_') 
+        .replace(/-+/g, '-'); 
 }
 
 async function salvarPDFNoCliente(pdfBlob, clientId) {
-    const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-'); // Substitui barras por hífens
+    const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
     const title = `Relatório de Visita - ${dateStr}`;
     const type = 'relatorio';
     const sanitizedFileName = sanitizeFileName(`${title}.pdf`);
@@ -8227,7 +8230,7 @@ async function salvarPDFNoCliente(pdfBlob, clientId) {
 </div>
 
 <script>
-// Variáveis globais para o modal de avaliação
+
 let currentEvaluation = {
     documentId: null,
     documentTitle: null,
@@ -8260,7 +8263,7 @@ function closeEvaluationModal() {
     document.getElementById('evaluationModal').style.display = 'none';
 }
 
-// Sistema de avaliação por estrelas
+
 document.addEventListener('DOMContentLoaded', function() {
     const stars = document.querySelectorAll('.star');
     const ratingTexts = ['', 'Muito Ruim', 'Ruim', 'Regular', 'Bom', 'Excelente'];
@@ -8340,14 +8343,14 @@ async function submitEvaluation() {
         showAlert('Sucesso', 'Avaliação salva com sucesso!');
         closeEvaluationModal();
         
-        // Atualizar a aba de avaliações se estiver aberta
+       
         if (currentSection === 'evaluations') {
             loadEvaluations();
         }
         
-        // Atualizar a visualização de documentos do cliente para mostrar botão como "Visita Avaliada"
+        
         if (currentSection === 'clients') {
-            // Recarregar documentos do cliente atual se estiver visualizando
+           
             const currentClientId = getCurrentClientId();
             if (currentClientId) {
                 viewClientDocuments(currentClientId);
@@ -8429,17 +8432,108 @@ window.addEventListener('click', function(event) {
     </div>
 </div>
 
+<!-- Seção de CS (Customer Service) -->
+<div class="content-section" id="cs">
+    <div class="form-container">
+        <h3 style="margin-bottom: 20px; color: var(--accent-color);">
+            <i class="fas fa-headset" style="margin-right: 10px;"></i>
+            Customer Service (CS)
+        </h3>
+        
+        <!-- Formulário de Contato CS -->
+        <div class="form-row" style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <div class="form-group">
+                <label for="csClientName">Nome do Cliente:</label>
+                <input type="text" id="csClientName" placeholder="Digite o nome do cliente" required>
+            </div>
+            <div class="form-group">
+                <label for="csContactType">Tipo de Contato:</label>
+                <select id="csContactType" required>
+                    <option value="">Selecione o tipo de contato</option>
+                    <option value="telefone">Telefone</option>
+                    <option value="email">E-mail</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="presencial">Presencial</option>
+                    <option value="video-chamada">Vídeo Chamada</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="csContactDate">Data do Contato:</label>
+                <input type="date" id="csContactDate" required readonly>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="csObservation">Observações:</label>
+                <textarea id="csObservation" rows="4" placeholder="Digite as observações sobre o contato com o cliente..." required></textarea>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1; text-align: center;">
+                <button onclick="salvarContatoCS()" style="background: #4fc3f7; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1.1em; cursor: pointer; transition: background 0.3s ease;">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    Salvar Contato
+                </button>
+            </div>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="form-row" style="margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
+            <div class="form-group">
+                <label for="filterCSClient">Filtrar por Cliente:</label>
+                <input type="text" id="filterCSClient" placeholder="Digite o nome do cliente..." onkeyup="filtrarContatosCS()">
+            </div>
+            <div class="form-group">
+                <label for="filterCSContactType">Filtrar por Tipo:</label>
+                <select id="filterCSContactType" onchange="filtrarContatosCS()">
+                    <option value="">Todos os tipos</option>
+                    <option value="telefone">Telefone</option>
+                    <option value="email">E-mail</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="presencial">Presencial</option>
+                    <option value="video-chamada">Vídeo Chamada</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="filterCSDate">Filtrar por Data:</label>
+                <input type="date" id="filterCSDate" onchange="filtrarContatosCS()">
+            </div>
+        </div>
+        
+        <!-- Estatísticas -->
+        <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div class="stat-card" style="background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h4 style="margin: 0; font-size: 2em;" id="totalContatos">0</h4>
+                <p style="margin: 5px 0 0 0;">Total de Contatos</p>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #66bb6a, #4caf50); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h4 style="margin: 0; font-size: 2em;" id="contatosHoje">0</h4>
+                <p style="margin: 5px 0 0 0;">Contatos Hoje</p>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ffa726, #ff9800); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h4 style="margin: 0; font-size: 2em;" id="contatosSemana">0</h4>
+                <p style="margin: 5px 0 0 0;">Esta Semana</p>
+            </div>
+        </div>
+        
+        <!-- Lista de Contatos -->
+        <div id="csContactsList">
+            <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                <div style="font-size: 4em; margin-bottom: 20px;">📞</div>
+                <h3>Nenhum contato registrado</h3>
+                <p>Os contatos com clientes aparecerão aqui quando forem registrados.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // Variável global para controlar a seção atual
 let currentSection = 'inicio';
 
-// Função para carregar e exibir avaliações
+
 async function loadEvaluations() {
     currentSection = 'evaluations';
     const container = document.getElementById('evaluationsList');
     
     try {
-        // Carregar avaliações do Supabase
+        
         const { data: evaluations, error } = await supabase
             .from('visit_evaluations')
             .select('*')
@@ -8519,7 +8613,7 @@ function updateEvaluationStats(evaluations) {
     const total = evaluations.length;
     const average = total > 0 ? (evaluations.reduce((sum, e) => sum + e.rating, 0) / total).toFixed(1) : '0.0';
     
-    // Calcular avaliações do último mês
+    
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
     const lastMonthCount = evaluations.filter(e => new Date(e.date) >= lastMonth).length;
@@ -8535,7 +8629,7 @@ async function loadClientFilter(evaluations) {
     const filterSelect = document.getElementById('filterClient');
     
     try {
-        // Buscar os nomes dos clientes na tabela 'clients'
+       
         const { data: clients, error } = await supabase
             .from('clients')
             .select('id, name')
@@ -8543,7 +8637,7 @@ async function loadClientFilter(evaluations) {
         
         if (error) {
             console.error('Erro ao carregar clientes:', error);
-            // Fallback para IDs se houver erro
+           
             filterSelect.innerHTML = '<option value="">Todos os clientes</option>' + 
                 clientIds.map(id => `<option value="${id}">Cliente ${id}</option>`).join('');
             return;
@@ -8564,7 +8658,7 @@ async function loadClientFilter(evaluations) {
             
     } catch (error) {
         console.error('Erro ao carregar filtro de clientes:', error);
-        // Fallback para IDs se houver erro
+        
         filterSelect.innerHTML = '<option value="">Todos os clientes</option>' + 
             clientIds.map(id => `<option value="${id}">Cliente ${id}</option>`).join('');
     }
@@ -8577,13 +8671,13 @@ async function filterEvaluations() {
     const searchTerm = document.getElementById('searchEvaluations').value.toLowerCase();
     
     try {
-        // Carregar avaliações do Supabase
+        
         let query = supabase
             .from('visit_evaluations')
             .select('*')
             .order('created_at', { ascending: false });
         
-        // Aplicar filtros
+        
         if (clientFilter) {
             query = query.eq('client_id', clientFilter);
         }
@@ -8601,7 +8695,7 @@ async function filterEvaluations() {
         
         let filteredEvaluations = evaluations || [];
         
-        // Aplicar filtro de busca por texto
+        
         if (searchTerm) {
             filteredEvaluations = filteredEvaluations.filter(e => 
                 e.document_title.toLowerCase().includes(searchTerm) ||
@@ -8609,7 +8703,7 @@ async function filterEvaluations() {
             );
         }
         
-        // Atualizar exibição
+        
         const container = document.getElementById('evaluationsList');
         
         if (filteredEvaluations.length === 0) {
@@ -8719,14 +8813,13 @@ async function isDocumentEvaluated(documentId) {
     }
 }
 
-// Função para obter o ID do cliente atual (usado para recarregar documentos)
+
 function getCurrentClientId() {
-    // Esta função deve retornar o ID do cliente que está sendo visualizado atualmente
-    // Pode ser implementada verificando qual cliente está sendo exibido na interface
+    
     const clientCards = document.querySelectorAll('.client-card');
     for (let card of clientCards) {
         if (card.style.display !== 'none') {
-            // Extrair ID do cliente do card visível
+            
             const viewButton = card.querySelector('button[onclick*="viewClientDocuments"]');
             if (viewButton) {
                 const match = viewButton.getAttribute('onclick').match(/viewClientDocuments\((\d+)\)/);
@@ -8739,7 +8832,7 @@ function getCurrentClientId() {
     return null;
 }
 
-// Atualizar função showTab para incluir avaliações
+
 const originalShowTab = window.showTab;
 window.showTab = function(tabId) {
     if (originalShowTab) {
@@ -8751,10 +8844,10 @@ window.showTab = function(tabId) {
     }
 };
 
-// Script para esconder abas do menu lateral conforme as permissões do usuário
+
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Recupera as permissões do usuário do localStorage
+ 
   let permissoes = [];
   try {
     permissoes = JSON.parse(localStorage.getItem('permissoes')) || [];
@@ -8762,7 +8855,7 @@ document.addEventListener('DOMContentLoaded', function() {
     permissoes = [];
   }
 
-  // Esconde abas do menu lateral conforme as permissões
+  
   document.querySelectorAll('.nav-item button[data-permissao]').forEach(btn => {
     const perm = btn.getAttribute('data-permissao');
     if (!permissoes.includes(perm)) {
@@ -8780,18 +8873,18 @@ function logoutTryvia() {
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
 
-// Variáveis globais para usuários
+
 let todosUsuarios = [];
 let usuariosFiltrados = [];
 
-// Função para buscar e renderizar usuários
+
 async function fetchAndRenderUsuarios() {
     try {
-        // Verifica tipo de usuário para aplicar filtro
+       
         let query = releaseClient.from('usuarios').select('*').order('nome', { ascending: true });
         const userType = localStorage.getItem('user_type');
         const clientId = sessionStorage.getItem('client_id');
-        // Só filtra se for client e clientId válido (evita null, undefined, string vazia ou 'null')
+        
         if (
             userType === 'client' &&
             clientId &&
@@ -8837,7 +8930,7 @@ function renderUsuarios() {
     }
 
     tbody.innerHTML = usuariosFiltrados.map(usuario => {
-        // Escapa aspas simples e caracteres especiais do nome para evitar erro de sintaxe
+        
         const nomeSeguro = String(usuario.nome).replace(/'/g, "\\'").replace(/\n/g, ' ');
         return `
         <tr style="border-bottom: 1px solid #eee;">
@@ -8907,14 +9000,14 @@ async function adicionarUsuario() {
         return;
     }
 
-    // Validar email
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         showAlert('Erro', 'Por favor, insira um email válido.');
         return;
     }
 
-    // Coletar permissões selecionadas
+    
     const permissoes = [];
     document.querySelectorAll('input[type="checkbox"][id^="perm-"]:checked').forEach(checkbox => {
         permissoes.push(checkbox.value);
@@ -8926,7 +9019,7 @@ async function adicionarUsuario() {
     }
 
     try {
-        // Verificar se o email já existe
+        
         const { data: existingUser, error: checkError } = await releaseClient
             .from('usuarios')
             .select('id')
@@ -8938,13 +9031,13 @@ async function adicionarUsuario() {
             return;
         }
 
-        // Inserir novo usuário
+       
         const { data, error } = await releaseClient
             .from('usuarios')
             .insert([{
                 nome: nome,
                 email: email,
-                senha: senha, // Em produção, a senha deveria ser hasheada
+                senha: senha, 
                 permissoes: permissoes,
                 setor: setor
             }])
@@ -8958,7 +9051,7 @@ async function adicionarUsuario() {
 
         showAlert('Sucesso', 'Usuário adicionado com sucesso!');
         
-        // Limpar formulário
+        
         document.getElementById('usuarioNome').value = '';
         document.getElementById('usuarioEmail').value = '';
         document.getElementById('usuarioSenha').value = '';
@@ -8967,7 +9060,7 @@ async function adicionarUsuario() {
             checkbox.checked = checkbox.id === 'perm-inicio';
         });
 
-        // Recarregar lista
+        
         fetchAndRenderUsuarios();
 
     } catch (error) {
@@ -8976,7 +9069,7 @@ async function adicionarUsuario() {
     }
 }
 
-// Função para filtrar usuários
+
 function filtrarUsuarios() {
     const filtroNome = document.getElementById('filtroNomeUsuario').value.toLowerCase();
     const filtroEmail = document.getElementById('filtroEmailUsuario').value.toLowerCase();
@@ -8998,7 +9091,7 @@ function limparFiltrosUsuarios() {
     renderUsuarios();
 }
 
-// Função duplicada removida - usando apenas a versão unificada mais abaixo
+
 
 // Função para editar usuário (implementação básica)
 async function editarUsuario(usuarioId) {
@@ -9007,24 +9100,24 @@ async function editarUsuario(usuarioId) {
         showAlert('Erro', 'Usuário não encontrado.');
         return;
     }
-    // Preencher campos do modal de edição
+    
     document.getElementById('editarIdUsuario').value = usuario.id;
     document.getElementById('editarNomeUsuario').value = usuario.nome;
     document.getElementById('editarEmailUsuario').value = usuario.email;
     document.getElementById('editarSenhaUsuario').value = '';
     document.getElementById('editarConfirmarSenhaUsuario').value = '';
     document.getElementById('editarSetorUsuario').value = usuario.setor || '';
-    // Permissões (se aplicável)
+   
     if (usuario.permissoes && Array.isArray(usuario.permissoes)) {
         document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]').forEach(checkbox => {
             checkbox.checked = usuario.permissoes.includes(checkbox.value);
         });
     }
-    // Abrir modal
+    
     document.getElementById('modalEditarUsuario').classList.add('visible');
 }
 
-// Função para salvar edição do usuário
+
 async function salvarEdicaoUsuario(usuarioId) {
     const nome = document.getElementById('usuarioNome').value.trim();
     const email = document.getElementById('usuarioEmail').value.trim();
@@ -9032,7 +9125,7 @@ async function salvarEdicaoUsuario(usuarioId) {
     const confirmarSenha = document.getElementById('usuarioConfirmarSenha').value;
      const setor = document.getElementById('usuarioSetor').value;
 
-    // Validações
+    
     if (!nome || !email) {
         showAlert('Erro', 'Nome e email são obrigatórios.');
         return;
@@ -9048,14 +9141,14 @@ async function salvarEdicaoUsuario(usuarioId) {
         return;
     }
 
-    // Validar email
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         showAlert('Erro', 'Por favor, insira um email válido.');
         return;
     }
 
-    // Coletar permissões selecionadas
+   
     const permissoes = [];
     document.querySelectorAll('input[type="checkbox"][id^="perm-"]:checked').forEach(checkbox => {
         permissoes.push(checkbox.value);
@@ -9067,7 +9160,7 @@ async function salvarEdicaoUsuario(usuarioId) {
     }
 
     try {
-        // Verificar se o email já existe em outro usuário
+        
         const { data: existingUser, error: checkError } = await releaseClient
             .from('usuarios')
             .select('id')
@@ -9079,7 +9172,7 @@ async function salvarEdicaoUsuario(usuarioId) {
             return;
         }
 
-        // Preparar dados para atualização
+        
         const updateData = {
             nome: nome,
             email: email,
@@ -9087,12 +9180,12 @@ async function salvarEdicaoUsuario(usuarioId) {
             setor: setor
         };
 
-        // Incluir senha apenas se foi fornecida
+        
         if (senha) {
             updateData.senha = senha;
         }
 
-        // Debug: mostrar dados enviados para update
+        
         console.log('Update usuário:', updateData);
         console.log('Dados de atualização para Supabase:', updateData);
         const { error } = await releaseClient
@@ -9110,7 +9203,7 @@ async function salvarEdicaoUsuario(usuarioId) {
 
         showAlert('Sucesso', 'Usuário atualizado com sucesso!');
         
-        // Limpar formulário e voltar ao modo adicionar
+       
         document.getElementById('usuarioNome').value = '';
         document.getElementById('usuarioEmail').value = '';
         document.getElementById('usuarioSenha').value = '';
@@ -9119,12 +9212,12 @@ async function salvarEdicaoUsuario(usuarioId) {
             checkbox.checked = checkbox.id === 'perm-inicio';
         });
 
-        // Restaurar botão para modo adicionar
+        
         const botaoSalvar = document.querySelector('button[onclick^="salvarEdicaoUsuario"]');
         botaoSalvar.innerHTML = '<i class="fas fa-user-plus" style="margin-right: 8px;"></i>Adicionar Usuário';
         botaoSalvar.setAttribute('onclick', 'adicionarUsuario()');
 
-        // Recarregar lista
+        
         fetchAndRenderUsuarios();
 
     } catch (error) {
@@ -9212,7 +9305,7 @@ async function criarLoginCliente() {
     }
 
     try {
-        // Verificar se o email já existe
+        
         const { data: existingUser, error: checkError } = await releaseClient
             .from('usuarios')
             .select('id')
@@ -9224,7 +9317,7 @@ async function criarLoginCliente() {
             return;
         }
 
-        // Buscar nome do cliente
+        
         const { data: cliente, error: clientError } = await supabase
             .from('clients')
             .select('name')
@@ -9299,16 +9392,12 @@ window.showTab = function(tabId) {
 
 <!-- Lógica de Controlo de Acesso -->
 <script>
-/**
- * Verifica se utilizador tem acesso a um cliente específico
- * @param {number} clientId - ID do cliente
- * @returns {boolean} - true se tem acesso
- */
+
 function hasAccessToClient(clientId) {
     const userType = localStorage.getItem('user_type');
     const userClientId = localStorage.getItem('user_client_id');
     
-    // Utilizadores internos veem todos (ou conforme outras permissões)
+   
     if (userType === 'internal') {
         return true;
     }
@@ -9321,11 +9410,7 @@ function hasAccessToClient(clientId) {
     return false;
 }
 
-/**
- * Filtra clientes baseado no tipo de utilizador
- * @param {Array} clients - Lista completa de clientes
- * @returns {Array} - Lista filtrada
- */
+
 function filterClientsByUserType(clients) {
     const userType = localStorage.getItem('user_type');
     const userClientId = localStorage.getItem('user_client_id');
@@ -9445,7 +9530,7 @@ function showClientWelcomeMessage(clientName) {
             <div class="permissions-container">
                 <div class="section-title">Permissões</div>
                 <div class="permissions-grid" id="editarPermissoesGrid2">
-                    <!-- Permissões serão carregadas dinamicamente aqui -->
+                    
                 </div>
             </div>
             <div class="modal-buttons" style="margin-top: 20px;">
