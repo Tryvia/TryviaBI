@@ -10346,12 +10346,39 @@ if (cardAtual) {
         const playerContainer = document.getElementById('videoPlayerContainer');
         
         if (video.video_url) {
-            // Se for um link externo, usar como src
-            playerContainer.innerHTML = `
-                <video controls style="width: 100%; height: 100%; border-radius: 10px;" src="${video.video_url}">
-                    Seu navegador não suporta o elemento de vídeo.
-                </video>
-            `;
+            // Se for YouTube ou Vimeo, usar embed
+            if (/youtube\.com|youtu\.be/.test(video.video_url)) {
+                // Extrai o ID do vídeo do YouTube
+                let youtubeId = '';
+                const match = video.video_url.match(/(?:v=|\/)([\w-]{11})(?:\?|&|$)/);
+                if (match) youtubeId = match[1];
+                if (!youtubeId) {
+                    // Tenta pegar do youtu.be
+                    const match2 = video.video_url.match(/youtu\.be\/([\w-]{11})/);
+                    if (match2) youtubeId = match2[1];
+                }
+                if (youtubeId) {
+                    playerContainer.innerHTML = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    playerContainer.innerHTML = `<div style='color:red'>Link do YouTube inválido.</div>`;
+                }
+            } else if (/vimeo\.com/.test(video.video_url)) {
+                // Extrai o ID do vídeo do Vimeo
+                const match = video.video_url.match(/vimeo\.com\/(\d+)/);
+                const vimeoId = match ? match[1] : '';
+                if (vimeoId) {
+                    playerContainer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}" width="100%" height="400" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    playerContainer.innerHTML = `<div style='color:red'>Link do Vimeo inválido.</div>`;
+                }
+            } else {
+                // Link direto para arquivo de vídeo
+                playerContainer.innerHTML = `
+                    <video controls style="width: 100%; height: 100%; border-radius: 10px;" src="${video.video_url}">
+                        Seu navegador não suporta o elemento de vídeo.
+                    </video>
+                `;
+            }
         } else if (video.video_path) {
             // Vídeo do Supabase Storage
             const supabaseUrl = typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : '';
