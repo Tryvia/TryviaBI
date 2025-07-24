@@ -10371,6 +10371,17 @@ if (cardAtual) {
                 } else {
                     playerContainer.innerHTML = `<div style='color:red'>Link do Vimeo inválido.</div>`;
                 }
+            } else if (/drive\.google\.com/.test(video.video_url)) {
+                // Suporte para Google Drive
+                // Extrai o ID do arquivo
+                const match = video.video_url.match(/\/d\/([\w-]+)\/|id=([\w-]+)/);
+                const fileId = match ? (match[1] || match[2]) : '';
+                if (fileId) {
+                    // Link embed do Google Drive
+                    playerContainer.innerHTML = `<iframe src="https://drive.google.com/file/d/${fileId}/preview" width="100%" height="400" allow="autoplay"></iframe>`;
+                } else {
+                    playerContainer.innerHTML = `<div style='color:red'>Link do Google Drive inválido.</div>`;
+                }
             } else {
                 // Link direto para arquivo de vídeo
                 playerContainer.innerHTML = `
