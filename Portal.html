@@ -4255,13 +4255,16 @@ function removeIntegration(idx, listName) {
                 activeClientButton.classList.add('active');
             }
 
-            const addVideoButton = document.getElementById('addVideoBtn');;
-            if (tabId === 'edit-client-tab') {
-                editButton.style.display = 'block';
-                editButton.classList.add('active');
-            } else {
-                editButton.style.display = 'none';
-                editButton.classList.remove('active');
+            const addVideoButton = document.getElementById('addVideoBtn');
+            const editButton = document.getElementById('editClientTabButton');
+            if (editButton) {
+                if (tabId === 'edit-client-tab') {
+                    editButton.style.display = 'block';
+                    editButton.classList.add('active');
+                } else {
+                    editButton.style.display = 'none';
+                    editButton.classList.remove('active');
+                }
             }
 
             if (tabId === 'view-clients') {
