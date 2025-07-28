@@ -8318,6 +8318,9 @@ async function salvarPDFNoCliente(pdfBlob, clientId) {
             showAlert('Erro', 'Erro ao adicionar documento do cliente. Verifique as permissões da tabela.');
         } else {
             showAlert('Sucesso', 'Relatório de visita salvo automaticamente no cliente!');
+            if (typeof fetchAndRenderClientDocuments === 'function') {
+                await fetchAndRenderClientDocuments(clientId);
+            }
         }
     } else {
         showAlert('Atenção', 'Não foi possível salvar o relatório, dados insuficientes.');
