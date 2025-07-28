@@ -5968,7 +5968,10 @@ async function gerarPDFVisita() {
           console.error('Erro ao adicionar registro na tabela client_documents:', error.message);
           showAlert('Erro', 'Relatório salvo no Storage, mas não registrado na tabela client_documents.');
         } else {
-          showAlert('Sucesso', 'Relatório de visita salvo na pasta do cliente e registrado na tabela client_documents!');
+          showAlert('Sucesso', 'Relatório de visita salvo na pasta do cliente!');
+          if (typeof fetchAndRenderClientDocuments === 'function') {
+            await fetchAndRenderClientDocuments(clienteId);
+          }
         }
       }
     }
