@@ -313,6 +313,48 @@ function populateReuniaoClientes() {
   });
 }
 
+ async function salvarContatoCS() {
+            const nome = document.getElementById('csClientName').value.trim();
+            const tipo = document.getElementById('csContactType').value;
+            const data = document.getElementById('csContactDate').value;
+            const obs = document.getElementById('csObservation').value.trim();
+
+            if (!nome || !tipo || !data || !obs) {
+                showAlert('Atenção', 'Preencha todos os campos para salvar o contato!');
+                return;
+            }
+
+            try {
+                const { data: result, error } = await supabase
+                    .from('cs_contacts')
+                    .insert([
+                        {
+                            client_name: nome,
+                            contact_type: tipo,
+                            contact_date: data,
+                            observation: obs
+                        }
+                    ]);
+
+                if (error) {
+                    console.error('Erro ao salvar contato:', error.message);
+                    showAlert('Erro', 'Erro ao salvar contato.');
+                    return;
+                }
+
+                showAlert('Sucesso', 'Contato salvo com sucesso!');
+                document.getElementById('csClientName').value = '';
+                document.getElementById('csContactType').value = '';
+                document.getElementById('csContactDate').value = '';
+                document.getElementById('csObservation').value = '';
+                // Se quiser atualizar a lista de contatos, chame aqui a função de renderização
+                // fetchAndRenderContatosCS();
+            } catch (e) {
+                console.error('Erro inesperado ao salvar contato:', e);
+                showAlert('Erro', 'Erro inesperado ao salvar contato.');
+            }
+        }
+
 </script>
 <meta charset="utf-8"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
