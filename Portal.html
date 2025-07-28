@@ -371,18 +371,42 @@ async function fetchAndRenderContatosCS() {
         }
         if (!data || data.length === 0) {
             container.innerHTML = `<div class="empty-state"><div style="font-size: 4em; margin-bottom: 20px;">📞</div><h3>Nenhum contato registrado</h3><p>Os contatos com clientes aparecerão aqui quando forem registrados.</p></div>`;
+            atualizarEstatisticasCS([]);
             return;
         }
         container.innerHTML = data.map(contato => `
             <div class="document-card" style="margin-bottom: 15px;">
                 <div class="document-title">${contato.client_name}</div>
                 <div class="document-author">${contato.contact_type} • ${new Date(contato.contact_date).toLocaleDateString('pt-BR')}</div>
-                <div style="margin-top: 10px; color: #555;">${contato.observation}</div>
+                <div style="margin-top: 10px; color: #555; white-space: pre-wrap; word-break: break-word;">${contato.observation}</div>
             </div>
         `).join('');
+        atualizarEstatisticasCS(data);
     } catch (e) {
         container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro inesperado ao carregar contatos.</p></div>`;
+        atualizarEstatisticasCS([]);
     }
+}
+
+function atualizarEstatisticasCS(contatos) {
+    const total = contatos.length;
+    const hoje = new Date();
+    const hojeStr = hoje.toISOString().slice(0, 10);
+    const diaSemana = hoje.getDay();
+    const inicioSemana = new Date(hoje);
+    inicioSemana.setDate(hoje.getDate() - diaSemana);
+    const inicioSemanaStr = inicioSemana.toISOString().slice(0, 10);
+
+    let contatosHoje = 0;
+    let contatosSemana = 0;
+    contatos.forEach(c => {
+        const dataContato = c.contact_date;
+        if (dataContato === hojeStr) contatosHoje++;
+        if (dataContato >= inicioSemanaStr && dataContato <= hojeStr) contatosSemana++;
+    });
+    document.getElementById('totalContatos').textContent = total;
+    document.getElementById('contatosHoje').textContent = contatosHoje;
+    document.getElementById('contatosSemana').textContent = contatosSemana;
 }
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('csContactsList')) {
