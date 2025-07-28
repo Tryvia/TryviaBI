@@ -5935,16 +5935,27 @@ async function gerarPDFVisita() {
 
   
   doc.save('relatorio_visita_completo.pdf');
-  
-  
+
+  // Salvar PDF no Storage do Supabase na pasta do cliente
   const clienteEmpresa = document.getElementById('rvEmpresa')?.value;
   if (clienteEmpresa) {
-    
     const clienteId = await buscarClienteIdPorEmpresa(clienteEmpresa);
     if (clienteId) {
-     
       const pdfBlob = doc.output('blob');
-      await salvarPDFNoCliente(pdfBlob, clienteId);
+      // Nome do arquivo sanitizado
+      const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+      const sanitizedFileName = sanitizeFileName(`Relatorio_Visita_${clienteEmpresa}_${dateStr}.pdf`);
+      const filePath = `client_documents/${clienteId}/${Date.now()}_${sanitizedFileName}`;
+      const file = new File([pdfBlob], sanitizedFileName, { type: 'application/pdf' });
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('clientdocumentfiles')
+        .upload(filePath, file);
+      if (uploadError) {
+        console.error('Erro ao fazer upload do relatório de visita:', uploadError.message);
+        showAlert('Erro', 'Erro ao salvar relatório de visita no cliente.');
+      } else {
+        showAlert('Sucesso', 'Relatório de visita salvo automaticamente na pasta do cliente!');
+      }
     }
   }
 }
