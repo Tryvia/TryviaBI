@@ -356,6 +356,40 @@ function populateReuniaoClientes() {
         }
 
 </script>
+<script>
+async function fetchAndRenderContatosCS() {
+    const container = document.getElementById('csContactsList');
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p>Carregando contatos...</p></div>';
+    try {
+        const { data, error } = await supabase
+            .from('cs_contacts')
+            .select('*')
+            .order('contact_date', { ascending: false });
+        if (error) {
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro ao carregar contatos.</p></div>`;
+            return;
+        }
+        if (!data || data.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div style="font-size: 4em; margin-bottom: 20px;">📞</div><h3>Nenhum contato registrado</h3><p>Os contatos com clientes aparecerão aqui quando forem registrados.</p></div>`;
+            return;
+        }
+        container.innerHTML = data.map(contato => `
+            <div class="document-card" style="margin-bottom: 15px;">
+                <div class="document-title">${contato.client_name}</div>
+                <div class="document-author">${contato.contact_type} • ${new Date(contato.contact_date).toLocaleDateString('pt-BR')}</div>
+                <div style="margin-top: 10px; color: #555;">${contato.observation}</div>
+            </div>
+        `).join('');
+    } catch (e) {
+        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro inesperado ao carregar contatos.</p></div>`;
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('csContactsList')) {
+        fetchAndRenderContatosCS();
+    }
+});
+</script>
 <meta charset="utf-8"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
