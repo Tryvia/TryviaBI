@@ -5954,7 +5954,22 @@ async function gerarPDFVisita() {
         console.error('Erro ao fazer upload do relatório de visita:', uploadError.message);
         showAlert('Erro', 'Erro ao salvar relatório de visita no cliente.');
       } else {
-        showAlert('Sucesso', 'Relatório de visita salvo automaticamente na pasta do cliente!');
+        // Gerar URL pública do arquivo
+        const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
+        // Inserir registro na tabela client_documents
+        const title = `Relatório de Visita - ${dateStr}`;
+        const type = 'relatorio';
+        const { data, error } = await supabase
+          .from('client_documents')
+          .insert([
+            { client_id: clienteId, title, type, file_url: publicURL, file_path: filePath }
+          ]);
+        if (error) {
+          console.error('Erro ao adicionar registro na tabela client_documents:', error.message);
+          showAlert('Erro', 'Relatório salvo no Storage, mas não registrado na tabela client_documents.');
+        } else {
+          showAlert('Sucesso', 'Relatório de visita salvo na pasta do cliente e registrado na tabela client_documents!');
+        }
       }
     }
   }
