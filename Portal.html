@@ -6998,7 +6998,7 @@ async function viewClientTickets(clientId, clientName, clientEmail) {
     
     try {
         // Buscar tickets do cliente via API
-        const response = await fetch(`http://localhost:5001/api/tickets/client?email=${encodeURIComponent(clientEmail)}`);
+        const response = await fetch(`https://servis-opsj.onrender.com/api/tickets/client?email=${encodeURIComponent(clientEmail)}`);
         
         if (!response.ok) {
             throw new Error(`Erro na API: ${response.status}`);
