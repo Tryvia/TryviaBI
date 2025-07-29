@@ -6995,7 +6995,7 @@ async function viewClientTickets(clientId, clientName, clientEmail) {
     
     try {
         // Buscar tickets do cliente via API
-        const response = await fetch(`https://servis-opsj.onrender.com/api/tickets/client?email=${encodeURIComponent(clientEmail)}`);
+        const response = await fetch(`http://127.0.0.1:5001/api/tickets/client?email=${encodeURIComponent(clientEmail)}`);
         
         if (!response.ok) {
             throw new Error(`Erro na API: ${response.status}`);
@@ -7126,7 +7126,7 @@ window.onclick = function(event) {
                 
                 try {
                     // Buscar tickets do cliente via API usando cf_empresa
-                    const response = await fetch(`https://servis-opsj.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
+                    const response = await fetch(`http://127.0.0.1:5001/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
                     
                     if (!response.ok) {
                         throw new Error(`Erro na API: ${response.status}`);
@@ -7255,7 +7255,7 @@ window.onclick = function(event) {
                 
                 try {
                     // Buscar tickets do cliente via API usando cf_empresa
-                    const response = await fetch(`https://servis-opsj.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
+                    const response = await fetch(`http://127.0.0.1:5001/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
                     
                     if (!response.ok) {
                         throw new Error(`Erro na API: ${response.status}`);
