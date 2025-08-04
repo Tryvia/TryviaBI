@@ -254,6 +254,141 @@ a:contains('Ver Ata'),
     padding: 40px;
     color: #666;
 }
+
+/* Estilos para o botão de nova implantação */
+.btn-nova-implantacao {
+    background-color: #9c27b0 !important;
+    color: white !important;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+    font-size: 1em;
+}
+
+.btn-nova-implantacao:hover {
+    background-color: #7b1fa2 !important;
+}
+
+/* Estilos para o modal de implantação */
+.implantacao-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.implantacao-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.implantacao-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #9c27b0;
+}
+
+.implantacao-modal-header h2 {
+    margin: 0;
+    color: #9c27b0;
+    font-size: 1.5em;
+}
+
+.implantacao-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.implantacao-modal-close:hover {
+    color: #000;
+}
+
+.implantacao-form-group {
+    margin-bottom: 20px;
+}
+
+.implantacao-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.implantacao-form-group input,
+.implantacao-form-group select,
+.implantacao-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.implantacao-form-group input:focus,
+.implantacao-form-group select:focus,
+.implantacao-form-group textarea:focus {
+    outline: none;
+    border-color: #9c27b0;
+}
+
+.implantacao-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.implantacao-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.implantacao-form-row .implantacao-form-group {
+    flex: 1;
+}
+
+.btn-salvar-implantacao {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-implantacao:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-implantacao:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -2503,6 +2638,141 @@ a:contains('Ver Ata'),
     padding: 40px;
     color: #666;
 }
+
+/* Estilos para o botão de nova implantação */
+.btn-nova-implantacao {
+    background-color: #9c27b0 !important;
+    color: white !important;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+    font-size: 1em;
+}
+
+.btn-nova-implantacao:hover {
+    background-color: #7b1fa2 !important;
+}
+
+/* Estilos para o modal de implantação */
+.implantacao-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.implantacao-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.implantacao-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #9c27b0;
+}
+
+.implantacao-modal-header h2 {
+    margin: 0;
+    color: #9c27b0;
+    font-size: 1.5em;
+}
+
+.implantacao-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.implantacao-modal-close:hover {
+    color: #000;
+}
+
+.implantacao-form-group {
+    margin-bottom: 20px;
+}
+
+.implantacao-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.implantacao-form-group input,
+.implantacao-form-group select,
+.implantacao-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.implantacao-form-group input:focus,
+.implantacao-form-group select:focus,
+.implantacao-form-group textarea:focus {
+    outline: none;
+    border-color: #9c27b0;
+}
+
+.implantacao-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.implantacao-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.implantacao-form-row .implantacao-form-group {
+    flex: 1;
+}
+
+.btn-salvar-implantacao {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-implantacao:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-implantacao:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -2780,6 +3050,10 @@ select {
 </div>
 </div>
 <div class="content-section" id="documents">
+<button class="btn-nova-implantacao" onclick="abrirModalImplantacao()">
+    <i class="fas fa-plus" style="margin-right: 8px;"></i>
+    Nova Implantação
+</button>
 <div class="form-container">
 <h3 style="margin-bottom: 20px;">Adicionar Novo Documento de Implantação</h3>
 <div class="form-row">
@@ -2829,6 +3103,69 @@ select {
 <p>Adicione documentos para começar</p>
 </div>
 </div>
+</div>
+
+<!-- Modal de Nova Implantação -->
+<div id="implantacaoModal" class="implantacao-modal">
+    <div class="implantacao-modal-content">
+        <div class="implantacao-modal-header">
+            <h2><i class="fas fa-cogs" style="margin-right: 10px;"></i>Nova Implantação</h2>
+            <span class="implantacao-modal-close" onclick="fecharModalImplantacao()">&times;</span>
+        </div>
+        
+        <form id="implantacaoForm">
+            <div class="implantacao-form-row">
+                <div class="implantacao-form-group">
+                    <label for="implantacaoEspecialista">Especialista</label>
+                    <input type="text" id="implantacaoEspecialista" placeholder="Nome do especialista" required>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="implantacaoData">Data</label>
+                    <input type="date" id="implantacaoData" required>
+                </div>
+            </div>
+            
+            <div class="implantacao-form-row">
+                <div class="implantacao-form-group">
+                    <label for="implantacaoCliente">Cliente</label>
+                    <input type="text" id="implantacaoCliente" placeholder="Nome do cliente" required>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="implantacaoProjeto">Projeto</label>
+                    <input type="text" id="implantacaoProjeto" placeholder="Nome do projeto" required>
+                </div>
+            </div>
+            
+            <div class="implantacao-form-row">
+                <div class="implantacao-form-group">
+                    <label for="implantacaoTipo">Tipo</label>
+                    <select id="implantacaoTipo" required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="Implantação Inicial">Implantação Inicial</option>
+                        <option value="Migração">Migração</option>
+                        <option value="Atualização">Atualização</option>
+                        <option value="Manutenção">Manutenção</option>
+                        <option value="Treinamento">Treinamento</option>
+                        <option value="Suporte">Suporte</option>
+                    </select>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="implantacaoTickets">Tickets Pendentes</label>
+                    <input type="number" id="implantacaoTickets" placeholder="Número de tickets" min="0" value="0">
+                </div>
+            </div>
+            
+            <div class="implantacao-form-group">
+                <label for="implantacaoResumo">Resumo</label>
+                <textarea id="implantacaoResumo" placeholder="Descreva os detalhes da implantação..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn-salvar-implantacao">
+                <i class="fas fa-save" style="margin-right: 8px;"></i>
+                Salvar Implantação
+            </button>
+        </form>
+    </div>
 </div>
 
 <!-- Seção: Treinamento -->
@@ -12356,11 +12693,105 @@ document.addEventListener('DOMContentLoaded', function() {
     if (formEditarLogin) {
         formEditarLogin.addEventListener('submit', salvarAlteracoesLogin);
     }
+    
+    // Adicionar event listener para o formulário de implantação
+    const formImplantacao = document.getElementById('implantacaoForm');
+    if (formImplantacao) {
+        formImplantacao.addEventListener('submit', salvarImplantacao);
+    }
 });
 
 // Função para carregar dados quando a aba for aberta
 function inicializarGerenciarLogins() {
     carregarLoginsUsuarios();
+}
+
+// Funções para o modal de implantação
+function abrirModalImplantacao() {
+    const modal = document.getElementById('implantacaoModal');
+    if (modal) {
+        modal.style.display = 'block';
+        // Definir data atual como padrão
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('implantacaoData').value = hoje;
+    }
+}
+
+function fecharModalImplantacao() {
+    const modal = document.getElementById('implantacaoModal');
+    if (modal) {
+        modal.style.display = 'none';
+        // Limpar formulário
+        document.getElementById('implantacaoForm').reset();
+    }
+}
+
+// Fechar modal ao clicar fora dele
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('implantacaoModal');
+    if (event.target === modal) {
+        fecharModalImplantacao();
+    }
+});
+
+async function salvarImplantacao(event) {
+    event.preventDefault();
+    
+    const especialista = document.getElementById('implantacaoEspecialista').value.trim();
+    const data = document.getElementById('implantacaoData').value;
+    const cliente = document.getElementById('implantacaoCliente').value.trim();
+    const projeto = document.getElementById('implantacaoProjeto').value.trim();
+    const tipo = document.getElementById('implantacaoTipo').value;
+    const tickets = parseInt(document.getElementById('implantacaoTickets').value) || 0;
+    const resumo = document.getElementById('implantacaoResumo').value.trim();
+    
+    if (!especialista || !data || !cliente || !projeto || !tipo || !resumo) {
+        showAlert('Atenção', 'Preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    // Desabilitar botão durante o salvamento
+    const btnSalvar = document.querySelector('.btn-salvar-implantacao');
+    const textoOriginal = btnSalvar.innerHTML;
+    btnSalvar.disabled = true;
+    btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Salvando...';
+    
+    try {
+        const { data: result, error } = await supabase
+            .from('implantacoes')
+            .insert([
+                {
+                    especialista: especialista,
+                    data: data,
+                    cliente: cliente,
+                    projeto: projeto,
+                    tipo: tipo,
+                    tickets_pendentes: tickets,
+                    resumo: resumo,
+                    created_at: new Date().toISOString()
+                }
+            ]);
+
+        if (error) {
+            console.error('Erro ao salvar implantação:', error.message);
+            showAlert('Erro', 'Erro ao salvar implantação: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Implantação salva com sucesso!');
+        fecharModalImplantacao();
+        
+        // Aqui você pode adicionar código para atualizar a lista de implantações se necessário
+        // carregarImplantacoes();
+        
+    } catch (e) {
+        console.error('Erro inesperado ao salvar implantação:', e);
+        showAlert('Erro', 'Erro inesperado ao salvar implantação.');
+    } finally {
+        // Reabilitar botão
+        btnSalvar.disabled = false;
+        btnSalvar.innerHTML = textoOriginal;
+    }
 }
 </script>
 
