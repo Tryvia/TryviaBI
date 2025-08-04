@@ -2791,7 +2791,6 @@ select {
                 <label for="documentAuthor">Autor</label>
                 <select id="documentAuthor">
                     <option value="">Selecione o autor</option>
-                    <option value="Julyana">Julyana</option>
                     <option value="Marlos">Marlos</option>
                     <option value="Renata">Renata</option>
                     <option value="Larissa">Larissa</option>
@@ -3356,7 +3355,6 @@ select {
 <select id="especialista" name="especialista" required="">
 <option value="">Selecione o especialista</option>
 <option value="Marlos">Marlos</option>
-<option value="Julyana">Julyana</option>
 <option value="Renata">Renata</option>
 <option value="Larissa">Larissa</option>
 <option value="GabrielCS">GabrielCS</option>
@@ -6064,7 +6062,6 @@ const { data, error } = await query;
 <div class="form-group">
 <label>Analista Responsável</label>
 <select id="rvAnalista">
-<option value="Julyana">Julyana</option>
 <option value="Marlos">Marlos</option>
 <option value="Renata">Renata</option>
 <option value="Larissa">Larissa</option>
@@ -12045,4 +12042,401 @@ document.addEventListener('change', function(e) {
     color: #666;
 }
 </style>
+
+
+
+<div id="gerenciar-logins" class="content-section" style="display: none;">
+    <h2>Gerenciar Logins</h2>
+    
+    <!-- Filtros -->
+    <div style="background: rgba(179, 229, 252, 0.95); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="filtroEmailLogin">Filtrar por Email</label>
+                <input type="text" id="filtroEmailLogin" placeholder="Digite o email..." oninput="filtrarLoginsUsuarios()">
+            </div>
+            <div class="form-group">
+                <label for="filtroNomeLogin">Filtrar por Nome</label>
+                <input type="text" id="filtroNomeLogin" placeholder="Digite o nome..." oninput="filtrarLoginsUsuarios()">
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end;">
+                <button class="btn-secondary" onclick="limparFiltrosLogins()">Limpar Filtros</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Usuários -->
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <thead style="background: #4fc3f7; color: white;">
+                <tr>
+                    <th style="padding: 15px; text-align: left; font-weight: bold;">Nome</th>
+                    <th style="padding: 15px; text-align: left; font-weight: bold;">Email</th>
+                    <th style="padding: 15px; text-align: left; font-weight: bold;">Setor</th>
+                    <th style="padding: 15px; text-align: center; font-weight: bold;">Permissões</th>
+                    <th style="padding: 15px; text-align: center; font-weight: bold;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="loginsTableBody">
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                        <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
+                        Carregando usuários...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de Edição de Login -->
+<div class="modal-overlay" id="modalEditarLogin">
+    <div class="modal-content" style="max-width: 700px;">
+        <h3 style="color: #4fc3f7; margin-bottom: 20px;">
+            <i class="fas fa-user-edit" style="margin-right: 10px;"></i>
+            Editar Login de Usuário
+        </h3>
+        
+        <form id="formEditarLogin">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editLoginNome">Nome</label>
+                    <input type="text" id="editLoginNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="editLoginEmail">Email</label>
+                    <input type="email" id="editLoginEmail" readonly style="background-color: #f5f5f5;">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editLoginSetor">Setor</label>
+                    <select id="editLoginSetor">
+                        <option value="Comercial">Comercial</option>
+                        <option value="Implantação">Implantação</option>
+                        <option value="Suporte">Suporte</option>
+                        <option value="Desenvolvimento">Desenvolvimento</option>
+                        <option value="Gestão">Gestão</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editLoginSenha">Nova Senha (deixe em branco para não alterar)</label>
+                    <input type="password" id="editLoginSenha" placeholder="Digite a nova senha...">
+                </div>
+            </div>
+
+            <!-- Permissões -->
+            <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h4 style="color: #4fc3f7; margin-bottom: 15px;">Permissões do Usuário</h4>
+                <div id="editPermissoesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <!-- Permissões serão carregadas dinamicamente -->
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="modal-button cancel" onclick="fecharModalEditarLogin()">Cancelar</button>
+                <button type="submit" class="modal-button confirm">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Estilos específicos para o modal de edição de login */
+#modalEditarLogin .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#editPermissoesContainer .permission-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+#editPermissoesContainer .permission-item:hover {
+    background-color: #e3f2fd;
+    border-color: #4fc3f7;
+}
+
+#editPermissoesContainer .permission-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #4fc3f7;
+}
+
+#editPermissoesContainer .permission-item label {
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0;
+    flex: 1;
+}
+
+#loginsTableBody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+#loginsTableBody tr:hover {
+    background-color: #e3f2fd;
+}
+
+.permission-badge {
+    background: #4fc3f7;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin: 2px;
+    display: inline-block;
+}
+</style>
+
+<script>
+// Variáveis globais para gerenciamento de logins
+let todosLoginsUsuarios = [];
+let loginsFiltrados = [];
+let usuarioEditandoLogin = null;
+
+// Permissões disponíveis
+const permissoesDisponiveis = [
+    { value: 'inicio', label: 'Início' },
+    { value: 'painel-setor', label: 'Painel do Setor' },
+    { value: 'dashboard', label: 'Dashboards' },
+    { value: 'clients', label: 'Clientes' },
+    { value: 'homologacao', label: 'Homologação' },
+    { value: 'release', label: 'Release' },
+    { value: 'reunioes', label: 'Reuniões' },
+    { value: 'documents', label: 'Time de Implantação' },
+    { value: 'evaluations', label: 'Avaliações' },
+    { value: 'relatorioVisita', label: 'Relatório de Visita' },
+    { value: 'gestao', label: 'Gestão' },
+    { value: 'gerenciar-logins', label: 'Gerenciar Logins' },
+    { value: 'cs', label: 'CS' },
+    { value: 'treinamento', label: 'Treinamento' }
+];
+
+// Função para carregar usuários para gerenciamento de logins
+async function carregarLoginsUsuarios() {
+    try {
+        const { data: usuarios, error } = await releaseClient
+            .from('usuarios')
+            .select('*')
+            .order('nome', { ascending: true });
+
+        if (error) {
+            console.error('Erro ao buscar usuários:', error);
+            showAlert('Erro', 'Erro ao carregar usuários: ' + error.message);
+            return;
+        }
+
+        todosLoginsUsuarios = usuarios || [];
+        loginsFiltrados = [...todosLoginsUsuarios];
+        renderLoginsUsuarios();
+    } catch (error) {
+        console.error('Erro ao buscar usuários:', error);
+        showAlert('Erro', 'Erro ao carregar usuários: ' + error.message);
+    }
+}
+
+// Função para renderizar a tabela de usuários
+function renderLoginsUsuarios() {
+    const tbody = document.getElementById('loginsTableBody');
+    
+    if (loginsFiltrados.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                    <i class="fas fa-users" style="margin-right: 8px;"></i>
+                    Nenhum usuário encontrado
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = loginsFiltrados.map(usuario => {
+        const permissoesBadges = usuario.permissoes.map(perm => {
+            const permissaoInfo = permissoesDisponiveis.find(p => p.value === perm);
+            const label = permissaoInfo ? permissaoInfo.label : perm;
+            return `<span class="permission-badge">${label}</span>`;
+        }).join('');
+
+        return `
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
+            <td style="padding: 15px;">${usuario.email}</td>
+            <td style="padding: 15px;">${usuario.setor || 'Não informado'}</td>
+            <td style="padding: 15px; text-align: center;">
+                <div style="max-width: 300px;">
+                    ${permissoesBadges}
+                </div>
+            </td>
+            <td style="padding: 15px; text-align: center;">
+                <button onclick="abrirModalEditarLogin(${usuario.id})" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+            </td>
+        </tr>
+        `;
+    }).join('');
+}
+
+// Função para filtrar usuários
+function filtrarLoginsUsuarios() {
+    const filtroEmail = document.getElementById('filtroEmailLogin').value.toLowerCase();
+    const filtroNome = document.getElementById('filtroNomeLogin').value.toLowerCase();
+
+    loginsFiltrados = todosLoginsUsuarios.filter(usuario => {
+        const emailMatch = usuario.email.toLowerCase().includes(filtroEmail);
+        const nomeMatch = usuario.nome.toLowerCase().includes(filtroNome);
+        return emailMatch && nomeMatch;
+    });
+
+    renderLoginsUsuarios();
+}
+
+// Função para limpar filtros
+function limparFiltrosLogins() {
+    document.getElementById('filtroEmailLogin').value = '';
+    document.getElementById('filtroNomeLogin').value = '';
+    loginsFiltrados = [...todosLoginsUsuarios];
+    renderLoginsUsuarios();
+}
+
+// Função para abrir modal de edição
+function abrirModalEditarLogin(usuarioId) {
+    usuarioEditandoLogin = todosLoginsUsuarios.find(u => u.id === usuarioId);
+    
+    if (!usuarioEditandoLogin) {
+        showAlert('Erro', 'Usuário não encontrado.');
+        return;
+    }
+
+    // Preencher campos do formulário
+    document.getElementById('editLoginNome').value = usuarioEditandoLogin.nome;
+    document.getElementById('editLoginEmail').value = usuarioEditandoLogin.email;
+    document.getElementById('editLoginSetor').value = usuarioEditandoLogin.setor || 'Comercial';
+    document.getElementById('editLoginSenha').value = '';
+
+    // Carregar permissões
+    carregarPermissoesEdicao();
+
+    // Mostrar modal
+    document.getElementById('modalEditarLogin').style.display = 'flex';
+}
+
+// Função para carregar permissões no modal de edição
+function carregarPermissoesEdicao() {
+    const container = document.getElementById('editPermissoesContainer');
+    
+    container.innerHTML = permissoesDisponiveis.map(permissao => {
+        const isChecked = usuarioEditandoLogin.permissoes.includes(permissao.value);
+        return `
+            <div class="permission-item">
+                <input type="checkbox" id="edit-perm-${permissao.value}" value="${permissao.value}" ${isChecked ? 'checked' : ''}>
+                <label for="edit-perm-${permissao.value}">${permissao.label}</label>
+            </div>
+        `;
+    }).join('');
+}
+
+// Função para fechar modal de edição
+function fecharModalEditarLogin() {
+    document.getElementById('modalEditarLogin').style.display = 'none';
+    usuarioEditandoLogin = null;
+}
+
+// Função para salvar alterações do usuário
+async function salvarAlteracoesLogin(event) {
+    event.preventDefault();
+
+    if (!usuarioEditandoLogin) {
+        showAlert('Erro', 'Nenhum usuário selecionado para edição.');
+        return;
+    }
+
+    const nome = document.getElementById('editLoginNome').value.trim();
+    const setor = document.getElementById('editLoginSetor').value;
+    const novaSenha = document.getElementById('editLoginSenha').value;
+
+    // Validações
+    if (!nome) {
+        showAlert('Erro', 'O nome é obrigatório.');
+        return;
+    }
+
+    // Coletar permissões selecionadas
+    const permissoes = [];
+    document.querySelectorAll('#editPermissoesContainer input[type="checkbox"]:checked').forEach(checkbox => {
+        permissoes.push(checkbox.value);
+    });
+
+    if (permissoes.length === 0) {
+        showAlert('Erro', 'Selecione pelo menos uma permissão.');
+        return;
+    }
+
+    try {
+        // Preparar dados para atualização
+        const dadosAtualizacao = {
+            nome: nome,
+            setor: setor,
+            permissoes: permissoes
+        };
+
+        // Incluir senha apenas se foi fornecida
+        if (novaSenha && novaSenha.trim() !== '') {
+            if (novaSenha.length < 6) {
+                showAlert('Erro', 'A nova senha deve ter pelo menos 6 caracteres.');
+                return;
+            }
+            dadosAtualizacao.senha = novaSenha;
+        }
+
+        // Atualizar no Supabase
+        const { data, error } = await releaseClient
+            .from('usuarios')
+            .update(dadosAtualizacao)
+            .eq('id', usuarioEditandoLogin.id)
+            .select();
+
+        if (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Usuário atualizado com sucesso!');
+        fecharModalEditarLogin();
+        carregarLoginsUsuarios(); // Recarregar lista
+
+    } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+        showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
+    }
+}
+
+// Event listener para o formulário de edição
+document.addEventListener('DOMContentLoaded', function() {
+    const formEditarLogin = document.getElementById('formEditarLogin');
+    if (formEditarLogin) {
+        formEditarLogin.addEventListener('submit', salvarAlteracoesLogin);
+    }
+});
+
+// Função para carregar dados quando a aba for aberta
+function inicializarGerenciarLogins() {
+    carregarLoginsUsuarios();
+}
+</script>
+
 
