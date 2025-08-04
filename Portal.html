@@ -304,7 +304,8 @@ select {
     border-color: #999 !important;
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
 // Função para carregar tarefas do setor do usuário logado
 async function carregarTarefas() {
     const setorUsuario = sessionStorage.getItem('setor');
@@ -508,7 +509,8 @@ function populateReuniaoClientes() {
             }
         }
 
-
+</script>
+<script>
 async function fetchAndRenderContatosCS() {
     const container = document.getElementById('csContactsList');
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p>Carregando contatos...</p></div>';
@@ -4252,7 +4254,8 @@ select {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
         
         let resolveModalPromise;
 
@@ -6108,7 +6111,8 @@ const { data, error } = await query;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <!-- Fim do Relatório de Visita -->
 <!--Gráficos  -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
 let chartStatusVeiculos = null;
 let chartComparativo = null;
 
@@ -6184,7 +6188,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<script>
 async function gerarPDFVisita() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -6316,7 +6321,8 @@ async function gerarPDFVisita() {
     }
   }
 }
-
+</script>
+<script>
 function exibirRelease(d, url) {
   const c = document.createElement("div");
   c.className = "document-card";
@@ -6528,7 +6534,8 @@ document.addEventListener("DOMContentLoaded", function() {
     carregarReunioes();
   }
 });
-
+</script>
+<script>
   document.addEventListener('DOMContentLoaded', function () {
     const nome = localStorage.getItem('username') || 'TRYVIA';
     document.getElementById('nomeUsuario').innerText = nome;
@@ -10072,7 +10079,6 @@ function renderUsuarios() {
         `;
     }).join('');
 }
-
 // Função para obter o label da permissão
 function getPermissaoLabel(permissao) {
     const labels = {
@@ -10205,11 +10211,6 @@ function limparFiltrosUsuarios() {
     usuariosFiltrados = [...todosUsuarios];
     renderUsuarios();
 }
-
-
-
-// Primeira função editarUsuario removida - era duplicada
-
 
 async function salvarEdicaoUsuario(usuarioId) {
     const nome = document.getElementById('usuarioNome').value.trim();
@@ -10638,31 +10639,6 @@ function showClientWelcomeMessage(clientName) {
 
 
 <script>
-// ===== FUNÇÕES PARA GERENCIAR LOGINS =====
-
-// Função para abrir o modal de edição de usuário
-function editarUsuario(userId) {
-    // Buscar dados do usuário
-    const usuario = usuarios.find(u => u.id === userId);
-    if (!usuario) {
-        showAlert('Erro', 'Usuário não encontrado.');
-        return;
-    }
-
-    // Preencher campos do formulário
-    document.getElementById('editarIdUsuario').value = usuario.id;
-    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario').value = usuario.email || '';
-    document.getElementById('editarSenhaUsuario').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario').value = '';
-    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
-
-    // Carregar permissões do usuário
-    carregarPermissoesEdicao(usuario.permissoes || []);
-
-    // Mostrar modal
-    document.getElementById('modalEditarUsuario').classList.add('visible');
-}
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
@@ -11135,7 +11111,31 @@ function populateClientSelect() {
     });
 }
 
-// Seção duplicada de funções de edição de usuário removida
+// ===== FUNÇÕES PARA MODAL DE EDIÇÃO DE USUÁRIO =====
+
+// Função para abrir o modal de edição de usuário
+function editarUsuario(userId) {
+    // Buscar dados do usuário
+    const usuario = usuarios.find(u => u.id === userId);
+    if (!usuario) {
+        showAlert('Erro', 'Usuário não encontrado.');
+        return;
+    }
+
+    // Preencher campos do formulário
+    document.getElementById('editarIdUsuario').value = usuario.id;
+    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
+    document.getElementById('editarEmailUsuario').value = usuario.email || '';
+    document.getElementById('editarSenhaUsuario').value = '';
+    document.getElementById('editarConfirmarSenhaUsuario').value = '';
+    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
+
+    // Carregar permissões do usuário
+    carregarPermissoesEdicao(usuario.permissoes || []);
+
+    // Mostrar modal
+    document.getElementById('modalEditarUsuario').classList.add('visible');
+}
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
@@ -12389,9 +12389,5 @@ function inicializarGerenciarLogins() {
 }
 </script>
 
-
-
-
 </body>
 </html>
-
