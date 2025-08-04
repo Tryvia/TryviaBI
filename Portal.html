@@ -3240,6 +3240,71 @@ select {
             </div>
         </form>
     </div>
+
+    <!-- Seção de Filtros e Lista de Implantações -->
+    <div style="max-width: 1200px; margin: 50px auto 0; padding: 0 20px;">
+        <div style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 25px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
+            <h3 style="margin: 0; font-size: 1.8em; margin-bottom: 10px;">
+                <i class="fas fa-list" style="margin-right: 10px;"></i>
+                Implantações Registradas
+            </h3>
+            <p style="margin: 0; font-size: 1em; opacity: 0.9;">
+                Visualize e filtre as implantações já cadastradas
+            </p>
+        </div>
+
+        <!-- Filtros -->
+        <div style="background-color: rgba(179, 229, 252, 0.95); padding: 25px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2);">
+            <h4 style="color: #4fc3f7; margin-bottom: 20px; font-size: 1.3em;">
+                <i class="fas fa-filter" style="margin-right: 10px;"></i>
+                Filtros
+            </h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: end;">
+                <div class="implantacao-form-group">
+                    <label for="filtroEspecialista">Especialista</label>
+                    <select id="filtroEspecialista" onchange="filtrarImplantacoes()">
+                        <option value="">Todos os especialistas</option>
+                    </select>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="filtroCliente">Cliente</label>
+                    <select id="filtroCliente" onchange="filtrarImplantacoes()">
+                        <option value="">Todos os clientes</option>
+                    </select>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="filtroTipo">Tipo</label>
+                    <select id="filtroTipo" onchange="filtrarImplantacoes()">
+                        <option value="">Todos os tipos</option>
+                        <option value="Implantação Inicial">Implantação Inicial</option>
+                        <option value="Migração">Migração</option>
+                        <option value="Atualização">Atualização</option>
+                        <option value="Manutenção">Manutenção</option>
+                        <option value="Treinamento">Treinamento</option>
+                        <option value="Suporte">Suporte</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="limparFiltros()" style="background-color: #ff9800; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                        <i class="fas fa-eraser" style="margin-right: 8px;"></i>
+                        Limpar
+                    </button>
+                    <button onclick="carregarImplantacoesLista()" style="background-color: #4caf50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease;">
+                        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>
+                        Atualizar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Implantações -->
+        <div id="implantacoesContainer" style="min-height: 200px;">
+            <div id="loadingImplantacoes" style="text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2em; margin-bottom: 15px;"></i>
+                <p>Carregando implantações...</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Seção: Treinamento -->
@@ -12933,8 +12998,12 @@ async function salvarNovaImplantacao(event) {
         // Limpar formulário
         document.getElementById('novaImplantacaoForm').reset();
         
-        // Voltar para a aba de documentos
-        showTab('documents');
+        // Recarregar lista de implantações
+        carregarImplantacoesLista();
+        
+        // Definir data atual novamente após limpar o formulário
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('novaImplantacaoData').value = hoje;
         
     } catch (e) {
         console.error('Erro inesperado ao salvar implantação:', e);
@@ -12954,6 +13023,180 @@ function inicializarNovaImplantacao() {
     if (dataInput) {
         dataInput.value = hoje;
     }
+    
+    // Carregar lista de implantações
+    carregarImplantacoesLista();
+}
+
+// Variável global para armazenar todas as implantações
+let todasImplantacoes = [];
+
+// Função para carregar implantações do Supabase
+async function carregarImplantacoesLista() {
+    const container = document.getElementById('implantacoesContainer');
+    const loading = document.getElementById('loadingImplantacoes');
+    
+    if (loading) loading.style.display = 'block';
+    
+    try {
+        if (!window.supabaseClient) {
+            throw new Error('Cliente Supabase não inicializado');
+        }
+        
+        const { data, error } = await window.supabaseClient
+            .from('implantacoes')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Erro ao carregar implantações:', error);
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #f44336;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 15px;"></i>
+                    <p>Erro ao carregar implantações: ${error.message || 'Erro desconhecido'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        todasImplantacoes = data || [];
+        
+        // Atualizar filtros com dados únicos
+        atualizarFiltros();
+        
+        // Renderizar implantações
+        renderizarImplantacoes(todasImplantacoes);
+        
+    } catch (e) {
+        console.error('Erro inesperado ao carregar implantações:', e);
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #f44336;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 15px;"></i>
+                <p>Erro inesperado: ${e.message}</p>
+            </div>
+        `;
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
+
+// Função para atualizar os filtros com dados únicos
+function atualizarFiltros() {
+    const especialistas = [...new Set(todasImplantacoes.map(imp => imp.especialista))].sort();
+    const clientes = [...new Set(todasImplantacoes.map(imp => imp.cliente))].sort();
+    
+    // Atualizar filtro de especialistas
+    const filtroEspecialista = document.getElementById('filtroEspecialista');
+    if (filtroEspecialista) {
+        const valorAtual = filtroEspecialista.value;
+        filtroEspecialista.innerHTML = '<option value="">Todos os especialistas</option>';
+        especialistas.forEach(esp => {
+            filtroEspecialista.innerHTML += `<option value="${esp}" ${valorAtual === esp ? 'selected' : ''}>${esp}</option>`;
+        });
+    }
+    
+    // Atualizar filtro de clientes
+    const filtroCliente = document.getElementById('filtroCliente');
+    if (filtroCliente) {
+        const valorAtual = filtroCliente.value;
+        filtroCliente.innerHTML = '<option value="">Todos os clientes</option>';
+        clientes.forEach(cli => {
+            filtroCliente.innerHTML += `<option value="${cli}" ${valorAtual === cli ? 'selected' : ''}>${cli}</option>`;
+        });
+    }
+}
+
+// Função para renderizar as implantações
+function renderizarImplantacoes(implantacoes) {
+    const container = document.getElementById('implantacoesContainer');
+    
+    if (!implantacoes || implantacoes.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-inbox" style="font-size: 3em; margin-bottom: 20px; color: #ddd;"></i>
+                <h3 style="color: #999; margin-bottom: 10px;">Nenhuma implantação encontrada</h3>
+                <p style="color: #666;">Cadastre uma nova implantação usando o formulário acima.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const html = implantacoes.map(implantacao => {
+        const dataFormatada = new Date(implantacao.data).toLocaleDateString('pt-BR');
+        const criadoEm = new Date(implantacao.created_at).toLocaleDateString('pt-BR');
+        
+        return `
+            <div style="background-color: rgba(179, 229, 252, 0.95); border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2); border-left: 5px solid #4fc3f7;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                    <div>
+                        <h4 style="color: #4fc3f7; margin: 0 0 5px 0; font-size: 1.3em;">
+                            <i class="fas fa-cogs" style="margin-right: 10px;"></i>
+                            ${implantacao.projeto}
+                        </h4>
+                        <p style="color: #666; margin: 0; font-size: 0.9em;">Cliente: <strong>${implantacao.cliente}</strong></p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="background-color: #4fc3f7; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold;">
+                            ${implantacao.tipo}
+                        </span>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="color: #4fc3f7;">Especialista:</strong><br>
+                        <span style="color: #333;">${implantacao.especialista}</span>
+                    </div>
+                    <div>
+                        <strong style="color: #4fc3f7;">Data:</strong><br>
+                        <span style="color: #333;">${dataFormatada}</span>
+                    </div>
+                    <div>
+                        <strong style="color: #4fc3f7;">Tickets Pendentes:</strong><br>
+                        <span style="color: #333; font-weight: bold;">${implantacao.tickets_pendentes || 0}</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: #4fc3f7;">Resumo:</strong><br>
+                    <p style="color: #333; margin: 5px 0 0 0; line-height: 1.5;">${implantacao.resumo}</p>
+                </div>
+                
+                <div style="text-align: right; font-size: 0.8em; color: #888;">
+                    <i class="fas fa-calendar" style="margin-right: 5px;"></i>
+                    Cadastrado em: ${criadoEm}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = html;
+}
+
+// Função para filtrar implantações
+function filtrarImplantacoes() {
+    const filtroEspecialista = document.getElementById('filtroEspecialista').value;
+    const filtroCliente = document.getElementById('filtroCliente').value;
+    const filtroTipo = document.getElementById('filtroTipo').value;
+    
+    let implantacoesFiltradas = todasImplantacoes.filter(implantacao => {
+        const matchEspecialista = !filtroEspecialista || implantacao.especialista === filtroEspecialista;
+        const matchCliente = !filtroCliente || implantacao.cliente === filtroCliente;
+        const matchTipo = !filtroTipo || implantacao.tipo === filtroTipo;
+        
+        return matchEspecialista && matchCliente && matchTipo;
+    });
+    
+    renderizarImplantacoes(implantacoesFiltradas);
+}
+
+// Função para limpar filtros
+function limparFiltros() {
+    document.getElementById('filtroEspecialista').value = '';
+    document.getElementById('filtroCliente').value = '';
+    document.getElementById('filtroTipo').value = '';
+    
+    renderizarImplantacoes(todasImplantacoes);
 }
 </script>
 
