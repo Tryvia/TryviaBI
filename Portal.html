@@ -12900,7 +12900,12 @@ async function salvarNovaImplantacao(event) {
     btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Salvando...';
     
     try {
-        const { data: result, error } = await supabase
+        // Verificar se o cliente Supabase está disponível
+        if (!window.supabaseClient) {
+            throw new Error('Cliente Supabase não inicializado');
+        }
+        
+        const { data: result, error } = await window.supabaseClient
             .from('implantacoes')
             .insert([
                 {
@@ -12911,13 +12916,15 @@ async function salvarNovaImplantacao(event) {
                     tipo: tipo,
                     tickets_pendentes: tickets,
                     resumo: resumo,
+                    setor: sessionStorage.getItem('setor') || 'default',
                     created_at: new Date().toISOString()
                 }
             ]);
 
         if (error) {
-            console.error('Erro ao salvar implantação:', error.message);
-            showAlert('Erro', 'Erro ao salvar implantação: ' + error.message);
+            console.error('Erro ao salvar implantação:', error);
+            const errorMessage = error.message || error.details || error.hint || JSON.stringify(error);
+            showAlert('Erro', 'Erro ao salvar implantação: ' + errorMessage);
             return;
         }
 
@@ -12931,7 +12938,7 @@ async function salvarNovaImplantacao(event) {
         
     } catch (e) {
         console.error('Erro inesperado ao salvar implantação:', e);
-        showAlert('Erro', 'Erro inesperado ao salvar implantação.');
+        showAlert('Erro', 'Erro inesperado: ' + e.message);
     } finally {
         // Reabilitar botão
         btnSalvar.disabled = false;
