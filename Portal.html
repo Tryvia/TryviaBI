@@ -304,8 +304,7 @@ select {
     border-color: #999 !important;
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 // Função para carregar tarefas do setor do usuário logado
 async function carregarTarefas() {
     const setorUsuario = sessionStorage.getItem('setor');
@@ -509,8 +508,7 @@ function populateReuniaoClientes() {
             }
         }
 
-</script>
-<script>
+
 async function fetchAndRenderContatosCS() {
     const container = document.getElementById('csContactsList');
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p>Carregando contatos...</p></div>';
@@ -4254,8 +4252,7 @@ select {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
         
         let resolveModalPromise;
 
@@ -6111,8 +6108,7 @@ const { data, error } = await query;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <!-- Fim do Relatório de Visita -->
 <!--Gráficos  -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
 let chartStatusVeiculos = null;
 let chartComparativo = null;
 
@@ -6188,8 +6184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js">
 async function gerarPDFVisita() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -6321,8 +6316,7 @@ async function gerarPDFVisita() {
     }
   }
 }
-</script>
-<script>
+
 function exibirRelease(d, url) {
   const c = document.createElement("div");
   c.className = "document-card";
@@ -6534,8 +6528,7 @@ document.addEventListener("DOMContentLoaded", function() {
     carregarReunioes();
   }
 });
-</script>
-<script>
+
   document.addEventListener('DOMContentLoaded', function () {
     const nome = localStorage.getItem('username') || 'TRYVIA';
     document.getElementById('nomeUsuario').innerText = nome;
@@ -10035,6 +10028,50 @@ async function fetchAndRenderUsuarios() {
     }
 }
 
+// Função para renderizar a tabela de usuários
+function renderUsuarios() {
+    const tbody = document.getElementById('usuariosTableBody');
+    
+    if (usuariosFiltrados.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+                    <i class="fas fa-users" style="margin-right: 8px;"></i>
+                    Nenhum usuário encontrado
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = usuariosFiltrados.map(usuario => {
+        
+        const nomeSeguro = String(usuario.nome).replace(/'/g, "\\'").replace(/\n/g, ' ');
+        return `
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
+            <td style="padding: 15px;">${usuario.email}</td>
+            <td style="padding: 15px; text-align: center;">
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
+                    ${usuario.permissoes.map(perm => `
+                        <span style="background: #4fc3f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em;">
+                            ${getPermissaoLabel(perm)}
+                        </span>
+                    `).join('')}
+                </div>
+            </td>
+            <td style="padding: 15px; text-align: center;">
+                <button onclick="editarUsuario(${usuario.id})" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button onclick="excluirUsuario(${usuario.id})" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </td>
+        </tr>
+        `;
+    }).join('');
+}
 
 // Função para obter o label da permissão
 function getPermissaoLabel(permissao) {
@@ -10171,29 +10208,7 @@ function limparFiltrosUsuarios() {
 
 
 
-// Função para editar usuário (implementação básica)
-async function editarUsuario(usuarioId) {
-    const usuario = todosUsuarios.find(u => u.id === usuarioId);
-    if (!usuario) {
-        showAlert('Erro', 'Usuário não encontrado.');
-        return;
-    }
-    
-    document.getElementById('editarIdUsuario').value = usuario.id;
-    document.getElementById('editarNomeUsuario').value = usuario.nome;
-    document.getElementById('editarEmailUsuario').value = usuario.email;
-    document.getElementById('editarSenhaUsuario').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario').value = '';
-    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
-   
-    if (usuario.permissoes && Array.isArray(usuario.permissoes)) {
-        document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]').forEach(checkbox => {
-            checkbox.checked = usuario.permissoes.includes(checkbox.value);
-        });
-    }
-    
-    document.getElementById('modalEditarUsuario').classList.add('visible');
-}
+// Primeira função editarUsuario removida - era duplicada
 
 
 async function salvarEdicaoUsuario(usuarioId) {
@@ -10878,7 +10893,7 @@ function renderUsuarios(usuariosParaRender) {
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: center;">
-                    <button onclick="modalEditarUsuario(${idSeguro})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                    <button onclick="editarUsuario(${idSeguro})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
                         <i class="fas fa-edit"></i> Editar
                     </button>
                     <button onclick="excluirUsuario(${idSeguro})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
@@ -11120,31 +11135,7 @@ function populateClientSelect() {
     });
 }
 
-// ===== FUNÇÕES PARA MODAL DE EDIÇÃO DE USUÁRIO =====
-
-// Função para abrir o modal de edição de usuário
-function editarUsuario(userId) {
-    // Buscar dados do usuário
-    const usuario = usuarios.find(u => u.id === userId);
-    if (!usuario) {
-        showAlert('Erro', 'Usuário não encontrado.');
-        return;
-    }
-
-    // Preencher campos do formulário
-    document.getElementById('editarIdUsuario').value = usuario.id;
-    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario').value = usuario.email || '';
-    document.getElementById('editarSenhaUsuario').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario').value = '';
-    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
-
-    // Carregar permissões do usuário
-    carregarPermissoesEdicao(usuario.permissoes || []);
-
-    // Mostrar modal
-    document.getElementById('modalEditarUsuario').classList.add('visible');
-}
+// Seção duplicada de funções de edição de usuário removida
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
@@ -12398,4 +12389,9 @@ function inicializarGerenciarLogins() {
 }
 </script>
 
+
+
+
+</body>
+</html>
 
