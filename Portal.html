@@ -3050,7 +3050,7 @@ select {
 </div>
 </div>
 <div class="content-section" id="documents">
-<button class="btn-nova-implantacao" onclick="abrirModalImplantacao()">
+<button class="btn-nova-implantacao" onclick="showTab('nova-implantacao')">
     <i class="fas fa-plus" style="margin-right: 8px;"></i>
     Nova Implantação
 </button>
@@ -3164,6 +3164,80 @@ select {
                 <i class="fas fa-save" style="margin-right: 8px;"></i>
                 Salvar Implantação
             </button>
+        </form>
+    </div>
+</div>
+
+<!-- Nova Seção: Nova Implantação -->
+<div class="content-section" id="nova-implantacao">
+    <div style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);">
+        <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
+            <i class="fas fa-cogs" style="margin-right: 15px;"></i>
+            Nova Implantação
+        </h2>
+        <p style="margin: 0; font-size: 1.2em; opacity: 0.9;">
+            Registre uma nova implantação no sistema
+        </p>
+    </div>
+
+    <div class="form-container" style="max-width: 800px; margin: 0 auto;">
+        <form id="novaImplantacaoForm">
+            <div class="implantacao-form-row">
+                <div class="implantacao-form-group">
+                    <label for="novaImplantacaoEspecialista">Especialista</label>
+                    <input type="text" id="novaImplantacaoEspecialista" placeholder="Nome do especialista" required>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="novaImplantacaoData">Data</label>
+                    <input type="date" id="novaImplantacaoData" required>
+                </div>
+            </div>
+            
+            <div class="implantacao-form-row">
+                <div class="implantacao-form-group">
+                    <label for="novaImplantacaoCliente">Cliente</label>
+                    <input type="text" id="novaImplantacaoCliente" placeholder="Nome do cliente" required>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="novaImplantacaoProjeto">Projeto</label>
+                    <input type="text" id="novaImplantacaoProjeto" placeholder="Nome do projeto" required>
+                </div>
+            </div>
+            
+            <div class="implantacao-form-row">
+                <div class="implantacao-form-group">
+                    <label for="novaImplantacaoTipo">Tipo</label>
+                    <select id="novaImplantacaoTipo" required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="Implantação Inicial">Implantação Inicial</option>
+                        <option value="Migração">Migração</option>
+                        <option value="Atualização">Atualização</option>
+                        <option value="Manutenção">Manutenção</option>
+                        <option value="Treinamento">Treinamento</option>
+                        <option value="Suporte">Suporte</option>
+                    </select>
+                </div>
+                <div class="implantacao-form-group">
+                    <label for="novaImplantacaoTickets">Tickets Pendentes</label>
+                    <input type="number" id="novaImplantacaoTickets" placeholder="Número de tickets" min="0" value="0">
+                </div>
+            </div>
+            
+            <div class="implantacao-form-group">
+                <label for="novaImplantacaoResumo">Resumo</label>
+                <textarea id="novaImplantacaoResumo" placeholder="Descreva os detalhes da implantação..." required></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button type="button" onclick="showTab('documents')" style="background-color: #6c757d; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1em; transition: background-color 0.3s ease; flex: 1;">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>
+                    Voltar
+                </button>
+                <button type="submit" class="btn-salvar-implantacao" style="flex: 2;">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    Salvar Implantação
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -4887,6 +4961,8 @@ function removeIntegration(idx, listName) {
                 carregarMVP();
             } else if (tabId === 'implantacao') {
                 carregarImplantacoes();
+            } else if (tabId === 'nova-implantacao') {
+                inicializarNovaImplantacao();
             }
 
         }
@@ -12699,6 +12775,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (formImplantacao) {
         formImplantacao.addEventListener('submit', salvarImplantacao);
     }
+    
+    // Adicionar event listener para o novo formulário de implantação
+    const novaFormImplantacao = document.getElementById('novaImplantacaoForm');
+    if (novaFormImplantacao) {
+        novaFormImplantacao.addEventListener('submit', salvarNovaImplantacao);
+    }
 });
 
 // Função para carregar dados quando a aba for aberta
@@ -12791,6 +12873,79 @@ async function salvarImplantacao(event) {
         // Reabilitar botão
         btnSalvar.disabled = false;
         btnSalvar.innerHTML = textoOriginal;
+    }
+}
+
+// Função para salvar nova implantação (da nova tela)
+async function salvarNovaImplantacao(event) {
+    event.preventDefault();
+    
+    const especialista = document.getElementById('novaImplantacaoEspecialista').value.trim();
+    const data = document.getElementById('novaImplantacaoData').value;
+    const cliente = document.getElementById('novaImplantacaoCliente').value.trim();
+    const projeto = document.getElementById('novaImplantacaoProjeto').value.trim();
+    const tipo = document.getElementById('novaImplantacaoTipo').value;
+    const tickets = parseInt(document.getElementById('novaImplantacaoTickets').value) || 0;
+    const resumo = document.getElementById('novaImplantacaoResumo').value.trim();
+    
+    if (!especialista || !data || !cliente || !projeto || !tipo || !resumo) {
+        showAlert('Atenção', 'Preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    // Desabilitar botão durante o salvamento
+    const btnSalvar = document.querySelector('#novaImplantacaoForm .btn-salvar-implantacao');
+    const textoOriginal = btnSalvar.innerHTML;
+    btnSalvar.disabled = true;
+    btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Salvando...';
+    
+    try {
+        const { data: result, error } = await supabase
+            .from('implantacoes')
+            .insert([
+                {
+                    especialista: especialista,
+                    data: data,
+                    cliente: cliente,
+                    projeto: projeto,
+                    tipo: tipo,
+                    tickets_pendentes: tickets,
+                    resumo: resumo,
+                    created_at: new Date().toISOString()
+                }
+            ]);
+
+        if (error) {
+            console.error('Erro ao salvar implantação:', error.message);
+            showAlert('Erro', 'Erro ao salvar implantação: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Implantação salva com sucesso!');
+        
+        // Limpar formulário
+        document.getElementById('novaImplantacaoForm').reset();
+        
+        // Voltar para a aba de documentos
+        showTab('documents');
+        
+    } catch (e) {
+        console.error('Erro inesperado ao salvar implantação:', e);
+        showAlert('Erro', 'Erro inesperado ao salvar implantação.');
+    } finally {
+        // Reabilitar botão
+        btnSalvar.disabled = false;
+        btnSalvar.innerHTML = textoOriginal;
+    }
+}
+
+// Função para inicializar a nova tela de implantação
+function inicializarNovaImplantacao() {
+    // Definir data atual como padrão
+    const hoje = new Date().toISOString().split('T')[0];
+    const dataInput = document.getElementById('novaImplantacaoData');
+    if (dataInput) {
+        dataInput.value = hoje;
     }
 }
 </script>
