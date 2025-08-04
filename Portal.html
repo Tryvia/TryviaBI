@@ -11111,31 +11111,6 @@ function populateClientSelect() {
     });
 }
 
-// ===== FUNÇÕES PARA MODAL DE EDIÇÃO DE USUÁRIO =====
-
-// Função para abrir o modal de edição de usuário
-function editarUsuario(userId) {
-    // Buscar dados do usuário
-    const usuario = usuarios.find(u => u.id === userId);
-    if (!usuario) {
-        showAlert('Erro', 'Usuário não encontrado.');
-        return;
-    }
-
-    // Preencher campos do formulário
-    document.getElementById('editarIdUsuario').value = usuario.id;
-    document.getElementById('editarNomeUsuario').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario').value = usuario.email || '';
-    document.getElementById('editarSenhaUsuario').value = '';
-    document.getElementById('editarConfirmarSenhaUsuario').value = '';
-    document.getElementById('editarSetorUsuario').value = usuario.setor || '';
-
-    // Carregar permissões do usuário
-    carregarPermissoesEdicao(usuario.permissoes || []);
-
-    // Mostrar modal
-    document.getElementById('modalEditarUsuario').classList.add('visible');
-}
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
