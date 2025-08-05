@@ -10536,7 +10536,7 @@ function renderUsuarios() {
     tbody.innerHTML = usuariosFiltrados.map(usuario => {
         
         const nomeSeguro = String(usuario.nome).replace(/'/g, "\\'").replace(/\n/g, ' ');
-        return `
+        return 
         <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 15px; font-weight: bold;">${usuario.nome}</td>
             <td style="padding: 15px;">${usuario.email}</td>
@@ -10558,7 +10558,7 @@ function renderUsuarios() {
                 </button>
             </td>
         </tr>
-        `;
+        ;
     }).join('');
 }
 // Função para obter o label da permissão
