@@ -10550,10 +10550,10 @@ function renderUsuarios() {
                 </div>
             </td>
             <td style="padding: 15px; text-align: center;">
-                <button onclick="editarUsuario(\'${usuario.id}\')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                <button onclick="editarUsuario(${usuario.id})" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
                     <i class="fas fa-edit"></i> Editar
                 </button>
-                <button onclick="excluirUsuario(\'${usuario.id}\')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                <button onclick="excluirUsuario(${usuario.id})" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
             </td>
@@ -11351,10 +11351,10 @@ function renderUsuarios(usuariosParaRender) {
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: center;">
-                    <button onclick="editarUsuario(\'${idSeguro}\')" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                    <button onclick="editarUsuario(${idSeguro})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
                         <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button onclick="excluirUsuario(\'${idSeguro}\')" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                    <button onclick="excluirUsuario(${idSeguro})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
                         <i class="fas fa-trash"></i> Excluir
                     </button>
                 </td>
@@ -11386,23 +11386,23 @@ function limparFiltrosUsuarios() {
 
 // Função para editar usuário
 async function editarUsuario(userId) {
+    // Buscar o usuário na lista
     const usuario = usuarios.find(u => u.id === userId);
     if (!usuario) {
         showAlert('Erro', 'Usuário não encontrado!');
         return;
     }
-    
-    // Preencher o formulário de edição com os dados do usuário
+
+    // Preencher o formulário de edição
     document.getElementById('editNomeUsuario').value = usuario.nome || '';
     document.getElementById('editEmailUsuario').value = usuario.email || '';
     document.getElementById('editSetorUsuario').value = usuario.setor || '';
-    document.getElementById('editPerfilUsuario').value = usuario.perfil || '';
     
     // Armazenar o ID do usuário sendo editado
-    window.usuarioEditandoId = userId;
+    window.editingUserId = userId;
     
-    // Mostrar o modal de edição
-    document.getElementById('editUsuarioModal').style.display = 'block';
+    // Abrir o modal de edição
+    document.getElementById('editUserModal').style.display = 'block';
 }
 
 // Função para excluir usuário
