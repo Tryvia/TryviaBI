@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <link rel="icon" type="image/png" href="tryvia.png" />
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
 button, a.button, .btn {
@@ -9141,6 +9144,10 @@ async function excluirProjeto(projetoId) {
 }
 </script>
 
+</body>>
+    </script>
+</body>
+</html>
 
 
 <script>
@@ -10510,42 +10517,7 @@ async function fetchAndRenderUsuarios() {
     }
 }
 
-function renderUsuarios() {
-    const container = document.getElementById('usuariosList');
-    if (usuariosFiltrados.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
-                <div style="font-size: 4em; margin-bottom: 20px;">👥</div>
-                <h3>Nenhum usuário encontrado</h3>
-                <p>Os usuários cadastrados aparecerão aqui.</p>
-            </div>
-        `;
-        return;
-    }
 
-    container.innerHTML = usuariosFiltrados.map(usuario => `
-        <div class="user-card" style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4 style="margin: 0 0 5px 0; color: #333;">${usuario.nome}</h4>
-                    <p style="margin: 0; color: #666; font-size: 0.9em;">${usuario.email}</p>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9em;"><strong>Setor:</strong> ${usuario.setor || 'N/A'}</p>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9em;">
-                        <strong>Permissões:</strong> ${usuario.permissoes.map(getPermissaoLabel).join(', ')}
-                    </p>
-                </div>
-                <div>
-                    <button onclick="editarUsuario(${usuario.id})" style="background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em; margin-right: 10px;">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button onclick="deletarUsuario(${usuario.id})" style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">
-                        <i class="fas fa-trash"></i> Deletar
-                    </button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
 // Função para obter o label da permissão
 function getPermissaoLabel(permissao) {
     const labels = {
@@ -11306,47 +11278,6 @@ async function fetchAndRenderUsuarios() {
     }
 }
 
-// Função para renderizar usuários na tabela
-function renderUsuarios(usuariosParaRender) {
-    const tbody = document.getElementById('usuariosTableBody');
-    
-    if (usuariosParaRender.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
-                    <i class="fas fa-users" style="margin-right: 8px;"></i>
-                    Nenhum usuário encontrado
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    console.log(usuariosParaRender);
-    tbody.innerHTML = usuariosParaRender.map(usuario => {
-        const idSeguro = JSON.stringify(usuario.id);
-        return `
-            <tr>
-                <td style="padding: 15px;">${usuario.nome || 'N/A'}</td>
-                <td style="padding: 15px;">${usuario.email || 'N/A'}</td>
-                <td style="padding: 15px;">${usuario.setor || 'N/A'}</td>
-                <td style="padding: 15px; text-align: center;">
-                    <span style="background: #4fc3f7; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8em;">
-                        ${(usuario.permissoes || []).length} permissões
-                    </span>
-                </td>
-                <td style="padding: 15px; text-align: center;">
-                    <button onclick="editarUsuario(${idSeguro})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button onclick="excluirUsuario(${idSeguro})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
-                        <i class="fas fa-trash"></i> Excluir
-                    </button>
-                </td>
-            </tr>
-        `;
-    }).join('');
-}
 
 // Função para filtrar usuários
 function filtrarUsuarios() {
@@ -11367,6 +11298,27 @@ function limparFiltrosUsuarios() {
     document.getElementById('filtroNomeUsuario').value = '';
     document.getElementById('filtroEmailUsuario').value = '';
     renderUsuarios(usuarios);
+}
+
+// Função para editar usuário
+async function editarUsuario(userId) {
+    const usuario = usuarios.find(u => u.id === userId);
+    if (!usuario) {
+        showAlert('Erro', 'Usuário não encontrado!');
+        return;
+    }
+    
+    // Preencher o formulário de edição com os dados do usuário
+    document.getElementById('editNomeUsuario').value = usuario.nome || '';
+    document.getElementById('editEmailUsuario').value = usuario.email || '';
+    document.getElementById('editSetorUsuario').value = usuario.setor || '';
+    document.getElementById('editPerfilUsuario').value = usuario.perfil || '';
+    
+    // Armazenar o ID do usuário sendo editado
+    window.usuarioEditandoId = userId;
+    
+    // Mostrar o modal de edição
+    document.getElementById('editUsuarioModal').style.display = 'block';
 }
 
 // Função para excluir usuário
@@ -13454,3 +13406,4 @@ function cancelarEdicao() {
 
 </body>
 </html>
+
