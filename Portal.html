@@ -7776,7 +7776,7 @@ async function consultarIntegracoesPorCNPJ(cnpj) {
 async function consultarIntegracoesPorIdCliente(idCliente) {
     try {
         // Tenta buscar dados reais da API Flask
-        const response = await fetch(`https://8d5cf978ae4f.ngrok-free.app/api/integracoes/${idCliente}`, {
+        const response = await fetch(`https://integra-o-sing.onrender.com/api/integracoes/${idCliente}`, {
     headers: {
         'ngrok-skip-browser-warning': 'true'
     }
