@@ -8782,9 +8782,9 @@ async function loadProjectsData() {
                     <td style="padding: 15px; color: #666;">${project.empresa}</td>
                     <td style="padding: 15px; color: #666;">${project.especialista}</td>
                     <td style="padding: 15px; text-align: center;">
-                        <button onclick="excluirProjeto('${project.id}')" style="background: #f44336; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 12px; transition: background 0.3s ease;" onmouseover="this.style.background='#d32f2f'" onmouseout="this.style.background='#f44336'">
-    <i class="fas fa-trash" style="margin-right: 4px;"></i>Excluir
-</button>
+                        <button onclick="excluirProjeto(${project.id})" style="background: #f44336; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 12px; transition: background 0.3s ease;" onmouseover="this.style.background='#d32f2f'" onmouseout="this.style.background='#f44336'">
+                            <i class="fas fa-trash" style="margin-right: 4px;"></i>Excluir
+                        </button>
                     </td>
                 </tr>
             `).join('');
@@ -11339,7 +11339,7 @@ function renderUsuarios(usuariosParaRender) {
         return;
     }
 
-    // ...existing code...
+    console.log(usuariosParaRender);
     tbody.innerHTML = usuariosParaRender.map(usuario => {
         const idSeguro = JSON.stringify(usuario.id);
         return `
@@ -11353,10 +11353,10 @@ function renderUsuarios(usuariosParaRender) {
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: center;">
-                    <button onclick="editarUsuario('${idSeguro}')" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                    <button onclick="editarUsuario(${idSeguro})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
                         <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button onclick="excluirUsuario('${idSeguro}')" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                    <button onclick="excluirUsuario(${idSeguro})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
                         <i class="fas fa-trash"></i> Excluir
                     </button>
                 </td>
