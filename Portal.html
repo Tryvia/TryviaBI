@@ -10542,11 +10542,11 @@ function renderUsuarios() {
             <td style="padding: 15px;">${usuario.email}</td>
             <td style="padding: 15px; text-align: center;">
                 <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
-                    ${usuario.permissoes.map(perm => `
+                    ${usuario.permissoes.map(perm => 
                         <span style="background: #4fc3f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em;">
                             ${getPermissaoLabel(perm)}
                         </span>
-                    `).join('')}
+                    ).join('')}
                 </div>
             </td>
             <td style="padding: 15px; text-align: center;">
