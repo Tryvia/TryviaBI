@@ -3052,7 +3052,7 @@ select {
 <div class="content-section" id="documents">
 <button class="btn-nova-implantacao" onclick="showTab('nova-implantacao')">
     <i class="fas fa-plus" style="margin-right: 8px;"></i>
-    Projetos
+    Nova Implantação
 </button>
 <div class="form-container">
 <h3 style="margin-bottom: 20px;">Adicionar Novo Documento de Implantação</h3>
@@ -3170,13 +3170,13 @@ select {
 
 <!-- Nova Seção: Nova Implantação -->
 <div class="content-section" id="nova-implantacao">
-    <div style="background: linear-gradient(135deg, #29b6f6 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px #b3e5fc(156, 39, 176, 0.3);">
+    <div style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);">
         <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
             <i class="fas fa-cogs" style="margin-right: 15px;"></i>
-            Projetos 
+            Nova Implantação
         </h2>
         <p style="margin: 0; font-size: 1.2em; opacity: 0.9;">
-            Registro de Projetos 
+            Registre uma nova implantação no sistema
         </p>
     </div>
 
@@ -3235,6 +3235,10 @@ select {
                     <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>
                     Voltar
                 </button>
+                <button type="button" id="btnCancelarEdicao" onclick="cancelarEdicao()" style="background-color: #f44336; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1em; transition: background-color 0.3s ease; flex: 1; display: none;">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>
+                    Cancelar Edição
+                </button>
                 <button type="submit" class="btn-salvar-implantacao" style="flex: 2;">
                     <i class="fas fa-save" style="margin-right: 8px;"></i>
                     Salvar Implantação
@@ -3248,10 +3252,10 @@ select {
         <div style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 25px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
             <h3 style="margin: 0; font-size: 1.8em; margin-bottom: 10px;">
                 <i class="fas fa-list" style="margin-right: 10px;"></i>
-                Projetos Registrados
+                Implantações Registradas
             </h3>
             <p style="margin: 0; font-size: 1em; opacity: 0.9;">
-                Visualize e filtre Projetos já cadastradas
+                Visualize e filtre as implantações já cadastradas
             </p>
         </div>
 
@@ -12964,7 +12968,14 @@ async function salvarNovaImplantacao(event) {
     const btnSalvar = document.querySelector('#novaImplantacaoForm .btn-salvar-implantacao');
     const textoOriginal = btnSalvar.innerHTML;
     btnSalvar.disabled = true;
-    btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Salvando...';
+    
+    const isEdicao = implantacaoEditando !== null;
+    
+    if (isEdicao) {
+        btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Atualizando...';
+    } else {
+        btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Salvando...';
+    }
     
     try {
         // Verificar se o cliente Supabase está disponível
@@ -12972,21 +12983,39 @@ async function salvarNovaImplantacao(event) {
             throw new Error('Cliente Supabase não inicializado');
         }
         
-        const { data: result, error } = await window.supabaseClient
-            .from('implantacoes')
-            .insert([
-                {
-                    especialista: especialista,
-                    data: data,
-                    cliente: cliente,
-                    projeto: projeto,
-                    tipo: tipo,
-                    tickets_pendentes: tickets,
-                    resumo: resumo,
-                    setor: sessionStorage.getItem('setor') || 'default',
-                    created_at: new Date().toISOString()
-                }
-            ]);
+        const dadosImplantacao = {
+            especialista: especialista,
+            data: data,
+            cliente: cliente,
+            projeto: projeto,
+            tipo: tipo,
+            tickets_pendentes: tickets,
+            resumo: resumo,
+            setor: sessionStorage.getItem('setor') || 'default'
+        };
+        
+        let result, error;
+        
+        if (isEdicao) {
+            // Atualizar implantação existente
+            const response = await window.supabaseClient
+                .from('implantacoes')
+                .update(dadosImplantacao)
+                .eq('id', implantacaoEditando.id);
+            
+            result = response.data;
+            error = response.error;
+        } else {
+            // Criar nova implantação
+            dadosImplantacao.created_at = new Date().toISOString();
+            
+            const response = await window.supabaseClient
+                .from('implantacoes')
+                .insert([dadosImplantacao]);
+            
+            result = response.data;
+            error = response.error;
+        }
 
         if (error) {
             console.error('Erro ao salvar implantação:', error);
@@ -12995,17 +13024,21 @@ async function salvarNovaImplantacao(event) {
             return;
         }
 
-        showAlert('Sucesso', 'Implantação salva com sucesso!');
-        
-        // Limpar formulário
-        document.getElementById('novaImplantacaoForm').reset();
+        if (isEdicao) {
+            showAlert('Sucesso', 'Implantação atualizada com sucesso!');
+            // Cancelar edição
+            cancelarEdicao();
+        } else {
+            showAlert('Sucesso', 'Implantação salva com sucesso!');
+            // Limpar formulário
+            document.getElementById('novaImplantacaoForm').reset();
+            // Definir data atual novamente após limpar o formulário
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('novaImplantacaoData').value = hoje;
+        }
         
         // Recarregar lista de implantações
         carregarImplantacoesLista();
-        
-        // Definir data atual novamente após limpar o formulário
-        const hoje = new Date().toISOString().split('T')[0];
-        document.getElementById('novaImplantacaoData').value = hoje;
         
     } catch (e) {
         console.error('Erro inesperado ao salvar implantação:', e);
@@ -13247,15 +13280,60 @@ function renderizarImplantacoes(implantacoes) {
                 </div>
                 
                 <div style="
-                    text-align: right; 
-                    font-size: 0.8em; 
-                    color: #888;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
                     border-top: 1px solid rgba(79, 195, 247, 0.2);
-                    padding-top: 10px;
+                    padding-top: 15px;
                     margin-top: 15px;
+                    flex-wrap: wrap;
+                    gap: 10px;
                 ">
-                    <i class="fas fa-calendar" style="margin-right: 5px;"></i>
-                    Cadastrado em: ${criadoEm}
+                    <div style="
+                        font-size: 0.8em; 
+                        color: #888;
+                    ">
+                        <i class="fas fa-calendar" style="margin-right: 5px;"></i>
+                        Cadastrado em: ${criadoEm}
+                    </div>
+                    
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="editarImplantacao(${implantacao.id})" style="
+                            background-color: #ff9800; 
+                            color: white; 
+                            border: none; 
+                            padding: 8px 15px; 
+                            border-radius: 6px; 
+                            cursor: pointer; 
+                            font-size: 0.8em;
+                            font-weight: bold;
+                            transition: background-color 0.3s ease;
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                        " onmouseover="this.style.backgroundColor='#f57c00'" onmouseout="this.style.backgroundColor='#ff9800'">
+                            <i class="fas fa-edit"></i>
+                            Editar
+                        </button>
+                        
+                        <button onclick="excluirImplantacao(${implantacao.id}, '${implantacao.projeto.replace(/'/g, "\\'")}', '${implantacao.cliente.replace(/'/g, "\\'")}')" style="
+                            background-color: #f44336; 
+                            color: white; 
+                            border: none; 
+                            padding: 8px 15px; 
+                            border-radius: 6px; 
+                            cursor: pointer; 
+                            font-size: 0.8em;
+                            font-weight: bold;
+                            transition: background-color 0.3s ease;
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                        " onmouseover="this.style.backgroundColor='#d32f2f'" onmouseout="this.style.backgroundColor='#f44336'">
+                            <i class="fas fa-trash"></i>
+                            Excluir
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -13288,6 +13366,106 @@ function limparFiltros() {
     document.getElementById('filtroTipo').value = '';
     
     renderizarImplantacoes(todasImplantacoes);
+}
+
+// Função para excluir implantação
+async function excluirImplantacao(id, projeto, cliente) {
+    // Confirmar exclusão
+    const confirmacao = confirm(`Tem certeza que deseja excluir a implantação "${projeto}" do cliente "${cliente}"?\n\nEsta ação não pode ser desfeita.`);
+    
+    if (!confirmacao) {
+        return;
+    }
+    
+    try {
+        if (!window.supabaseClient) {
+            throw new Error('Cliente Supabase não inicializado');
+        }
+        
+        const { error } = await window.supabaseClient
+            .from('implantacoes')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error('Erro ao excluir implantação:', error);
+            const errorMessage = error.message || error.details || error.hint || JSON.stringify(error);
+            showAlert('Erro', 'Erro ao excluir implantação: ' + errorMessage);
+            return;
+        }
+
+        showAlert('Sucesso', 'Implantação excluída com sucesso!');
+        
+        // Recarregar lista de implantações
+        carregarImplantacoesLista();
+        
+    } catch (e) {
+        console.error('Erro inesperado ao excluir implantação:', e);
+        showAlert('Erro', 'Erro inesperado: ' + e.message);
+    }
+}
+
+// Variável global para controlar se está editando
+let implantacaoEditando = null;
+
+// Função para editar implantação
+function editarImplantacao(id) {
+    // Encontrar a implantação na lista
+    const implantacao = todasImplantacoes.find(imp => imp.id === id);
+    
+    if (!implantacao) {
+        showAlert('Erro', 'Implantação não encontrada');
+        return;
+    }
+    
+    // Preencher o formulário com os dados da implantação
+    document.getElementById('novaImplantacaoEspecialista').value = implantacao.especialista;
+    document.getElementById('novaImplantacaoData').value = implantacao.data;
+    document.getElementById('novaImplantacaoCliente').value = implantacao.cliente;
+    document.getElementById('novaImplantacaoProjeto').value = implantacao.projeto;
+    document.getElementById('novaImplantacaoTipo').value = implantacao.tipo;
+    document.getElementById('novaImplantacaoTickets').value = implantacao.tickets_pendentes || 0;
+    document.getElementById('novaImplantacaoResumo').value = implantacao.resumo;
+    
+    // Definir que está editando
+    implantacaoEditando = implantacao;
+    
+    // Alterar o texto do botão para "Atualizar"
+    const btnSalvar = document.querySelector('#novaImplantacaoForm .btn-salvar-implantacao');
+    btnSalvar.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>Atualizar Implantação';
+    btnSalvar.style.backgroundColor = '#ff9800';
+    
+    // Mostrar botão Cancelar
+    const btnCancelar = document.getElementById('btnCancelarEdicao');
+    btnCancelar.style.display = 'block';
+    
+    // Rolar para o topo do formulário
+    document.getElementById('novaImplantacaoForm').scrollIntoView({ behavior: 'smooth' });
+    
+    showAlert('Info', `Editando implantação "${implantacao.projeto}". Faça as alterações e clique em "Atualizar Implantação".`);
+}
+
+// Função para cancelar edição
+function cancelarEdicao() {
+    implantacaoEditando = null;
+    
+    // Limpar formulário
+    document.getElementById('novaImplantacaoForm').reset();
+    
+    // Restaurar botão
+    const btnSalvar = document.querySelector('#novaImplantacaoForm .btn-salvar-implantacao');
+    btnSalvar.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>Salvar Implantação';
+    btnSalvar.style.backgroundColor = '#4fc3f7';
+    
+    // Ocultar botão Cancelar
+    const btnCancelar = document.getElementById('btnCancelarEdicao');
+    btnCancelar.style.display = 'none';
+    
+    // Definir data atual novamente
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('novaImplantacaoData').value = hoje;
+    
+    showAlert('Info', 'Edição cancelada. Formulário limpo para nova implantação.');
 }
 </script>
 
