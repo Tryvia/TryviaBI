@@ -13316,7 +13316,7 @@ function renderizarImplantacoes(implantacoes) {
                             Editar
                         </button>
                         
-                        <button onclick="excluirImplantacao(${implantacao.id}, '${implantacao.projeto.replace(/'/g, "\\'")}', '${implantacao.cliente.replace(/'/g, "\\'")}')" style="
+                        <button onclick="excluirImplantacao(${implantacao.id}, \`${implantacao.projeto}\`, \`${implantacao.cliente}\`)" style="
                             background-color: #f44336; 
                             color: white; 
                             border: none; 
