@@ -3170,13 +3170,13 @@ select {
 
 <!-- Nova Seção: Nova Implantação -->
 <div class="content-section" id="nova-implantacao">
-    <div style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);">
+    <div style="background: linear-gradient(135deg, #29b6f6 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px #b3e5fc(156, 39, 176, 0.3);">
         <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
             <i class="fas fa-cogs" style="margin-right: 15px;"></i>
-            Nova Implantação
+            Projetos
         </h2>
         <p style="margin: 0; font-size: 1.2em; opacity: 0.9;">
-            Registre uma nova implantação no sistema
+            Registro de projetos no sistema
         </p>
     </div>
 
@@ -3241,7 +3241,7 @@ select {
                 </button>
                 <button type="submit" class="btn-salvar-implantacao" style="flex: 2;">
                     <i class="fas fa-save" style="margin-right: 8px;"></i>
-                    Salvar Implantação
+                    Salvar Projeto
                 </button>
             </div>
         </form>
@@ -3252,10 +3252,10 @@ select {
         <div style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 25px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
             <h3 style="margin: 0; font-size: 1.8em; margin-bottom: 10px;">
                 <i class="fas fa-list" style="margin-right: 10px;"></i>
-                Implantações Registradas
+                projetos Registrados
             </h3>
             <p style="margin: 0; font-size: 1em; opacity: 0.9;">
-                Visualize e filtre as implantações já cadastradas
+                Visualize e filtre os Projetos já cadastrados
             </p>
         </div>
 
@@ -3980,15 +3980,22 @@ select {
 <div class="form-row">
 <div class="form-group"><label for="reuniaoCliente">Cliente</label><select id="reuniaoCliente"><option value="">Selecione um cliente...</option></select></div>
 <div class="form-group"><label for="reuniaoData">Data</label><input class="input-padrao" id="reuniaoData" type="date"/></div>
+<div class="form-group"><label for="reuniaoHorario">Horário</label><input class="input-padrao" id="reuniaoHorario" type="time"/></div>
+</div>
+<div class="form-row">
 <div class="form-group"><label for="reuniaoTipo">Tipo</label><input id="reuniaoTipo" type="text"/></div>
+<div class="form-group"><label for="reuniaoResponsavel">Responsável pela Reunião</label><select id="reuniaoResponsavel"><option value="">Selecione um responsável...</option></select></div>
 </div>
 <div class="form-group"><label for="reuniaoParticipantes">Participantes</label><input id="reuniaoParticipantes" type="text"/></div>
 <div class="form-group"><label for="reuniaoFile">📎 Anexar Ata (opcional)</label>
 <input class="input-padrao" id="reuniaoFile" type="file"/>
 </div>
 <button class="btn-primary" onclick="salvarReuniao()">Salvar Reunião</button>
-<h3 style="margin-top: 30px;">Filtrar por Cliente</h3>
-<input class="input-padrao" id="filtroReuniaoCliente" oninput="filtrarReunioes()" placeholder="Filtrar por cliente..." type="text"/>
+<h3 style="margin-top: 30px;">Filtros</h3>
+<div class="form-row">
+<div class="form-group"><label for="filtroReuniaoCliente">Filtrar por Cliente</label><select id="filtroReuniaoCliente" onchange="filtrarReunioes()"><option value="">Todos os clientes</option></select></div>
+<div class="form-group"><label for="filtroReuniaoResponsavel">Filtrar por Responsável</label><select id="filtroReuniaoResponsavel" onchange="filtrarReunioes()"><option value="">Todos os responsáveis</option></select></div>
+</div>
 <div class="documents-grid" id="listaReunioes" style="margin-top: 20px;"></div>
 </div>
 <!-- Seção: Painel do Setor -->
@@ -6919,7 +6926,9 @@ async function salvarReuniao() {
     if (obj) cliente = obj.name;
   }
   const data = document.getElementById("reuniaoData").value;
+  const horario = document.getElementById("reuniaoHorario").value;
   const tipo = document.getElementById("reuniaoTipo").value;
+  const responsavel = document.getElementById("reuniaoResponsavel").value;
   const participantes = document.getElementById("reuniaoParticipantes").value;
   const file = document.getElementById("reuniaoFile").files[0];
 
@@ -6932,7 +6941,7 @@ async function salvarReuniao() {
     file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/reuniaofiles/${file_path}`;
   }
 
-  const { error: insertError } = await releaseClient.from("reunioes").insert([{ client_id: clientId ? Number(clientId) : null, cliente, data, tipo, participantes, file_url, file_path }]);
+  const { error: insertError } = await releaseClient.from("reunioes").insert([{ client_id: clientId ? Number(clientId) : null, cliente, data, horario, tipo, responsavel, participantes, file_url, file_path }]);
   if (insertError) return alert("Erro ao salvar reunião.");
   carregarReunioes();
 }
@@ -6980,6 +6989,9 @@ function populateReuniaoClientes() {
     const card = document.createElement("div");
     card.className = "document-card";
     card.setAttribute("data-cliente", cli);
+    // Pega o responsável do primeiro item do grupo para o filtro
+    const responsavelPrimeiro = blocos[0].responsavel ? blocos[0].responsavel.toLowerCase() : "";
+    card.setAttribute("data-responsavel", responsavelPrimeiro);
     card.innerHTML = `
       <div class="document-title">${blocos[0].cliente}</div>
       <div class="document-author">Total de reuniões: ${blocos.length}</div>
@@ -6987,7 +6999,9 @@ function populateReuniaoClientes() {
         ${blocos.map(r => `
           <div style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #336699;">
             <p><strong>Data:</strong> ${r.data}</p>
+            ${r.horario ? `<p><strong>Horário:</strong> ${r.horario}</p>` : ''}
             <p><strong>Tipo:</strong> ${r.tipo}</p>
+            ${r.responsavel ? `<p><strong>Responsável:</strong> ${r.responsavel}</p>` : ''}
             <p><strong>Participantes:</strong> ${r.participantes}</p>
             ${r.file_url ? `<a class="btn-ver-ata" href="${r.file_url}" target="_blank">Ver Ata</a>` : "<em>Sem ata</em>"}
           </div>
@@ -6999,10 +7013,55 @@ function populateReuniaoClientes() {
 }
 
 function filtrarReunioes() {
-  const filtro = document.getElementById("filtroReuniaoCliente").value.toLowerCase();
+  const filtroCliente = document.getElementById("filtroReuniaoCliente").value.toLowerCase();
+  const filtroResponsavel = document.getElementById("filtroReuniaoResponsavel").value.toLowerCase();
+  
   document.querySelectorAll("#listaReunioes .document-card").forEach(c => {
     const cli = c.getAttribute("data-cliente") || "";
-    c.style.display = cli.includes(filtro) ? "block" : "none";
+    const responsavelCard = c.getAttribute("data-responsavel") || "";
+    
+    const matchCliente = !filtroCliente || cli.includes(filtroCliente);
+    const matchResponsavel = !filtroResponsavel || responsavelCard.includes(filtroResponsavel);
+    
+    c.style.display = (matchCliente && matchResponsavel) ? "block" : "none";
+  });
+}
+
+// Função para popular dropdown de responsáveis
+function populateReuniaoResponsaveis() {
+  const responsaveis = [
+    "Julyana",
+    "Marlos", 
+    "Renata",
+    "Larissa",
+  ];
+  
+  const selectForm = document.getElementById('reuniaoResponsavel');
+  const selectFiltro = document.getElementById('filtroReuniaoResponsavel');
+  
+  if (selectForm) {
+    selectForm.innerHTML = '<option value="">Selecione um responsável...</option>';
+    responsaveis.forEach(resp => {
+      selectForm.innerHTML += `<option value="${resp}">${resp}</option>`;
+    });
+  }
+  
+  if (selectFiltro) {
+    selectFiltro.innerHTML = '<option value="">Todos os responsáveis</option>';
+    responsaveis.forEach(resp => {
+      selectFiltro.innerHTML += `<option value="${resp.toLowerCase()}">${resp}</option>`;
+    });
+  }
+}
+
+// Função para popular dropdown de clientes no filtro
+function populateFiltroClientes() {
+  const select = document.getElementById('filtroReuniaoCliente');
+  if (!select) return;
+  select.innerHTML = '<option value="">Todos os clientes</option>';
+  if (!window.clients || !Array.isArray(window.clients)) return;
+  window.clients.forEach(c => {
+    select.innerHTML += `<option value="${c.name.toLowerCase()}">${c.name}</option>`;
   });
 }
 
@@ -7010,9 +7069,12 @@ document.addEventListener("DOMContentLoaded", function() {
   if (typeof fetchAndRenderClients === 'function') {
     fetchAndRenderClients().then(() => {
       populateReuniaoClientes();
+      populateFiltroClientes();
+      populateReuniaoResponsaveis();
       carregarReunioes();
     });
   } else {
+    populateReuniaoResponsaveis();
     carregarReunioes();
   }
 });
