@@ -1614,7 +1614,7 @@ document.addEventListener('DOMContentLoaded', function() {
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 10000;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -1626,16 +1626,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         .modal-content {
-            background-color: #000000;
+            background-color: #ffffff;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            max-width: 400px;
+            text-align: left;
+            max-width: 800px;
             width: 90%;
-            color: var(--text-color);
+            color: #333333;
             transform: translateY(-20px);
             transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-overlay.visible .modal-content {
@@ -1645,13 +1647,40 @@ document.addEventListener('DOMContentLoaded', function() {
         .modal-content h3 {
             margin-bottom: 20px;
             font-size: 1.5em;
-            color: var(--accent-color);
+            color: #4fc3f7;
         }
 
         .modal-content p {
             margin-bottom: 25px;
             font-size: 1.1em;
             line-height: 1.5;
+        }
+
+        /* CSS específico para o modal de edição de usuário */
+        #modalEditarUsuario .modal-content {
+            background-color: #ffffff !important;
+            color: #333333 !important;
+            text-align: left !important;
+            max-width: 900px !important;
+        }
+
+        #modalEditarUsuario .permissions-container {
+            background-color: #ffffff !important;
+            color: #333333 !important;
+        }
+
+        #modalEditarUsuario .permission-item {
+            background-color: #f8f9fa !important;
+            color: #333333 !important;
+        }
+
+        #modalEditarUsuario .permission-item label {
+            color: #333333 !important;
+        }
+
+        #modalEditarUsuario .section-title,
+        #modalEditarUsuario .subsection-title {
+            color: #333333 !important;
         }
 
         .modal-buttons {
