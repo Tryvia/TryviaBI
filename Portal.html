@@ -10786,9 +10786,9 @@ function renderUsuarios() {
                 </div>
             </td>
             <td style="padding: 15px; text-align: center;">
-                <button onclick="ModalEditarLogin('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
-    <i class="fas fa-edit"></i> Editar
-</button>
+                <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
                 <button onclick="excluirUsuario('${usuario.id}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
@@ -11419,9 +11419,9 @@ function renderUsuarios(usuariosParaRender) {
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: center;">
-                    <button onclick="ModalEditarLogin('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
-    <i class="fas fa-edit"></i> Editar
-</button>
+                    <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
                     <button onclick="excluirUsuario('${usuario.id}')" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
                         <i class="fas fa-trash"></i> Excluir
                     </button>
@@ -12619,7 +12619,7 @@ document.addEventListener('change', function(e) {
 </div>
 
 <!-- Modal de Edição de Login -->
-<div class="modal-overlay" id="modalEditarLogin">
+<div class="modal-overlay" id="modalEditarUsuario">
     <div class="modal-content" style="max-width: 700px;">
         <h3 style="color: #4fc3f7; margin-bottom: 20px;">
             <i class="fas fa-user-edit" style="margin-right: 10px;"></i>
@@ -12810,9 +12810,9 @@ function renderLoginsUsuarios() {
                 </div>
             </td>
             <td style="padding: 15px; text-align: center;">
-                <button onclick="ModalEditarLogin('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
-    <i class="fas fa-edit"></i> Editar
-</button>
+                <button onclick="abrirmodalEditarUsuario(${usuario.id})" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
             </td>
         </tr>
         `;
@@ -12841,28 +12841,7 @@ function limparFiltrosLogins() {
     renderLoginsUsuarios();
 }
 
-// Função para abrir modal de edição
-function abrirModalEditarLogin(usuarioId) {
-    // Corrigir comparação de ID para garantir que ambos sejam string
-    usuarioEditandoLogin = todosLoginsUsuarios.find(u => String(u.id) === String(usuarioId));
-    
-    if (!usuarioEditandoLogin) {
-        showAlert('Erro', 'Usuário não encontrado.');
-        return;
-    }
 
-    // Preencher campos do formulário
-    document.getElementById('editLoginNome').value = usuarioEditandoLogin.nome;
-    document.getElementById('editLoginEmail').value = usuarioEditandoLogin.email;
-    document.getElementById('editLoginSetor').value = usuarioEditandoLogin.setor || 'Comercial';
-    document.getElementById('editLoginSenha').value = '';
-
-    // Carregar permissões
-    carregarPermissoesEdicaoLogin();
-
-    // Mostrar modal
-    document.getElementById('modalEditarLogin').style.display = 'flex';
-}
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicaoLogin() {
