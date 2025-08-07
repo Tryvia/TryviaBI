@@ -11928,12 +11928,12 @@ function closeEditarUsuarioModal() {
 async function salvarEdicaoUsuario(event) {
     event.preventDefault();
 
-    const userId = document.getElementById('editarIdUsuario').value;
-    const nome = document.getElementById('editarNomeUsuario').value.trim();
-    const email = document.getElementById('editarEmailUsuario').value.trim();
-    const novaSenha = document.getElementById('editarSenhaUsuario').value;
-    const confirmarSenha = document.getElementById('editarConfirmarSenhaUsuario').value;
-    const setor = document.getElementById('editarSetorUsuario').value;
+    const userId = document.getElementById('editarIdUsuario1').value;
+    const nome = document.getElementById('editarNomeUsuario1').value.trim();
+    const email = document.getElementById('editarEmailUsuario1').value.trim();
+    const novaSenha = document.getElementById('editarSenhaUsuario1').value;
+    const confirmarSenha = document.getElementById('editarConfirmarSenhaUsuario1').value;
+    const setor = document.getElementById('editarSetorUsuario1').value;
 
     // Validações
     if (!nome || !email) {
@@ -11948,7 +11948,7 @@ async function salvarEdicaoUsuario(event) {
 
     // Coletar permissões selecionadas
     const permissoesSelecionadas = [];
-    document.querySelectorAll('#editarPermissoesGrid input[type="checkbox"]:checked').forEach(checkbox => {
+    document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]:checked').forEach(checkbox => {
         permissoesSelecionadas.push(checkbox.value);
     });
 
