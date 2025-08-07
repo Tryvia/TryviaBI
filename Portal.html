@@ -11348,11 +11348,25 @@ async function editarUsuario(userId) {
         return;
     }
 
-    // Preencher o formulário de edição
-    document.getElementById('editarIdUsuario2').value = usuario.id || '';
-    document.getElementById('editarNomeUsuario2').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario2').value = usuario.email || '';
-    document.getElementById('editarSetorUsuario2').value = usuario.setor || '';
+
+    // Preencher o formulário de edição com checagem de existência
+    const idInput = document.getElementById('editarIdUsuario2');
+    const nomeInput = document.getElementById('editarNomeUsuario2');
+    const emailInput = document.getElementById('editarEmailUsuario2');
+    const setorInput = document.getElementById('editarSetorUsuario2');
+
+    if (!idInput || !nomeInput || !emailInput || !setorInput) {
+        console.error('Algum campo do formulário de edição de usuário não foi encontrado:', {
+            idInput, nomeInput, emailInput, setorInput
+        });
+        showAlert('Erro', 'Campos do formulário de edição não encontrados. Verifique o HTML.');
+        return;
+    }
+
+    idInput.value = usuario.id || '';
+    nomeInput.value = usuario.nome || '';
+    emailInput.value = usuario.email || '';
+    setorInput.value = usuario.setor || '';
 
     // Carregar permissões
     carregarPermissoesEdicao(usuario.permissoes || []);
