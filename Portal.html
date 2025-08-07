@@ -11705,7 +11705,7 @@ function carregarPermissoesEdicao(permissoesUsuario) {
     // Lista de todas as permissões disponíveis
     const todasPermissoes = [
         // Permissões básicas
-        { id: 'inicio', label: 'Início', checked: true },
+        { id: 'inicio', label: 'Início' },
         { id: 'painel-setor', label: 'Painel do Setor' },
         { id: 'dashboard', label: 'Dashboards' },
         { id: 'clients', label: 'Clientes' },
@@ -11721,7 +11721,6 @@ function carregarPermissoesEdicao(permissoesUsuario) {
         { id: 'evaluations', label: 'Avaliações' },
         { id: 'gestao', label: 'Gestão' },
         { id: 'gerenciar-logins', label: 'Gerenciar Logins' },
-        
         // Funções específicas
         { id: 'saveClient', label: 'Salvar Cliente', categoria: 'Clientes' },
         { id: 'editClient', label: 'Editar Cliente', categoria: 'Clientes' },
@@ -11735,18 +11734,13 @@ function carregarPermissoesEdicao(permissoesUsuario) {
         { id: 'addIntegration', label: 'Adicionar Integração', categoria: 'Clientes' },
         { id: 'addEditIntegration', label: 'Adicionar/Editar Integração', categoria: 'Clientes' },
         { id: 'removeIntegration', label: 'Remover Integração', categoria: 'Clientes' },
-        
         { id: 'addDocument', label: 'Adicionar Documento do time', categoria: 'Documentos' },
         { id: 'deleteDocument', label: 'Excluir Documento do time', categoria: 'Documentos' },
-        
         { id: 'submitHomologacao', label: 'Adicionar homologação', categoria: 'Homologação' },
         { id: 'deleteHomologacao', label: 'Excluir Homologação', categoria: 'Homologação' },
-        
         { id: 'salvarRelease', label: 'Salvar Release', categoria: 'Releases' },
         { id: 'deleteRelease', label: 'Excluir Release', categoria: 'Releases' },
-        
         { id: 'salvarReuniao', label: 'Salvar Reunião', categoria: 'Reuniões' },
-        
         { id: 'alterarQuantidade', label: 'Alterar Quantidade nas tarefas', categoria: 'Painel do Setor' },
         { id: 'saveTasks', label: 'Salvar Tarefas', categoria: 'Painel do Setor' },
         { id: 'abrirModalTarefa', label: 'Adicionar Tarefa', categoria: 'Painel do Setor' },
@@ -11769,11 +11763,10 @@ function carregarPermissoesEdicao(permissoesUsuario) {
             html += `<div class="subsection-title">Funções de ${categoriaAtual}</div>`;
         }
 
-        const isChecked = permissoesUsuario.includes(permissao.id) || permissao.checked;
+        const isChecked = permissoesUsuario.includes(permissao.id);
         const checkedClass = isChecked ? 'checked' : '';
-        
         html += `
-            <div class="permission-item ${checkedClass}">
+            <div class="permission-item${checkedClass ? ' ' + checkedClass : ''}">
                 <input type="checkbox" id="edit-perm-${permissao.id}" value="${permissao.id}" ${isChecked ? 'checked' : ''}>
                 <label for="edit-perm-${permissao.id}">${permissao.label}</label>
             </div>
