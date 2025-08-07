@@ -12843,7 +12843,8 @@ function limparFiltrosLogins() {
 
 // Função para abrir modal de edição
 function abrirModalEditarLogin(usuarioId) {
-    usuarioEditandoLogin = todosLoginsUsuarios.find(u => u.id === usuarioId);
+    // Corrigir comparação de ID para garantir que ambos sejam string
+    usuarioEditandoLogin = todosLoginsUsuarios.find(u => String(u.id) === String(usuarioId));
     
     if (!usuarioEditandoLogin) {
         showAlert('Erro', 'Usuário não encontrado.');
