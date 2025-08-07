@@ -1678,41 +1678,6 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #333333 !important;
         }
 
-        #modalEditarUsuario .permission-item input[type="checkbox"] {
-            width: 20px !important;
-            height: 20px !important;
-            accent-color: #0288d1 !important;
-            background: #fff !important;
-            border: 2px solid #0288d1 !important;
-            box-shadow: none !important;
-            cursor: pointer;
-            opacity: 1 !important;
-            position: static !important;
-            margin-right: 8px !important;
-            display: inline-block !important;
-        }
-
-        #modalEditarUsuario .permission-item {
-            display: flex !important;
-            align-items: center !important;
-            min-height: 36px !important;
-            font-size: 1em !important;
-            border-radius: 4px !important;
-            padding: 2px 8px !important;
-            background: #f8f9fa !important;
-            color: #222 !important;
-        }
-
-        #modalEditarUsuario .permissions-grid {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
-            gap: 10px !important;
-            background: transparent !important;
-            color: #222 !important;
-            padding: 10px 0 !important;
-        }
-        
-
         #modalEditarUsuario .section-title,
         #modalEditarUsuario .subsection-title {
             color: #333333 !important;
@@ -11723,17 +11688,20 @@ function populateClientSelect() {
 function carregarPermissoesEdicao(permissoesUsuario) {
     console.log('carregarPermissoesEdicao chamada com:', permissoesUsuario);
     
-    // Tentar encontrar ambos os grids
-    let grid = document.getElementById('editarPermissoesGrid2');
-    if (!grid) {
-        console.log('Grid editarPermissoesGrid2 não encontrado, tentando editarPermissoesGrid1...');
-        grid = document.getElementById('editarPermissoesGrid1');
+    // Tentar encontrar o container de permissões correto
+    let container = document.getElementById('editPermissoesContainer');
+    if (!container) {
+        console.log('editPermissoesContainer não encontrado, tentando grids...');
+        container = document.getElementById('editarPermissoesGrid2');
+        if (!container) {
+            container = document.getElementById('editarPermissoesGrid1');
+        }
     }
     
-    console.log('Grid encontrado:', grid);
+    console.log('Container encontrado:', container);
     
-    if (!grid) {
-        console.error('Nenhum grid de permissões encontrado!');
+    if (!container) {
+        console.error('Nenhum container de permissões encontrado!');
         return;
     }
     
@@ -11816,24 +11784,24 @@ function carregarPermissoesEdicao(permissoesUsuario) {
     });
 
     console.log('HTML gerado:', html);
-    grid.innerHTML = html;
-    console.log('HTML definido no grid');
-    console.log('Grid após definir HTML:', grid);
-    console.log('Grid style display:', grid.style.display);
-    console.log('Grid offsetHeight:', grid.offsetHeight);
-    console.log('Grid offsetWidth:', grid.offsetWidth);
+    container.innerHTML = html;
+    console.log('HTML definido no container');
+    console.log('Container após definir HTML:', container);
+    console.log('Container style display:', container.style.display);
+    console.log('Container offsetHeight:', container.offsetHeight);
+    console.log('Container offsetWidth:', container.offsetWidth);
     
-    // Forçar visibilidade do grid
-    grid.style.display = 'grid';
-    grid.style.visibility = 'visible';
-    grid.style.opacity = '1';
+    // Forçar visibilidade do container
+    container.style.display = 'grid';
+    container.style.visibility = 'visible';
+    container.style.opacity = '1';
     
-    console.log('Forçando visibilidade do grid...');
-    console.log('Grid após forçar visibilidade - offsetHeight:', grid.offsetHeight);
-    console.log('Grid após forçar visibilidade - offsetWidth:', grid.offsetWidth);
+    console.log('Forçando visibilidade do container...');
+    console.log('Container após forçar visibilidade - offsetHeight:', container.offsetHeight);
+    console.log('Container após forçar visibilidade - offsetWidth:', container.offsetWidth);
 
     // Adicionar event listeners para os checkboxes
-    grid.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const item = this.closest('.permission-item');
             if (this.checked) {
