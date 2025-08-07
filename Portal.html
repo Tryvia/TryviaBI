@@ -11657,7 +11657,14 @@ function populateClientSelect() {
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
+    console.log('carregarPermissoesEdicao chamada com:', permissoesUsuario);
     const grid = document.getElementById('editarPermissoesGrid2');
+    console.log('Grid encontrado:', grid);
+    
+    if (!grid) {
+        console.error('Grid editarPermissoesGrid2 não encontrado!');
+        return;
+    }
     
     // Lista de todas as permissões disponíveis
     const todasPermissoes = [
@@ -11737,7 +11744,9 @@ function carregarPermissoesEdicao(permissoesUsuario) {
         `;
     });
 
+    console.log('HTML gerado:', html);
     grid.innerHTML = html;
+    console.log('HTML definido no grid');
 
     // Adicionar event listeners para os checkboxes
     grid.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -12796,14 +12805,14 @@ function abrirModalEditarLogin(usuarioId) {
     document.getElementById('editLoginSenha').value = '';
 
     // Carregar permissões
-    carregarPermissoesEdicao();
+    carregarPermissoesEdicaoLogin();
 
     // Mostrar modal
     document.getElementById('modalEditarLogin').style.display = 'flex';
 }
 
 // Função para carregar permissões no modal de edição
-function carregarPermissoesEdicao() {
+function carregarPermissoesEdicaoLogin() {
     const container = document.getElementById('editPermissoesContainer');
     if (!container || !usuarioEditandoLogin || !Array.isArray(usuarioEditandoLogin.permissoes)) {
         container.innerHTML = '';
