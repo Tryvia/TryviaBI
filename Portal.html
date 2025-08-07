@@ -12972,7 +12972,10 @@ function abrirModalEditarLogin(usuarioId) {
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao() {
     const container = document.getElementById('editPermissoesContainer');
-    
+    if (!container || !usuarioEditandoLogin || !Array.isArray(usuarioEditandoLogin.permissoes)) {
+        container.innerHTML = '';
+        return;
+    }
     container.innerHTML = permissoesDisponiveis.map(permissao => {
         const isChecked = usuarioEditandoLogin.permissoes.includes(permissao.value);
         return `
