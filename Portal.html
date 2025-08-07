@@ -11686,15 +11686,22 @@ function populateClientSelect() {
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
-    console.log('carregarPermissoesEdicao chamada com:', permissoesUsuario);
+    // Garante que permissoesUsuario seja sempre array de strings
+    if (typeof permissoesUsuario === 'string') {
+        try {
+            permissoesUsuario = JSON.parse(permissoesUsuario);
+        } catch (e) {
+            permissoesUsuario = [];
+        }
+    }
+    if (!Array.isArray(permissoesUsuario)) {
+        permissoesUsuario = [];
+    }
     const grid = document.getElementById('editarPermissoesGrid2');
-    console.log('Grid encontrado:', grid);
-    
     if (!grid) {
         console.error('Grid editarPermissoesGrid2 não encontrado!');
         return;
     }
-    
     // Lista de todas as permissões disponíveis
     const todasPermissoes = [
         // Permissões básicas
