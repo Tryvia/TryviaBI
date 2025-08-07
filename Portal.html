@@ -11686,26 +11686,26 @@ function populateClientSelect() {
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
-    // Garante que permissoesUsuario seja sempre array de strings
-    if (typeof permissoesUsuario === 'string') {
-        try {
-            permissoesUsuario = JSON.parse(permissoesUsuario);
-        } catch (e) {
-            permissoesUsuario = [];
-        }
-    }
-    if (!Array.isArray(permissoesUsuario)) {
-        permissoesUsuario = [];
-    }
-    const grid = document.getElementById('editarPermissoesGrid2');
+    console.log('carregarPermissoesEdicao chamada com:', permissoesUsuario);
+    
+    // Tentar encontrar ambos os grids
+    let grid = document.getElementById('editarPermissoesGrid2');
     if (!grid) {
-        console.error('Grid editarPermissoesGrid2 não encontrado!');
+        console.log('Grid editarPermissoesGrid2 não encontrado, tentando editarPermissoesGrid1...');
+        grid = document.getElementById('editarPermissoesGrid1');
+    }
+    
+    console.log('Grid encontrado:', grid);
+    
+    if (!grid) {
+        console.error('Nenhum grid de permissões encontrado!');
         return;
     }
+    
     // Lista de todas as permissões disponíveis
     const todasPermissoes = [
         // Permissões básicas
-        { id: 'inicio', label: 'Início' },
+        { id: 'inicio', label: 'Início', checked: true },
         { id: 'painel-setor', label: 'Painel do Setor' },
         { id: 'dashboard', label: 'Dashboards' },
         { id: 'clients', label: 'Clientes' },
@@ -11721,6 +11721,7 @@ function carregarPermissoesEdicao(permissoesUsuario) {
         { id: 'evaluations', label: 'Avaliações' },
         { id: 'gestao', label: 'Gestão' },
         { id: 'gerenciar-logins', label: 'Gerenciar Logins' },
+        
         // Funções específicas
         { id: 'saveClient', label: 'Salvar Cliente', categoria: 'Clientes' },
         { id: 'editClient', label: 'Editar Cliente', categoria: 'Clientes' },
@@ -11734,13 +11735,18 @@ function carregarPermissoesEdicao(permissoesUsuario) {
         { id: 'addIntegration', label: 'Adicionar Integração', categoria: 'Clientes' },
         { id: 'addEditIntegration', label: 'Adicionar/Editar Integração', categoria: 'Clientes' },
         { id: 'removeIntegration', label: 'Remover Integração', categoria: 'Clientes' },
+        
         { id: 'addDocument', label: 'Adicionar Documento do time', categoria: 'Documentos' },
         { id: 'deleteDocument', label: 'Excluir Documento do time', categoria: 'Documentos' },
+        
         { id: 'submitHomologacao', label: 'Adicionar homologação', categoria: 'Homologação' },
         { id: 'deleteHomologacao', label: 'Excluir Homologação', categoria: 'Homologação' },
+        
         { id: 'salvarRelease', label: 'Salvar Release', categoria: 'Releases' },
         { id: 'deleteRelease', label: 'Excluir Release', categoria: 'Releases' },
+        
         { id: 'salvarReuniao', label: 'Salvar Reunião', categoria: 'Reuniões' },
+        
         { id: 'alterarQuantidade', label: 'Alterar Quantidade nas tarefas', categoria: 'Painel do Setor' },
         { id: 'saveTasks', label: 'Salvar Tarefas', categoria: 'Painel do Setor' },
         { id: 'abrirModalTarefa', label: 'Adicionar Tarefa', categoria: 'Painel do Setor' },
@@ -11763,10 +11769,11 @@ function carregarPermissoesEdicao(permissoesUsuario) {
             html += `<div class="subsection-title">Funções de ${categoriaAtual}</div>`;
         }
 
-        const isChecked = permissoesUsuario.includes(permissao.id);
+        const isChecked = permissoesUsuario.includes(permissao.id) || permissao.checked;
         const checkedClass = isChecked ? 'checked' : '';
+        
         html += `
-            <div class="permission-item${checkedClass ? ' ' + checkedClass : ''}">
+            <div class="permission-item ${checkedClass}">
                 <input type="checkbox" id="edit-perm-${permissao.id}" value="${permissao.id}" ${isChecked ? 'checked' : ''}>
                 <label for="edit-perm-${permissao.id}">${permissao.label}</label>
             </div>
@@ -11776,6 +11783,19 @@ function carregarPermissoesEdicao(permissoesUsuario) {
     console.log('HTML gerado:', html);
     grid.innerHTML = html;
     console.log('HTML definido no grid');
+    console.log('Grid após definir HTML:', grid);
+    console.log('Grid style display:', grid.style.display);
+    console.log('Grid offsetHeight:', grid.offsetHeight);
+    console.log('Grid offsetWidth:', grid.offsetWidth);
+    
+    // Forçar visibilidade do grid
+    grid.style.display = 'grid';
+    grid.style.visibility = 'visible';
+    grid.style.opacity = '1';
+    
+    console.log('Forçando visibilidade do grid...');
+    console.log('Grid após forçar visibilidade - offsetHeight:', grid.offsetHeight);
+    console.log('Grid após forçar visibilidade - offsetWidth:', grid.offsetWidth);
 
     // Adicionar event listeners para os checkboxes
     grid.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -12821,28 +12841,21 @@ function limparFiltrosLogins() {
 // Função para abrir modal de edição
 function abrirModalEditarLogin(usuarioId) {
     usuarioEditandoLogin = todosLoginsUsuarios.find(u => u.id === usuarioId);
+    
     if (!usuarioEditandoLogin) {
         showAlert('Erro', 'Usuário não encontrado.');
         return;
     }
-    // Garante que permissoes seja sempre array de strings
-    if (typeof usuarioEditandoLogin.permissoes === 'string') {
-        try {
-            usuarioEditandoLogin.permissoes = JSON.parse(usuarioEditandoLogin.permissoes);
-        } catch (e) {
-            usuarioEditandoLogin.permissoes = [];
-        }
-    }
-    if (!Array.isArray(usuarioEditandoLogin.permissoes)) {
-        usuarioEditandoLogin.permissoes = [];
-    }
+
     // Preencher campos do formulário
     document.getElementById('editLoginNome').value = usuarioEditandoLogin.nome;
     document.getElementById('editLoginEmail').value = usuarioEditandoLogin.email;
     document.getElementById('editLoginSetor').value = usuarioEditandoLogin.setor || 'Comercial';
     document.getElementById('editLoginSenha').value = '';
+
     // Carregar permissões
     carregarPermissoesEdicaoLogin();
+
     // Mostrar modal
     document.getElementById('modalEditarLogin').style.display = 'flex';
 }
