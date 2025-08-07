@@ -11329,173 +11329,6 @@ function showClientWelcomeMessage(clientName) {
 
 <script>
 
-// Função para carregar permissões no modal de edição
-function carregarPermissoesEdicao(permissoesUsuario) {
-    const grid = document.getElementById('editarPermissoesGrid1');
-    
-    // Lista de todas as permissões disponíveis
-    const todasPermissoes = [
-        // Permissões básicas
-        { id: 'inicio', label: 'Início', checked: true },
-        { id: 'painel-setor', label: 'Painel do Setor' },
-        { id: 'dashboard', label: 'Dashboards' },
-        { id: 'clients', label: 'Clientes' },
-        { id: 'homologacao', label: 'Homologação' },
-        { id: 'https://tryvia.github.io/TryviaBI/mapa_visitas.html', label: 'Visitas' },
-        { id: 'https://tryvia.github.io/TryviaBI/calendario.html', label: 'Calendário' },
-        { id: 'https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html', label: 'MVP' },
-        { id: 'https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html', label: 'Implantações' },
-        { id: 'release', label: 'Release' },
-        { id: 'reunioes', label: 'Reuniões' },
-        { id: 'relatorioVisita', label: 'Relatório de Visita' },
-        { id: 'documents', label: 'Time de Implantação' },
-        { id: 'evaluations', label: 'Avaliações' },
-        { id: 'gestao', label: 'Gestão' },
-        { id: 'gerenciar-logins', label: 'Gerenciar Logins' },
-        
-        // Funções específicas
-        { id: 'saveClient', label: 'Salvar Cliente', categoria: 'Clientes' },
-        { id: 'editClient', label: 'Editar Cliente', categoria: 'Clientes' },
-        { id: 'updateClient', label: 'Atualizar Cliente', categoria: 'Clientes' },
-        { id: 'deleteClient', label: 'Excluir Cliente', categoria: 'Clientes' },
-        { id: 'addClientDocument', label: 'Adicionar Documento do Cliente', categoria: 'Clientes' },
-        { id: 'deleteClientDocument', label: 'Excluir Documento do Cliente', categoria: 'Clientes' },
-        { id: 'addProduct', label: 'Adicionar Produto', categoria: 'Clientes' },
-        { id: 'removeProduct', label: 'Remover Produto', categoria: 'Clientes' },
-        { id: 'addEditProduct', label: 'Adicionar/Editar Produto', categoria: 'Clientes' },
-        { id: 'addIntegration', label: 'Adicionar Integração', categoria: 'Clientes' },
-        { id: 'addEditIntegration', label: 'Adicionar/Editar Integração', categoria: 'Clientes' },
-        { id: 'removeIntegration', label: 'Remover Integração', categoria: 'Clientes' },
-        
-        { id: 'addDocument', label: 'Adicionar Documento do time', categoria: 'Documentos' },
-        { id: 'deleteDocument', label: 'Excluir Documento do time', categoria: 'Documentos' },
-        
-        { id: 'submitHomologacao', label: 'Adicionar homologação', categoria: 'Homologação' },
-        { id: 'deleteHomologacao', label: 'Excluir Homologação', categoria: 'Homologação' },
-        
-        { id: 'salvarRelease', label: 'Salvar Release', categoria: 'Releases' },
-        { id: 'deleteRelease', label: 'Excluir Release', categoria: 'Releases' },
-        
-        { id: 'salvarReuniao', label: 'Salvar Reunião', categoria: 'Reuniões' },
-        
-        { id: 'alterarQuantidade', label: 'Alterar Quantidade nas tarefas', categoria: 'Painel do Setor' },
-        { id: 'saveTasks', label: 'Salvar Tarefas', categoria: 'Painel do Setor' },
-        { id: 'abrirModalTarefa', label: 'Adicionar Tarefa', categoria: 'Painel do Setor' },
-        { id: 'abrirModalMembro', label: 'Adicionar Membro do Time', categoria: 'Painel do Setor' },
-        { id: 'abrirModalProjeto', label: 'Adicionar Projeto', categoria: 'Painel do Setor' },
-        { id: 'abrirModalVisita', label: 'Adicionar Visita', categoria: 'Painel do Setor' },
-        { id: 'abrirModalEntrega', label: 'Adicionar Entrega', categoria: 'Painel do Setor' },
-        { id: 'saveTask', label: 'Salvar Tarefa', categoria: 'Painel do Setor' },
-        { id: 'saveProject', label: 'Salvar Projeto', categoria: 'Painel do Setor' },
-        { id: 'excluirProjeto', label: 'Excluir Projeto', categoria: 'Painel do Setor' }
-    ];
-
-    let html = '';
-    let categoriaAtual = '';
-
-    todasPermissoes.forEach(permissao => {
-        // Adicionar título da categoria se mudou
-        if (permissao.categoria && permissao.categoria !== categoriaAtual) {
-            categoriaAtual = permissao.categoria;
-            html += `<div class="subsection-title">Funções de ${categoriaAtual}</div>`;
-        }
-
-        const isChecked = permissoesUsuario.includes(permissao.id) || permissao.checked;
-        const checkedClass = isChecked ? 'checked' : '';
-        
-        html += `
-            <div class="permission-item ${checkedClass}">
-                <input type="checkbox" id="edit-perm-${permissao.id}" value="${permissao.id}" ${isChecked ? 'checked' : ''}>
-                <label for="edit-perm-${permissao.id}">${permissao.label}</label>
-            </div>
-        `;
-    });
-
-    grid.innerHTML = html;
-
-    // Adicionar event listeners para os checkboxes
-    grid.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const item = this.closest('.permission-item');
-            if (this.checked) {
-                item.classList.add('checked');
-            } else {
-                item.classList.remove('checked');
-            }
-        });
-    });
-}
-
-// Função para fechar o modal de edição
-function closeEditarUsuarioModal() {
-    document.getElementById('modalEditarUsuario').classList.remove('visible');
-}
-
-// Função para salvar as alterações do usuário
-async function salvarEdicaoUsuario(event) {
-    event.preventDefault();
-
-    const userId = document.getElementById('editarIdUsuario1').value;
-    const nome = document.getElementById('editarNomeUsuario1').value.trim();
-    const email = document.getElementById('editarEmailUsuario1').value.trim();
-    const novaSenha = document.getElementById('editarSenhaUsuario1').value;
-    const confirmarSenha = document.getElementById('editarConfirmarSenhaUsuario1').value;
-    const setor = document.getElementById('editarSetorUsuario1').value;
-
-    // Validações
-    if (!nome || !email) {
-        showAlert('Erro', 'Nome e email são obrigatórios.');
-        return;
-    }
-
-    if (novaSenha && novaSenha !== confirmarSenha) {
-        showAlert('Erro', 'As senhas não coincidem.');
-        return;
-    }
-
-    // Coletar permissões selecionadas
-    const permissoesSelecionadas = [];
-    document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]:checked').forEach(checkbox => {
-        permissoesSelecionadas.push(checkbox.value);
-    });
-
-    try {
-        // Preparar dados para atualização
-        const dadosAtualizacao = {
-            nome: nome,
-            email: email,
-            setor: setor,
-            permissoes: permissoesSelecionadas
-        };
-
-        // Adicionar senha apenas se foi fornecida
-        if (novaSenha) {
-            dadosAtualizacao.senha = novaSenha;
-        }
-
-        // Atualizar no banco de dados
-        const { error } = await supabase
-            .from('usuarios')
-            .update(dadosAtualizacao)
-            .eq('id', userId);
-
-        if (error) {
-            throw error;
-        }
-
-        showAlert('Sucesso', 'Usuário atualizado com sucesso!');
-        closeEditarUsuarioModal();
-        fetchAndRenderUsuarios(); // Recarregar lista de usuários
-
-    } catch (error) {
-        console.error('Erro ao atualizar usuário:', error);
-        showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
-    }
-}
-
-// Adicionar event listener para o formulário de edição
-document.getElementById('formEditarUsuario').addEventListener('submit', salvarEdicaoUsuario);
-
 // Variável global para armazenar usuários
 let usuarios = [];
 
@@ -11600,10 +11433,10 @@ async function editarUsuario(userId) {
     }
 
     // Preencher o formulário de edição
-    document.getElementById('editarIdUsuario1').value = usuario.id || '';
-    document.getElementById('editarNomeUsuario1').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario1').value = usuario.email || '';
-    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
+    document.getElementById('editarIdUsuario2').value = usuario.id || '';
+    document.getElementById('editarNomeUsuario2').value = usuario.nome || '';
+    document.getElementById('editarEmailUsuario2').value = usuario.email || '';
+    document.getElementById('editarSetorUsuario2').value = usuario.setor || '';
 
     // Carregar permissões
     carregarPermissoesEdicao(usuario.permissoes || []);
@@ -11824,7 +11657,7 @@ function populateClientSelect() {
 
 // Função para carregar permissões no modal de edição
 function carregarPermissoesEdicao(permissoesUsuario) {
-    const grid = document.getElementById('editarPermissoesGrid');
+    const grid = document.getElementById('editarPermissoesGrid2');
     
     // Lista de todas as permissões disponíveis
     const todasPermissoes = [
@@ -11928,12 +11761,12 @@ function closeEditarUsuarioModal() {
 async function salvarEdicaoUsuario(event) {
     event.preventDefault();
 
-    const userId = document.getElementById('editarIdUsuario1').value;
-    const nome = document.getElementById('editarNomeUsuario1').value.trim();
-    const email = document.getElementById('editarEmailUsuario1').value.trim();
-    const novaSenha = document.getElementById('editarSenhaUsuario1').value;
-    const confirmarSenha = document.getElementById('editarConfirmarSenhaUsuario1').value;
-    const setor = document.getElementById('editarSetorUsuario1').value;
+    const userId = document.getElementById('editarIdUsuario2').value;
+    const nome = document.getElementById('editarNomeUsuario2').value.trim();
+    const email = document.getElementById('editarEmailUsuario2').value.trim();
+    const novaSenha = document.getElementById('editarSenhaUsuario2').value;
+    const confirmarSenha = document.getElementById('editarConfirmarSenhaUsuario2').value;
+    const setor = document.getElementById('editarSetorUsuario2').value;
 
     // Validações
     if (!nome || !email) {
@@ -11948,7 +11781,7 @@ async function salvarEdicaoUsuario(event) {
 
     // Coletar permissões selecionadas
     const permissoesSelecionadas = [];
-    document.querySelectorAll('#editarPermissoesGrid1 input[type="checkbox"]:checked').forEach(checkbox => {
+    document.querySelectorAll('#editarPermissoesGrid2 input[type="checkbox"]:checked').forEach(checkbox => {
         permissoesSelecionadas.push(checkbox.value);
     });
 
@@ -11987,7 +11820,7 @@ async function salvarEdicaoUsuario(event) {
 }
 
 // Adicionar event listener para o formulário de edição
-document.getElementById('formEditarUsuario').addEventListener('submit', salvarEdicaoUsuario);
+document.getElementById('formEditarUsuario2').addEventListener('submit', salvarEdicaoUsuario);
 
 // Event listeners para permissões
 document.addEventListener('DOMContentLoaded', function() {
