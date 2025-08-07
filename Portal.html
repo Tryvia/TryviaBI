@@ -389,6 +389,46 @@ a:contains('Ver Ata'),
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+/* Estilos para os botões de editar e excluir reuniões */
+.btn-editar-reuniao {
+    background-color: #4caf50 !important;
+    color: white !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-editar-reuniao:hover {
+    background-color: #388e3c !important;
+}
+
+.btn-excluir-reuniao {
+    background-color: #f44336 !important;
+    color: white !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir-reuniao:hover {
+    background-color: #d32f2f !important;
+}
+
+.reuniao-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
 </style>
 
 
@@ -2333,6 +2373,64 @@ Abrir WhatsApp
 </div>
 </div>
 </div>
+
+<!-- Modal para Editar Reunião -->
+<div class="modal-overlay" id="modalEditarReuniao">
+<div class="modal-content" style="max-width: 600px;">
+<h3 style="color: #4fc3f7; margin-bottom: 20px;">
+<i class="fas fa-edit" style="margin-right: 10px;"></i>
+Editar Reunião
+</h3>
+<form id="formEditarReuniao">
+<div class="form-row">
+<div class="form-group">
+<label for="editReuniaoCliente">Cliente</label>
+<select id="editReuniaoCliente">
+<option value="">Selecione um cliente...</option>
+</select>
+</div>
+<div class="form-group">
+<label for="editReuniaoData">Data</label>
+<input type="date" id="editReuniaoData" class="input-padrao">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="editReuniaoHorario">Horário</label>
+<input type="time" id="editReuniaoHorario" class="input-padrao">
+</div>
+<div class="form-group">
+<label for="editReuniaoTipo">Tipo</label>
+<input type="text" id="editReuniaoTipo">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="editReuniaoResponsavel">Responsável pela Reunião</label>
+<select id="editReuniaoResponsavel">
+<option value="">Selecione um responsável...</option>
+</select>
+</div>
+<div class="form-group">
+<label for="editReuniaoParticipantes">Participantes</label>
+<input type="text" id="editReuniaoParticipantes">
+</div>
+</div>
+<div class="form-group">
+<label for="editReuniaoFile">📎 Anexar Nova Ata (opcional)</label>
+<input type="file" id="editReuniaoFile" class="input-padrao">
+<small style="color: #666;">Deixe em branco para manter a ata atual</small>
+</div>
+<div class="modal-buttons">
+<button type="button" class="modal-button cancel" onclick="fecharModalEditarReuniao()">Cancelar</button>
+<button type="submit" class="modal-button confirm">
+<i class="fas fa-save" style="margin-right: 8px;"></i>
+Salvar Alterações
+</button>
+</div>
+</form>
+</div>
+</div>
 <div class="sidebar">
 <div class="logo-container">
 <img alt="Sua Logo" class="your-custom-logo" src="logo1.png"/>
@@ -2772,6 +2870,46 @@ a:contains('Ver Ata'),
 .btn-salvar-implantacao:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+/* Estilos para os botões de editar e excluir reuniões */
+.btn-editar-reuniao {
+    background-color: #4caf50 !important;
+    color: white !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-editar-reuniao:hover {
+    background-color: #388e3c !important;
+}
+
+.btn-excluir-reuniao {
+    background-color: #f44336 !important;
+    color: white !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir-reuniao:hover {
+    background-color: #d32f2f !important;
+}
+
+.reuniao-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 </style>
 
@@ -7003,7 +7141,15 @@ function populateReuniaoClientes() {
             <p><strong>Tipo:</strong> ${r.tipo}</p>
             ${r.responsavel ? `<p><strong>Responsável:</strong> ${r.responsavel}</p>` : ''}
             <p><strong>Participantes:</strong> ${r.participantes}</p>
-            ${r.file_url ? `<a class="btn-ver-ata" href="${r.file_url}" target="_blank">Ver Ata</a>` : "<em>Sem ata</em>"}
+            <div class="reuniao-actions">
+              ${r.file_url ? `<a class="btn-ver-ata" href="${r.file_url}" target="_blank">Ver Ata</a>` : "<em>Sem ata</em>"}
+              <button class="btn-editar-reuniao" onclick="abrirModalEditarReuniao(${r.id})">
+                <i class="fas fa-edit"></i> Editar
+              </button>
+              <button class="btn-excluir-reuniao" onclick="excluirReuniao(${r.id})">
+                <i class="fas fa-trash"></i> Excluir
+              </button>
+            </div>
           </div>
         `).join("")}
       </div>
@@ -13548,6 +13694,225 @@ function cancelarEdicao() {
     
     showAlert('Info', 'Edição cancelada. Formulário limpo para nova implantação.');
 }
+
+// Variável global para armazenar o ID da reunião sendo editada
+let reuniaoEditandoId = null;
+
+// Função para abrir o modal de editar reunião
+async function abrirModalEditarReuniao(reuniaoId) {
+    try {
+        // Buscar dados da reunião
+        const { data: reuniao, error } = await releaseClient
+            .from('reunioes')
+            .select('*')
+            .eq('id', reuniaoId)
+            .single();
+
+        if (error) {
+            console.error('Erro ao buscar reunião:', error);
+            showAlert('Erro', 'Erro ao carregar dados da reunião.');
+            return;
+        }
+
+        // Armazenar ID da reunião sendo editada
+        reuniaoEditandoId = reuniaoId;
+
+        // Popular os campos do modal
+        document.getElementById('editReuniaoCliente').value = reuniao.client_id || '';
+        document.getElementById('editReuniaoData').value = reuniao.data || '';
+        document.getElementById('editReuniaoHorario').value = reuniao.horario || '';
+        document.getElementById('editReuniaoTipo').value = reuniao.tipo || '';
+        document.getElementById('editReuniaoResponsavel').value = reuniao.responsavel || '';
+        document.getElementById('editReuniaoParticipantes').value = reuniao.participantes || '';
+
+        // Popular dropdowns
+        populateEditReuniaoClientes();
+        populateEditReuniaoResponsaveis();
+
+        // Mostrar modal
+        document.getElementById('modalEditarReuniao').style.display = 'block';
+    } catch (error) {
+        console.error('Erro inesperado:', error);
+        showAlert('Erro', 'Erro inesperado ao abrir modal de edição.');
+    }
+}
+
+// Função para fechar o modal de editar reunião
+function fecharModalEditarReuniao() {
+    document.getElementById('modalEditarReuniao').style.display = 'none';
+    reuniaoEditandoId = null;
+    document.getElementById('formEditarReuniao').reset();
+}
+
+// Função para popular clientes no modal de edição
+function populateEditReuniaoClientes() {
+    const select = document.getElementById('editReuniaoCliente');
+    if (!select) return;
+    select.innerHTML = '<option value="">Selecione um cliente...</option>';
+    if (!window.clients || !Array.isArray(window.clients)) return;
+    window.clients.forEach(c => {
+        select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+    });
+}
+
+// Função para popular responsáveis no modal de edição
+function populateEditReuniaoResponsaveis() {
+    const responsaveis = [
+        "Julyana",
+        "Marlos", 
+        "Renata",
+        "Larissa",
+    ];
+    
+    const select = document.getElementById('editReuniaoResponsavel');
+    if (!select) return;
+    select.innerHTML = '<option value="">Selecione um responsável...</option>';
+    responsaveis.forEach(resp => {
+        select.innerHTML += `<option value="${resp}">${resp}</option>`;
+    });
+}
+
+// Função para salvar alterações da reunião
+document.getElementById('formEditarReuniao').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!reuniaoEditandoId) {
+        showAlert('Erro', 'ID da reunião não encontrado.');
+        return;
+    }
+
+    const clientId = document.getElementById('editReuniaoCliente').value;
+    const data = document.getElementById('editReuniaoData').value;
+    const horario = document.getElementById('editReuniaoHorario').value;
+    const tipo = document.getElementById('editReuniaoTipo').value;
+    const responsavel = document.getElementById('editReuniaoResponsavel').value;
+    const participantes = document.getElementById('editReuniaoParticipantes').value;
+    const fileInput = document.getElementById('editReuniaoFile');
+
+    if (!data || !tipo || !responsavel || !participantes) {
+        showAlert('Atenção', 'Preencha todos os campos obrigatórios.');
+        return;
+    }
+
+    try {
+        let updateData = {
+            client_id: clientId ? Number(clientId) : null,
+            data: data,
+            horario: horario,
+            tipo: tipo,
+            responsavel: responsavel,
+            participantes: participantes
+        };
+
+        // Se um novo arquivo foi selecionado, fazer upload
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const fileName = `reuniao_${Date.now()}_${file.name}`;
+            
+            const { data: uploadData, error: uploadError } = await releaseClient.storage
+                .from('reuniaofiles')
+                .upload(fileName, file);
+
+            if (uploadError) {
+                console.error('Erro no upload:', uploadError);
+                showAlert('Erro', 'Erro ao fazer upload do arquivo.');
+                return;
+            }
+
+            const { data: urlData } = releaseClient.storage
+                .from('reuniaofiles')
+                .getPublicUrl(fileName);
+
+            updateData.file_url = urlData.publicUrl;
+            updateData.file_path = fileName;
+        }
+
+        // Buscar nome do cliente se clientId foi fornecido
+        if (clientId) {
+            const clienteEncontrado = window.clients?.find(c => c.id == clientId);
+            if (clienteEncontrado) {
+                updateData.cliente = clienteEncontrado.name;
+            }
+        }
+
+        // Atualizar reunião no banco
+        const { error: updateError } = await releaseClient
+            .from('reunioes')
+            .update(updateData)
+            .eq('id', reuniaoEditandoId);
+
+        if (updateError) {
+            console.error('Erro ao atualizar reunião:', updateError);
+            showAlert('Erro', 'Erro ao atualizar reunião.');
+            return;
+        }
+
+        showAlert('Sucesso', 'Reunião atualizada com sucesso!');
+        fecharModalEditarReuniao();
+        carregarReunioes(); // Recarregar lista de reuniões
+    } catch (error) {
+        console.error('Erro inesperado:', error);
+        showAlert('Erro', 'Erro inesperado ao salvar alterações.');
+    }
+});
+
+// Função para excluir reunião
+async function excluirReuniao(reuniaoId) {
+    const confirmacao = await showConfirm('Confirmação', 'Tem certeza que deseja excluir esta reunião? Esta ação não pode ser desfeita.');
+    
+    if (!confirmacao) {
+        return;
+    }
+
+    try {
+        // Buscar dados da reunião para excluir arquivo se existir
+        const { data: reuniao, error: fetchError } = await releaseClient
+            .from('reunioes')
+            .select('file_path')
+            .eq('id', reuniaoId)
+            .single();
+
+        if (fetchError) {
+            console.error('Erro ao buscar reunião:', fetchError);
+        }
+
+        // Excluir arquivo se existir
+        if (reuniao && reuniao.file_path) {
+            const { error: deleteFileError } = await releaseClient.storage
+                .from('reuniaofiles')
+                .remove([reuniao.file_path]);
+
+            if (deleteFileError) {
+                console.error('Erro ao excluir arquivo:', deleteFileError);
+            }
+        }
+
+        // Excluir reunião do banco
+        const { error: deleteError } = await releaseClient
+            .from('reunioes')
+            .delete()
+            .eq('id', reuniaoId);
+
+        if (deleteError) {
+            console.error('Erro ao excluir reunião:', deleteError);
+            showAlert('Erro', 'Erro ao excluir reunião.');
+            return;
+        }
+
+        showAlert('Sucesso', 'Reunião excluída com sucesso!');
+        carregarReunioes(); // Recarregar lista de reuniões
+    } catch (error) {
+        console.error('Erro inesperado:', error);
+        showAlert('Erro', 'Erro inesperado ao excluir reunião.');
+    }
+}
+
+// Fechar modal ao clicar fora dele
+document.getElementById('modalEditarReuniao').addEventListener('click', function(e) {
+    if (e.target === this) {
+        fecharModalEditarReuniao();
+    }
+});
 </script>
 
 </body>
