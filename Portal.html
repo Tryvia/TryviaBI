@@ -7143,10 +7143,10 @@ function populateReuniaoClientes() {
             <p><strong>Participantes:</strong> ${r.participantes}</p>
             <div class="reuniao-actions">
               ${r.file_url ? `<a class="btn-ver-ata" href="${r.file_url}" target="_blank">Ver Ata</a>` : "<em>Sem ata</em>"}
-              <button class="btn-editar-reuniao" onclick="abrirModalEditarReuniao(${r.id})">
+              <button class="btn-editar-reuniao" onclick="abrirModalEditarReuniao(\'${r.id}\')">
                 <i class="fas fa-edit"></i> Editar
               </button>
-              <button class="btn-excluir-reuniao" onclick="excluirReuniao(${r.id})">
+              <button class="btn-excluir-reuniao" onclick="excluirReuniao(\'${r.id}\')">
                 <i class="fas fa-trash"></i> Excluir
               </button>
             </div>
@@ -13916,4 +13916,3 @@ document.getElementById('modalEditarReuniao').addEventListener('click', function
 
 </body>
 </html>
-
