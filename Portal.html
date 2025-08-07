@@ -12704,6 +12704,17 @@ document.addEventListener('change', function(e) {
 }
 
 #editPermissoesContainer .permission-item label {
+/* Forçar grid e visibilidade do container de permissões */
+#editPermissoesContainer {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+    gap: 10px !important;
+    background: transparent !important;
+    color: #222 !important;
+    padding: 10px 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
     font-size: 14px;
     cursor: pointer;
     margin: 0;
