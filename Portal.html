@@ -10757,10 +10757,10 @@ function renderUsuarios() {
                 </div>
             </td>
             <td style="padding: 15px; text-align: center;">
-                <button onclick="editarUsuario(${JSON.stringify(usuario.id)})" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
+                <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 8px 12px; border-radius: 5px; margin-right: 5px; cursor: pointer;">
                     <i class="fas fa-edit"></i> Editar
                 </button>
-                <button onclick="excluirUsuario(${JSON.stringify(usuario.id)})" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                <button onclick="excluirUsuario('${usuario.id}')" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
             </td>
@@ -11546,7 +11546,6 @@ function renderUsuarios(usuariosParaRender) {
 
     console.log(usuariosParaRender);
     tbody.innerHTML = usuariosParaRender.map(usuario => {
-        const idSeguro = JSON.stringify(usuario.id);
         return `
             <tr>
                 <td style="padding: 15px;">${usuario.nome || 'N/A'}</td>
@@ -11558,10 +11557,10 @@ function renderUsuarios(usuariosParaRender) {
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: center;">
-                    <button onclick="editarUsuario(${idSeguro})" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                    <button onclick="editarUsuario('${usuario.id}')" style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">
                         <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button onclick="excluirUsuario(${idSeguro})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                    <button onclick="excluirUsuario('${usuario.id}')" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">
                         <i class="fas fa-trash"></i> Excluir
                     </button>
                 </td>
@@ -13755,7 +13754,6 @@ async function abrirModalEditarReuniao(reuniaoId) {
 
         // Mostrar modal
         modal.style.display = 'block';
-        modal.classList.add('visible');
         console.log('[abrirModalEditarReuniao] Modal exibido');
     } catch (error) {
         console.error('Erro inesperado:', error);
@@ -13765,11 +13763,7 @@ async function abrirModalEditarReuniao(reuniaoId) {
 
 // Função para fechar o modal de editar reunião
 function fecharModalEditarReuniao() {
-    const modal = document.getElementById('modalEditarReuniao');
-    modal.classList.remove('visible');
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 300); // Aguarda a animação de fade out
+    document.getElementById('modalEditarReuniao').style.display = 'none';
     reuniaoEditandoId = null;
     document.getElementById('formEditarReuniao').reset();
 }
