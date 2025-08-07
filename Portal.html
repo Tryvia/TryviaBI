@@ -12821,21 +12821,28 @@ function limparFiltrosLogins() {
 // Função para abrir modal de edição
 function abrirModalEditarLogin(usuarioId) {
     usuarioEditandoLogin = todosLoginsUsuarios.find(u => u.id === usuarioId);
-    
     if (!usuarioEditandoLogin) {
         showAlert('Erro', 'Usuário não encontrado.');
         return;
     }
-
+    // Garante que permissoes seja sempre array de strings
+    if (typeof usuarioEditandoLogin.permissoes === 'string') {
+        try {
+            usuarioEditandoLogin.permissoes = JSON.parse(usuarioEditandoLogin.permissoes);
+        } catch (e) {
+            usuarioEditandoLogin.permissoes = [];
+        }
+    }
+    if (!Array.isArray(usuarioEditandoLogin.permissoes)) {
+        usuarioEditandoLogin.permissoes = [];
+    }
     // Preencher campos do formulário
     document.getElementById('editLoginNome').value = usuarioEditandoLogin.nome;
     document.getElementById('editLoginEmail').value = usuarioEditandoLogin.email;
     document.getElementById('editLoginSetor').value = usuarioEditandoLogin.setor || 'Comercial';
     document.getElementById('editLoginSenha').value = '';
-
     // Carregar permissões
     carregarPermissoesEdicaoLogin();
-
     // Mostrar modal
     document.getElementById('modalEditarLogin').style.display = 'flex';
 }
