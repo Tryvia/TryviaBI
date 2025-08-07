@@ -11600,15 +11600,16 @@ async function editarUsuario(userId) {
     }
 
     // Preencher o formulário de edição
-    document.getElementById('editNomeUsuario').value = usuario.nome || '';
-    document.getElementById('editEmailUsuario').value = usuario.email || '';
-    document.getElementById('editSetorUsuario').value = usuario.setor || '';
-    
-    // Armazenar o ID do usuário sendo editado
-    window.editingUserId = userId;
-    
+    document.getElementById('editarIdUsuario1').value = usuario.id || '';
+    document.getElementById('editarNomeUsuario1').value = usuario.nome || '';
+    document.getElementById('editarEmailUsuario1').value = usuario.email || '';
+    document.getElementById('editarSetorUsuario1').value = usuario.setor || '';
+
+    // Carregar permissões
+    carregarPermissoesEdicao(usuario.permissoes || []);
+
     // Abrir o modal de edição
-    document.getElementById('editUserModal').style.display = 'block';
+    document.getElementById('modalEditarUsuario').classList.add('visible');
 }
 
 // Função para excluir usuário
