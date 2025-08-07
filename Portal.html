@@ -9574,7 +9574,7 @@ async function enviarRelatorioPorEmail() {
     }
     
     // Preparar corpo do e-mail em HTML com link clicável
-    const emailBodyHTML = `
+    const emailBodyHTML = 
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
       <p>${message || `Prezado(a),<br><br>Segue o Relatório de Visita gerado pelo portal.`}</p>
       
@@ -9595,12 +9595,13 @@ async function enviarRelatorioPorEmail() {
           border-radius:5px;
           font-weight:bold;">
   📥 CLIQUE AQUI PARA BAIXAR O PDF
-</a></div>
+</a>
+</div>
       
       <p style="font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; margin-top: 30px;">
         Gerado automaticamente pelo Portal Tryvia
       </p>
-    </div>`;
+    </div>;
 
     
     const emailBodyText = `${message || `Prezado(a),
