@@ -4850,63 +4850,7 @@ select {
     </div>
 </div>
 
-<!-- Modal de Edição de Usuário -->
-<div class="modal-overlay" id="modalEditarUsuario">
-    <div class="modal-content" style="max-width: 600px;">
-        <h3 style="color: #4fc3f7; margin-bottom: 20px;">
-            <i class="fas fa-user-edit" style="margin-right: 10px;"></i>
-            Editar Usuário
-        </h3>
-        <form id="formEditarUsuario">
-            <input type="hidden" id="editarIdUsuario1" name="id">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarNomeUsuario1">Nome Completo</label>
-                    <input type="text" id="editarNomeUsuario1" placeholder="Nome completo do usuário" required>
-                </div>
-                <div class="form-group">
-                    <label for="editarEmailUsuario1">Email</label>
-                    <input type="email" id="editarEmailUsuario1" placeholder="Email do usuário" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarSenhaUsuario1">Nova Senha (opcional)</label>
-                    <input type="password" id="editarSenhaUsuario1" placeholder="Deixe em branco para não alterar">
-                </div>
-                <div class="form-group">
-                    <label for="editarConfirmarSenhaUsuario1">Confirmar Nova Senha</label>
-                    <input type="password" id="editarConfirmarSenhaUsuario1" placeholder="Confirme a nova senha">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="editarSetorUsuario1">Setor</label>
-                <select id="editarSetorUsuario1">
-                    <option value="">Selecione o setor</option>
-                    <option value="Time de implantação">Time de implantação</option>
-                    <option value="CS">CS</option>
-                    <option value="Suporte">Suporte</option>
-                    <option value="Tecnico">Técnico</option>
-                    <option value="Dev">Dev</option>
-                    <option value="Produto">Produto</option>
-                    <option value="Comercial">Comercial</option>
-                    <option value="Administrativo">Administrativo</option>
-                    <option value="TI">TI</option>
-                </select>
-            </div>
-            <div class="permissions-container">
-                <div class="section-title">Permissões</div>
-                <div class="permissions-grid" id="editarPermissoesGrid1">
-                    <!-- Permissões serão carregadas dinamicamente aqui -->
-                </div>
-            </div>
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button type="button" class="modal-button cancel" onclick="closeEditarUsuarioModal()">Cancelar</button>
-                <button type="submit" class="modal-button confirm">Salvar Alterações</button>
-            </div>
-        </form>
-    </div>
-</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -11295,63 +11239,6 @@ function showClientWelcomeMessage(clientName) {
 
 
 
-<!-- Modal de Edição de Usuário -->
-<div class="modal-overlay" id="modalEditarUsuario">
-    <div class="modal-content" style="max-width: 600px;">
-        <h3 style="color: #4fc3f7; margin-bottom: 20px;">
-            <i class="fas fa-user-edit" style="margin-right: 10px;"></i>
-            Editar Usuário
-        </h3>
-        <form id="formEditarUsuario2">
-            <input type="hidden" id="editarIdUsuario2" name="id">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarNomeUsuario2">Nome Completo</label>
-                    <input type="text" id="editarNomeUsuario2" placeholder="Nome completo do usuário" required>
-                </div>
-                <div class="form-group">
-                    <label for="editarEmailUsuario2">Email</label>
-                    <input type="email" id="editarEmailUsuario2" placeholder="Email do usuário" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarSenhaUsuario2">Nova Senha (opcional)</label>
-                    <input type="password" id="editarSenhaUsuario2" placeholder="Deixe em branco para não alterar">
-                </div>
-                <div class="form-group">
-                    <label for="editarConfirmarSenhaUsuario2">Confirmar Nova Senha</label>
-                    <input type="password" id="editarConfirmarSenhaUsuario2" placeholder="Confirme a nova senha">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="editarSetorUsuario2">Setor</label>
-                <select id="editarSetorUsuario2">
-                    <option value="">Selecione o setor</option>
-                    <option value="Time de implantação">Time de implantação</option>
-                    <option value="CS">CS</option>
-                    <option value="Suporte">Suporte</option>
-                    <option value="Tecnico">Técnico</option>
-                    <option value="Dev">Dev</option>
-                    <option value="Produto">Produto</option>
-                    <option value="Comercial">Comercial</option>
-                    <option value="Administrativo">Administrativo</option>
-                    <option value="TI">TI</option>
-                </select>
-            </div>
-            <div class="permissions-container">
-                <div class="section-title">Permissões</div>
-                <div class="permissions-grid" id="editarPermissoesGrid2">
-                    
-                </div>
-            </div>
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button type="button" class="modal-button cancel" onclick="closeEditarUsuarioModal()">Cancelar</button>
-                <button type="submit" class="modal-button confirm">Salvar Alterações</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 
 
