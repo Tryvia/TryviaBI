@@ -13754,6 +13754,7 @@ async function abrirModalEditarReuniao(reuniaoId) {
 
         // Mostrar modal
         modal.style.display = 'block';
+        modal.classList.add('visible');
         console.log('[abrirModalEditarReuniao] Modal exibido');
     } catch (error) {
         console.error('Erro inesperado:', error);
@@ -13763,7 +13764,11 @@ async function abrirModalEditarReuniao(reuniaoId) {
 
 // Função para fechar o modal de editar reunião
 function fecharModalEditarReuniao() {
-    document.getElementById('modalEditarReuniao').style.display = 'none';
+    const modal = document.getElementById('modalEditarReuniao');
+    modal.classList.remove('visible');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300); 
     reuniaoEditandoId = null;
     document.getElementById('formEditarReuniao').reset();
 }
