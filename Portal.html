@@ -13700,6 +13700,7 @@ let reuniaoEditandoId = null;
 // Função para abrir o modal de editar reunião
 async function abrirModalEditarReuniao(reuniaoId) {
     try {
+        console.log('[abrirModalEditarReuniao] reuniaoId:', reuniaoId);
         // Buscar dados da reunião
         const { data: reuniao, error } = await releaseClient
             .from('reunioes')
@@ -13717,19 +13718,44 @@ async function abrirModalEditarReuniao(reuniaoId) {
         reuniaoEditandoId = reuniaoId;
 
         // Popular os campos do modal
-        document.getElementById('editReuniaoCliente').value = reuniao.client_id || '';
-        document.getElementById('editReuniaoData').value = reuniao.data || '';
-        document.getElementById('editReuniaoHorario').value = reuniao.horario || '';
-        document.getElementById('editReuniaoTipo').value = reuniao.tipo || '';
-        document.getElementById('editReuniaoResponsavel').value = reuniao.responsavel || '';
-        document.getElementById('editReuniaoParticipantes').value = reuniao.participantes || '';
+        const clienteInput = document.getElementById('editReuniaoCliente');
+        const dataInput = document.getElementById('editReuniaoData');
+        const horarioInput = document.getElementById('editReuniaoHorario');
+        const tipoInput = document.getElementById('editReuniaoTipo');
+        const responsavelInput = document.getElementById('editReuniaoResponsavel');
+        const participantesInput = document.getElementById('editReuniaoParticipantes');
+        const modal = document.getElementById('modalEditarReuniao');
+
+        if (!clienteInput || !dataInput || !horarioInput || !tipoInput || !responsavelInput || !participantesInput || !modal) {
+            console.error('[abrirModalEditarReuniao] Algum elemento do modal não foi encontrado:', {
+                clienteInput, dataInput, horarioInput, tipoInput, responsavelInput, participantesInput, modal
+            });
+            showAlert('Erro', 'Erro ao encontrar campos do modal.');
+            return;
+        }
+
+        clienteInput.value = reuniao.client_id || '';
+        dataInput.value = reuniao.data || '';
+        horarioInput.value = reuniao.horario || '';
+        tipoInput.value = reuniao.tipo || '';
+        responsavelInput.value = reuniao.responsavel || '';
+        participantesInput.value = reuniao.participantes || '';
 
         // Popular dropdowns
-        populateEditReuniaoClientes();
-        populateEditReuniaoResponsaveis();
+        try {
+            populateEditReuniaoClientes();
+        } catch (e) {
+            console.error('[abrirModalEditarReuniao] Erro em populateEditReuniaoClientes:', e);
+        }
+        try {
+            populateEditReuniaoResponsaveis();
+        } catch (e) {
+            console.error('[abrirModalEditarReuniao] Erro em populateEditReuniaoResponsaveis:', e);
+        }
 
         // Mostrar modal
-        document.getElementById('modalEditarReuniao').style.display = 'block';
+        modal.style.display = 'block';
+        console.log('[abrirModalEditarReuniao] Modal exibido');
     } catch (error) {
         console.error('Erro inesperado:', error);
         showAlert('Erro', 'Erro inesperado ao abrir modal de edição.');
