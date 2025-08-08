@@ -13990,7 +13990,7 @@ async function loadAllTickets() {
             if (!client.email) return [];
             
             try {
-                const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client?email=${encodeURIComponent(client.email)}`);
+                const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${(cfEmpresa)}`);
                 if (!response.ok) return [];
                 
                 const tickets = await response.json();
