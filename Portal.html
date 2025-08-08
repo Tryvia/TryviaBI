@@ -13994,12 +13994,15 @@ async function loadAllTickets() {
                 if (!response.ok) return [];
                 
                 const tickets = await response.json();
-                return tickets.map(ticket => ({
-                    ...ticket,
-                    clientName: client.name,
-                    clientEmail: client.email,
-                    clientId: client.id
-                }));
+              return tickets.map(ticket => ({
+    ...ticket,
+    clientName: client.name,
+    clientEmail: client.email,
+    clientId: client.id,
+    // AQUI ESTÁ A CORREÇÃO: acesse cf_empresa via custom_fields
+    cfEmpresa: ticket.custom_fields.cf_empresa // ou a propriedade correta que você precisa
+}));
+
             } catch (error) {
                 console.error(`Erro ao buscar tickets para ${client.name}:`, error);
                 return [];
