@@ -4184,6 +4184,15 @@ select {
 <option value="POrtal">POrtal</option>
 <option value="Outro">Outro</option>
 </div>
+ <div class="form-group">
+    <label for="filtroDataInicioHomolog">Data início</label>
+    <input type="date" id="filtroDataInicioHomolog" onchange="filtrarHomologacoes()" />
+  </div>
+  <div class="form-group">
+    <label for="filtroDataFimHomolog">Data fim</label>
+    <input type="date" id="filtroDataFimHomolog" onchange="filtrarHomologacoes()" />
+  </div>
+</div>
 <div class="form-group">
 <label for="filtroEspecialista"> Filtrar por Especialista</label>
 <input id="filtroEspecialista" onkeyup="filtrarHomologacoes()" placeholder="Nome do especialista" type="text"/>
@@ -4192,14 +4201,6 @@ select {
 </div>
 <div class="homologacoes-grid" id="homologacoesGrid">
 </div>
-<div class="form-row" style="margin-top: 20px; align-items: flex-end;">
-  <div class="form-group">
-    <label for="filtroDataInicioHomolog">Data início</label>
-    <input type="date" id="filtroDataInicioHomolog" onchange="filtrarHomologacoes()" />
-  </div>
-  <div class="form-group">
-    <label for="filtroDataFimHomolog">Data fim</label>
-    <input type="date" id="filtroDataFimHomolog" onchange="filtrarHomologacoes()" />
   </div>
 </div>
 <div id="totalHomologacoesFiltradas" style="margin: 16px 0 0 0; font-weight: bold; font-size: 1.1em; text-align: right;"></div>
