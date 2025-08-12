@@ -4173,26 +4173,16 @@ select {
 <div class="tab-content" id="listaHomologacoes">
 <div class="filters-section">
 <div class="form-row">
-<div class="form-group" style="margin-right: 24px; min-width: 220px;">
-  <label for="filtroSistema"> Filtrar por Sistema</label>
-  <select id="filtroSistema" onchange="filtrarHomologacoes()">
-    <option value="">Todos os sistemas</option>
-    <option value="Sing">Sing</option>
-    <option value="Telemetria">Telemetria</option>
-    <option value="Etrip">Etrip</option>
-    <option value="OPT+z">OPT+z</option>
-    <option value="POrtal">POrtal</option>
-    <option value="Outro">Outro</option>
-  </select>
-</div>
-<div class="form-group" style="margin-right: 16px; min-width: 180px;">
-  <label for="filtroDataInicioHomolog">Data início</label>
-  <input type="date" id="filtroDataInicioHomolog" onchange="filtrarHomologacoes()" />
-</div>
-<div class="form-group" style="min-width: 180px;">
-  <label for="filtroDataFimHomolog">Data fim</label>
-  <input type="date" id="filtroDataFimHomolog" onchange="filtrarHomologacoes()" />
-</div>
+<div class="form-group">
+<label for="filtroSistema"> Filtrar por Sistema</label>
+<select id="filtroSistema" onchange="filtrarHomologacoes()">
+<option value="">Todos os sistemas</option>
+<option value="Sing">Sing</option>
+<option value="Telemetria">Telemetria</option>
+<option value="Etrip">Etrip</option>
+<option value="OPT+z">OPT+z</option>
+<option value="POrtal">POrtal</option>
+<option value="Outro">Outro</option>
 </div>
 <div class="form-group">
 <label for="filtroEspecialista"> Filtrar por Especialista</label>
@@ -4202,16 +4192,10 @@ select {
 </div>
 <div class="homologacoes-grid" id="homologacoesGrid">
 </div>
-  </div>
-</div>
-  </div>
-  <div id="totalHomologacoesFiltradas" style="margin: 16px 0 0 0; font-weight: bold; font-size: 1.1em; text-align: right;"></div>
-</div>
 <div class="empty-state" id="emptyStateHomologacao" style="display: none;">
-  <div>📋</div>
-  <h3>Nenhuma homologação encontrada</h3>
-  <p>Registre sua primeira homologação usando o formulário na aba "Formulário de Registro".</p>
-</div>
+<div>📋</div>
+<h3>Nenhuma homologação encontrada</h3>
+<p>Registre sua primeira homologação usando o formulário na aba "Formulário de Registro".</p>
 </div>
 </div>
 </div>
@@ -6673,8 +6657,6 @@ const { data, error } = await query;
         async function filtrarHomologacoes() {
             const sistemaFiltro = document.getElementById('filtroSistema').value.toLowerCase();
             const especialistaFiltro = document.getElementById('filtroEspecialista').value.toLowerCase();
-            const dataInicio = document.getElementById('filtroDataInicioHomolog').value;
-            const dataFim = document.getElementById('filtroDataFimHomolog').value;
 
             const { data, error } = await supabase
                 .from('homologacoes')
@@ -6686,22 +6668,10 @@ const { data, error } = await query;
                 return;
             }
 
-            const filtradas = data.filter(h => {
-                let matchSistema = !sistemaFiltro || h.sistema.toLowerCase().includes(sistemaFiltro);
-                let matchEspecialista = !especialistaFiltro || h.especialista.toLowerCase().includes(especialistaFiltro);
-                let matchData = true;
-                if (dataInicio || dataFim) {
-                    let dataLiberacao = h.data_liberacao;
-                    // Suporta formato dd/mm/yyyy ou yyyy-mm-dd
-                    if (/\d{2}\/\d{2}\/\d{4}/.test(dataLiberacao)) {
-                        const [d, m, y] = dataLiberacao.split("/");
-                        dataLiberacao = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-                    }
-                    if (dataInicio && dataLiberacao < dataInicio) matchData = false;
-                    if (dataFim && dataLiberacao > dataFim) matchData = false;
-                }
-                return matchSistema && matchEspecialista && matchData;
-            });
+            const filtradas = data.filter(h =>
+                (!sistemaFiltro || h.sistema.toLowerCase().includes(sistemaFiltro)) &&
+                (!especialistaFiltro || h.especialista.toLowerCase().includes(especialistaFiltro))
+            );
 
             const grid = document.getElementById('homologacoesGrid');
             const empty = document.getElementById('emptyStateHomologacao');
@@ -6734,16 +6704,6 @@ const { data, error } = await query;
                     return html;
                 }).join('');
             }
-
-            // Exibe o total de homologações filtradas
-            let totalDiv = document.getElementById('totalHomologacoesFiltradas');
-            if (!totalDiv) {
-                totalDiv = document.createElement('div');
-                totalDiv.id = 'totalHomologacoesFiltradas';
-                totalDiv.style = 'margin: 16px 0 0 0; font-weight: bold; font-size: 1.1em; text-align: right;';
-                grid.parentNode.appendChild(totalDiv);
-            }
-            totalDiv.textContent = `${filtradas.length} homologação${filtradas.length === 1 ? '' : 's'} no período selecionado`;
         }
 
      
