@@ -4173,26 +4173,26 @@ select {
 <div class="tab-content" id="listaHomologacoes">
 <div class="filters-section">
 <div class="form-row">
-<div class="form-group">
-<label for="filtroSistema"> Filtrar por Sistema</label>
-<select id="filtroSistema" onchange="filtrarHomologacoes()">
-<option value="">Todos os sistemas</option>
-<option value="Sing">Sing</option>
-<option value="Telemetria">Telemetria</option>
-<option value="Etrip">Etrip</option>
-<option value="OPT+z">OPT+z</option>
-<option value="POrtal">POrtal</option>
-<option value="Outro">Outro</option>
+<div class="form-group" style="margin-right: 24px; min-width: 220px;">
+  <label for="filtroSistema"> Filtrar por Sistema</label>
+  <select id="filtroSistema" onchange="filtrarHomologacoes()">
+    <option value="">Todos os sistemas</option>
+    <option value="Sing">Sing</option>
+    <option value="Telemetria">Telemetria</option>
+    <option value="Etrip">Etrip</option>
+    <option value="OPT+z">OPT+z</option>
+    <option value="POrtal">POrtal</option>
+    <option value="Outro">Outro</option>
+  </select>
 </div>
+<div class="form-group" style="margin-right: 16px; min-width: 180px;">
+  <label for="filtroDataInicioHomolog">Data início</label>
+  <input type="date" id="filtroDataInicioHomolog" onchange="filtrarHomologacoes()" />
 </div>
- <div class="form-group">
-    <label for="filtroDataInicioHomolog">Data início</label>
-    <input type="date" id="filtroDataInicioHomolog" onchange="filtrarHomologacoes()" />
-  </div>
-  <div class="form-group">
-    <label for="filtroDataFimHomolog">Data fim</label>
-    <input type="date" id="filtroDataFimHomolog" onchange="filtrarHomologacoes()" />
-  </div>
+<div class="form-group" style="min-width: 180px;">
+  <label for="filtroDataFimHomolog">Data fim</label>
+  <input type="date" id="filtroDataFimHomolog" onchange="filtrarHomologacoes()" />
+</div>
 </div>
 <div class="form-group">
 <label for="filtroEspecialista"> Filtrar por Especialista</label>
