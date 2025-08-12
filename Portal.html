@@ -429,6 +429,23 @@ a:contains('Ver Ata'),
     gap: 8px;
     align-items: center;
 }
+
+/* Estilos para o botão de editar homologação */
+.btn-editar-homologacao {
+    background-color: #4caf50 !important;
+    color: white !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-editar-homologacao:hover {
+    background-color: #388e3c !important;
+}
 </style>
 
 
@@ -2340,7 +2357,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-     window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+  window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
@@ -2467,6 +2484,60 @@ Editar Reunião
 </div>
 <div class="modal-buttons">
 <button type="button" class="modal-button cancel" onclick="fecharModalEditarReuniao()">Cancelar</button>
+<button type="submit" class="modal-button confirm">
+<i class="fas fa-save" style="margin-right: 8px;"></i>
+Salvar Alterações
+</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Modal para Editar Homologação -->
+<div class="modal-overlay" id="modalEditarHomologacao">
+<div class="modal-content" style="max-width: 600px;">
+<h3 style="color: #4fc3f7; margin-bottom: 20px;">
+<i class="fas fa-edit" style="margin-right: 10px;"></i>
+Editar Homologação
+</h3>
+<form id="formEditarHomologacao">
+<div class="form-row">
+<div class="form-group">
+<label for="editHomologacaoVersao">Versão</label>
+<input type="text" id="editHomologacaoVersao" class="input-padrao">
+</div>
+<div class="form-group">
+<label for="editHomologacaoEspecialista">Especialista</label>
+<input type="text" id="editHomologacaoEspecialista" class="input-padrao">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="editHomologacaoSistema">Sistema</label>
+<input type="text" id="editHomologacaoSistema" class="input-padrao">
+</div>
+<div class="form-group">
+<label for="editHomologacaoDataLiberacao">Data de Liberação</label>
+<input type="date" id="editHomologacaoDataLiberacao" class="input-padrao">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="editHomologacaoDataHomologacao">Data de Homologação</label>
+<input type="date" id="editHomologacaoDataHomologacao" class="input-padrao">
+</div>
+</div>
+<div class="form-group">
+<label for="editHomologacaoObservacao">Observação</label>
+<textarea id="editHomologacaoObservacao" rows="3" class="input-padrao"></textarea>
+</div>
+<div class="form-group">
+<label for="editHomologacaoFiles">📎 Adicionar Documentos (opcional)</label>
+<input type="file" id="editHomologacaoFiles" class="input-padrao" multiple>
+<small style="color: #666;">Selecione um ou mais arquivos para adicionar à homologação</small>
+</div>
+<div class="modal-buttons">
+<button type="button" class="modal-button cancel" onclick="fecharModalEditarHomologacao()">Cancelar</button>
 <button type="submit" class="modal-button confirm">
 <i class="fas fa-save" style="margin-right: 8px;"></i>
 Salvar Alterações
@@ -2957,6 +3028,23 @@ a:contains('Ver Ata'),
     display: flex;
     gap: 8px;
     align-items: center;
+}
+
+/* Estilos para o botão de editar homologação */
+.btn-editar-homologacao {
+    background-color: #4caf50 !important;
+    color: white !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-right: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-editar-homologacao:hover {
+    background-color: #388e3c !important;
 }
 </style>
 
@@ -4172,23 +4260,32 @@ select {
 </div>
 <div class="tab-content" id="listaHomologacoes">
 <div class="filters-section">
-<div class="form-row">
-<div class="form-group">
-<label for="filtroSistema"> Filtrar por Sistema</label>
-<select id="filtroSistema" onchange="filtrarHomologacoes()">
-<option value="">Todos os sistemas</option>
-<option value="Sing">Sing</option>
-<option value="Telemetria">Telemetria</option>
-<option value="Etrip">Etrip</option>
-<option value="OPT+z">OPT+z</option>
-<option value="POrtal">POrtal</option>
-<option value="Outro">Outro</option>
-</div>
-<div class="form-group">
-<label for="filtroEspecialista"> Filtrar por Especialista</label>
-<input id="filtroEspecialista" onkeyup="filtrarHomologacoes()" placeholder="Nome do especialista" type="text"/>
-</div>
-</div>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="filtroSistema">Filtrar por Sistema</label>
+      <select id="filtroSistema" onchange="filtrarHomologacoes()">
+        <option value="">Todos os sistemas</option>
+        <option value="Sing">Sing</option>
+        <option value="Telemetria">Telemetria</option>
+        <option value="Etrip">Etrip</option>
+        <option value="OPT+z">OPT+z</option>
+        <option value="POrtal">POrtal</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="filtroEspecialista">Filtrar por Especialista</label>
+      <input id="filtroEspecialista" onkeyup="filtrarHomologacoes()" placeholder="Nome do especialista" type="text"/>
+    </div>
+    <div class="form-group">
+      <label for="filtroDataInicio">Data início</label>
+      <input id="filtroDataInicio" type="date" onchange="filtrarHomologacoes()" />
+    </div>
+    <div class="form-group">
+      <label for="filtroDataFim">Data fim</label>
+      <input id="filtroDataFim" type="date" onchange="filtrarHomologacoes()" />
+    </div>
+  </div>
 </div>
 <div class="homologacoes-grid" id="homologacoesGrid">
 </div>
@@ -4197,6 +4294,7 @@ select {
 <h3>Nenhuma homologação encontrada</h3>
 <p>Registre sua primeira homologação usando o formulário na aba "Formulário de Registro".</p>
 </div>
+<div id="totalHomologacoesFiltradas" style="margin: 20px 0 10px 0; font-weight: bold; font-size: 1.1em; text-align: right;"></div>
 </div>
 </div>
 </div>
@@ -6647,6 +6745,7 @@ const { data, error } = await query;
                     html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
                 }
                 
+                html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
                 html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-left: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
                 html += '</div>';
                 return html;
@@ -6655,55 +6754,69 @@ const { data, error } = await query;
 
         
         async function filtrarHomologacoes() {
-            const sistemaFiltro = document.getElementById('filtroSistema').value.toLowerCase();
-            const especialistaFiltro = document.getElementById('filtroEspecialista').value.toLowerCase();
+    const sistemaFiltro = document.getElementById('filtroSistema').value.toLowerCase();
+    const especialistaFiltro = document.getElementById('filtroEspecialista').value.toLowerCase();
+    const dataInicio = document.getElementById('filtroDataInicio')?.value;
+    const dataFim = document.getElementById('filtroDataFim')?.value;
 
-            const { data, error } = await supabase
-                .from('homologacoes')
-                .select('*')
-                .order('data_liberacao', { ascending: false });
+    const { data, error } = await supabase
+        .from('homologacoes')
+        .select('*')
+        .order('data_liberacao', { ascending: false });
 
-            if (error || !data) {
-                console.error("Erro ao filtrar homologações:", error);
-                return;
+    if (error || !data) {
+        console.error("Erro ao filtrar homologações:", error);
+        return;
+    }
+
+    const filtradas = data.filter(h => {
+        let matchSistema = !sistemaFiltro || h.sistema.toLowerCase().includes(sistemaFiltro);
+        let matchEspecialista = !especialistaFiltro || h.especialista.toLowerCase().includes(especialistaFiltro);
+        let matchData = true;
+        if (dataInicio) {
+            matchData = matchData && h.data_liberacao >= dataInicio;
+        }
+        if (dataFim) {
+            matchData = matchData && h.data_liberacao <= dataFim;
+        }
+        return matchSistema && matchEspecialista && matchData;
+    });
+
+    const grid = document.getElementById('homologacoesGrid');
+    const empty = document.getElementById('emptyStateHomologacao');
+    const totalDiv = document.getElementById('totalHomologacoesFiltradas');
+
+    if (filtradas.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'flex';
+        if (totalDiv) totalDiv.textContent = '0 homologações no período selecionado';
+    } else {
+        empty.style.display = 'none';
+        grid.innerHTML = filtradas.map(h => {
+            const arquivosData = encodeURIComponent(JSON.stringify(h.arquivos || []));
+            let html = '';
+            html += '<div class="homologacao-card">';
+            html += '<h4>Versão: ' + h.versao + '</h4>';
+            html += '<p><strong>Especialista:</strong> ' + h.especialista + '</p>';
+            html += '<p><strong>Sistema:</strong> ' + h.sistema + '</p>';
+            html += '<p><strong>Liberação:</strong> ' + h.data_liberacao + '</p>';
+            html += '<p><strong>Homologação:</strong> ' + (h.data_homologacao || '-') + '</p>';
+            html += '<p><strong>Obs:</strong> ' + (h.observacao || '-') + '</p>';
+            if (h.arquivos && h.arquivos.length) {
+                html += '<p><strong>Arquivos:</strong><br>' +
+                    h.arquivos.map((file, i) =>
+                        `<span>📄 ${file.nome}</span>`
+                    ).join('<br>') +
+                '</p>';
+                html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
             }
-
-            const filtradas = data.filter(h =>
-                (!sistemaFiltro || h.sistema.toLowerCase().includes(sistemaFiltro)) &&
-                (!especialistaFiltro || h.especialista.toLowerCase().includes(especialistaFiltro))
-            );
-
-            const grid = document.getElementById('homologacoesGrid');
-            const empty = document.getElementById('emptyStateHomologacao');
-
-            if (filtradas.length === 0) {
-                grid.innerHTML = '';
-                empty.style.display = 'flex';
-            } else {
-                empty.style.display = 'none';
-                grid.innerHTML = filtradas.map(h => {
-                    const arquivosData = encodeURIComponent(JSON.stringify(h.arquivos || []));
-                    let html = '';
-                    html += '<div class="homologacao-card">';
-                    html += '<h4>Versão: ' + h.versao + '</h4>';
-                    html += '<p><strong>Especialista:</strong> ' + h.especialista + '</p>';
-                    html += '<p><strong>Sistema:</strong> ' + h.sistema + '</p>';
-                    html += '<p><strong>Liberação:</strong> ' + h.data_liberacao + '</p>';
-                    html += '<p><strong>Homologação:</strong> ' + (h.data_homologacao || '-') + '</p>';
-                    html += '<p><strong>Obs:</strong> ' + (h.observacao || '-') + '</p>';
-                    if (h.arquivos && h.arquivos.length) {
-                        html += '<p><strong>Arquivos:</strong><br>' +
-                            h.arquivos.map((file, i) =>
-                                `<span>📄 ${file.nome}</span>`
-                            ).join('<br>') +
-                        '</p>';
-                        html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
-                    }
-                    html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-left: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
-                    html += '</div>';
-                    return html;
-                }).join('');
-            }
+            html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
+            html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-left: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
+            html += '</div>';
+            return html;
+        }).join('');
+        if (totalDiv) totalDiv.textContent = `${filtradas.length} homologação${filtradas.length === 1 ? '' : 's'} no período selecionado`;
+    }
         }
 
      
@@ -6805,11 +6918,121 @@ const { data, error } = await query;
     await deleteHomologacao(homologacaoId, arquivosJsonString);
 }
 
+      // Função para abrir modal de edição de homologação
+      async function editHomologacaoFromButton(button, homologacaoId) {
+        try {
+            // Buscar dados da homologação
+            const { data, error } = await supabase
+                .from('homologacoes')
+                .select('*')
+                .eq('id', homologacaoId)
+                .single();
+
+            if (error) throw error;
+
+            // Preencher o formulário
+            document.getElementById('editHomologacaoVersao').value = data.versao || '';
+            document.getElementById('editHomologacaoEspecialista').value = data.especialista || '';
+            document.getElementById('editHomologacaoSistema').value = data.sistema || '';
+            document.getElementById('editHomologacaoDataLiberacao').value = data.data_liberacao || '';
+            document.getElementById('editHomologacaoDataHomologacao').value = data.data_homologacao || '';
+            document.getElementById('editHomologacaoObservacao').value = data.observacao || '';
+
+            // Armazenar ID da homologação para uso no salvamento
+            document.getElementById('formEditarHomologacao').dataset.homologacaoId = homologacaoId;
+
+            // Abrir modal
+            document.getElementById('modalEditarHomologacao').classList.add('visible');
+        } catch (error) {
+            console.error('Erro ao carregar homologação:', error);
+            showAlert('Erro', 'Erro ao carregar dados da homologação.');
+        }
+      }
+
+      // Função para fechar modal de edição de homologação
+      function fecharModalEditarHomologacao() {
+        document.getElementById('modalEditarHomologacao').classList.remove('visible');
+        document.getElementById('formEditarHomologacao').reset();
+      }
+
         
         document.addEventListener('DOMContentLoaded', () => {
             showTab('dashboard'); 
             
             fetchAndRenderClients();
+
+            // Event listener para o formulário de edição de homologação
+            document.getElementById('formEditarHomologacao').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const homologacaoId = this.dataset.homologacaoId;
+                
+                try {
+                    // Dados básicos da homologação
+                    const updateData = {
+                        versao: document.getElementById('editHomologacaoVersao').value,
+                        especialista: document.getElementById('editHomologacaoEspecialista').value,
+                        sistema: document.getElementById('editHomologacaoSistema').value,
+                        data_liberacao: document.getElementById('editHomologacaoDataLiberacao').value,
+                        data_homologacao: document.getElementById('editHomologacaoDataHomologacao').value || null,
+                        observacao: document.getElementById('editHomologacaoObservacao').value
+                    };
+
+                    // Atualizar homologação
+                    const { error: updateError } = await supabase
+                        .from('homologacoes')
+                        .update(updateData)
+                        .eq('id', homologacaoId);
+
+                    if (updateError) throw updateError;
+
+                    // Processar novos arquivos se houver
+                    const files = document.getElementById('editHomologacaoFiles').files;
+                    if (files.length > 0) {
+                        // Buscar arquivos existentes
+                        const { data: existingData } = await supabase
+                            .from('homologacoes')
+                            .select('arquivos')
+                            .eq('id', homologacaoId)
+                            .single();
+
+                        let existingFiles = existingData?.arquivos || [];
+                        
+                        for (let file of files) {
+                            const fileName = `homologacao_${homologacaoId}_${Date.now()}_${file.name}`;
+                            
+                            // Upload do arquivo
+                            const { error: uploadError } = await supabase.storage
+                                .from('homologacoes')
+                                .upload(fileName, file);
+
+                            if (uploadError) throw uploadError;
+
+                            // Adicionar à lista de arquivos
+                            existingFiles.push({
+                                nome: file.name,
+                                path: fileName,
+                                size: file.size
+                            });
+                        }
+
+                        // Atualizar lista de arquivos
+                        const { error: filesError } = await supabase
+                            .from('homologacoes')
+                            .update({ arquivos: existingFiles })
+                            .eq('id', homologacaoId);
+
+                        if (filesError) throw filesError;
+                    }
+
+                    showAlert('Sucesso', 'Homologação atualizada com sucesso!');
+                    fecharModalEditarHomologacao();
+                    loadHomologacoes();
+                } catch (error) {
+                    console.error('Erro ao atualizar homologação:', error);
+                    showAlert('Erro', 'Erro ao atualizar homologação: ' + error.message);
+                }
+            });
         });
     </script>
 <!-- Início do Relatório de Visita -->
@@ -10851,7 +11074,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+   window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
