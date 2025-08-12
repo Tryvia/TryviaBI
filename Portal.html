@@ -7027,7 +7027,7 @@ const { data, error } = await query;
 
                     showAlert('Sucesso', 'Homologação atualizada com sucesso!');
                     fecharModalEditarHomologacao();
-                    loadHomologacoes();
+                    fetchAndRenderHomologacoes();
                 } catch (error) {
                     console.error('Erro ao atualizar homologação:', error);
                     showAlert('Erro', 'Erro ao atualizar homologação: ' + error.message);
