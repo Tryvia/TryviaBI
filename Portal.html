@@ -481,6 +481,21 @@ select {
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// Função para popular responsáveis no formulário de nova reunião
+function populateReuniaoResponsaveis() {
+    const responsaveis = [
+        "Julyana",
+        "Marlos",
+        "Renata",
+        "Larissa",
+    ];
+    const select = document.getElementById('reuniaoResponsavel');
+    if (!select) return;
+    select.innerHTML = '<option value="">Selecione um responsável...</option>';
+    responsaveis.forEach(resp => {
+        select.innerHTML += `<option value="${resp}">${resp}</option>`;
+    });
+}
 // Função para carregar tarefas do setor do usuário logado
 async function carregarTarefas() {
     const setorUsuario = sessionStorage.getItem('setor');
@@ -2325,7 +2340,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+    
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
@@ -4254,10 +4269,19 @@ select {
 <button class="btn-primary" onclick="salvarReuniao()">Salvar Reunião</button>
 <h3 style="margin-top: 30px;">Filtros</h3>
 <div class="form-row">
-<div class="form-group"><label for="filtroReuniaoCliente">Filtrar por Cliente</label><select id="filtroReuniaoCliente" onchange="filtrarReunioes()"><option value="">Todos os clientes</option></select></div>
-<div class="form-group"><label for="filtroReuniaoResponsavel">Filtrar por Responsável</label><select id="filtroReuniaoResponsavel" onchange="filtrarReunioes()"><option value="">Todos os responsáveis</option></select></div>
+<div class="form-group"><label for="filtroReuniaoCliente">Filtrar por Cliente</label><select id="filtroReuniaoCliente" onchange="carregarReunioes()"><option value="">Todos os clientes</option></select></div>
+<div class="form-group"><label for="filtroReuniaoParticipante">Filtrar por Participante</label><select id="filtroReuniaoParticipante" onchange="carregarReunioes()"><option value="">Todos os participantes</option></select></div>
+<div class="form-group">
+  <label for="filtroDataInicio">Data início</label>
+  <input type="date" id="filtroDataInicio" onchange="carregarReunioes()" />
+</div>
+<div class="form-group">
+  <label for="filtroDataFim">Data fim</label>
+  <input type="date" id="filtroDataFim" onchange="carregarReunioes()" />
+</div>
 </div>
 <div class="documents-grid" id="listaReunioes" style="margin-top: 20px;"></div>
+<div id="totalReunioesFiltradas" style="margin-top: 16px; font-weight: bold; font-size: 1.1em;"></div>
 </div>
 <!-- Seção: Painel do Setor -->
 <div class="content-section" id="painel-setor">
@@ -7245,19 +7269,51 @@ function populateReuniaoClientes() {
   });
 }
 
+  // Filtros ativos
+  const filtroCliente = document.getElementById("filtroReuniaoCliente")?.value?.toLowerCase() || "";
+  const filtroParticipante = document.getElementById("filtroReuniaoParticipante")?.value?.toLowerCase() || "";
+  const filtroDataInicio = document.getElementById("filtroDataInicio")?.value || "";
+  const filtroDataFim = document.getElementById("filtroDataFim")?.value || "";
+
+  let totalReunioesFiltradas = 0;
   Object.keys(agrupado).forEach(cli => {
     const blocos = agrupado[cli];
+    // Filtra as reuniões do cliente conforme os filtros ativos
+    const blocosFiltrados = blocos.filter(r => {
+      // Participante (busca exata, igual Excel)
+      let matchParticipante = true;
+      if (filtroParticipante) {
+        // Divide os nomes da reunião e compara cada um
+        const nomes = (r.participantes || "").split(/,|;| e |\n/gi).map(n => n.trim());
+        matchParticipante = nomes.some(n => n.toLowerCase() === filtroParticipante.toLowerCase());
+      }
+      // Cliente
+      let matchCliente = !filtroCliente || (r.cliente && r.cliente.toLowerCase().includes(filtroCliente));
+      // Data
+      let matchData = true;
+      if (filtroDataInicio || filtroDataFim) {
+        let dataISO = r.data;
+        if (/\d{2}\/\d{2}\/\d{4}/.test(r.data)) {
+          const [d, m, y] = r.data.split("/");
+          dataISO = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+        }
+        if (filtroDataInicio && dataISO < filtroDataInicio) matchData = false;
+        if (filtroDataFim && dataISO > filtroDataFim) matchData = false;
+      }
+      return matchCliente && matchParticipante && matchData;
+    });
+    totalReunioesFiltradas += blocosFiltrados.length;
+    if (blocosFiltrados.length === 0) return; // Não mostra card se não houver reuniões filtradas
     const card = document.createElement("div");
     card.className = "document-card";
     card.setAttribute("data-cliente", cli);
-    // Pega o responsável do primeiro item do grupo para o filtro
-    const responsavelPrimeiro = blocos[0].responsavel ? blocos[0].responsavel.toLowerCase() : "";
+    const responsavelPrimeiro = blocosFiltrados[0].responsavel ? blocosFiltrados[0].responsavel.toLowerCase() : "";
     card.setAttribute("data-responsavel", responsavelPrimeiro);
     card.innerHTML = `
-      <div class="document-title">${blocos[0].cliente}</div>
-      <div class="document-author">Total de reuniões: ${blocos.length}</div>
+      <div class="document-title">${blocosFiltrados[0].cliente}</div>
+      <div class="document-author">Total de reuniões: ${blocosFiltrados.length}</div>
       <div style="margin-top: 10px;">
-        ${blocos.map(r => `
+        ${blocosFiltrados.map(r => `
           <div style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #336699;">
             <p><strong>Data:</strong> ${r.data}</p>
             ${r.horario ? `<p><strong>Horário:</strong> ${r.horario}</p>` : ''}
@@ -7266,10 +7322,10 @@ function populateReuniaoClientes() {
             <p><strong>Participantes:</strong> ${r.participantes}</p>
             <div class="reuniao-actions">
               ${r.file_url ? `<a class="btn-ver-ata" href="${r.file_url}" target="_blank">Ver Ata</a>` : "<em>Sem ata</em>"}
-              <button class="btn-editar-reuniao" onclick="abrirModalEditarReuniao(\'${r.id}\')">
+              <button class="btn-editar-reuniao" onclick="abrirModalEditarReuniao('${r.id}')">
                 <i class="fas fa-edit"></i> Editar
               </button>
-              <button class="btn-excluir-reuniao" onclick="excluirReuniao(\'${r.id}\')">
+              <button class="btn-excluir-reuniao" onclick="excluirReuniao('${r.id}')">
                 <i class="fas fa-trash"></i> Excluir
               </button>
             </div>
@@ -7279,48 +7335,39 @@ function populateReuniaoClientes() {
     `;
     container.appendChild(card);
   });
+
+  // Exibe o total de reuniões filtradas no final da página
+  let totalDiv = document.getElementById('totalReunioesFiltradas');
+  if (!totalDiv) {
+    totalDiv = document.createElement('div');
+    totalDiv.id = 'totalReunioesFiltradas';
+    totalDiv.style = 'margin: 30px 0 10px 0; font-weight: bold; font-size: 1.1em; text-align: right;';
+    container.parentNode.appendChild(totalDiv);
+  }
+  totalDiv.textContent = `${totalReunioesFiltradas} reunião${totalReunioesFiltradas === 1 ? '' : 's'} no período selecionado`;
 }
 
-function filtrarReunioes() {
-  const filtroCliente = document.getElementById("filtroReuniaoCliente").value.toLowerCase();
-  const filtroResponsavel = document.getElementById("filtroReuniaoResponsavel").value.toLowerCase();
-  
-  document.querySelectorAll("#listaReunioes .document-card").forEach(c => {
-    const cli = c.getAttribute("data-cliente") || "";
-    const responsavelCard = c.getAttribute("data-responsavel") || "";
-    
-    const matchCliente = !filtroCliente || cli.includes(filtroCliente);
-    const matchResponsavel = !filtroResponsavel || responsavelCard.includes(filtroResponsavel);
-    
-    c.style.display = (matchCliente && matchResponsavel) ? "block" : "none";
+
+// Função para popular dropdown de participantes no filtro
+function populateFiltroParticipantes() {
+  const select = document.getElementById('filtroReuniaoParticipante');
+  if (!select) return;
+  select.innerHTML = '<option value="">Todos os participantes</option>';
+  // Coletar todos os nomes individuais de participantes das reuniões já carregadas
+  const participantesSet = new Set();
+  document.querySelectorAll("#listaReunioes .document-card p").forEach(p => {
+    if (p.innerText.startsWith("Participantes:")) {
+      const txt = p.innerText.replace("Participantes:", "").trim();
+      // Suporta separadores: vírgula, ponto e vírgula, " e ", quebra de linha
+      txt.split(/,|;| e |\n/gi).forEach(nome => {
+        const nomeLimpo = nome.trim();
+        if (nomeLimpo) participantesSet.add(nomeLimpo);
+      });
+    }
   });
-}
-
-// Função para popular dropdown de responsáveis
-function populateReuniaoResponsaveis() {
-  const responsaveis = [
-    "Julyana",
-    "Marlos", 
-    "Renata",
-    "Larissa",
-  ];
-  
-  const selectForm = document.getElementById('reuniaoResponsavel');
-  const selectFiltro = document.getElementById('filtroReuniaoResponsavel');
-  
-  if (selectForm) {
-    selectForm.innerHTML = '<option value="">Selecione um responsável...</option>';
-    responsaveis.forEach(resp => {
-      selectForm.innerHTML += `<option value="${resp}">${resp}</option>`;
-    });
-  }
-  
-  if (selectFiltro) {
-    selectFiltro.innerHTML = '<option value="">Todos os responsáveis</option>';
-    responsaveis.forEach(resp => {
-      selectFiltro.innerHTML += `<option value="${resp.toLowerCase()}">${resp}</option>`;
-    });
-  }
+  Array.from(participantesSet).sort((a, b) => a.localeCompare(b, 'pt-BR')).forEach(nome => {
+    select.innerHTML += `<option value="${nome}">${nome}</option>`;
+  });
 }
 
 // Função para popular dropdown de clientes no filtro
@@ -7341,10 +7388,12 @@ document.addEventListener("DOMContentLoaded", function() {
       populateFiltroClientes();
       populateReuniaoResponsaveis();
       carregarReunioes();
+      setTimeout(populateFiltroParticipantes, 500); // Aguarda reuniões carregarem
     });
   } else {
     populateReuniaoResponsaveis();
     carregarReunioes();
+    setTimeout(populateFiltroParticipantes, 500);
   }
 });
 </script>
@@ -10802,7 +10851,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+  
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
