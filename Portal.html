@@ -33,6 +33,123 @@ a:contains('Ver Ata'),
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -81,6 +198,123 @@ a:contains('Ver Ata'),
 .dashboard-card a.btn:hover,
 .dashboard-card a:hover {
     background-color: #0277bd !important;
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 
@@ -429,6 +663,123 @@ a:contains('Ver Ata'),
     gap: 8px;
     align-items: center;
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -436,12 +787,246 @@ a:contains('Ver Ata'),
 .profile-info span {
     color: #ffffff !important;
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
 <style>
 header h1, .top-bar h1, .top-bar-title, .header-title {
     color: #ffffff !important;
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 
@@ -477,6 +1062,123 @@ select {
     background-color: #ffffff !important;
     color: #000000 !important;
     border-color: #999 !important;
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2319,6 +3021,123 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -2574,6 +3393,123 @@ a:contains('Ver Ata'),
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -2590,6 +3526,123 @@ a:contains('Ver Ata'),
     margin-bottom: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 
@@ -2610,6 +3663,123 @@ a:contains('Ver Ata'),
 .dashboard-card a.btn:hover,
 .dashboard-card a:hover {
     background-color: #0277bd !important;
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 
@@ -2958,6 +4128,123 @@ a:contains('Ver Ata'),
     gap: 8px;
     align-items: center;
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -2965,12 +4252,246 @@ a:contains('Ver Ata'),
 .profile-info span {
     color: #ffffff !important;
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
 <style>
 header h1, .top-bar h1, .top-bar-title, .header-title {
     color: #ffffff !important;
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 
@@ -3008,6 +4529,123 @@ select {
     background-color: #ffffff !important;
     color: #000000 !important;
     border-color: #999 !important;
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 
@@ -6663,6 +8301,14 @@ const { data, error } = await query;
                     html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
                 }
                 
+                // Botão Editar
+                html += `<button class="btn-exportar" style="background-color: #4caf50; margin-left: 10px;" onclick="editarHomologacao(${h.id})">✏️ Editar</button>`;
+                
+                // Botão Baixar Documento (individual)
+                if (h.arquivos && h.arquivos.length) {
+                    html += `<button class="btn-exportar" style="background-color: #2196f3; margin-left: 10px;" data-arquivos="${arquivosData}" onclick="baixarDocumentoHomologacao(this)">📄 Baixar Documento</button>`;
+                }
+                
                 html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-left: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
                 html += '</div>';
                 return html;
@@ -6729,6 +8375,15 @@ const { data, error } = await query;
                         '</p>';
                         html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
                     }
+                    
+                    // Botão Editar
+                    html += `<button class="btn-exportar" style="background-color: #4caf50; margin-left: 10px;" onclick="editarHomologacao(${h.id})">✏️ Editar</button>`;
+                    
+                    // Botão Baixar Documento (individual)
+                    if (h.arquivos && h.arquivos.length) {
+                        html += `<button class="btn-exportar" style="background-color: #2196f3; margin-left: 10px;" data-arquivos="${arquivosData}" onclick="baixarDocumentoHomologacao(this)">📄 Baixar Documento</button>`;
+                    }
+                    
                     html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-left: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
                     html += '</div>';
                     return html;
@@ -10124,6 +11779,123 @@ document.addEventListener('keydown', function(event) {
         gap: 10px !important;
     }
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -12753,6 +14525,123 @@ document.addEventListener('change', function(e) {
     padding: 40px 20px;
     color: #666;
 }
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 </style>
 
 
@@ -12920,6 +14809,123 @@ document.addEventListener('change', function(e) {
     font-size: 0.8em;
     margin: 2px;
     display: inline-block;
+}
+
+/* Estilos para o modal de edição de homologação */
+.homologacao-edit-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.homologacao-edit-modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.homologacao-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4caf50;
+}
+
+.homologacao-edit-modal-header h2 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 1.5em;
+}
+
+.homologacao-edit-modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.homologacao-edit-modal-close:hover {
+    color: #000;
+}
+
+.homologacao-edit-form-group {
+    margin-bottom: 20px;
+}
+
+.homologacao-edit-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.homologacao-edit-form-group input,
+.homologacao-edit-form-group select,
+.homologacao-edit-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.homologacao-edit-form-group input:focus,
+.homologacao-edit-form-group select:focus,
+.homologacao-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.homologacao-edit-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.homologacao-edit-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.homologacao-edit-form-row .homologacao-edit-form-group {
+    flex: 1;
+}
+
+.btn-salvar-homologacao-edit {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-salvar-homologacao-edit:hover {
+    background-color: #388e3c;
+}
+
+.btn-salvar-homologacao-edit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 </style>
 
@@ -14275,7 +16281,222 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         }
     };
+});
+
+// Variável global para armazenar o ID da homologação sendo editada
+let homologacaoEditandoId = null;
+
+// Função para abrir o modal de edição de homologação
+async function editarHomologacao(id) {
+    homologacaoEditandoId = id;
+    
+    // Buscar os dados da homologação
+    const { data, error } = await supabase
+        .from('homologacoes')
+        .select('*')
+        .eq('id', id)
+        .single();
+    
+    if (error) {
+        showAlert('Erro', 'Erro ao carregar dados da homologação: ' + error.message);
+        return;
+    }
+    
+    // Preencher o formulário com os dados
+    document.getElementById('editVersao').value = data.versao || '';
+    document.getElementById('editEspecialista').value = data.especialista || '';
+    document.getElementById('editSistema').value = data.sistema || '';
+    document.getElementById('editDataLiberacao').value = data.data_liberacao || '';
+    document.getElementById('editDataHomologacao').value = data.data_homologacao || '';
+    document.getElementById('editObservacao').value = data.observacao || '';
+    
+    // Mostrar o modal
+    document.getElementById('homologacaoEditModal').style.display = 'block';
+}
+
+// Função para fechar o modal de edição
+function fecharModalEditHomologacao() {
+    document.getElementById('homologacaoEditModal').style.display = 'none';
+    document.getElementById('homologacaoEditForm').reset();
+    homologacaoEditandoId = null;
+}
+
+// Função para baixar documento individual de homologação
+function baixarDocumentoHomologacao(button) {
+    const arquivosData = button.getAttribute('data-arquivos');
+    if (!arquivosData) {
+        showAlert('Aviso', 'Nenhum documento encontrado para esta homologação.');
+        return;
+    }
+    
+    try {
+        const arquivos = JSON.parse(decodeURIComponent(arquivosData));
+        if (!arquivos || arquivos.length === 0) {
+            showAlert('Aviso', 'Nenhum documento encontrado para esta homologação.');
+            return;
+        }
+        
+        // Baixar o primeiro arquivo (ou todos se houver mais de um)
+        arquivos.forEach((arquivo, index) => {
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = arquivo.url;
+                link.download = arquivo.nome;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }, index * 500); // Delay entre downloads para evitar bloqueio
+        });
+        
+        showAlert('Sucesso', `Download iniciado para ${arquivos.length} arquivo(s).`);
+    } catch (error) {
+        console.error('Erro ao processar arquivos:', error);
+        showAlert('Erro', 'Erro ao processar os arquivos para download.');
+    }
+}
+
+// Event listener para o formulário de edição
+document.addEventListener('DOMContentLoaded', function() {
+    const editForm = document.getElementById('homologacaoEditForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!homologacaoEditandoId) {
+                showAlert('Erro', 'ID da homologação não encontrado.');
+                return;
+            }
+            
+            const btn = document.querySelector('.btn-salvar-homologacao-edit');
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = 'Salvando...';
+            btn.disabled = true;
+            
+            try {
+                // Coletar dados do formulário
+                const formData = new FormData(editForm);
+                const updateData = {
+                    versao: formData.get('versao'),
+                    especialista: formData.get('especialista'),
+                    sistema: formData.get('sistema'),
+                    data_liberacao: formData.get('data_liberacao'),
+                    data_homologacao: formData.get('data_homologacao') || null,
+                    observacao: formData.get('observacao') || null
+                };
+                
+                // Se um novo arquivo foi selecionado, processar o upload
+                const fileInput = document.getElementById('editFileInput');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileName = `homologacao_${homologacaoEditandoId}_${Date.now()}_${file.name}`;
+                    
+                    // Upload do arquivo
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('homologacoes')
+                        .upload(fileName, file);
+                    
+                    if (uploadError) {
+                        throw new Error('Erro no upload: ' + uploadError.message);
+                    }
+                    
+                    // Obter URL pública do arquivo
+                    const { data: urlData } = supabase.storage
+                        .from('homologacoes')
+                        .getPublicUrl(fileName);
+                    
+                    // Adicionar arquivo aos dados de atualização
+                    updateData.arquivos = [{
+                        nome: file.name,
+                        url: urlData.publicUrl,
+                        path: fileName
+                    }];
+                }
+                
+                // Atualizar no banco de dados
+                const { error: updateError } = await supabase
+                    .from('homologacoes')
+                    .update(updateData)
+                    .eq('id', homologacaoEditandoId);
+                
+                if (updateError) {
+                    throw new Error('Erro ao atualizar: ' + updateError.message);
+                }
+                
+                showAlert('Sucesso', 'Homologação atualizada com sucesso!');
+                fecharModalEditHomologacao();
+                fetchAndRenderHomologacoes(); // Recarregar a lista
+                
+            } catch (error) {
+                console.error('Erro ao salvar homologação:', error);
+                showAlert('Erro', error.message);
+            } finally {
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            }
+        });
+    }
+});
+
+// Fechar modal ao clicar fora dele
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('homologacaoEditModal');
+    if (event.target === modal) {
+        fecharModalEditHomologacao();
+    }
 });</script>
+
+<!-- Modal de Edição de Homologação -->
+<div id="homologacaoEditModal" class="homologacao-edit-modal">
+    <div class="homologacao-edit-modal-content">
+        <div class="homologacao-edit-modal-header">
+            <h2>Editar Homologação</h2>
+            <span class="homologacao-edit-modal-close" onclick="fecharModalEditHomologacao()">&times;</span>
+        </div>
+        <form id="homologacaoEditForm">
+            <div class="homologacao-edit-form-row">
+                <div class="homologacao-edit-form-group">
+                    <label for="editVersao">Versão:</label>
+                    <input type="text" id="editVersao" name="versao" required>
+                </div>
+                <div class="homologacao-edit-form-group">
+                    <label for="editEspecialista">Especialista:</label>
+                    <select id="editEspecialista" name="especialista" required>
+                        <option value="">Selecione...</option>
+                        <option value="Julyana">Julyana</option>
+                        <option value="Marlos">Marlos</option>
+                        <option value="Renata">Renata</option>
+                        <option value="Larissa">Larissa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="homologacao-edit-form-row">
+                <div class="homologacao-edit-form-group">
+                    <label for="editSistema">Sistema:</label>
+                    <input type="text" id="editSistema" name="sistema" required>
+                </div>
+                <div class="homologacao-edit-form-group">
+                    <label for="editDataLiberacao">Data de Liberação:</label>
+                    <input type="date" id="editDataLiberacao" name="data_liberacao" required>
+                </div>
+            </div>
+            <div class="homologacao-edit-form-group">
+                <label for="editDataHomologacao">Data de Homologação:</label>
+                <input type="date" id="editDataHomologacao" name="data_homologacao">
+            </div>
+            <div class="homologacao-edit-form-group">
+                <label for="editObservacao">Observação:</label>
+                <textarea id="editObservacao" name="observacao" placeholder="Observações sobre a homologação..."></textarea>
+            </div>
+            <div class="homologacao-edit-form-group">
+                <label for="editFileInput">Documento (opcional):</label>
+                <input type="file" id="editFileInput" name="arquivo" accept=".pdf,.doc,.docx,.txt,.jpg,.png">
+                <small>Deixe em branco para manter o documento atual</small>
+            </div>
+            <button type="submit" class="btn-salvar-homologacao-edit">Salvar Alterações</button>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>
