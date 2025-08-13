@@ -2357,7 +2357,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-  window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
@@ -4370,12 +4370,12 @@ select {
 <div class="form-group"><label for="filtroReuniaoCliente">Filtrar por Cliente</label><select id="filtroReuniaoCliente" onchange="carregarReunioes()"><option value="">Todos os clientes</option></select></div>
 <div class="form-group"><label for="filtroReuniaoParticipante">Filtrar por Participante</label><select id="filtroReuniaoParticipante" onchange="carregarReunioes()"><option value="">Todos os participantes</option></select></div>
 <div class="form-group">
-  <label for="filtroDataInicio">Data início</label>
-  <input type="date" id="filtroDataInicio" onchange="carregarReunioes()" />
+    <label for="filtroReuniaoDataInicio">Data início</label>
+    <input type="date" id="filtroReuniaoDataInicio" onchange="carregarReunioes()" />
 </div>
 <div class="form-group">
-  <label for="filtroDataFim">Data fim</label>
-  <input type="date" id="filtroDataFim" onchange="carregarReunioes()" />
+    <label for="filtroReuniaoDataFim">Data fim</label>
+    <input type="date" id="filtroReuniaoDataFim" onchange="carregarReunioes()" />
 </div>
 </div>
 <div class="documents-grid" id="listaReunioes" style="margin-top: 20px;"></div>
@@ -7495,8 +7495,8 @@ function populateReuniaoClientes() {
   // Filtros ativos
   const filtroCliente = document.getElementById("filtroReuniaoCliente")?.value?.toLowerCase() || "";
   const filtroParticipante = document.getElementById("filtroReuniaoParticipante")?.value?.toLowerCase() || "";
-  const filtroDataInicio = document.getElementById("filtroDataInicio")?.value || "";
-  const filtroDataFim = document.getElementById("filtroDataFim")?.value || "";
+    const filtroDataInicio = document.getElementById("filtroReuniaoDataInicio")?.value || "";
+    const filtroDataFim = document.getElementById("filtroReuniaoDataFim")?.value || "";
 
   let totalReunioesFiltradas = 0;
   Object.keys(agrupado).forEach(cli => {
@@ -7567,7 +7567,7 @@ function populateReuniaoClientes() {
     totalDiv.style = 'margin: 30px 0 10px 0; font-weight: bold; font-size: 1.1em; text-align: right;';
     container.parentNode.appendChild(totalDiv);
   }
-  totalDiv.textContent = `${totalReunioesFiltradas} reunião${totalReunioesFiltradas === 1 ? '' : 's'} no período selecionado`;
+    totalDiv.textContent = `${totalReunioesFiltradas} ${totalReunioesFiltradas === 1 ? 'reunião' : 'reuniões'} no período selecionado`;
 }
 
 
