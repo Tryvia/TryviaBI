@@ -8422,12 +8422,24 @@ async function consultarIntegracoesPorIdCliente(idCliente) {
 // Função para obter classe CSS do status do ticket
 function getTicketStatusClass(status) {
     const statusMap = {
-        2: 'open',      // Open
-        3: 'pending',   // Pending
-        4: 'resolved',  // Resolved
-        5: 'closed'     // Closed
+        2: 'open',                  // Open
+        3: 'pending',
+        4: 'resolved',
+        5: 'closed',
+        6: 'in-homologation',
+        7: 'awaiting-client',
+        8: 'in-treatment',
+        10: 'in-analysis',
+        11: 'internal',
+        12: 'awaiting-publish-hml',
+        13: 'awaiting-publish-prod',
+        14: 'mvp',
+        15: 'validation-attendance',
+        16: 'awaiting-partners',
+        17: 'paused',
+        18: 'validation-cs'
     };
-    return statusMap[status] || 'open';
+    return statusMap[status] || 'unknown';
 }
 
 // Função para obter texto do status do ticket
@@ -8436,7 +8448,19 @@ function getTicketStatusText(status) {
         2: 'Aberto',
         3: 'Pendente',
         4: 'Resolvido',
-        5: 'Fechado'
+        5: 'Fechado',
+        6: 'Em Homologação',
+        7: 'Aguardando Cliente',
+        8: 'Em tratativa',
+        10: 'Em análise',
+        11: 'Interno',
+        12: 'Aguardando publicar HML',
+        13: 'Aguardando publicar em PROD',
+        14: 'MVP',
+        15: 'Validação-Atendimento',
+        16: 'Aguardando Parceiros',
+        17: 'Pausado',
+        18: 'Validação-CS'
     };
     return statusMap[status] || 'Desconhecido';
 }
