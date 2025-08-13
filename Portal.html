@@ -8703,11 +8703,23 @@ window.onclick = function(event) {
 
             // Função para obter classe CSS do status do ticket
             function getTicketStatusClass(status) {
-                const statusMap = {
-                    2: "open",      // Open
-                    3: "pending",   // Pending
-                    4: "resolved",  // Resolved
-                    5: "closed"     // Closed
+               const statusMap = {
+        2: "open",      // Open
+        3: "pending",   // Pending
+        4: "resolved",  // Resolved
+        5: "closed",    // Closed
+        7: "aguardando-cliente",
+        8: "em-tratativa",
+        10: "em-analise",
+        11: "interno",
+        6: "em-homologacao",
+        12: "aguardando-hml",
+        13: "aguardando-prod",
+        14: "mvp",
+        15: "validacao-atendimento",
+        16: "aguardando-parceiros",
+        17: "pausado",
+        18: "validacao-cs"
                 };
                 return statusMap[status] || "open";
             }
@@ -8715,10 +8727,22 @@ window.onclick = function(event) {
             // Função para obter texto do status do ticket
             function getTicketStatusText(status) {
                 const statusMap = {
-                    2: "Aberto",
-                    3: "Pendente",
-                    4: "Resolvido",
-                    5: "Fechado"
+        2: "Aberto",
+        3: "Pendente",
+        4: "Atribuído",
+        5: "Fechado",
+        7: "Aguardando Cliente",
+        8: "Em tratativa",
+        10: "Em análise",
+        11: "Interno",
+        6: "Em Homologação",
+        12: "Aguardando publicar HML",
+        13: "Aguardando publicar em PROD",
+        14: "MVP",
+        15: "Validação-Atendimento",
+        16: "Aguardando Parceiros",
+        17: "Pausado",
+        18: "Validação-CS"
                 };
                 return statusMap[status] || "Desconhecido";
             }
