@@ -2498,10 +2498,10 @@ Editar Reunião
 <form id="formEditarReuniao">
 <div class="form-row">
 <div class="form-group">
-<div class="form-group">
-  <label for="reuniaoCliente">Cliente</label>
-  <input type="text" id="reuniaoClienteBusca" placeholder="Buscar cliente..." style="width:100%;margin-bottom:6px;" onkeyup="filtrarClientesReuniao()" autocomplete="off">
-  <select id="reuniaoCliente"><option value="">Selecione um cliente...</option></select>
+<label for="editReuniaoCliente">Cliente</label>
+<select id="editReuniaoCliente">
+<option value="">Selecione um cliente...</option>
+</select>
 </div>
 <div class="form-group">
 <label for="editReuniaoData">Data</label>
@@ -5858,24 +5858,6 @@ function addEditProduct() {
             }
         }
         
-        function filtrarClientesReuniao() {
-  var busca = document.getElementById('reuniaoClienteBusca').value.toLowerCase();
-  var select = document.getElementById('reuniaoCliente');
-  for (var i = 0; i < select.options.length; i++) {
-    var option = select.options[i];
-    if (option.value === "" || option.text.toLowerCase().includes(busca)) {
-      option.style.display = '';
-    } else {
-      option.style.display = 'none';
-    }
-  }
-  // Se houver apenas uma opção visível, seleciona automaticamente
-  var visiveis = Array.from(select.options).filter(opt => opt.style.display !== 'none' && opt.value !== "");
-  if (visiveis.length === 1) {
-    select.value = visiveis[0].value;
-  }
-}
-
         // Função para limpar filtros
         function clearClientFilters() {
             document.getElementById('filterClientGroup').value = '';
