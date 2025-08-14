@@ -13783,7 +13783,21 @@ function renderizarImplantacoes(implantacoes) {
     }
     
     const html = implantacoes.map(implantacao => {
-        const dataFormatada = new Date(implantacao.data).toLocaleDateString('pt-BR');
+        // Corrigir problema de fuso horário na exibição da data
+        let dataFormatada;
+        if (implantacao.data) {
+            if (implantacao.data.includes('-') && implantacao.data.length === 10) {
+                // Se a data já está no formato YYYY-MM-DD, criar Date sem problemas de fuso horário
+                const [ano, mes, dia] = implantacao.data.split('-');
+                const date = new Date(ano, mes - 1, dia); // mes - 1 porque Date usa 0-11 para meses
+                dataFormatada = date.toLocaleDateString('pt-BR');
+            } else {
+                dataFormatada = new Date(implantacao.data).toLocaleDateString('pt-BR');
+            }
+        } else {
+            dataFormatada = 'Data não informada';
+        }
+        
         const criadoEm = new Date(implantacao.created_at).toLocaleDateString('pt-BR');
         
         return `
@@ -14021,7 +14035,23 @@ function editarImplantacao(id) {
     
     // Preencher o formulário com os dados da implantação
     document.getElementById('novaImplantacaoEspecialista').value = implantacao.especialista;
-    document.getElementById('novaImplantacaoData').value = implantacao.data;
+    
+    // Corrigir problema de fuso horário na data
+    let dataCorrigida = implantacao.data;
+    if (implantacao.data) {
+        // Se a data vier no formato YYYY-MM-DD, usar diretamente
+        if (implantacao.data.includes('-') && implantacao.data.length === 10) {
+            dataCorrigida = implantacao.data;
+        } else {
+            // Se vier como timestamp ou outro formato, converter considerando fuso horário local
+            const date = new Date(implantacao.data);
+            const offset = date.getTimezoneOffset();
+            const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+            dataCorrigida = localDate.toISOString().split('T')[0];
+        }
+    }
+    document.getElementById('novaImplantacaoData').value = dataCorrigida;
+    
     document.getElementById('novaImplantacaoCliente').value = implantacao.cliente;
     document.getElementById('novaImplantacaoProjeto').value = implantacao.projeto;
     document.getElementById('novaImplantacaoTipo').value = implantacao.tipo;
