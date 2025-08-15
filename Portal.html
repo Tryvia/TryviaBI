@@ -6799,7 +6799,7 @@ const { data, error } = await query;
                 }
                 
                 html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
-                html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-left: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
+                html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
                 html += '</div>';
                 return html;
             }).join('');
@@ -6864,7 +6864,7 @@ const { data, error } = await query;
                 html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
             }
             html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
-            html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-left: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
+            html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
             html += '</div>';
             return html;
         }).join('');
@@ -7848,13 +7848,30 @@ async function loadRecentActivities() {
         // Processar reuniões
         if (reunioesData.data) {
             reunioesData.data.forEach(reuniao => {
+                let dataReuniao = reuniao.data;
+                let horarioReuniao = reuniao.horario || '';
+                let dataHora;
+                if (horarioReuniao) {
+                    // Junta data e horário se ambos existirem
+                    let dataStr = dataReuniao;
+                    let horaStr = horarioReuniao;
+                    // Se data estiver no formato ISO, junta corretamente
+                    if (/^\d{4}-\d{2}-\d{2}/.test(dataStr) && /^\d{2}:\d{2}/.test(horaStr)) {
+                        dataHora = new Date(dataStr + 'T' + horaStr);
+                    } else {
+                        // fallback: só data
+                        dataHora = new Date(dataStr);
+                    }
+                } else {
+                    dataHora = new Date(dataReuniao);
+                }
                 activities.push({
                     type: 'reuniao',
                     icon: '📅',
                     color: '#ab47bc',
                     title: 'Reunião',
                     description: `${reuniao.tipo} - ${reuniao.cliente}`,
-                    date: new Date(reuniao.data),
+                    date: dataHora,
                     action: () => showTab('reunioes')
                 });
             });
@@ -11175,7 +11192,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-   window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
