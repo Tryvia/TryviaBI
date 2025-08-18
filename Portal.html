@@ -2411,6 +2411,7 @@ try {
 } catch (e) {
   permissoes = [];
 }
+
 if (!sessionStorage.getItem('tryvia_logged')) {
 window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
@@ -3154,7 +3155,7 @@ select {
 }
 </style>
 
-<h1 id="portal-title">Portal - Time de Implantação</h1>
+<h1>Portal - Time de Implantação</h1>
 <div class="profile-info">
 <img alt="Profile Picture" src="tryvia.png"/>
 <span><span id="nomeUsuario">Usuário</span></span>
@@ -14597,47 +14598,6 @@ function refreshAllTickets() {
 }
 // Carregar tickets quando a aba for aberta
 document.addEventListener('DOMContentLoaded', function() {
-    // Função para detectar setor do usuário e atualizar título
-    async function updatePortalTitle() {
-        let userSector = 'Implantação'; // Valor padrão
-        
-        try {
-            // Primeiro, tentar obter o setor do sessionStorage (se já estiver logado)
-            const setorSessionStorage = sessionStorage.getItem('setor');
-            if (setorSessionStorage) {
-                userSector = setorSessionStorage;
-            } else {
-                // Se não tiver no sessionStorage, buscar do Supabase
-                const userEmail = localStorage.getItem('username'); // ou sessionStorage
-                if (userEmail && typeof releaseClient !== 'undefined') {
-                    const { data: userData, error } = await releaseClient
-                        .from('usuarios')
-                        .select('setor')
-                        .eq('email', userEmail)
-                        .single();
-                    
-                    if (!error && userData && userData.setor) {
-                        userSector = userData.setor;
-                        // Armazenar no sessionStorage para uso futuro
-                        sessionStorage.setItem('setor', userData.setor);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Erro ao buscar setor do usuário:', error);
-            // Em caso de erro, manter o valor padrão
-        }
-        
-        // Atualizar o título do portal
-        const titleElement = document.getElementById('portal-title');
-        if (titleElement) {
-            titleElement.textContent = `Portal - Time de ${userSector}`;
-        }
-    }
-    
-    // Chamar a função quando a página carregar
-    updatePortalTitle();
-    
     // Adicionar listener para quando a aba de tickets for aberta
     const originalShowTab = window.showTab;
     window.showTab = function(tabName) {
