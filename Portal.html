@@ -11194,7 +11194,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
- window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -14598,34 +14598,34 @@ function refreshAllTickets() {
 // Carregar tickets quando a aba for aberta
 document.addEventListener('DOMContentLoaded', function() {
     // Função para detectar setor do usuário e atualizar título
-    function updatePortalTitle() {
-        // Aqui você pode implementar a lógica para detectar o setor do usuário
-        // Por exemplo, através de uma variável global, localStorage, sessionStorage, 
-        // ou fazendo uma requisição para o servidor
-        
+    async function updatePortalTitle() {
         let userSector = 'Implantação'; // Valor padrão
         
-        // Exemplo 1: Detectar através de localStorage
-        if (localStorage.getItem('userSector')) {
-            userSector = localStorage.getItem('userSector');
-        }
-        
-        // Exemplo 2: Detectar através de sessionStorage
-        else if (sessionStorage.getItem('userSector')) {
-            userSector = sessionStorage.getItem('userSector');
-        }
-        
-        // Exemplo 3: Detectar através de uma variável global (se definida em outro lugar)
-        else if (typeof window.currentUserSector !== 'undefined') {
-            userSector = window.currentUserSector;
-        }
-        
-        // Exemplo 4: Detectar através de parâmetros da URL
-        else {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('setor')) {
-                userSector = urlParams.get('setor');
+        try {
+            // Primeiro, tentar obter o setor do sessionStorage (se já estiver logado)
+            const setorSessionStorage = sessionStorage.getItem('setor');
+            if (setorSessionStorage) {
+                userSector = setorSessionStorage;
+            } else {
+                // Se não tiver no sessionStorage, buscar do Supabase
+                const userEmail = localStorage.getItem('username'); // ou sessionStorage
+                if (userEmail && typeof releaseClient !== 'undefined') {
+                    const { data: userData, error } = await releaseClient
+                        .from('usuarios')
+                        .select('setor')
+                        .eq('email', userEmail)
+                        .single();
+                    
+                    if (!error && userData && userData.setor) {
+                        userSector = userData.setor;
+                        // Armazenar no sessionStorage para uso futuro
+                        sessionStorage.setItem('setor', userData.setor);
+                    }
+                }
             }
+        } catch (error) {
+            console.error('Erro ao buscar setor do usuário:', error);
+            // Em caso de erro, manter o valor padrão
         }
         
         // Atualizar o título do portal
