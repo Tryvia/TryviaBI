@@ -31,9 +31,11 @@
                         <th>Empresa</th>
                         <th>Projetos</th>
                         <th>Sistema</th>
+                        <th>%</th>
                         <th colspan="12" class="linha-tempo-header">Linha do Tempo</th>
                     </tr>
                     <tr class="meses-header">
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -140,12 +142,15 @@
                     <thead>
                         <tr>
                             <th>FASES</th>
-                            <th>Etapas</th>
+                            <th>Previsto</th>
+                            <th>Realizado</th>
                         <tr id="meses-header">
+                            <th></th>
                             <th></th>
                             <th></th>
                         </tr>
                         <tr id="dias-header">
+                            <th></th>
                             <th></th>
                             <th></th>
                             <!-- Dias serão inseridos dinamicamente -->
@@ -162,7 +167,13 @@
             <div class="resumo-operacional">
                 <h3>Resumo Operacional</h3>
                 <div id="resumo-conteudo">
-                    <!-- Conteúdo será inserido dinamicamente -->
+                    <div id="observacao-texto">Nenhuma observação cadastrada.</div>
+                    <button id="btn-editar-observacao" type="button">Editar Observação</button>
+                    <div id="observacao-edicao" style="display:none; margin-top:10px;">
+                        <textarea id="observacao-input" rows="3" style="width:100%;"></textarea>
+                        <button id="btn-salvar-observacao" type="button">Salvar</button>
+                        <button id="btn-cancelar-observacao" type="button">Cancelar</button>
+                    </div>
                 </div>
             </div>
             <div class="status-final">
@@ -298,7 +309,7 @@
     <script src="supabase-config.js"></script>
     
     <!-- Script principal -->
-    <script src="script.js"></script>
+    <script src="script_modificado.js"></script>
 </body>
 </html>
 
