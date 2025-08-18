@@ -110,13 +110,13 @@ function carregarDadosLocais() {
                     dezembro: ["pendente", "pendente", "pendente", "pendente"]
                 },
                 fases: [
-                    { nome: "Kick Off", etapas: 1, status: "concluido-prazo", inicio: "2024-03-01", fim: "2024-03-01" },
-                    { nome: "Treinamento", etapas: 1, status: "concluido-prazo", inicio: "2024-03-15", fim: "2024-03-20" },
-                    { nome: "Cadastros", etapas: "6/6", status: "concluido-prazo", inicio: "2024-04-01", fim: "2024-04-10" },
-                    { nome: "Integrações", etapas: "1/2", status: "andamento", inicio: "2024-04-15", fim: "2024-04-25" },
-                    { nome: "Testes", etapas: 1, status: "pendente", inicio: "2024-05-01", fim: "2024-05-05" },
-                    { nome: "Validação", etapas: 1, status: "pendente", inicio: "2024-05-10", fim: "2024-05-15" },
-                    { nome: "Go Live", etapas: 1, status: "pendente", inicio: "2024-05-20", fim: "2024-05-20" }
+                    { nome: "Kick Off", previsto: 1, realizado: 1, status: "concluido-prazo", inicio: "2024-03-01", fim: "2024-03-01" },
+                    { nome: "Treinamento", previsto: 1, realizado: 1, status: "concluido-prazo", inicio: "2024-03-15", fim: "2024-03-20" },
+                    { nome: "Cadastros", previsto: 6, realizado: 6, status: "concluido-prazo", inicio: "2024-04-01", fim: "2024-04-10" },
+                    { nome: "Integrações", previsto: 2, realizado: 1, status: "andamento", inicio: "2024-04-15", fim: "2024-04-25" },
+                    { nome: "Testes", previsto: 1, realizado: 0, status: "pendente", inicio: "2024-05-01", fim: "2024-05-05" },
+                    { nome: "Validação", previsto: 1, realizado: 0, status: "pendente", inicio: "2024-05-10", fim: "2024-05-15" },
+                    { nome: "Go Live", previsto: 1, realizado: 0, status: "pendente", inicio: "2024-05-20", fim: "2024-05-20" }
                 ],
                 resumoOperacional: [
                     "Cliente implantado desde 04/04.",
@@ -211,6 +211,7 @@ function criarLinhaImplantacao(implantacao) {
         <td>${implantacao.empresa}</td>
         <td>${implantacao.projeto}</td>
         <td>${implantacao.sistema}</td>
+        <td>${implantacao.progresso}%</td>
     `;
     
     // Células dos meses
@@ -342,11 +343,17 @@ function carregarTimelineDetalhada(implantacao) {
         faseCell.textContent = fase.nome;
         row.appendChild(faseCell);
 
-        // Célula das etapas
-        const etapaCell = document.createElement("td");
-        etapaCell.className = "etapa-nome";
-        etapaCell.textContent = fase.etapas;
-        row.appendChild(etapaCell);
+        // Célula do previsto
+        const previstoCell = document.createElement("td");
+        previstoCell.className = "previsto-nome";
+        previstoCell.textContent = fase.previsto;
+        row.appendChild(previstoCell);
+
+        // Célula do realizado
+        const realizadoCell = document.createElement("td");
+        realizadoCell.className = "realizado-nome";
+        realizadoCell.textContent = fase.realizado;
+        row.appendChild(realizadoCell);
 
         // Células dos dias
         const timelineCells = [];
@@ -402,8 +409,8 @@ function carregarTimelineDetalhada(implantacao) {
 function atualizarCabecalhoDias(minDate, maxDate) {
     const diasHeader = document.getElementById("dias-header");
     const mesesHeader = document.getElementById("meses-header");
-    diasHeader.innerHTML = "<th></th><th></th>"; // Células vazias para fase e etapa
-    mesesHeader.innerHTML = "<th></th><th></th>"; // Células vazias para fase e etapa
+    diasHeader.innerHTML = "<th></th><th></th><th></th><th></th>"; // Células vazias para fase, previsto, realizado e porcentagem
+    mesesHeader.innerHTML = "<th></th><th></th><th></th><th></th>"; // Células vazias para fase, previsto, realizado e porcentagem
 
     let currentMonth = new Date(minDate);
     let monthColspan = 0;
@@ -449,12 +456,146 @@ function preencherResumoStatus(implantacao) {
     const resumoConteudo = document.getElementById('resumo-conteudo');
     resumoConteudo.innerHTML = '';
     
-    implantacao.resumoOperacional.forEach(item => {
-        const p = document.createElement('p');
-        p.textContent = `• ${item}`;
-        p.style.marginBottom = '10px';
-        resumoConteudo.appendChild(p);
+    // Criar container para as frases editáveis
+    const frasesContainer = document.createElement('div');
+    frasesContainer.id = 'frases-container';
+    
+    implantacao.resumoOperacional.forEach((item, index) => {
+        const fraseDiv = document.createElement('div');
+        fraseDiv.className = 'frase-item';
+        fraseDiv.style.marginBottom = '15px';
+        fraseDiv.style.padding = '10px';
+        fraseDiv.style.border = '1px solid #e0e0e0';
+        fraseDiv.style.borderRadius = '5px';
+        fraseDiv.style.backgroundColor = '#f9f9f9';
+        
+        const fraseTexto = document.createElement('p');
+        fraseTexto.textContent = `• ${item}`;
+        fraseTexto.style.marginBottom = '8px';
+        fraseTexto.style.cursor = 'pointer';
+        fraseTexto.title = 'Clique para editar';
+        
+        const fraseInput = document.createElement('textarea');
+        fraseInput.value = item;
+        fraseInput.style.width = '100%';
+        fraseInput.style.minHeight = '60px';
+        fraseInput.style.display = 'none';
+        fraseInput.style.border = '1px solid #ccc';
+        fraseInput.style.borderRadius = '3px';
+        fraseInput.style.padding = '5px';
+        fraseInput.style.fontSize = '14px';
+        fraseInput.style.resize = 'vertical';
+        
+        const botoesDiv = document.createElement('div');
+        botoesDiv.style.display = 'none';
+        botoesDiv.style.marginTop = '8px';
+        
+        const btnSalvar = document.createElement('button');
+        btnSalvar.textContent = 'Salvar';
+        btnSalvar.style.marginRight = '8px';
+        btnSalvar.style.padding = '5px 12px';
+        btnSalvar.style.backgroundColor = '#4CAF50';
+        btnSalvar.style.color = 'white';
+        btnSalvar.style.border = 'none';
+        btnSalvar.style.borderRadius = '3px';
+        btnSalvar.style.cursor = 'pointer';
+        
+        const btnCancelar = document.createElement('button');
+        btnCancelar.textContent = 'Cancelar';
+        btnCancelar.style.padding = '5px 12px';
+        btnCancelar.style.backgroundColor = '#f44336';
+        btnCancelar.style.color = 'white';
+        btnCancelar.style.border = 'none';
+        btnCancelar.style.borderRadius = '3px';
+        btnCancelar.style.cursor = 'pointer';
+        
+        const btnRemover = document.createElement('button');
+        btnRemover.textContent = '🗑️';
+        btnRemover.title = 'Remover observação';
+        btnRemover.style.padding = '5px 8px';
+        btnRemover.style.backgroundColor = '#ff9800';
+        btnRemover.style.color = 'white';
+        btnRemover.style.border = 'none';
+        btnRemover.style.borderRadius = '3px';
+        btnRemover.style.cursor = 'pointer';
+        btnRemover.style.marginLeft = '8px';
+        btnRemover.style.fontSize = '12px';
+        
+        // Event listeners para edição
+        fraseTexto.addEventListener('click', () => {
+            fraseTexto.style.display = 'none';
+            fraseInput.style.display = 'block';
+            botoesDiv.style.display = 'block';
+            fraseInput.focus();
+        });
+        
+        btnSalvar.addEventListener('click', async () => {
+            const novoTexto = fraseInput.value.trim();
+            if (novoTexto) {
+                implantacaoAtual.resumoOperacional[index] = novoTexto;
+                fraseTexto.textContent = `• ${novoTexto}`;
+                
+                try {
+                    // Salvar no Supabase
+                    await SupabaseService.atualizarImplantacao(implantacaoAtual.id, implantacaoAtual);
+                    
+                    // Atualizar na lista local
+                    const indexImplantacao = implantacoes.findIndex(imp => imp.id === implantacaoAtual.id);
+                    if (indexImplantacao !== -1) {
+                        implantacoes[indexImplantacao] = { ...implantacaoAtual };
+                    }
+                    
+                    mostrarMensagem('Observação atualizada com sucesso!', 'sucesso');
+                } catch (error) {
+                    console.error('Erro ao salvar observação:', error);
+                    mostrarMensagem('Erro ao salvar observação. Tente novamente.', 'erro');
+                }
+            }
+            
+            fraseTexto.style.display = 'block';
+            fraseInput.style.display = 'none';
+            botoesDiv.style.display = 'none';
+        });
+        
+        btnCancelar.addEventListener('click', () => {
+            fraseInput.value = implantacaoAtual.resumoOperacional[index];
+            fraseTexto.style.display = 'block';
+            fraseInput.style.display = 'none';
+            botoesDiv.style.display = 'none';
+        });
+        
+        btnRemover.addEventListener('click', () => {
+            removerObservacao(index);
+        });
+        
+        botoesDiv.appendChild(btnSalvar);
+        botoesDiv.appendChild(btnCancelar);
+        botoesDiv.appendChild(btnRemover);
+        
+        fraseDiv.appendChild(fraseTexto);
+        fraseDiv.appendChild(fraseInput);
+        fraseDiv.appendChild(botoesDiv);
+        
+        frasesContainer.appendChild(fraseDiv);
     });
+    
+    // Botão para adicionar nova frase
+    const btnAdicionarFrase = document.createElement('button');
+    btnAdicionarFrase.textContent = '+ Adicionar Nova Observação';
+    btnAdicionarFrase.style.padding = '10px 15px';
+    btnAdicionarFrase.style.backgroundColor = '#2196F3';
+    btnAdicionarFrase.style.color = 'white';
+    btnAdicionarFrase.style.border = 'none';
+    btnAdicionarFrase.style.borderRadius = '5px';
+    btnAdicionarFrase.style.cursor = 'pointer';
+    btnAdicionarFrase.style.marginTop = '15px';
+    
+    btnAdicionarFrase.addEventListener('click', () => {
+        adicionarNovaObservacao();
+    });
+    
+    resumoConteudo.appendChild(frasesContainer);
+    resumoConteudo.appendChild(btnAdicionarFrase);
     
     const statusBadge = document.getElementById('status-badge');
     statusBadge.textContent = implantacao.status;
@@ -518,8 +659,12 @@ function criarItemFaseEditor(fase, index) {
                 <input type="text" value="${fase.nome}" data-field="nome">
             </div>
             <div class="form-field">
-                <label>Etapas</label>
-                <input type="text" value="${fase.etapas}" data-field="etapas">
+                <label>Previsto</label>
+                <input type="number" value="${fase.previsto}" data-field="previsto" min="0">
+            </div>
+            <div class="form-field">
+                <label>Realizado</label>
+                <input type="number" value="${fase.realizado}" data-field="realizado" min="0" onchange="atualizarProgressoEmTempoReal()">
             </div>
             <div class="form-field">
                 <label>Status</label>
@@ -549,7 +694,8 @@ function criarItemFaseEditor(fase, index) {
 function adicionarNovaFase() {
     const novaFase = {
         nome: "Nova Fase",
-        etapas: 1,
+        previsto: 1,
+        realizado: 0,
         status: "pendente",
         inicio: "",
         fim: ""
@@ -623,12 +769,19 @@ async function salvarAlteracoesTimeline() {
 
 // Recalcular progresso baseado nas fases
 function recalcularProgresso() {
-    const totalFases = implantacaoAtual.fases.length;
-    const fasesConcluidas = implantacaoAtual.fases.filter(fase => 
-        fase.status === 'concluido-prazo' || fase.status === 'concluido-fora'
-    ).length;
+    let totalPrevisto = 0;
+    let totalRealizado = 0;
     
-    implantacaoAtual.progresso = Math.round((fasesConcluidas / totalFases) * 100);
+    implantacaoAtual.fases.forEach(fase => {
+        totalPrevisto += parseInt(fase.previsto) || 0;
+        totalRealizado += parseInt(fase.realizado) || 0;
+    });
+    
+    if (totalPrevisto > 0) {
+        implantacaoAtual.progresso = Math.round((totalRealizado / totalPrevisto) * 100);
+    } else {
+        implantacaoAtual.progresso = 0;
+    }
     
     // Atualizar status geral
     if (implantacaoAtual.progresso === 100) {
@@ -771,13 +924,13 @@ async function adicionarNovaImplantacao(e) {
                 dezembro: ["pendente", "pendente", "pendente", "pendente"]
             },
             fases: [
-                { nome: "Kick Off", etapas: 1, status: "pendente", inicio: "", fim: "" },
-                { nome: "Treinamento", etapas: 1, status: "pendente", inicio: "", fim: "" },
-                { nome: "Cadastros", etapas: "0/6", status: "pendente", inicio: "", fim: "" },
-                { nome: "Integrações", etapas: "0/2", status: "pendente", inicio: "", fim: "" },
-                { nome: "Testes", etapas: 1, status: "pendente", inicio: "", fim: "" },
-                { nome: "Validação", etapas: 1, status: "pendente", inicio: "", fim: "" },
-                { nome: "Go Live", etapas: 1, status: "pendente", inicio: "", fim: "" }
+                { nome: "Kick Off", previsto: 1, realizado: 0, status: "pendente", inicio: "", fim: "" },
+                { nome: "Treinamento", previsto: 1, realizado: 0, status: "pendente", inicio: "", fim: "" },
+                { nome: "Cadastros", previsto: 6, realizado: 0, status: "pendente", inicio: "", fim: "" },
+                { nome: "Integrações", previsto: 2, realizado: 0, status: "pendente", inicio: "", fim: "" },
+                { nome: "Testes", previsto: 1, realizado: 0, status: "pendente", inicio: "", fim: "" },
+                { nome: "Validação", previsto: 1, realizado: 0, status: "pendente", inicio: "", fim: "" },
+                { nome: "Go Live", previsto: 1, realizado: 0, status: "pendente", inicio: "", fim: "" }
             ],
             resumoOperacional: [
                 "Projeto recém-criado.",
@@ -911,4 +1064,106 @@ document.addEventListener('keydown', function(e) {
         }
     }
 });
+
+
+
+// Função para atualizar progresso em tempo real quando o campo "realizado" é alterado
+function atualizarProgressoEmTempoReal() {
+    if (!implantacaoAtual) return;
+    
+    // Recalcular progresso baseado nos valores atuais dos campos
+    let totalPrevisto = 0;
+    let totalRealizado = 0;
+    
+    const fasesItems = document.querySelectorAll('.fase-item');
+    fasesItems.forEach((item, index) => {
+        const previstoInput = item.querySelector('[data-field="previsto"]');
+        const realizadoInput = item.querySelector('[data-field="realizado"]');
+        
+        if (previstoInput && realizadoInput) {
+            totalPrevisto += parseInt(previstoInput.value) || 0;
+            totalRealizado += parseInt(realizadoInput.value) || 0;
+        }
+    });
+    
+    let novoProgresso = 0;
+    if (totalPrevisto > 0) {
+        novoProgresso = Math.round((totalRealizado / totalPrevisto) * 100);
+    }
+    
+    // Atualizar a barra de progresso na tela de status se estiver visível
+    if (!document.getElementById('status-implantacao').classList.contains('hidden')) {
+        atualizarBarraProgresso(novoProgresso);
+    }
+    
+    // Mostrar feedback visual
+    mostrarMensagem(`Progresso atualizado: ${novoProgresso}%`, 'info');
+}
+
+
+
+// Função para adicionar nova observação
+async function adicionarNovaObservacao() {
+    if (!implantacaoAtual) return;
+    
+    const novaObservacao = "Nova observação";
+    implantacaoAtual.resumoOperacional.push(novaObservacao);
+    
+    try {
+        // Salvar no Supabase
+        await SupabaseService.atualizarImplantacao(implantacaoAtual.id, implantacaoAtual);
+        
+        // Atualizar na lista local
+        const indexImplantacao = implantacoes.findIndex(imp => imp.id === implantacaoAtual.id);
+        if (indexImplantacao !== -1) {
+            implantacoes[indexImplantacao] = { ...implantacaoAtual };
+        }
+        
+        // Recarregar o resumo para mostrar a nova observação
+        preencherResumoStatus(implantacaoAtual);
+        
+        mostrarMensagem('Nova observação adicionada! Clique nela para editar.', 'sucesso');
+    } catch (error) {
+        console.error('Erro ao adicionar observação:', error);
+        mostrarMensagem('Erro ao adicionar observação. Tente novamente.', 'erro');
+        // Remover a observação da lista se houve erro
+        implantacaoAtual.resumoOperacional.pop();
+    }
+}
+
+// Função para remover observação
+async function removerObservacao(index) {
+    if (!implantacaoAtual || index < 0 || index >= implantacaoAtual.resumoOperacional.length) return;
+    
+    if (implantacaoAtual.resumoOperacional.length <= 1) {
+        mostrarMensagem('Deve haver pelo menos uma observação!', 'erro');
+        return;
+    }
+    
+    if (confirm('Tem certeza que deseja remover esta observação?')) {
+        const observacaoRemovida = implantacaoAtual.resumoOperacional[index];
+        implantacaoAtual.resumoOperacional.splice(index, 1);
+        
+        try {
+            // Salvar no Supabase
+            await SupabaseService.atualizarImplantacao(implantacaoAtual.id, implantacaoAtual);
+            
+            // Atualizar na lista local
+            const indexImplantacao = implantacoes.findIndex(imp => imp.id === implantacaoAtual.id);
+            if (indexImplantacao !== -1) {
+                implantacoes[indexImplantacao] = { ...implantacaoAtual };
+            }
+            
+            // Recarregar o resumo
+            preencherResumoStatus(implantacaoAtual);
+            
+            mostrarMensagem('Observação removida com sucesso!', 'sucesso');
+        } catch (error) {
+            console.error('Erro ao remover observação:', error);
+            mostrarMensagem('Erro ao remover observação. Tente novamente.', 'erro');
+            // Restaurar a observação se houve erro
+            implantacaoAtual.resumoOperacional.splice(index, 0, observacaoRemovida);
+        }
+    }
+}
 
