@@ -3155,7 +3155,7 @@ select {
 }
 </style>
 
-<h1>Portal - Time de Implantação</h1>
+<h1 id="portal-title">Portal - Time de Implantação</h1>
 <div class="profile-info">
 <img alt="Profile Picture" src="tryvia.png"/>
 <span><span id="nomeUsuario">Usuário</span></span>
@@ -14598,6 +14598,47 @@ function refreshAllTickets() {
 }
 // Carregar tickets quando a aba for aberta
 document.addEventListener('DOMContentLoaded', function() {
+    // Função para detectar setor do usuário e atualizar título
+    function updatePortalTitle() {
+        // Aqui você pode implementar a lógica para detectar o setor do usuário
+        // Por exemplo, através de uma variável global, localStorage, sessionStorage, 
+        // ou fazendo uma requisição para o servidor
+        
+        let userSector = 'Implantação'; // Valor padrão
+        
+        // Exemplo 1: Detectar através de localStorage
+        if (localStorage.getItem('userSector')) {
+            userSector = localStorage.getItem('userSector');
+        }
+        
+        // Exemplo 2: Detectar através de sessionStorage
+        else if (sessionStorage.getItem('userSector')) {
+            userSector = sessionStorage.getItem('userSector');
+        }
+        
+        // Exemplo 3: Detectar através de uma variável global (se definida em outro lugar)
+        else if (typeof window.currentUserSector !== 'undefined') {
+            userSector = window.currentUserSector;
+        }
+        
+        // Exemplo 4: Detectar através de parâmetros da URL
+        else {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('setor')) {
+                userSector = urlParams.get('setor');
+            }
+        }
+        
+        // Atualizar o título do portal
+        const titleElement = document.getElementById('portal-title');
+        if (titleElement) {
+            titleElement.textContent = `Portal - Time de ${userSector}`;
+        }
+    }
+    
+    // Chamar a função quando a página carregar
+    updatePortalTitle();
+    
     // Adicionar listener para quando a aba de tickets for aberta
     const originalShowTab = window.showTab;
     window.showTab = function(tabName) {
