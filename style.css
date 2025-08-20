@@ -268,7 +268,7 @@ body {
 
 /* Cores dos status */
 .cor-pendente, .status-pendente {
-    background-color: #bdc3c7;
+    background-color: #d5a8b5f7;
 }
 
 .cor-andamento, .status-andamento {
@@ -1082,5 +1082,76 @@ body {
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
 }
 
+
+
+
+
+.cor-sem-dados, .status-sem-dados {
+    background-color: #e0e0e0; /* Um cinza mais claro para indicar ausência de dados */
+}
+
+
+
+
+
+
+
+/* Estilos para ícones de início e go live dentro das células dos meses */
+.tabela-projetos td {
+    position: relative; /* Para posicionar os ícones */
+}
+
+.icone-fase {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2em;
+    cursor: help;
+    z-index: 10;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.icone-fase:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Animação para status em andamento */
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* Tooltip personalizado para os ícones */
+.icone-fase[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 5px;
+}
+
+.icone-fase[title]:hover::before {
+    content: ‘’;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    z-index: 1000;
+}
 
 
