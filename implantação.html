@@ -22,6 +22,14 @@
             <button id="btn-voltar-portal" class="btn-voltar-portal">Voltar para o portal</button>
             <button id="btn-adicionar" class="btn-adicionar">+ Adicionar Nova Implantação</button>
             <input type="text" id="filtro-busca" placeholder="Buscar por empresa, projeto ou sistema..." class="filtro-busca">
+            
+            <!-- Novo filtro por ano -->
+            <div class="filtro-ano-container">
+                <label for="filtro-ano">Ano:</label>
+                <select id="filtro-ano" class="filtro-ano">
+                    <!-- Opções serão adicionadas dinamicamente -->
+                </select>
+            </div>
         </div>
 
         <div class="tabela-container">
@@ -32,7 +40,7 @@
                         <th>Projetos</th>
                         <th>Sistema</th>
                         <th>%</th>
-                        <th colspan="12" class="linha-tempo-header">Linha do Tempo</th>
+                        <th colspan="12" class="linha-tempo-header">Linha do Tempo - <span id="ano-selecionado">2024</span></th>
                     </tr>
                     <tr class="meses-header">
                         <th></th>
@@ -64,7 +72,7 @@
             <div class="legenda-items">
                 <div class="legenda-item">
                     <span class="cor-pendente"></span>
-                    <span>Pendente</span>
+                    <span>Aguardando</span>
                 </div>
                 <div class="legenda-item">
                     <span class="cor-andamento"></span>
@@ -205,7 +213,7 @@
                 </div>
                 <div class="legenda-item">
                     <span class="cor-final-semana"></span>
-                    <span>Final de semana</span>
+                    <span>Aguardando</span>
                 </div>
             </div>
         </div>
