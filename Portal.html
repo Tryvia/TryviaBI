@@ -2413,7 +2413,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+//window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
@@ -3177,15 +3177,25 @@ select {
 
     <!-- Métricas Principais -->
     <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px;">
-        <div class="metric-card" style="background: linear-gradient(135deg, #b3e5fc 0%, #81d4fa 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('clients')">
+        <div class="metric-card" style="background: linear-gradient(135deg, #b3e5fc 0%, #78c5e9 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('clients')">
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
-                    <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Total de Clientes</h3>
-                    <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="totalClients">-</p>
+                        <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Clientes Ativos</h3>
+                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="clientesAtivos">-</p>
                 </div>
                 <div style="font-size: 3em; color: #0277bd; opacity: 0.7;">👥</div>
             </div>
         </div>
+
+            <div class="metric-card" style="background: linear-gradient(135deg, #ffcdd2 0%, #e4c1a0 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(229, 115, 115, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('clients')">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Clientes Inativos</h3>
+                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #c62828;" id="clientesInativos">-</p>
+                    </div>
+                    <div style="font-size: 3em; color: #c62828; opacity: 0.7;">🚫</div>
+                </div>
+            </div>
 
         <div class="metric-card" style="background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('homologacao')">
             <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -3273,8 +3283,8 @@ select {
             <div id="notificationsList">
                 <div style="text-align: center; padding: 20px; color: #666;">
                     <i class="fas fa-check-circle" style="font-size: 2em; margin-bottom: 10px; color: #4caf50;"></i>
-                    <p style="margin: 0;">Tudo em dia!</p>
-                    <p style="margin: 5px 0 0 0; font-size: 0.9em;">Nenhuma notificação pendente</p>
+                    <p style="margin: 0;">Atualização 20/08/2025!</p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9em;">As melhorias solicitadas nos tickets #4883, #4882 e #4881 foram aplicadas e já estão disponíveis em produção.</p>
                 </div>
             </div>
         </div>
@@ -3846,6 +3856,14 @@ select {
             <label for="filterClientName">Filtrar por Nome</label>
             <input type="text" id="filterClientName" placeholder="Digite o nome do cliente..." oninput="filterClientsByGroup()">
         </div>
+        <div class="form-group">
+            <label for="filterClientStatus">Filtrar por Status</label>
+            <select id="filterClientStatus" onchange="filterClientsByGroup()">
+                <option value="">Todos os status</option>
+                <option value="Cliente Ativo">Cliente Ativo</option>
+                <option value="Cliente Inativo">Cliente Inativo</option>
+            </select>
+        </div>
         <div class="form-group" style="display: flex; align-items: flex-end;">
             <button class="btn-secondary" onclick="clearClientFilters()">Limpar Filtros</button>
         </div>
@@ -4155,78 +4173,7 @@ select {
 </div>
 
 <div class="content-section" id="dashboard">
-<h3 style="margin-bottom: 20px;">Dashboards de Clientes</h3>
-
-<!-- Seção de Filtros BI -->
-<div style="background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h4 style="color: #0277bd; margin-bottom: 15px; font-size: 1.2em;">
-        <i class="fas fa-filter"></i> Filtros de Dashboard
-    </h4>
-    
-    <div class="form-row" style="align-items: end;">
-        <div class="form-group">
-            <label style="margin-bottom: 8px; font-weight: bold;">Status do BI</label>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <label class="toggle-switch" style="position: relative; display: inline-block; width: 60px; height: 34px;">
-                    <input type="checkbox" id="biStatusFilter" checked onchange="applyBIFilters()" style="opacity: 0; width: 0; height: 0;">
-                    <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
-                </label>
-                <span id="biStatusLabel" style="font-weight: bold; color: #4fc3f7;">BI Ativo</span>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="dashboardClientNameFilter">Nome do Cliente</label>
-            <input type="text" id="dashboardClientNameFilter" placeholder="Digite o nome do cliente..." oninput="applyBIFilters()">
-        </div>
-        
-        <div class="form-group">
-            <label for="dashboardGroupFilter">Grupo</label>
-            <select id="dashboardGroupFilter" onchange="applyBIFilters()">
-                <option value="">Todos os grupos</option>
-                <option value="JCA">JCA</option>
-                <option value="Guanabara">Guanabara</option>
-                <option value="Águia Branca">Águia Branca</option>
-                <option value="Nenhum">Nenhum</option>
-            </select>
-        </div>
-        
-        <div class="form-group" style="display: flex; align-items: flex-end;">
-            <button class="btn-secondary" onclick="clearBIFilters()">Limpar Filtros</button>
-        </div>
-    </div>
-    
-    <!-- Estatísticas -->
-    <div style="display: flex; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
-            <div style="font-size: 1.8em; font-weight: bold; color: #4fc3f7;" id="totalDashboardClients">0</div>
-            <div style="color: #666; margin-top: 5px;">Total de Clientes</div>
-        </div>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
-            <div style="font-size: 1.8em; font-weight: bold; color: #4caf50;" id="activeBIDashboardClients">0</div>
-            <div style="color: #666; margin-top: 5px;">BI Ativo</div>
-        </div>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
-            <div style="font-size: 1.8em; font-weight: bold; color: #f44336;" id="inactiveBIDashboardClients">0</div>
-            <div style="color: #666; margin-top: 5px;">BI Inativo</div>
-        </div>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; flex: 1;">
-            <div style="font-size: 1.8em; font-weight: bold; color: #ff9800;" id="filteredDashboardClients">0</div>
-            <div style="color: #666; margin-top: 5px;">Exibindo</div>
-        </div>
-    </div>
-    
-    <!-- Informações Capturadas -->
-    <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin-top: 20px; border-radius: 5px;">
-        <h5 style="color: #1976d2; margin-bottom: 10px;">
-            <i class="fas fa-info-circle"></i> Informações Capturadas do Filtro
-        </h5>
-        <div style="font-family: monospace; background: #f5f5f5; padding: 10px; border-radius: 5px; font-size: 0.85em; max-height: 150px; overflow-y: auto;" id="biFilterCaptureData">
-            Aguardando interação com os filtros...
-        </div>
-    </div>
-</div>
-
+<h3 style="margin-bottom: 20px;">Dashboards </h3>
 <div class="dashboards-grid" id="dashboardsList">
 <div class="empty-state">
 <div class="empty-state-icon">📊</div>
@@ -5815,6 +5762,7 @@ function addEditProduct() {
             const selectedGroup = document.getElementById('filterClientGroup').value.toLowerCase();
             const selectedSubgroup = document.getElementById('filterClientSubgroup').value.toLowerCase();
             const searchName = document.getElementById('filterClientName').value.toLowerCase();
+            const selectedStatus = document.getElementById('filterClientStatus').value;
             const clientCards = document.querySelectorAll('#clientsList .client-card-vertical');
             
             let visibleCount = 0;
@@ -5825,12 +5773,15 @@ function addEditProduct() {
 
                 const clientName = client.name.toLowerCase();
                 const clientGroup = client.group ? client.group.toLowerCase() : "";
-                const clientSubgroup = client.subgroup ? client.subgroup.toLowerCase() : "";                
+                const clientSubgroup = client.subgroup ? client.subgroup.toLowerCase() : "";
+                const clientStatus = client.status || "";
+                
                 const matchesGroup = selectedGroup === '' || clientGroup === selectedGroup;
                 const matchesSubgroup = selectedSubgroup === '' || clientSubgroup === selectedSubgroup;
                 const matchesName = searchName === '' || clientName.includes(searchName);
+                const matchesStatus = selectedStatus === '' || clientStatus === selectedStatus;
                 
-                if (matchesGroup && matchesSubgroup && matchesName) {
+                if (matchesGroup && matchesSubgroup && matchesName && matchesStatus) {
                     card.style.display = 'block';
                     visibleCount++;
                 } else {
@@ -5866,6 +5817,7 @@ function addEditProduct() {
             document.getElementById('filterClientGroup').value = '';
             document.getElementById('filterClientSubgroup').value = '';
             document.getElementById('filterClientName').value = '';
+            document.getElementById('filterClientStatus').value = '';
             filterClientsByGroup();
         }
 
@@ -6109,8 +6061,8 @@ async function fetchAndRenderClients() {
             }
 
             clients = data;
-            window.clients = data || [];
-
+            window.clients = data || []; 
+            atualizarMetricasClientes();
             if (clients.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -7675,6 +7627,13 @@ document.addEventListener("DOMContentLoaded", function() {
     setTimeout(populateFiltroParticipantes, 500);
   }
 });
+function atualizarMetricasClientes() {
+  if (!window.clients || !Array.isArray(window.clients)) return;
+  const ativos = window.clients.filter(c => c.status && c.status.toLowerCase() === 'cliente ativo').length;
+  const inativos = window.clients.filter(c => c.status && c.status.toLowerCase().includes('inativo')).length;
+  document.getElementById('clientesAtivos').textContent = ativos;
+  document.getElementById('clientesInativos').textContent = inativos;
+}
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -7758,11 +7717,14 @@ async function loadDashboardMetrics() {
         }
 
         // Atualizar UI
-        document.getElementById('totalClients').textContent = dashboardData.totalClients;
-        document.getElementById('totalHomologacoes').textContent = dashboardData.totalHomologacoes;
-        document.getElementById('totalReleases').textContent = dashboardData.totalReleases;
-        document.getElementById('totalReunioes').textContent = dashboardData.totalReunioes;
-        document.getElementById('averageRatingHome').textContent = dashboardData.averageRating;
+    const elHomologacoes = document.getElementById('totalHomologacoes');
+    const elReleases = document.getElementById('totalReleases');
+    const elReunioes = document.getElementById('totalReunioes');
+    const elRating = document.getElementById('averageRatingHome');
+    if (elHomologacoes) elHomologacoes.textContent = dashboardData.totalHomologacoes;
+    if (elReleases) elReleases.textContent = dashboardData.totalReleases;
+    if (elReunioes) elReunioes.textContent = dashboardData.totalReunioes;
+    if (elRating) elRating.textContent = dashboardData.averageRating;
 
         // Adicionar animação aos cards
         document.querySelectorAll('.metric-card').forEach(card => {
@@ -7987,8 +7949,8 @@ function loadNotifications() {
     notificationsList.innerHTML = `
         <div style="text-align: center; padding: 20px; color: #666;">
             <i class="fas fa-check-circle" style="font-size: 2em; margin-bottom: 10px; color: #4caf50;"></i>
-            <p>Tudo em dia!</p>
-            <p style="font-size: 0.9em; margin-top: 10px;">Nenhuma notificação pendente</p>
+            <p>Ultima atualização 19/08/2025!</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">A atualização corrigiu ....</p>
         </div>
     `;
 }
@@ -8364,7 +8326,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
         
         // Renderizar as integrações
         const integracoesHtml = integracoesData.integracoes.map(integracao => {
-            const statusIcon = integracao.status === 'Ativo' ? '✅' : '❌';
+            const statusIcon = integracao.status === 'Ativo' ? '✅' : '✅';
             const statusClass = integracao.status === 'Ativo' ? 'ativo' : 'erro';
             
             return `
@@ -11195,7 +11157,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+   // window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -13009,7 +12971,7 @@ document.addEventListener('change', function(e) {
 }
 
 .integracao-item.erro {
-    border-left-color: #f44336;
+    border-left-color: #29b6f6;
 }
 
 .integracao-header {
@@ -13037,7 +12999,7 @@ document.addEventListener('change', function(e) {
 }
 
 .integracao-status.erro {
-    background-color: #f44336;
+    background-color: #198975;
     color: white;
 }
 
