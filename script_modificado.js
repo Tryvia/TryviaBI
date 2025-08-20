@@ -25,6 +25,7 @@ function agruparStatusConsecutivos(statusArray) {
 // Variáveis globais
 let implantacoes = [];
 let implantacaoAtual = null;
+let anoSelecionado = new Date().getFullYear(); // Ano atual por padrão
 const meses = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 const nomesMeses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
@@ -39,9 +40,34 @@ document.addEventListener('DOMContentLoaded', async function() {
         await carregarDadosSupabase();
     }
     
+    inicializarFiltroAno();
     carregarPainelProjetos();
     configurarEventListeners();
 });
+
+// Inicializar filtro por ano
+function inicializarFiltroAno() {
+    const filtroAno = document.getElementById('filtro-ano');
+    const anoAtual = new Date().getFullYear();
+    
+    // Adicionar opções de anos (do ano atual até 3 anos atrás e 2 anos à frente)
+    for (let ano = anoAtual - 3; ano <= anoAtual + 2; ano++) {
+        const option = document.createElement('option');
+        option.value = ano;
+        option.textContent = ano;
+        if (ano === anoAtual) {
+            option.selected = true;
+        }
+        filtroAno.appendChild(option);
+    }
+    
+    // Event listener para mudança de ano
+    filtroAno.addEventListener('change', function() {
+        anoSelecionado = parseInt(this.value);
+        document.getElementById('ano-selecionado').textContent = anoSelecionado;
+        carregarPainelProjetos();
+    });
+}
 
 // Carregar dados do Supabase
 async function carregarDadosSupabase() {
@@ -62,7 +88,8 @@ async function carregarDadosSupabase() {
             status: item.status,
             statusMeses: item.status_meses,
             fases: item.fases,
-            resumoOperacional: item.resumo_operacional
+            resumoOperacional: item.resumo_operacional,
+            anoInicio: new Date(item.created_at).getFullYear() // Adicionar ano de início baseado na data de criação
         }));
         
         console.log('Dados carregados do Supabase:', implantacoes);
@@ -187,10 +214,46 @@ function carregarPainelProjetos() {
     const tbody = document.getElementById('tabela-body');
     tbody.innerHTML = '';
     
-    implantacoes.forEach(implantacao => {
+    // Para compatibilidade, mostrar todas as implantações se não houver filtro específico por ano
+    // ou se os dados não têm estrutura de anos
+    let implantacoesFiltradas = implantacoes;
+    
+    // Se há implantações, verificar se alguma tem dados específicos para o ano
+    if (implantacoes.length > 0) {
+        implantacoesFiltradas = implantacoes.filter(implantacao => {
+            // Se não tem anoInicio definido, assumir que é do ano atual
+            const anoInicio = implantacao.anoInicio || new Date().getFullYear();
+            
+            // Verificar se a implantação tem dados para o ano selecionado
+            return (anoInicio <= anoSelecionado && (implantacao.statusMeses[anoSelecionado] || implantacao.statusMeses.janeiro)) ||
+                   implantacao.fases.some(fase => {
+                       if (fase.inicio && fase.fim) {
+                           const dataInicio = new Date(fase.inicio);
+                           const dataFim = new Date(fase.fim);
+                           const anoFaseInicio = dataInicio.getFullYear();
+                           const anoFaseFim = dataFim.getFullYear();
+                           return (anoFaseInicio <= anoSelecionado && anoFaseFim >= anoSelecionado);
+                       }
+                       return false;
+                   });
+        });
+    }
+    
+    implantacoesFiltradas.forEach(implantacao => {
         const row = criarLinhaImplantacao(implantacao);
         tbody.appendChild(row);
     });
+    
+    // Mostrar mensagem se não houver dados para o ano
+    if (implantacoesFiltradas.length === 0 && implantacoes.length > 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td colspan="16" style="text-align: center; padding: 20px; color: #666;">
+                Nenhuma implantação encontrada para o ano ${anoSelecionado}
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
 }
 
 // Criar linha da tabela para uma implantação
@@ -198,13 +261,32 @@ function criarLinhaImplantacao(implantacao) {
     const row = document.createElement('tr');
     row.dataset.id = implantacao.id;
     
+    // Obter status dos meses para o ano selecionado
+    const statusMesesAno = obterStatusMesesPorAno(implantacao, anoSelecionado);
+    
     // Adicionar classe destacado se houver atraso
-    const temAtraso = Object.values(implantacao.statusMeses).some(semanas => 
-        semanas.some(status => status === 'atrasado')
+    const temAtraso = Object.values(statusMesesAno).some(semanas => 
+        semanas && semanas.some(status => status === 'atrasado')
     );
     if (temAtraso) {
         row.classList.add('destacado');
     }
+    
+    // Verificar se tem Kick Off e Go Live
+    const temKickOff = implantacao.fases && implantacao.fases.some(fase => 
+        fase.nome.toLowerCase().includes('kick off') || fase.nome.toLowerCase().includes('kickoff')
+    );
+    const temGoLive = implantacao.fases && implantacao.fases.some(fase => 
+        fase.nome.toLowerCase().includes('go live') || fase.nome.toLowerCase().includes('golive')
+    );
+    
+    // Obter status do Kick Off e Go Live
+    const kickOffFase = implantacao.fases && implantacao.fases.find(fase => 
+        fase.nome.toLowerCase().includes('kick off') || fase.nome.toLowerCase().includes('kickoff')
+    );
+    const goLiveFase = implantacao.fases && implantacao.fases.find(fase => 
+        fase.nome.toLowerCase().includes('go live') || fase.nome.toLowerCase().includes('golive')
+    );
     
     // Células básicas
     row.innerHTML = `
@@ -215,9 +297,9 @@ function criarLinhaImplantacao(implantacao) {
     `;
     
     // Células dos meses
-    meses.forEach(mes => {
+    meses.forEach((mes, indexMes) => {
         const cell = document.createElement('td');
-        const statusSemanas = implantacao.statusMeses[mes];
+        const statusSemanas = statusMesesAno[mes] || ["pendente", "pendente", "pendente", "pendente"];
         
         // Agrupar status consecutivos iguais
         const gruposStatus = agruparStatusConsecutivos(statusSemanas);
@@ -226,9 +308,38 @@ function criarLinhaImplantacao(implantacao) {
             const statusBar = document.createElement('div');
             statusBar.className = `status-bar status-${grupo.status}`;
             statusBar.style.width = `${(grupo.quantidade / statusSemanas.length) * 100}%`;
-            statusBar.title = `${nomesMeses[meses.indexOf(mes)]}: ${grupo.status.replace('-', ' ')} (${grupo.quantidade} semana${grupo.quantidade > 1 ? 's' : ''})`;
+            statusBar.title = `${nomesMeses[meses.indexOf(mes)]} ${anoSelecionado}: ${grupo.status.replace('-', ' ')} (${grupo.quantidade} semana${grupo.quantidade > 1 ? 's' : ''})`;
             cell.appendChild(statusBar);
         });
+        
+        // Adicionar ícones de Kick Off e Go Live se a fase ocorrer neste mês
+        if (implantacao.fases) {
+            implantacao.fases.forEach(fase => {
+                const faseNomeLower = fase.nome.toLowerCase();
+                const isKickOff = faseNomeLower.includes('kick off') || faseNomeLower.includes('kickoff');
+                const isGoLive = faseNomeLower.includes('go live') || faseNomeLower.includes('golive');
+
+                if ((isKickOff || isGoLive) && fase.inicio && fase.fim) {
+                    const dataInicio = new Date(fase.inicio);
+                    const dataFim = new Date(fase.fim);
+                    const mesFaseInicio = dataInicio.getMonth();
+                    const mesFaseFim = dataFim.getMonth();
+                    const anoFaseInicio = dataInicio.getFullYear();
+                    const anoFaseFim = dataFim.getFullYear();
+
+                    // Verificar se a fase ocorre no mês e ano atual da iteração
+                    if (anoFaseInicio <= anoSelecionado && anoFaseFim >= anoSelecionado &&
+                        indexMes >= mesFaseInicio && indexMes <= mesFaseFim) {
+                        
+                        const icone = document.createElement('span');
+                        icone.className = `icone-fase ${isKickOff ? 'icone-inicio' : 'icone-golive'} ${fase.status === 'concluido-prazo' ? 'concluido' : fase.status === 'andamento' ? 'andamento' : 'pendente'}`;
+                        icone.title = `${fase.nome}: ${fase.status.replace('-', ' ')}`;
+                        icone.textContent = isKickOff ? '🚀' : '🎯';
+                        cell.appendChild(icone);
+                    }
+                }
+            });
+        }
         
         row.appendChild(cell);
     });
@@ -237,6 +348,54 @@ function criarLinhaImplantacao(implantacao) {
     row.addEventListener('click', () => exibirStatusImplantacao(implantacao));
     
     return row;
+}
+
+// Obter status dos meses para um ano específico
+function obterStatusMesesPorAno(implantacao, ano) {
+    // Se existe dados específicos para o ano
+    if (implantacao.statusMeses && implantacao.statusMeses[ano]) {
+        return implantacao.statusMeses[ano];
+    }
+    
+    // Se existe o formato antigo (sem separação por ano)
+    if (implantacao.statusMeses && !implantacao.statusMeses[ano] && typeof implantacao.statusMeses.janeiro !== 'undefined') {
+        // Assumir que os dados são do ano atual ou ano de início
+        if (ano === new Date().getFullYear() || ano === implantacao.anoInicio) {
+            return implantacao.statusMeses;
+        }
+    }
+    
+    // Gerar status baseado nas fases para o ano
+    const statusAno = {};
+    meses.forEach(mes => {
+        statusAno[mes] = ["sem-dados", "sem-dados", "sem-dados", "sem-dados"];
+    });
+    
+    // Aplicar status das fases que ocorrem no ano
+    if (implantacao.fases) {
+        implantacao.fases.forEach(fase => {
+            if (fase.inicio && fase.fim) {
+                const dataInicio = new Date(fase.inicio);
+                const dataFim = new Date(fase.fim);
+                
+                const anoInicio = dataInicio.getFullYear();
+                const anoFim = dataFim.getFullYear();
+                
+                // Verificar se a fase se sobrepõe ao ano selecionado
+                if (anoInicio <= ano && anoFim >= ano) {
+                    const mesInicio = anoInicio === ano ? dataInicio.getMonth() : 0;
+                    const mesFim = anoFim === ano ? dataFim.getMonth() : 11;
+                    
+                    for (let mes = mesInicio; mes <= mesFim; mes++) {
+                        const nomeMes = meses[mes];
+                        statusAno[nomeMes] = [fase.status, fase.status, fase.status, fase.status];
+                    }
+                }
+            }
+        });
+    }
+    
+    return statusAno;
 }
 
 // Exibir tela de status de implantação
