@@ -5,201 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendário de Atividades</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
-        function enviarEmailVisita(data) {
-            const { title, date, time, description, participants } = data;
-
-            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
-
-            const corpoEmail = `
-  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
-    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Título:</td>
-        <td style="padding: 8px;">\${title}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Data:</td>
-        <td style="padding: 8px;">\${date}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Hora:</td>
-        <td style="padding: 8px;">\${time}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
-        <td style="padding: 8px;">\${description}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
-        <td style="padding: 8px;">\${listaParticipantes}</td>
-      </tr>
-    </table>
-  </div>
-`;
-
-            emailjs.send("service_s592ale", "template_2wfn09q", {
-              title: title,
-              date: date,
-              time: time,
-              description: description,
-             participants: listaParticipantes
-            }).then(() => {
-                console.log("📨 E-mail de visita enviado!");
-            }).catch((error) => {
-                console.error("Erro ao enviar e-mail:", error);
-            });
-        }
-
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js">
-        function enviarEmailVisita(data) {
-            const { title, date, time, description, participants } = data;
-
-            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
-
-            const corpoEmail = `
-  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
-    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Título:</td>
-        <td style="padding: 8px;">\${title}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Data:</td>
-        <td style="padding: 8px;">\${date}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Hora:</td>
-        <td style="padding: 8px;">\${time}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
-        <td style="padding: 8px;">\${description}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
-        <td style="padding: 8px;">\${listaParticipantes}</td>
-      </tr>
-    </table>
-  </div>
-`;
-
-            emailjs.send("service_s592ale", "template_2wfn09q", {
-                   title: title,
-             date: date,
-             time: time,
-             description: description,
-             participants: listaParticipantes
-            }).then(() => {
-                console.log("📨 E-mail de visita enviado!");
-            }).catch((error) => {
-                console.error("Erro ao enviar e-mail:", error);
-            });
-        }
-
-    </script>
-<script>
-    emailjs.init("8gWnUalrGwJEQbRwM"); // Substitua pelo seu User ID do EmailJS
-
-        function enviarEmailVisita(data) {
-            const { title, date, time, description, participants } = data;
-
-            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
-
-            const corpoEmail = `
-  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
-    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Título:</td>
-        <td style="padding: 8px;">\${title}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Data:</td>
-        <td style="padding: 8px;">\${date}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Hora:</td>
-        <td style="padding: 8px;">\${time}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
-        <td style="padding: 8px;">\${description}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
-        <td style="padding: 8px;">\${listaParticipantes}</td>
-      </tr>
-    </table>
-  </div>
-`;
-
-            emailjs.send("service_s592ale", "template_2wfn09q", {
-                  title: title,
-            date: date,
-            time: time,
-            description: description,
-            participants: listaParticipantes
-            }).then(() => {
-                console.log("📨 E-mail de visita enviado!");
-            }).catch((error) => {
-                console.error("Erro ao enviar e-mail:", error);
-            });
-        }
-
-    </script>
-
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js">
-        function enviarEmailVisita(data) {
-            const { title, date, time, description, participants } = data;
-
-            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
-
-            const corpoEmail = `
-  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
-    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Título:</td>
-        <td style="padding: 8px;">\${title}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Data:</td>
-        <td style="padding: 8px;">\${date}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Hora:</td>
-        <td style="padding: 8px;">\${time}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
-        <td style="padding: 8px;">\${description}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
-        <td style="padding: 8px;">\${listaParticipantes}</td>
-      </tr>
-    </table>
-  </div>
-`;
-
-            emailjs.send("service_s592ale", "template_2wfn09q", {
-                  title: title,
-               date: date,
-             time: time,
-             description: description,
-             participants: listaParticipantes
-            }).then(() => {
-                console.log("📨 E-mail de visita enviado!");
-            }).catch((error) => {
-                console.error("Erro ao enviar e-mail:", error);
-            });
-        }
-
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -209,7 +16,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100% );
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -308,6 +115,40 @@
             text-align: center;
         }
 
+        .legend {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .legend-color.reunioes { background: #10b981; }
+        .legend-color.homologacoes { background: #3b82f6; }
+        .legend-color.implantacoes { background: #f59e0b; }
+        .legend-color.mvps { background: #8b5cf6; }
+        .legend-color.visitas { background: #ef4444; }
+        .legend-color.resumo_projetos { background: #00d9ff; }
+
         .calendar-container {
             background: white;
             border-radius: 20px;
@@ -343,9 +184,8 @@
             padding: 10px;
             border-right: 1px solid #e5e7eb;
             border-bottom: 1px solid #e5e7eb;
-            cursor: pointer;
-            transition: all 0.3s ease;
             position: relative;
+            transition: all 0.3s ease;
         }
 
         .calendar-day:hover {
@@ -376,128 +216,80 @@
             font-weight: 700;
         }
 
-        .activity {
-            background: #3b82f6;
-            color: white;
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            font-size: 0.75rem;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .activity-counters {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
 
-        .activity:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .activity.homologacao { background: #3b82f6; }
-        .activity.reuniao { background: #10b981; }
-        .activity.atendimento { background: #f59e0b; }
-        .activity.release { background: #8b5cf6; }
-        .activity.viagem { background: #ef4444; }
-
-        .activity-header {
+        .counter-item {
             display: flex;
             align-items: center;
             gap: 5px;
-            margin-bottom: 5px;
-        }
-
-        .activity-icon {
-            width: 12px;
-            height: 12px;
-        }
-
-        .activity-title {
-            flex: 1;
-            font-weight: 500;
-        }
-
-        .activity-actions {
-            opacity: 0;
-            display: flex;
-            gap: 3px;
-            transition: opacity 0.3s ease;
-        }
-
-        .activity:hover .activity-actions {
-            opacity: 1;
-        }
-
-        .action-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 4px;
-            padding: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .action-btn svg {
-            width: 10px;
-            height: 10px;
-            color: white;
-        }
-
-        .participants {
-            display: flex;
-            gap: -2px;
-            margin-top: 5px;
-        }
-
-        .participant-avatar {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid white;
-            margin-left: -2px;
-        }
-
-        .participant-count {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #6b7280;
-            border: 2px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-            color: white;
-            margin-left: -2px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
             padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
             font-weight: 500;
-            margin-top: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        .status-planejada {
-            background: #dbeafe;
-            color: #1d4ed8;
+        .counter-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .status-executada {
-            background: #d1fae5;
+        .counter-item.reunioes {
+            background: rgba(16, 185, 129, 0.1);
             color: #047857;
         }
 
-        .status-nao-realizada {
+        .counter-item.homologacoes {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1d4ed8;
+        }
+
+        .counter-item.implantacoes {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        .counter-item.mvps {
+            background: rgba(139, 92, 246, 0.1);
+            color: #7c3aed;
+        }
+
+        .counter-item.visitas {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .counter-item.resumo_projetos {
+            background: rgba(0, 217, 255, 0.1);
+            color: #00d9ff;
+        }
+
+        .counter-icon {
+            width: 10px;
+            height: 10px;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .error {
             background: #fee2e2;
             color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px;
+            text-align: center;
         }
 
         .modal {
@@ -522,14 +314,15 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
         }
 
         .modal-header {
             padding: 30px 30px 0;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .modal-title {
@@ -540,228 +333,53 @@
         }
 
         .modal-body {
-            padding: 0 30px 30px;
+            padding: 20px 30px 30px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .participants-section {
-            margin-bottom: 20px;
-        }
-
-        .participants-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .participant-tag {
-            display: flex;
-            align-items: center;
-            background: #dbeafe;
-            color: #1d4ed8;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            gap: 8px;
-        }
-
-        .participant-tag img {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .remove-participant {
-            background: none;
-            border: none;
-            color: #1d4ed8;
-            cursor: pointer;
-            font-size: 1.2rem;
-            line-height: 1;
-        }
-
-        .add-participant-btn {
-            background: none;
-            border: none;
-            color: #3b82f6;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: color 0.3s ease;
-        }
-
-        .add-participant-btn:hover {
-            color: #1d4ed8;
-        }
-
-        .participant-form {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 2px dashed #cbd5e1;
-        }
-
-        .participant-form.active {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
-
-        .participant-form-row {
-            display: flex;
-            gap: 10px;
-            align-items: end;
-        }
-
-        .participant-form input[type="text"] {
-            flex: 1;
-        }
-
-        .photo-upload-section {
+        .activity-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .photo-options {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .photo-option {
-            background: white;
-            border: 2px solid #e5e7eb;
+        .activity-item {
+            background: #f8fafc;
             border-radius: 8px;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            min-width: 100px;
+            padding: 15px;
+            border-left: 4px solid #3b82f6;
         }
 
-        .photo-option:hover {
-            border-color: #3b82f6;
-            background: #f0f9ff;
+        .activity-item.reunioes { border-left-color: #10b981; }
+        .activity-item.homologacoes { border-left-color: #3b82f6; }
+        .activity-item.implantacoes { border-left-color: #f59e0b; }
+        .activity-item.mvps { border-left-color: #8b5cf6; }
+        .activity-item.visitas { border-left-color: #ef4444; }
+        .activity-item.resumo_projetos { border-left-color: #00d9ff; }
+
+        .activity-item-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
         }
 
-        .photo-option.selected {
-            border-color: #3b82f6;
-            background: #dbeafe;
+        .activity-item-details {
+            font-size: 0.9rem;
+            color: #6b7280;
         }
 
-        .photo-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin: 0 auto 5px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .upload-area {
-            border: 2px dashed #cbd5e1;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .upload-area:hover {
-            border-color: #3b82f6;
-            background: #f0f9ff;
-        }
-
-        .upload-area.dragover {
-            border-color: #3b82f6;
-            background: #dbeafe;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        #participantPhotoPreview {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 10px auto;
-            display: none;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        .close-modal {
+            background: #3b82f6;
             color: white;
-            flex: 1;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 20px;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #374151;
-            border: 1px solid #d1d5db;
-        }
-
-        .btn-secondary:hover {
-            background: #f3f4f6;
+        .close-modal:hover {
+            background: #2563eb;
         }
 
         @media (max-width: 768px) {
@@ -775,8 +393,9 @@
                 padding: 5px;
             }
 
-            .form-row {
-                grid-template-columns: 1fr;
+            .legend {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -792,13 +411,41 @@
                 </div>
                 <div class="header-title">
                     <h1>Calendário de Atividades</h1>
-                    <p>Gerencie suas atividades de forma inteligente</p>
+                    <p>Visualize suas atividades de forma inteligente</p>
                 </div>
             </div>
             <div class="month-navigation">
                 <button class="nav-btn" onclick="previousMonth()">←</button>
                 <div class="month-year" id="monthYear"></div>
                 <button class="nav-btn" onclick="nextMonth()">→</button>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color reunioes"></div>
+                <span>Reuniões</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color homologacoes"></div>
+                <span>Homologações</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color implantacoes"></div>
+                <span>Implantações</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color resumo_projetos"></div>
+                <span>Resumo de projetos</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color mvps"></div>
+                <span>MVPs</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color visitas"></div>
+                <span>Visitas</span>
             </div>
         </div>
 
@@ -813,120 +460,23 @@
                 <div class="weekday">Sex</div>
                 <div class="weekday">Sáb</div>
             </div>
-            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="calendar-grid" id="calendarGrid">
+                <div class="loading">Carregando dados...</div>
+            </div>
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal para detalhes das atividades -->
     <div class="modal" id="activityModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Nova Atividade</h3>
+                <h3 class="modal-title" id="modalTitle">Atividades do Dia</h3>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Título</label>
-                    <input type="text" class="form-input" id="activityTitle" placeholder="Digite o título da atividade">
+                <div class="activity-list" id="activityList">
+                    <!-- Atividades serão inseridas aqui -->
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Tipo de Atividade</label>
-                    <select class="form-input" id="activityType">
-                        <option value="homologacao">Homologação</option>
-                        <option value="reuniao">Reunião</option>
-                        <option value="atendimento">Atendimento</option>
-                        <option value="release">Release</option>
-                        <option value="viagem">Viagem</option>
-                    </select>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Data</label>
-                        <input type="date" class="form-input" id="activityDate">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Horário</label>
-                        <input type="time" class="form-input" id="activityTime">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Status</label>
-                    <select class="form-input" id="activityStatus">
-                        <option value="planejada">Planejada</option>
-                        <option value="executada">Executada</option>
-                        <option value="nao-realizada">Não Realizada</option>
-                    </select>
-                </div>
-
-                <div class="participants-section">
-                    <label class="form-label">Participantes</label>
-                    <div class="participants-list" id="participantsList"></div>
-                    
-                    <!-- Formulário para adicionar participante -->
-                    <div class="participant-form" id="participantForm" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label">Nome do Participante</label>
-                            <input type="text" class="form-input" id="participantName" placeholder="Digite o nome">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Foto do Participante</label>
-                            <div class="photo-upload-section">
-                                <!-- Preview da foto -->
-                                <img id="participantPhotoPreview" alt="Preview">
-                                
-                                <!-- Opções de foto -->
-                                <div class="photo-options">
-                                    <div class="photo-option" onclick="selectPhotoOption('avatar')">
-                                        <div class="photo-preview" id="avatarPreview"></div>
-                                        <div>Avatar Automático</div>
-                                    </div>
-                                    <div class="photo-option" onclick="selectPhotoOption('upload')">
-                                        <i data-lucide="upload" style="width: 40px; height: 40px; margin: 0 auto 5px; display: block;"></i>
-                                        <div>Enviar Foto</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Área de upload -->
-                                <div class="upload-area" id="uploadArea" style="display: none;" onclick="document.getElementById('photoInput').click()">
-                                    <i data-lucide="camera" style="width: 24px; height: 24px; margin: 0 auto 10px; display: block;"></i>
-                                    <p>Clique para selecionar uma foto ou arraste aqui</p>
-                                    <small>PNG, JPG até 5MB</small>
-                                </div>
-                                
-                                <input type="file" id="photoInput" class="file-input" accept="image/*" onchange="handlePhotoUpload(event)">
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
-                            <button class="btn btn-primary" onclick="confirmAddParticipant()" style="flex: 1;">
-                                Adicionar
-                            </button>
-                            <button class="btn btn-secondary" onclick="cancelAddParticipant()">
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <button class="add-participant-btn" id="addParticipantBtn" onclick="showParticipantForm()">
-                        <i data-lucide="plus"></i>
-                        Adicionar Participante
-                    </button>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Descrição</label>
-                    <textarea class="form-input" id="activityDescription" rows="3" placeholder="Descrição da atividade"></textarea>
-                </div>
-
-                <div class="modal-actions">
-                    <button class="btn btn-primary" onclick="saveActivity()">
-                        <span id="saveButtonText">Criar Atividade</span>
-                    </button>
-                    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-                </div>
+                <button class="close-modal" onclick="closeModal()">Fechar</button>
             </div>
         </div>
     </div>
@@ -934,86 +484,93 @@
     <script>
         // Variáveis globais
         let currentDate = new Date();
-        let activities = [];
-        let currentParticipants = [];
-        let editingActivityId = null;
-        let currentPhotoOption = 'avatar';
-        let currentParticipantPhoto = null;
+        let activitiesData = {
+            reunioes: [],
+            homologacoes: [],
+            implantacoes: [],
+            resumo_projetos: [],
+            mvps: [],
+            viagens: []
+        };
 
-        // Supabase client setup
-        const SUPABASE_URL = "https://obwgegvrtxrlombmkaej.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM";
-        let supabaseClient;
+        // Configurações das APIs Supabase
+        const API_CONFIGS = {
+            api1: {
+                url: "https://mzjdmhgkrroajmsfwryu.supabase.co",
+                key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc"
+            },
+            api2: {
+                url: "https://obwgegvrtxrlombmkaej.supabase.co",
+                key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM"
+            }
+        };
 
         const monthNames = [
             'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
             'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
         ];
 
-        const activityTypes = {
-            'homologacao': { color: 'homologacao', icon: 'check-circle' },
-            'reuniao': { color: 'reuniao', icon: 'users' },
-            'atendimento': { color: 'atendimento', icon: 'clock' },
-            'release': { color: 'release', icon: 'alert-circle' },
-            'viagem': { color: 'viagem', icon: 'map-pin' }
-        };
-
-        const statusTypes = {
-            'planejada': { class: 'status-planejada', icon: 'clock' },
-            'executada': { class: 'status-executada', icon: 'check-circle' },
-            'nao-realizada': { class: 'status-nao-realizada', icon: 'x-circle' }
-        };
-
         // Inicialização
-        document.addEventListener('DOMContentLoaded', async function( ) {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+        document.addEventListener('DOMContentLoaded', async function() {
             lucide.createIcons();
-            await carregarAtividadesDoSupabase();
+            await loadAllData();
             renderCalendar();
-            
-            const participantNameInput = document.getElementById('participantName');
-            if (participantNameInput) {
-                participantNameInput.addEventListener('input', function() {
-                    if (currentPhotoOption === 'avatar') {
-                        updateAvatarPreview();
-                    }
-                });
-            }
-            
-            const uploadArea = document.getElementById('uploadArea');
-            if (uploadArea) {
-                uploadArea.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    uploadArea.classList.add('dragover');
-                });
-                
-                uploadArea.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    uploadArea.classList.remove('dragover');
-                });
-                
-                uploadArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    uploadArea.classList.remove('dragover');
-                    
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        const file = files[0];
-                        if (file.type.startsWith('image/')) {
-                            document.getElementById('photoInput').files = files;
-                            handlePhotoUpload({ target: { files: [file] } });
-                        }
-                    }
-                });
-            }
-
-            document.getElementById('activityModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
         });
+
+        // Carregar dados de todas as APIs
+        async function loadAllData() {
+            try {
+                // Criar clientes Supabase
+                const client1 = supabase.createClient(API_CONFIGS.api1.url, API_CONFIGS.api1.key);
+                const client2 = supabase.createClient(API_CONFIGS.api2.url, API_CONFIGS.api2.key);
+
+                // Carregar dados da primeira API (reuniões, homologações e resumo de projetos)
+                const [reunioesResponse, homologacoesResponse, resumoProjetosResponse] = await Promise.all([
+                    client1.from('reunioes').select('*'),
+                    client1.from('homologacoes').select('*'),
+                    client1.from('implantacoes').select('*')
+                ]);
+
+                // Carregar dados da segunda API (implantações, MVPs e viagens)
+                const [implantacoesResponse, mvpsResponse, viagensResponse] = await Promise.all([
+                    client2.from('implantacoes').select('*'),
+                    client2.from('mvps').select('*'),
+                    client2.from('viagens').select('*')
+                ]);
+
+                // Processar dados
+                if (reunioesResponse.data) {
+                    activitiesData.reunioes = reunioesResponse.data;
+                }
+                if (homologacoesResponse.data) {
+                    activitiesData.homologacoes = homologacoesResponse.data;
+                }
+                if (resumoProjetosResponse.data) {
+                    activitiesData.resumo_projetos = resumoProjetosResponse.data;
+                }
+                if (implantacoesResponse.data) {
+                    activitiesData.implantacoes = implantacoesResponse.data;
+                }
+                if (mvpsResponse.data) {
+                    activitiesData.mvps = mvpsResponse.data;
+                }
+                if (viagensResponse.data) {
+                    activitiesData.viagens = viagensResponse.data;
+                }
+
+                console.log('Dados carregados:', activitiesData);
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                showError('Erro ao carregar dados das APIs');
+            }
+        }
+
+        // Mostrar erro
+        function showError(message) {
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = `<div class="error">${message}</div>`;
+        }
 
         // Navegação do calendário
         function previousMonth() {
@@ -1041,22 +598,26 @@
             const calendarGrid = document.getElementById('calendarGrid');
             calendarGrid.innerHTML = '';
             
+            // Dias do mês anterior
             for (let i = startingDayOfWeek - 1; i >= 0; i--) {
                 const prevDate = new Date(year, month, -i);
                 createDayElement(prevDate, false);
             }
             
+            // Dias do mês atual
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 createDayElement(date, true);
             }
             
+            // Dias do próximo mês
             const totalCells = calendarGrid.children.length;
             const remainingCells = 42 - totalCells;
             for (let day = 1; day <= remainingCells; day++) {
                 const nextDate = new Date(year, month + 1, day);
                 createDayElement(nextDate, false);
             }
+            
             lucide.createIcons();
         }
 
@@ -1072,54 +633,98 @@
                 dayElement.classList.add('today');
             }
             
-            const dayActivities = getActivitiesForDate(date);
+            const counters = getActivityCountersForDate(date);
             
             dayElement.innerHTML = `
                 <div class="day-number">${date.getDate()}</div>
-                <div class="activities-container">
-                    ${dayActivities.map(activity => createActivityElement(activity)).join('')}
+                <div class="activity-counters">
+                    ${counters.map(counter => createCounterElement(counter, date)).join('')}
                 </div>
             `;
-            
-            dayElement.addEventListener('click', () => openModal(date));
             
             document.getElementById('calendarGrid').appendChild(dayElement);
         }
 
-        function createActivityElement(activity) {
-            const type = activityTypes[activity.type];
-            const status = statusTypes[activity.status];
+        function createCounterElement(counter, date) {
+            if (counter.count === 0) return '';
+            
+            const icons = {
+                reunioes: 'users',
+                homologacoes: 'check-circle',
+                implantacoes: 'settings',
+                resumo_projetos: 'file-text',
+                mvps: 'star',
+                visitas: 'map-pin'
+            };
             
             return `
-                <div class="activity ${type.color}" onclick="event.stopPropagation(); editActivity('${activity.id}')">
-                    <div class="activity-header">
-                        <i data-lucide="${type.icon}" class="activity-icon"></i>
-                        <div class="activity-title">${activity.title}</div>
-                        <div class="activity-actions">
-                            <button class="action-btn" onclick="event.stopPropagation(); editActivity('${activity.id}')">
-                                <i data-lucide="edit-3"></i>
-                            </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); deleteActivity('${activity.id}')">
-                                <i data-lucide="trash-2"></i>
-                            </button>
-                        </div>
-                    </div>
-                    ${activity.participants && activity.participants.length > 0 ? `
-                        <div class="participants">
-                            ${activity.participants.slice(0, 3).map(p => `
-                                <img src="${p.avatar_url}" alt="${p.name}" class="participant-avatar" title="${p.name}">
-                            `).join('')}
-                            ${activity.participants.length > 3 ? `
-                                <div class="participant-count">+${activity.participants.length - 3}</div>
-                            ` : ''}
-                        </div>
-                    ` : ''}
-                    <div class="status-badge ${status.class}">
-                        <i data-lucide="${status.icon}" style="width: 10px; height: 10px;"></i>
-                        ${activity.status.replace('-', ' ')}
-                    </div>
+                <div class="counter-item ${counter.type}" onclick="showActivityDetails('${counter.type}', '${formatDate(date)}')">
+                    <i data-lucide="${icons[counter.type]}" class="counter-icon"></i>
+                    <span>${counter.count}</span>
                 </div>
             `;
+        }
+
+        function getActivityCountersForDate(date) {
+            const dateStr = formatDate(date);
+            const counters = [
+                { type: 'reunioes', count: 0 },
+                { type: 'homologacoes', count: 0 },
+                { type: 'implantacoes', count: 0 },
+                { type: 'resumo_projetos', count: 0 },
+                { type: 'mvps', count: 0 },
+                { type: 'visitas', count: 0 }
+            ];
+
+            // Contar reuniões
+            counters[0].count = activitiesData.reunioes.filter(item => 
+                formatDate(new Date(item.data)) === dateStr
+            ).length;
+
+            // Contar homologações (usando data_homologacao)
+            counters[1].count = activitiesData.homologacoes.filter(item => 
+                formatDate(new Date(item.data_homologacao)) === dateStr
+            ).length;
+
+            // Contar implantações (usando datas de Kick Off e Go Live das fases)
+            counters[2].count = 0;
+            activitiesData.implantacoes.forEach(item => {
+                if (item.fases && Array.isArray(item.fases)) {
+                    item.fases.forEach(fase => {
+                        // Verificar se é Kick Off ou Go Live e se tem data de início
+                        if ((fase.nome === 'Kick Off' || fase.nome === 'Go Live') && fase.inicio) {
+                            if (formatDate(new Date(fase.inicio)) === dateStr) {
+                                counters[2].count++;
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Contar resumo de projetos (usando data)
+            counters[3].count = activitiesData.resumo_projetos.filter(item => 
+                formatDate(new Date(item.data)) === dateStr
+            ).length;
+
+            // Contar MVPs (usando data_inicio e data_fim)
+            counters[4].count = activitiesData.mvps.filter(item => {
+                if (!item.data_inicio) return false;
+                const startDate = new Date(item.data_inicio);
+                const endDate = item.data_fim ? new Date(item.data_fim) : startDate;
+                const checkDate = new Date(dateStr);
+                return checkDate >= startDate && checkDate <= endDate;
+            }).length;
+
+            // Contar visitas (usando data_inicio e data_fim das viagens)
+            counters[5].count = activitiesData.viagens.filter(item => {
+                if (!item.data_inicio) return false;
+                const startDate = new Date(item.data_inicio);
+                const endDate = item.data_fim ? new Date(item.data_fim) : startDate;
+                const checkDate = new Date(dateStr);
+                return checkDate >= startDate && checkDate <= endDate;
+            }).length;
+
+            return counters;
         }
 
         function isToday(date) {
@@ -1131,29 +736,26 @@
             return date.toISOString().split('T')[0];
         }
 
-        function getActivitiesForDate(date) {
-            const dateStr = formatDate(date);
-            return activities.filter(activity => activity.date === dateStr);
-        }
-
-        // Modal functions
-        function openModal(date) {
-            editingActivityId = null;
-            currentParticipants = [];
+        // Funções do modal
+        function showActivityDetails(type, dateStr) {
+            const date = new Date(dateStr);
+            const activities = getActivitiesForDateAndType(date, type);
             
-            document.getElementById('modalTitle').textContent = 'Nova Atividade';
-            document.getElementById('saveButtonText').textContent = 'Criar Atividade';
-            document.getElementById('activityTitle').value = '';
-            document.getElementById('activityType').value = 'reuniao';
-            document.getElementById('activityDate').value = formatDate(date);
-            document.getElementById('activityTime').value = '';
-            document.getElementById('activityStatus').value = 'planejada';
-            document.getElementById('activityDescription').value = '';
+            const typeNames = {
+                reunioes: 'Reuniões',
+                homologacoes: 'Homologações',
+                implantacoes: 'Implantações',
+                resumo_projetos: 'Resumo de projetos',
+                mvps: 'MVPs',
+                visitas: 'Visitas'
+            };
             
-            renderParticipants();
-            hideParticipantForm();
-            resetPhotoUpload();
-
+            document.getElementById('modalTitle').textContent = 
+                `${typeNames[type]} - ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+            
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = activities.map(activity => createActivityItemHTML(activity, type)).join('');
+            
             document.getElementById('activityModal').classList.add('show');
         }
 
@@ -1161,406 +763,169 @@
             document.getElementById('activityModal').classList.remove('show');
         }
 
-        async function saveActivity() {
-            const title = document.getElementById('activityTitle').value;
-            const type = document.getElementById('activityType').value;
-            const date = document.getElementById('activityDate').value;
-            const time = document.getElementById('activityTime').value;
-            const status = document.getElementById('activityStatus').value;
-            const description = document.getElementById('activityDescription').value;
-
-            if (!title || !date) {
-                alert('Título e Data são obrigatórios!');
-                return;
-            }
-
-            let activityData = {
-                title,
-                type,
-                date,
-                time,
-                status,
-                description
-            };
-
-            if (editingActivityId) {
-                // Atualizar atividade existente
-                const { data: updatedActivity, error: updateError } = await supabaseClient
-                    .from('activities')
-                    .update(activityData)
-                    .eq('id', editingActivityId)
-                    .select();
-
-                if (updateError) {
-                    console.error('Erro ao atualizar atividade:', updateError);
-                    alert('Erro ao atualizar atividade.');
-                    return;
-                }
-
-                // Deletar participantes antigos e inserir novos
-                const { error: deleteParticipantsError } = await supabaseClient
-                    .from('participants')
-                    .delete()
-                    .eq('activity_id', editingActivityId);
-
-                if (deleteParticipantsError) {
-                    console.error('Erro ao deletar participantes antigos:', deleteParticipantsError);
-                    alert('Erro ao atualizar participantes.');
-                    return;
-                }
-
-                for (const participant of currentParticipants) {
-                    const { error: insertParticipantError } = await supabaseClient
-                        .from('participants')
-                        .insert({
-                            activity_id: editingActivityId,
-                            name: participant.name,
-                            avatar_url: participant.avatar_url
-                        });
-                    if (insertParticipantError) {
-                        console.error('Erro ao inserir participante:', insertParticipantError);
-                        alert('Erro ao atualizar participantes.');
-                        return;
-                    }
-                }
-
-                const index = activities.findIndex(act => act.id === editingActivityId);
-                if (index !== -1) {
-                    activities[index] = { ...updatedActivity[0], participants: currentParticipants };
-                }
-
-            } else {
-                // Criar nova atividade
-                const { data: newActivity, error: insertActivityError } = await supabaseClient
-                    .from('activities')
-                    .insert([activityData])
-                    .select();
-
-                if (insertActivityError) {
-                    console.error('Erro ao salvar atividade:', insertActivityError);
-                    alert('Erro ao salvar atividade.');
-                    return;
-                }
-
-                const activityId = newActivity[0].id;
-
-                for (const participant of currentParticipants) {
-                    const { error: insertParticipantError } = await supabaseClient
-                        .from('participants')
-                        .insert({
-                            activity_id: activityId,
-                            name: participant.name,
-                            avatar_url: participant.avatar_url
-                        });
-                    if (insertParticipantError) {
-                        console.error('Erro ao inserir participante:', insertParticipantError);
-                        alert('Erro ao salvar participantes.');
-                        return;
-                    }
-                }
-
-                activities.push({ ...newActivity[0], participants: currentParticipants });
-            }
-
-            closeModal();
-            renderCalendar();
-            if (type.toLowerCase() === "viagem" || type.toLowerCase() === "viagem") {
-                enviarEmailVisita({
-                    title,
-                    date,
-                    time,
-                    description,
-                    participants: currentParticipants
-                });
-            }
-
-        }
-
-        async function editActivity(id) {
-            editingActivityId = id;
-            const activity = activities.find(act => act.id === id);
-
-            if (activity) {
-                document.getElementById('modalTitle').textContent = 'Editar Atividade';
-                document.getElementById('saveButtonText').textContent = 'Salvar Alterações';
-                document.getElementById('activityTitle').value = activity.title;
-                document.getElementById('activityType').value = activity.type;
-                document.getElementById('activityDate').value = activity.date;
-                document.getElementById('activityTime').value = activity.time;
-                document.getElementById('activityStatus').value = activity.status;
-                document.getElementById('activityDescription').value = activity.description;
+        function getActivitiesForDateAndType(date, type) {
+            const dateStr = formatDate(date);
+            
+            switch(type) {
+                case 'reunioes':
+                    return activitiesData.reunioes.filter(item => 
+                        formatDate(new Date(item.data)) === dateStr
+                    );
                 
-                // Carregar participantes da tabela 'participants'
-                const { data: participantsData, error: participantsError } = await supabaseClient
-                    .from('participants')
-                    .select('*')
-                    .eq('activity_id', id);
-
-                if (participantsError) {
-                    console.error('Erro ao carregar participantes:', participantsError);
-                    currentParticipants = [];
-                } else {
-                    currentParticipants = participantsData.map(p => ({ name: p.name, avatar_url: p.avatar_url }));
-                }
-
-                renderParticipants();
-                hideParticipantForm();
-                resetPhotoUpload();
-
-                document.getElementById('activityModal').classList.add('show');
+                case 'homologacoes':
+                    return activitiesData.homologacoes.filter(item => 
+                        formatDate(new Date(item.data_homologacao)) === dateStr
+                    );
+                
+                case 'implantacoes':
+                    const implantacoesData = [];
+                    activitiesData.implantacoes.forEach(item => {
+                        if (item.fases && Array.isArray(item.fases)) {
+                            item.fases.forEach(fase => {
+                                // Verificar se é Kick Off ou Go Live e se tem data de início
+                                if ((fase.nome === 'Kick Off' || fase.nome === 'Go Live') && fase.inicio) {
+                                    if (formatDate(new Date(fase.inicio)) === dateStr) {
+                                        implantacoesData.push({
+                                            ...item,
+                                            fase_atual: fase.nome,
+                                            data_fase: fase.inicio,
+                                            status_fase: fase.status
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    return implantacoesData;
+                
+                case 'resumo_projetos':
+                    return activitiesData.resumo_projetos.filter(item => 
+                        formatDate(new Date(item.data)) === dateStr
+                    );
+                
+                case 'mvps':
+                    return activitiesData.mvps.filter(item => {
+                        if (!item.data_inicio) return false;
+                        const startDate = new Date(item.data_inicio);
+                        const endDate = item.data_fim ? new Date(item.data_fim) : startDate;
+                        const checkDate = new Date(dateStr);
+                        return checkDate >= startDate && checkDate <= endDate;
+                    });
+                
+                case 'visitas':
+                    return activitiesData.viagens.filter(item => {
+                        if (!item.data_inicio) return false;
+                        const startDate = new Date(item.data_inicio);
+                        const endDate = item.data_fim ? new Date(item.data_fim) : startDate;
+                        const checkDate = new Date(dateStr);
+                        return checkDate >= startDate && checkDate <= endDate;
+                    });
+                
+                default:
+                    return [];
             }
         }
 
-        async function deleteActivity(id) {
-            if (confirm('Tem certeza que deseja excluir esta atividade?')) {
-                // Deletar participantes primeiro (devido à chave estrangeira)
-                const { error: deleteParticipantsError } = await supabaseClient
-                    .from('participants')
-                    .delete()
-                    .eq('activity_id', id);
-
-                if (deleteParticipantsError) {
-                    console.error('Erro ao excluir participantes:', deleteParticipantsError);
-                    alert('Erro ao excluir atividade.');
-                    return;
-                }
-
-                // Deletar a atividade
-                const { error: deleteActivityError } = await supabaseClient
-                    .from('activities')
-                    .delete()
-                    .eq('id', id);
-
-                if (deleteActivityError) {
-                    console.error('Erro ao excluir atividade:', deleteActivityError);
-                    alert('Erro ao excluir atividade.');
-                } else {
-                    activities = activities.filter(act => act.id !== id);
-                    renderCalendar();
-                }
+        function createActivityItemHTML(activity, type) {
+            switch(type) {
+                case 'reunioes':
+                    return `
+                        <div class="activity-item ${type}">
+                            <div class="activity-item-title">${activity.cliente || 'Reunião'}</div>
+                            <div class="activity-item-details">
+                                <strong>Tipo:</strong> ${activity.tipo || 'N/A'}<br>
+                                <strong>Responsável:</strong> ${activity.responsavel || 'N/A'}<br>
+                                <strong>Horário:</strong> ${activity.horario || 'N/A'}<br>
+                                <strong>Participantes:</strong> ${activity.participantes || 'N/A'}
+                            </div>
+                        </div>
+                    `;
+                
+                case 'homologacoes':
+                    return `
+                        <div class="activity-item ${type}">
+                            <div class="activity-item-title">${activity.sistema || 'Sistema'} - v${activity.versao || 'N/A'}</div>
+                            <div class="activity-item-details">
+                                <strong>Especialista:</strong> ${activity.especialista || 'N/A'}<br>
+                                <strong>Data Liberação:</strong> ${new Date(activity.data_liberacao).toLocaleDateString('pt-BR')}<br>
+                                <strong>Observação:</strong> ${activity.observacao || 'Nenhuma'}
+                            </div>
+                        </div>
+                    `;
+                
+                case 'implantacoes':
+                    return `
+                        <div class="activity-item ${type}">
+                            <div class="activity-item-title">${activity.projeto || 'Projeto'} - ${activity.sistema || 'Sistema'}</div>
+                            <div class="activity-item-details">
+                                <strong>Empresa:</strong> ${activity.empresa || 'N/A'}<br>
+                                <strong>Especialista:</strong> ${activity.especialista || 'N/A'}<br>
+                                <strong>Gestor:</strong> ${activity.gestor || 'N/A'}<br>
+                                <strong>Fase:</strong> ${activity.fase_atual || 'N/A'}<br>
+                                <strong>Status da Fase:</strong> ${activity.status_fase || 'N/A'}<br>
+                                <strong>Progresso Geral:</strong> ${activity.progresso || 0}%<br>
+                                <strong>Data da Fase:</strong> ${new Date(activity.data_fase).toLocaleDateString('pt-BR')}
+                            </div>
+                        </div>
+                    `;
+                
+                case 'resumo_projetos':
+                    return `
+                        <div class="activity-item ${type}">
+                            <div class="activity-item-title">${activity.projeto || 'Projeto'} - ${activity.cliente || 'Cliente'}</div>
+                            <div class="activity-item-details">
+                                <strong>Especialista:</strong> ${activity.especialista || 'N/A'}<br>
+                                <strong>Tipo:</strong> ${activity.tipo || 'N/A'}<br>
+                                <strong>Setor:</strong> ${activity.setor || 'N/A'}<br>
+                                <strong>Tickets:</strong> ${activity.tickets || 0}<br>
+                                <strong>Tickets Pendentes:</strong> ${activity.tickets_pendentes || 0}<br>
+                                <strong>Data:</strong> ${new Date(activity.data).toLocaleDateString('pt-BR')}<br>
+                                <strong>Resumo:</strong> ${activity.resumo || 'Nenhum resumo disponível'}
+                            </div>
+                        </div>
+                    `;
+                
+                case 'mvps':
+                    return `
+                        <div class="activity-item ${type}">
+                            <div class="activity-item-title">${activity.empresa || 'MVP'} - ${activity.sistema || 'Sistema'}</div>
+                            <div class="activity-item-details">
+                                <strong>Especialista:</strong> ${activity.especialista || 'N/A'}<br>
+                                <strong>Status:</strong> ${activity.status || 'N/A'}<br>
+                                <strong>Período:</strong> ${activity.data_inicio ? new Date(activity.data_inicio).toLocaleDateString('pt-BR') : 'N/A'} - ${activity.data_fim ? new Date(activity.data_fim).toLocaleDateString('pt-BR') : 'Em andamento'}<br>
+                                <strong>Resumo:</strong> ${activity.resumo || 'Nenhum'}
+                            </div>
+                        </div>
+                    `;
+                
+                case 'visitas':
+                    return `
+                        <div class="activity-item ${type}">
+                            <div class="activity-item-title">Visita - ${activity.destino || 'Destino'}</div>
+                            <div class="activity-item-details">
+                                <strong>Especialista:</strong> ${activity.especialista || 'N/A'}<br>
+                                <strong>Empresa:</strong> ${activity.empresa || 'N/A'}<br>
+                                <strong>Propósito:</strong> ${activity.proposito || 'N/A'}<br>
+                                <strong>Status:</strong> ${activity.status || 'N/A'}<br>
+                                <strong>Período:</strong> ${activity.data_inicio ? new Date(activity.data_inicio).toLocaleDateString('pt-BR') : 'N/A'} - ${activity.data_fim ? new Date(activity.data_fim).toLocaleDateString('pt-BR') : 'Em andamento'}
+                            </div>
+                        </div>
+                    `;
+                
+                default:
+                    return '';
             }
         }
 
-        async function carregarAtividadesDoSupabase() {
-            const { data: activitiesData, error: activitiesError } = await supabaseClient
-                .from('activities')
-                .select('*');
-
-            if (activitiesError) {
-                console.error('Erro ao carregar atividades:', activitiesError);
-            } else {
-                // Para cada atividade, carregar seus participantes
-                const activitiesWithParticipants = await Promise.all(activitiesData.map(async (activity) => {
-                    const { data: participantsData, error: participantsError } = await supabaseClient
-                        .from('participants')
-                        .select('*')
-                        .eq('activity_id', activity.id);
-
-                    if (participantsError) {
-                        console.error(`Erro ao carregar participantes para a atividade ${activity.id}:`, participantsError);
-                        return { ...activity, participants: [] };
-                    } else {
-                        return { ...activity, participants: participantsData };
-                    }
-                }));
-                activities = activitiesWithParticipants;
-                console.log('Atividades carregadas:', activities);
-            }
-        }
-
-        // Funções de Participantes
-        function renderParticipants() {
-            const participantsListDiv = document.getElementById('participantsList');
-            participantsListDiv.innerHTML = '';
-            currentParticipants.forEach((p, index) => {
-                const participantTag = document.createElement('div');
-                participantTag.className = 'participant-tag';
-                participantTag.innerHTML = `
-                    <img src="${p.avatar_url}" alt="${p.name}">
-                    <span>${p.name}</span>
-                    <button class="remove-participant" onclick="removeParticipant(${index})">
-                        <i data-lucide="x"></i>
-                    </button>
-                `;
-                participantsListDiv.appendChild(participantTag);
+        // Event listener para fechar modal clicando fora
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('activityModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
             });
-            lucide.createIcons();
-        }
-
-        function showParticipantForm() {
-            document.getElementById('participantForm').style.display = 'block';
-            document.getElementById('addParticipantBtn').style.display = 'none';
-            document.getElementById('participantName').value = '';
-            resetPhotoUpload();
-            selectPhotoOption('avatar');
-            updateAvatarPreview();
-        }
-
-        function hideParticipantForm() {
-            document.getElementById('participantForm').style.display = 'none';
-            document.getElementById('addParticipantBtn').style.display = 'flex';
-        }
-
-        function confirmAddParticipant() {
-            const name = document.getElementById('participantName').value;
-            if (!name) {
-                alert('O nome do participante é obrigatório.');
-                return;
-            }
-
-            let avatarUrl = '';
-            if (currentPhotoOption === 'avatar') {
-                avatarUrl = document.getElementById('avatarPreview').src;
-            } else if (currentPhotoOption === 'upload' && currentParticipantPhoto) {
-                avatarUrl = currentParticipantPhoto;
-            } else {
-                alert('Por favor, selecione uma opção de foto ou faça upload.');
-                return;
-            }
-
-            currentParticipants.push({ name, avatar_url: avatarUrl });
-            renderParticipants();
-            hideParticipantForm();
-        }
-
-        function cancelAddParticipant() {
-            hideParticipantForm();
-        }
-
-        function removeParticipant(index) {
-            currentParticipants.splice(index, 1);
-            renderParticipants();
-        }
-
-        // Funções de Upload de Foto
-        function selectPhotoOption(option) {
-            currentPhotoOption = option;
-            document.querySelectorAll('.photo-option').forEach(el => el.classList.remove('selected'));
-            
-            if (option === 'avatar') {
-                document.querySelector('.photo-option:nth-child(1)').classList.add('selected');
-                document.getElementById('uploadArea').style.display = 'none';
-                document.getElementById('participantPhotoPreview').style.display = 'block';
-                updateAvatarPreview();
-            } else if (option === 'upload') {
-                document.querySelector('.photo-option:nth-child(2)').classList.add('selected');
-                document.getElementById('uploadArea').style.display = 'block';
-                document.getElementById('participantPhotoPreview').style.display = 'none';
-            }
-        }
-
-        function updateAvatarPreview() {
-            const name = document.getElementById('participantName').value;
-            const avatarPreview = document.getElementById('avatarPreview');
-            const participantPhotoPreview = document.getElementById('participantPhotoPreview');
-            
-            if (name) {
-                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-                const color = stringToHslColor(name, 50, 60);
-                const svg = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="${color}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Arial" font-size="18">${initials}</text></svg>`;
-                const dataUrl = `data:image/svg+xml;base64,${btoa(svg )}`;
-                avatarPreview.src = dataUrl;
-                if (currentPhotoOption === 'avatar') {
-                    participantPhotoPreview.src = dataUrl;
-                }
-            } else {
-                avatarPreview.src = '';
-                if (currentPhotoOption === 'avatar') {
-                    participantPhotoPreview.src = '';
-                }
-            }
-        }
-
-        function stringToHslColor(str, s, l) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            const h = hash % 360;
-            return `hsl(${h}, ${s}%, ${l}%)`;
-        }
-
-        async function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const participantPhotoPreview = document.getElementById('participantPhotoPreview');
-            participantPhotoPreview.style.display = 'block';
-            participantPhotoPreview.src = URL.createObjectURL(file);
-
-            // Upload para o Supabase Storage
-            const filePath = `participant-photos/${Date.now()}-${file.name}`;
-            const { data, error } = await supabaseClient.storage
-                .from('participant-photos')
-                .upload(filePath, file);
-
-            if (error) {
-                console.error('Erro ao fazer upload da foto:', error);
-                alert('Erro ao fazer upload da foto.');
-                currentParticipantPhoto = null;
-            } else {
-                const { data: publicUrlData } = supabaseClient.storage
-                    .from('participant-photos')
-                    .getPublicUrl(filePath);
-                currentParticipantPhoto = publicUrlData.publicUrl;
-                console.log('Foto uploaded:', currentParticipantPhoto);
-            }
-        }
-
-        function resetPhotoUpload() {
-            document.getElementById('photoInput').value = '';
-            document.getElementById('participantPhotoPreview').src = '';
-            document.getElementById('participantPhotoPreview').style.display = 'none';
-            currentParticipantPhoto = null;
-            document.getElementById('uploadArea').classList.remove('dragover');
-        }
-    
-        function enviarEmailVisita(data) {
-            const { title, date, time, description, participants } = data;
-
-            const listaParticipantes = participants.map(p => p.name).join(', ') || 'Nenhum';
-
-            const corpoEmail = `
-  <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9fafb; color: #1f2937;">
-    <h2 style="color: #111827;">📍 Nova Visita Marcada</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Título:</td>
-        <td style="padding: 8px;">\${title}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Data:</td>
-        <td style="padding: 8px;">\${date}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Hora:</td>
-        <td style="padding: 8px;">\${time}</td>
-      </tr>
-      <tr style="background-color: #f3f4f6;">
-        <td style="padding: 8px; font-weight: bold;">Descrição:</td>
-        <td style="padding: 8px;">\${description}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; font-weight: bold;">Participantes:</td>
-        <td style="padding: 8px;">\${listaParticipantes}</td>
-      </tr>
-    </table>
-  </div>
-`;
-
-            emailjs.send("service_s592ale", "template_2wfn09q", {
-                  title: title,
-                  date: date,
-                  time: time,
-                  description: description,
-                  participants: listaParticipantes
-            }).then(() => {
-                console.log("📨 E-mail de visita enviado!");
-            }).catch((error) => {
-                console.error("Erro ao enviar e-mail:", error);
-            });
-        }
-
+        });
     </script>
 </body>
 </html>
+
