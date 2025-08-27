@@ -472,7 +472,7 @@ function criarLinhaImplantacao(implantacao) {
                             const icone = document.createElement('span');
                             icone.className = `icone-fase ${isKickOff ? 'icone-inicio' : 'icone-golive'} ${fase.status === 'concluido-prazo' ? 'concluido' : fase.status === 'andamento' ? 'andamento' : 'pendente'}`;
                             icone.title = `${fase.nome}: ${fase.status.replace('-', ' ')}`;
-                            icone.textContent = isKickOff ? '⚫' : '🏴';
+                            icone.textContent = isKickOff ? '➣' : '🏴';
                             
                             // Se é Go Live concluído, destacar com cor especial
                             if (isGoLive && (fase.status === 'concluido-prazo' || fase.status === 'concluido-fora')) {
