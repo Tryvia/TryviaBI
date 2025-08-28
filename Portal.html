@@ -14948,3 +14948,30 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>
 
 
+
+
+<script>
+function previewProfileImage(input) {
+    var preview = document.getElementById('fotoPreview');
+    var previewImg = document.getElementById('fotoPreviewImg');
+    var placeholder = document.getElementById('fotoPlaceholder');
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        previewImg.src = '';
+        preview.style.display = 'none';
+        placeholder.style.display = 'block';
+    }
+}
+</script>
+
+
