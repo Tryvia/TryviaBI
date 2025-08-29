@@ -53,6 +53,42 @@ function formatDateForDisplay(dateString) {
     // Para outras datas, usar o método padrão
     return new Date(dateString).toLocaleDateString("pt-BR");
 }
+
+// Função para formatar data e hora corretamente para exibição
+function formatDateTimeForDisplay(dateString) {
+    if (!dateString) return 'Data não informada';
+    
+    // Para datas ISO, extrair a parte da data e processar
+    if (dateString.includes('T')) {
+        const datePart = dateString.split('T')[0];
+        const timePart = dateString.split('T')[1];
+        
+        // Extrair componentes da data
+        const [year, month, day] = datePart.split('-');
+        const date = new Date(year, month - 1, day);
+        
+        // Extrair componentes do horário
+        const [hours, minutes] = timePart.split(':');
+        
+        // Formatar data no padrão brasileiro
+        const formattedDate = date.toLocaleDateString('pt-BR');
+        
+        // Formatar horário
+        const formattedTime = `${hours}:${minutes}`;
+        
+        return `${formattedDate} às ${formattedTime}`;
+    }
+    
+    // Se a data está no formato YYYY-MM-DD, criar Date sem problemas de fuso horário
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = dateString.split('-');
+        const date = new Date(year, month - 1, day);
+        return date.toLocaleDateString('pt-BR');
+    }
+    
+    // Para outras datas, usar o método padrão
+    return new Date(dateString).toLocaleDateString('pt-BR');
+}
 </script>
 <style>
 button, a.button, .btn {
@@ -8255,8 +8291,8 @@ async function viewClientTickets(clientId, clientName, clientEmail) {
         content.innerHTML = tickets.map(ticket => {
             const statusClass = getTicketStatusClass(ticket.status);
             const statusText = getTicketStatusText(ticket.status);
-            const createdDate = new Date(ticket.created_at).toLocaleDateString('pt-BR');
-            const updatedDate = new Date(ticket.updated_at).toLocaleDateString('pt-BR');
+            const createdDate = formatDateTimeForDisplay(ticket.created_at);
+            const updatedDate = formatDateTimeForDisplay(ticket.updated_at);
             
             return `
                 <div class="ticket-item">
@@ -8624,8 +8660,8 @@ window.onclick = function(event) {
                     }
                     
                     content.innerHTML = tickets.map(ticket => {
-                        const createdDate = new Date(ticket.created_at).toLocaleDateString("pt-BR");
-                        const updatedDate = new Date(ticket.updated_at).toLocaleDateString("pt-BR");
+                        const createdDate = formatDateTimeForDisplay(ticket.created_at);
+                        const updatedDate = formatDateTimeForDisplay(ticket.updated_at);
                         const statusClass = getTicketStatusClass(ticket.status);
                         const statusText = getTicketStatusText(ticket.status);
                         
@@ -8753,8 +8789,8 @@ window.onclick = function(event) {
                     }
                     
                     content.innerHTML = tickets.map(ticket => {
-                        const createdDate = new Date(ticket.created_at).toLocaleDateString("pt-BR");
-                        const updatedDate = new Date(ticket.updated_at).toLocaleDateString("pt-BR");
+                        const createdDate = formatDateTimeForDisplay(ticket.created_at);
+                        const updatedDate = formatDateTimeForDisplay(ticket.updated_at);
                         const statusClass = getTicketStatusClass(ticket.status);
                         const statusText = getTicketStatusText(ticket.status);
                         
@@ -10919,7 +10955,7 @@ async function loadEvaluations() {
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                     <div style="flex: 1;">
                         <h4 style="margin: 0 0 5px 0; color: #333;">${evaluation.document_title}</h4>
-                        <p style="margin: 0; color: #666; font-size: 0.9em;">${clients.find(c => c.id === evaluation.client_id)?.name || `Cliente ID: ${evaluation.client_id}`} • ${new Date(evaluation.created_at).toLocaleDateString('pt-BR')}</p>
+                        <p style="margin: 0; color: #666; font-size: 0.9em;">${clients.find(c => c.id === evaluation.client_id)?.name || `Cliente ID: ${evaluation.client_id}`} • ${formatDateTimeForDisplay(evaluation.created_at)}</p>
                     </div>
                     <div style="text-align: right;">
                         <div style="font-size: 1.2em; color: #ffc107; margin-bottom: 5px;">
@@ -11068,7 +11104,7 @@ async function filterEvaluations() {
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                     <div style="flex: 1;">
                         <h4 style="margin: 0 0 5px 0; color: #333;">${evaluation.document_title}</h4>
-                        <p style="margin: 0; color: #666; font-size: 0.9em;">${clients.find(c => c.id === evaluation.client_id)?.name || `Cliente ID: ${evaluation.client_id}`} • ${new Date(evaluation.created_at).toLocaleDateString('pt-BR')}</p>
+                        <p style="margin: 0; color: #666; font-size: 0.9em;">${clients.find(c => c.id === evaluation.client_id)?.name || `Cliente ID: ${evaluation.client_id}`} • ${formatDateTimeForDisplay(evaluation.created_at)}</p>
                     </div>
                     <div style="text-align: right;">
                         <div style="font-size: 1.2em; color: #ffc107; margin-bottom: 5px;">
@@ -11214,7 +11250,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-   window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -13841,7 +13877,7 @@ function renderizarImplantacoes(implantacoes) {
             dataFormatada = 'Data não informada';
         }
         
-        const criadoEm = new Date(implantacao.created_at).toLocaleDateString('pt-BR');
+        const criadoEm = formatDateTimeForDisplay(implantacao.created_at);
         
         return `
             <div style="
@@ -14542,8 +14578,8 @@ function renderTickets(tickets) {
         const statusClass = getTicketStatusClass(ticket.status);
         const statusText = getTicketStatusText(ticket.status);
         const priorityText = getTicketPriorityText(ticket.priority);
-        const createdDate = new Date(ticket.created_at).toLocaleDateString('pt-BR');
-        const updatedDate = new Date(ticket.updated_at).toLocaleDateString('pt-BR');
+        const createdDate = formatDateTimeForDisplay(ticket.created_at);
+        const updatedDate = formatDateTimeForDisplay(ticket.updated_at);
         
         return `
             <div class="ticket-item" style="margin-bottom: 15px;">
