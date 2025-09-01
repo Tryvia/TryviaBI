@@ -810,6 +810,213 @@ function populateReuniaoClientes() {
   });
 }
 
+// Função para popular o select de clientes na aba release
+function populateReleaseClientes() {
+  const select = document.getElementById('releaseClient');
+  if (!select) return;
+  select.innerHTML = '<option value="">Selecione um cliente...</option>';
+  if (!window.clients || !Array.isArray(window.clients)) return;
+  window.clients.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+}
+
+// Função para buscar tickets do Freshdesk
+async function fetchFreshdeskTickets(clientName) {
+    try {
+        const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(clientName)}`);
+        
+        if (!response.ok) {
+            throw new Error(`Erro na API: ${response.status}`);
+        }
+        
+        const tickets = await response.json();
+        return tickets || [];
+    } catch (error) {
+        console.error('Erro ao buscar tickets:', error);
+        return [];
+    }
+}
+
+// Variável global para armazenar tickets selecionados de múltiplas empresas
+let ticketsSelecionadosMultiEmpresa = [];
+
+// Função para carregar tickets do cliente selecionado
+async function carregarTicketsCliente() {
+    const clienteId = document.getElementById('releaseClient').value;
+    const ticketsSection = document.getElementById('ticketsSection');
+    const ticketsLoading = document.getElementById('ticketsLoading');
+    const ticketsList = document.getElementById('ticketsList');
+    
+    if (!clienteId) {
+        ticketsSection.style.display = 'none';
+        return;
+    }
+    
+    // Mostrar seção de tickets
+    ticketsSection.style.display = 'block';
+    ticketsLoading.style.display = 'block';
+    
+    try {
+        // Buscar cliente selecionado
+        const cliente = window.clients.find(c => c.id == clienteId);
+        if (!cliente) {
+            throw new Error('Cliente não encontrado');
+        }
+        
+        // Buscar tickets usando a mesma API da função viewClientTickets
+        const tickets = await fetchFreshdeskTickets(cliente.name);
+        
+        ticketsLoading.style.display = 'none';
+        
+        // Renderizar todos os tickets selecionados (de múltiplas empresas) + tickets da empresa atual
+        renderizarTicketsMultiEmpresa(tickets, cliente);
+        
+    } catch (error) {
+        console.error('Erro ao carregar tickets:', error);
+        ticketsLoading.style.display = 'none';
+        ticketsList.innerHTML = '<div style="text-align: center; padding: 20px; color: #f44336;">Erro ao carregar tickets. Tente novamente.</div>';
+    }
+}
+
+// Função para renderizar tickets de múltiplas empresas
+function renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual) {
+    const ticketsList = document.getElementById('ticketsList');
+    
+    // Separar tickets já selecionados de outras empresas dos tickets da empresa atual
+    const ticketsOutrasEmpresas = ticketsSelecionadosMultiEmpresa.filter(t => t.clientName !== clienteAtual.name);
+    const ticketsEmpresaAtualSelecionados = ticketsSelecionadosMultiEmpresa.filter(t => t.clientName === clienteAtual.name);
+    
+    let htmlContent = '';
+    
+    // Renderizar tickets de outras empresas (já selecionados)
+    if (ticketsOutrasEmpresas.length > 0) {
+        htmlContent += `
+            <div style="margin-bottom: 20px; padding: 15px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 1em;">
+                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                    Tickets Selecionados de Outras Empresas (${ticketsOutrasEmpresas.length})
+                </h4>
+                ${ticketsOutrasEmpresas.map(ticket => {
+                    const statusText = getTicketStatusText(ticket.status);
+                    const createdDate = formatDateTimeForDisplay(ticket.created_at);
+                    
+                    return `
+                        <div style="border: 1px solid #c8e6c9; border-radius: 6px; padding: 10px; margin-bottom: 8px; background: white;">
+                            <label style="display: flex; align-items: flex-start; cursor: pointer; margin: 0;">
+                                <input type="checkbox" 
+                                       checked
+                                       style="margin-right: 10px; margin-top: 2px;" 
+                                       data-ticket='${JSON.stringify(ticket)}'
+                                       data-client-name="${ticket.clientName}"
+                                       onchange="atualizarTicketsSelecionados(this)">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 4px;">
+                                        <span style="background: #4caf50; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-right: 8px;">
+                                            ${ticket.clientName}
+                                        </span>
+                                        #${ticket.id} - ${ticket.subject || 'Sem assunto'}
+                                    </div>
+                                    <div style="font-size: 0.85em; color: #666; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        ${ticket.description_text ? ticket.description_text.substring(0, 100) + '...' : 'Sem descrição'}
+                                    </div>
+                                    <div style="font-size: 0.8em; color: #888;">
+                                        Status: <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px;">${statusText}</span> | 
+                                        Criado: ${createdDate}
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+    
+    // Renderizar tickets da empresa atual
+    if (!ticketsEmpresaAtual || ticketsEmpresaAtual.length === 0) {
+        htmlContent += `
+            <div style="margin-bottom: 15px; padding: 15px; background: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+                <h4 style="margin: 0 0 10px 0; color: #f57c00; font-size: 1em;">
+                    <i class="fas fa-building" style="margin-right: 8px;"></i>
+                    ${clienteAtual.name}
+                </h4>
+                <div style="text-align: center; padding: 20px; color: #666;">Nenhum ticket encontrado para este cliente.</div>
+            </div>
+        `;
+    } else {
+        htmlContent += `
+            <div style="margin-bottom: 15px; padding: 15px; background: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+                <h4 style="margin: 0 0 10px 0; color: #f57c00; font-size: 1em;">
+                    <i class="fas fa-building" style="margin-right: 8px;"></i>
+                    ${clienteAtual.name} (${ticketsEmpresaAtual.length} tickets)
+                </h4>
+                ${ticketsEmpresaAtual.map(ticket => {
+                    const statusText = getTicketStatusText(ticket.status);
+                    const createdDate = formatDateTimeForDisplay(ticket.created_at);
+                    
+                    // Verificar se este ticket já está selecionado
+                    const jaSelecionado = ticketsEmpresaAtualSelecionados.some(t => t.id === ticket.id);
+                    
+                    return `
+                        <div style="border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px; margin-bottom: 8px; background: white;">
+                            <label style="display: flex; align-items: flex-start; cursor: pointer; margin: 0;">
+                                <input type="checkbox" 
+                                       ${jaSelecionado ? 'checked' : ''}
+                                       style="margin-right: 10px; margin-top: 2px;" 
+                                       data-ticket='${JSON.stringify({...ticket, clientName: clienteAtual.name})}'
+                                       data-client-name="${clienteAtual.name}"
+                                       onchange="atualizarTicketsSelecionados(this)">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: bold; color: #4fc3f7; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        #${ticket.id} - ${ticket.subject || 'Sem assunto'}
+                                    </div>
+                                    <div style="font-size: 0.85em; color: #666; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        ${ticket.description_text ? ticket.description_text.substring(0, 100) + '...' : 'Sem descrição'}
+                                    </div>
+                                    <div style="font-size: 0.8em; color: #888;">
+                                        Status: <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px;">${statusText}</span> | 
+                                        Criado: ${createdDate}
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+    
+    ticketsList.innerHTML = htmlContent;
+    atualizarContadorTickets();
+}
+
+// Função para atualizar a lista de tickets selecionados
+function atualizarTicketsSelecionados(checkbox) {
+    const ticketData = JSON.parse(checkbox.getAttribute('data-ticket'));
+    const clientName = checkbox.getAttribute('data-client-name');
+    
+    if (checkbox.checked) {
+        // Adicionar ticket à lista se não existir
+        const jaExiste = ticketsSelecionadosMultiEmpresa.some(t => t.id === ticketData.id && t.clientName === clientName);
+        if (!jaExiste) {
+            ticketsSelecionadosMultiEmpresa.push({...ticketData, clientName: clientName});
+        }
+    } else {
+        // Remover ticket da lista
+        ticketsSelecionadosMultiEmpresa = ticketsSelecionadosMultiEmpresa.filter(t => 
+            !(t.id === ticketData.id && t.clientName === clientName)
+        );
+    }
+    
+    atualizarContadorTickets();
+}
+
+// Função para atualizar contador de tickets selecionados
+function atualizarContadorTickets() {
+    document.getElementById('selectedTicketsCount').textContent = ticketsSelecionadosMultiEmpresa.length;
+}
+
 async function salvarContatoCS() {
             const nome = document.getElementById('csClientName').value.trim();
             const tipo = document.getElementById('csContactType').value;
@@ -2496,7 +2703,9 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+ window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+
+sessionStorage.setItem('tryvia_logged', 'true');
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
@@ -4407,6 +4616,12 @@ select {
 <div class="form-group"><label for="releaseAnalyst"> Analista</label><input id="releaseAnalyst" type="text"/></div>
 <div class="form-group"><label for="releaseHomologDate"> Data de Homologação</label><input class="input-padrao" id="releaseHomologDate" placeholder="Selecione a data" type="date"/></div>
 </div>
+<div class="form-row">
+<div class="form-group"><label for="releaseClient"> Cliente</label>
+<select id="releaseClient" onchange="carregarTicketsCliente()">
+<option value="">Selecione um cliente...</option>
+</select>
+</div>
 <div class="form-group"><label for="releaseType"> Tipo</label>
 <select id="releaseType">
 <option value="">Selecione o tipo</option>
@@ -4415,6 +4630,19 @@ select {
 <option value="nova funcionalidade">Nova Funcionalidade</option>
 <option value="outro">Outro</option>
 </select>
+</div>
+</div>
+<div class="form-group" id="ticketsSection" style="display: none;">
+<label for="releaseTickets">🎫 Tickets Relacionados</label>
+<div id="ticketsContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background: #f9f9f9;">
+<div id="ticketsLoading" style="text-align: center; padding: 20px; color: #666;">
+<i class="fas fa-spinner fa-spin"></i> Carregando tickets...
+</div>
+<div id="ticketsList"></div>
+</div>
+<div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+<span id="selectedTicketsCount">0</span> tickets selecionados
+</div>
 </div>
 <div class="form-group"><label>📎 Anexar Documento</label>
 <div class="upload-area" onclick="document.getElementById('releaseFile').click()">
@@ -5503,7 +5731,8 @@ function removeIntegration(idx, listName) {
             } else if (tabId === 'gerenciar-logins') {
                 fetchAndRenderUsuarios();
             } else if (tabId === 'release') {
-    carregarReleases();
+                carregarReleases();
+                populateReleaseClientes();
             }else if (tabId === 'painel-setor') {
     carregarTarefas();
     carregarProjetos();
@@ -7426,7 +7655,26 @@ function exibirRelease(d, url) {
   c.className = "document-card";
   c.setAttribute("data-release-id", d.id);
   const arquivoJson = JSON.stringify([{ path: d.file_path }]).replace(/"/g, '&quot;');
-
+  
+  // Preparar informações dos tickets relacionados
+  let ticketsInfo = '';
+  if (d.tickets_relacionados && d.tickets_relacionados.length > 0) {
+    ticketsInfo = `
+      <div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 6px; border-left: 4px solid #4fc3f7;">
+        <strong style="color: #4fc3f7;">🎫 Tickets Relacionados (${d.tickets_relacionados.length}):</strong>
+        <div style="margin-top: 8px;">
+          ${d.tickets_relacionados.map(ticket => `
+            <div style="margin: 4px 0; font-size: 0.9em;">
+              <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #4fc3f7; text-decoration: none;">
+                #${ticket.id}
+              </a> - ${ticket.subject || 'Sem assunto'}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
   c.innerHTML = `
     <div class="document-header"><span class="document-type">${d.tipo}</span></div>
     <div class="document-title">${d.sistema} - ${d.versao}</div>
@@ -7434,6 +7682,7 @@ function exibirRelease(d, url) {
     <p>Status: ${d.status}</p>
     <p>Data Liberação: ${d.data_liberacao}</p>
     <p>Data Homologação: ${d.data_homologacao}</p>
+    ${ticketsInfo}
     <div style="display:flex; justify-content:space-between; margin-top:10px;">
       <a href="${url}" class="btn-secondary" target="_blank">Ver Arquivo</a>
       <button class="btn-secondary" style="background-color:#dc3545;" onclick="deleteRelease(${d.id}, '${arquivoJson}')">Excluir</button>
@@ -7502,25 +7751,40 @@ async function salvarRelease() {
         showAlert('Atenção', 'Você não tem permissão para salvar uma release.');
         return;
     }
-  const d = {
-    data_liberacao: document.getElementById('releaseDate').value,
-    status: document.getElementById('releaseStatus').value,
-    sistema: document.getElementById('releaseSystem').value,
-    versao: document.getElementById('releaseVersion').value,
-    analista: document.getElementById('releaseAnalyst').value,
-    data_homologacao: document.getElementById('releaseHomologDate').value,
-    tipo: document.getElementById('releaseType').value,
-    arquivo: document.getElementById('releaseFile').files[0]
-  };
-  if (!d.arquivo) return alert('Selecione um arquivo.');
-  const nome = Date.now() + '_' + d.arquivo.name.replace(/\s+/g, "_");
-  const { error: e1 } = await releaseClient.storage.from('releasefiles').upload(nome, d.arquivo);
-  if (e1) return alert("Erro upload");
-  const file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/releasefiles/${nome}`;
-  const { arquivo, ...dadosParaInsert } = d;
-  const { data, error: e2 } = await releaseClient.from("releases").insert([{ ...dadosParaInsert, file_url, file_path: nome }]).select();
-  if (e2) return alert("Erro insert");
-  exibirRelease(data[0], file_url);
+    
+    // Usar a nova variável global de tickets selecionados de múltiplas empresas
+    const ticketsSelecionados = [...ticketsSelecionadosMultiEmpresa];
+    
+    const d = {
+        data_liberacao: document.getElementById('releaseDate').value,
+        status: document.getElementById('releaseStatus').value,
+        sistema: document.getElementById('releaseSystem').value,
+        versao: document.getElementById('releaseVersion').value,
+        analista: document.getElementById('releaseAnalyst').value,
+        data_homologacao: document.getElementById('releaseHomologDate').value,
+        tipo: document.getElementById('releaseType').value,
+        cliente_id: document.getElementById('releaseClient').value,
+        tickets_relacionados: ticketsSelecionados,
+        arquivo: document.getElementById('releaseFile').files[0]
+    };
+    
+    if (!d.arquivo) return alert('Selecione um arquivo.');
+    const nome = Date.now() + '_' + d.arquivo.name.replace(/\s+/g, "_");
+    const { error: e1 } = await releaseClient.storage.from('releasefiles').upload(nome, d.arquivo);
+    if (e1) return alert("Erro upload");
+    const file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/releasefiles/${nome}`;
+    const { arquivo, ...dadosParaInsert } = d;
+    const { data, error: e2 } = await releaseClient.from("releases").insert([{ ...dadosParaInsert, file_url, file_path: nome }]).select();
+    if (e2) return alert("Erro insert");
+    
+    showAlert('Sucesso', `Release salva com sucesso! ${ticketsSelecionados.length} tickets relacionados de ${new Set(ticketsSelecionados.map(t => t.clientName)).size} empresa(s).`);
+    exibirRelease(data[0], file_url);
+    
+    // Limpar formulário e resetar tickets selecionados
+    document.getElementById('releaseClient').value = '';
+    document.getElementById('ticketsSection').style.display = 'none';
+    ticketsSelecionadosMultiEmpresa = []; // Limpar tickets selecionados após salvar
+    atualizarContadorTickets();
 }
 </script><script>
 async function salvarReuniao() {
@@ -8268,7 +8532,7 @@ async function viewClientTickets(clientId, clientName, clientEmail) {
     
     try {
         // Buscar tickets do cliente via API
-        const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client?email=${encodeURIComponent(clientEmail)}`);
+        const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(clientName)}`);
         
         if (!response.ok) {
             throw new Error(`Erro na API: ${response.status}`);
