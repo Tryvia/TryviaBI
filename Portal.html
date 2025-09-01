@@ -838,15 +838,295 @@ async function fetchFreshdeskTickets(clientName) {
     }
 }
 
-// Variável global para armazenar tickets selecionados de múltiplas empresas
+// Variáveis globais para o sistema de drag-and-drop
 let ticketsSelecionadosMultiEmpresa = [];
+let empresasCarregadas = {};
+
+// Função para buscar tickets por empresa
+async function buscarTicketsEmpresa() {
+    const empresaInput = document.getElementById('empresaSearch');
+    const empresaNome = empresaInput.value.trim();
+    
+    if (!empresaNome) {
+        alert('Digite o nome de uma empresa para buscar tickets.');
+        return;
+    }
+    
+    // Encontrar a empresa na lista de clientes
+    const empresa = window.clients.find(c => 
+        c.name.toLowerCase().includes(empresaNome.toLowerCase())
+    );
+    
+    if (!empresa) {
+        alert('Empresa não encontrada. Verifique o nome digitado.');
+        return;
+    }
+    
+    // Mostrar loading
+    const ticketsDisponiveis = document.getElementById('ticketsDisponiveis');
+    ticketsDisponiveis.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Carregando tickets...</div>';
+    
+    try {
+        // Carregar tickets da empresa usando a mesma API
+        const tickets = await fetchFreshdeskTickets(empresa.name);
+        empresasCarregadas[empresa.name] = tickets;
+        
+        renderizarTicketsDisponiveis(tickets, empresa);
+        
+    } catch (error) {
+        console.error('Erro ao carregar tickets:', error);
+        ticketsDisponiveis.innerHTML = '<div style="text-align: center; padding: 20px; color: #dc3545;">Erro ao carregar tickets. Tente novamente.</div>';
+    }
+}
+
+// Função para renderizar tickets disponíveis para seleção
+function renderizarTicketsDisponiveis(tickets, empresa) {
+    const ticketsDisponiveis = document.getElementById('ticketsDisponiveis');
+    
+    if (!tickets || tickets.length === 0) {
+        ticketsDisponiveis.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #6c757d;">
+                Nenhum ticket encontrado para ${empresa.name}
+            </div>
+        `;
+        return;
+    }
+    
+    let html = `<h5 style="margin: 0 0 10px 0; color: #495057;">${empresa.name} (${tickets.length} tickets)</h5>`;
+    
+    tickets.forEach(ticket => {
+        const statusText = getTicketStatusText(ticket.status);
+        const createdDate = formatDateTimeForDisplay(ticket.created_at);
+        const jaSelecionado = ticketsSelecionadosMultiEmpresa.some(t => t.id === ticket.id && t.clientName === empresa.name);
+        
+        html += `
+            <div class="ticket-item" style="border: 1px solid #dee2e6; border-radius: 6px; padding: 10px; margin-bottom: 8px; background: ${jaSelecionado ? '#e8f5e8' : 'white'}; cursor: pointer;"
+                 onclick="toggleTicketSelection(${ticket.id}, '${empresa.name}', this)">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" ${jaSelecionado ? 'checked' : ''} onclick="event.stopPropagation();" onchange="toggleTicketSelection(${ticket.id}, '${empresa.name}', this.parentElement.parentElement)">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; color: #007bff; margin-bottom: 4px;">
+                            #${ticket.id} - ${ticket.subject || 'Sem assunto'}
+                        </div>
+                        <div style="font-size: 0.85em; color: #666; margin-bottom: 4px;">
+                            ${ticket.description_text ? ticket.description_text.substring(0, 100) + '...' : 'Sem descrição'}
+                        </div>
+                        <div style="font-size: 0.8em; color: #888;">
+                            Status: <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px;">${statusText}</span> | 
+                            Criado: ${createdDate}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    ticketsDisponiveis.innerHTML = html;
+}
+
+// Função para alternar seleção de ticket
+function toggleTicketSelection(ticketId, empresaNome, element) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    const isSelected = checkbox.checked;
+    
+    // Encontrar o ticket nos dados carregados
+    const tickets = empresasCarregadas[empresaNome];
+    const ticket = tickets.find(t => t.id === ticketId);
+    
+    if (!ticket) return;
+    
+    if (isSelected) {
+        // Adicionar ticket à lista se não existir
+        const jaExiste = ticketsSelecionadosMultiEmpresa.some(t => t.id === ticketId && t.clientName === empresaNome);
+        if (!jaExiste) {
+            const ticketComEmpresa = {
+                ...ticket,
+                clientName: empresaNome,
+                classificacao: 'melhoria' // Classificação padrão
+            };
+            ticketsSelecionadosMultiEmpresa.push(ticketComEmpresa);
+            
+            // Adicionar ticket à zona de melhoria por padrão
+            adicionarTicketNaZona(ticketComEmpresa, 'melhoria');
+        }
+        element.style.background = '#e8f5e8';
+    } else {
+        // Remover ticket da lista
+        ticketsSelecionadosMultiEmpresa = ticketsSelecionadosMultiEmpresa.filter(t => 
+            !(t.id === ticketId && t.clientName === empresaNome)
+        );
+        
+        // Remover ticket das zonas de drag-and-drop
+        removerTicketDasZonas(ticketId, empresaNome);
+        element.style.background = 'white';
+    }
+    
+    atualizarContadorTickets();
+}
+
+// Função para adicionar ticket na zona de classificação
+function adicionarTicketNaZona(ticket, classificacao) {
+    const container = document.getElementById(classificacao === 'bug' ? 'bugTickets' : 'melhoriaTickets');
+    
+    // Remover mensagem de placeholder se existir
+    const placeholder = container.querySelector('div[style*="italic"]');
+    if (placeholder) {
+        placeholder.remove();
+    }
+    
+    const ticketElement = document.createElement('div');
+    ticketElement.className = 'draggable-ticket';
+    ticketElement.draggable = true;
+    ticketElement.setAttribute('data-ticket-id', ticket.id);
+    ticketElement.setAttribute('data-client-name', ticket.clientName);
+    ticketElement.style.cssText = `
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 5px;
+        cursor: move;
+        position: relative;
+    `;
+    
+    ticketElement.innerHTML = `
+        <div style="font-weight: bold; font-size: 0.9em; color: #495057; margin-bottom: 2px;">
+            #${ticket.id} - ${ticket.subject || 'Sem assunto'}
+        </div>
+        <div style="font-size: 0.8em; color: #6c757d;">
+            ${ticket.clientName}
+        </div>
+        <button onclick="removerTicket(${ticket.id}, '${ticket.clientName}')" 
+                style="position: absolute; top: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">
+            ×
+        </button>
+    `;
+    
+    // Adicionar eventos de drag
+    ticketElement.addEventListener('dragstart', dragStart);
+    ticketElement.addEventListener('dragend', dragEnd);
+    
+    container.appendChild(ticketElement);
+}
+
+// Função para remover ticket das zonas
+function removerTicketDasZonas(ticketId, clientName) {
+    const bugContainer = document.getElementById('bugTickets');
+    const melhoriaContainer = document.getElementById('melhoriaTickets');
+    
+    [bugContainer, melhoriaContainer].forEach(container => {
+        const ticketElement = container.querySelector(`[data-ticket-id="${ticketId}"][data-client-name="${clientName}"]`);
+        if (ticketElement) {
+            ticketElement.remove();
+        }
+        
+        // Adicionar placeholder se não houver tickets
+        if (container.children.length === 0) {
+            const isBug = container.id === 'bugTickets';
+            container.innerHTML = `
+                <div style="text-align: center; color: ${isBug ? '#721c24' : '#155724'}; font-style: italic; margin-top: 50px;">
+                    Arraste tickets aqui para classificar como ${isBug ? 'Bug' : 'Melhoria'}
+                </div>
+            `;
+        }
+    });
+}
+
+// Função para remover ticket completamente
+function removerTicket(ticketId, clientName) {
+    // Remover da lista global
+    ticketsSelecionadosMultiEmpresa = ticketsSelecionadosMultiEmpresa.filter(t => 
+        !(t.id === ticketId && t.clientName === clientName)
+    );
+    
+    // Remover das zonas
+    removerTicketDasZonas(ticketId, clientName);
+    
+    // Atualizar checkbox na lista de disponíveis
+    const ticketItems = document.querySelectorAll('.ticket-item');
+    ticketItems.forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox && item.onclick.toString().includes(`${ticketId}`) && item.onclick.toString().includes(clientName)) {
+            checkbox.checked = false;
+            item.style.background = 'white';
+        }
+    });
+    
+    atualizarContadorTickets();
+}
+
+// Funções de Drag and Drop
+function dragStart(e) {
+    e.dataTransfer.setData('text/plain', JSON.stringify({
+        ticketId: this.getAttribute('data-ticket-id'),
+        clientName: this.getAttribute('data-client-name')
+    }));
+    this.style.opacity = '0.5';
+}
+
+function dragEnd(e) {
+    this.style.opacity = '1';
+}
+
+function allowDrop(e) {
+    e.preventDefault();
+}
+
+function dragEnter(e) {
+    e.preventDefault();
+    e.currentTarget.style.borderColor = '#007bff';
+    e.currentTarget.style.backgroundColor = e.currentTarget.id === 'bugZone' ? '#f5c6cb' : '#c3e6cb';
+}
+
+function dragLeave(e) {
+    e.currentTarget.style.borderColor = e.currentTarget.id === 'bugZone' ? '#dc3545' : '#28a745';
+    e.currentTarget.style.backgroundColor = e.currentTarget.id === 'bugZone' ? '#f8d7da' : '#d4edda';
+}
+
+function dropTicket(e, classificacao) {
+    e.preventDefault();
+    
+    const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+    const ticketId = parseInt(data.ticketId);
+    const clientName = data.clientName;
+    
+    // Encontrar o ticket na lista global
+    const ticket = ticketsSelecionadosMultiEmpresa.find(t => t.id === ticketId && t.clientName === clientName);
+    if (!ticket) return;
+    
+    // Atualizar classificação
+    ticket.classificacao = classificacao;
+    
+    // Remover ticket da zona atual
+    const ticketElement = document.querySelector(`[data-ticket-id="${ticketId}"][data-client-name="${clientName}"]`);
+    if (ticketElement) {
+        ticketElement.remove();
+    }
+    
+    // Adicionar na nova zona
+    adicionarTicketNaZona(ticket, classificacao);
+    
+    // Restaurar estilo da zona
+    dragLeave(e);
+    
+    atualizarContadorTickets();
+}
+
+// Função para atualizar contador de tickets
+function atualizarContadorTickets() {
+    const total = ticketsSelecionadosMultiEmpresa.length;
+    const bugs = ticketsSelecionadosMultiEmpresa.filter(t => t.classificacao === 'bug').length;
+    const melhorias = ticketsSelecionadosMultiEmpresa.filter(t => t.classificacao === 'melhoria').length;
+    
+    document.getElementById('ticketCounter').textContent = 
+        `${total} tickets selecionados (${bugs} bugs, ${melhorias} melhorias)`;
+}
 
 // Função para carregar tickets do cliente selecionado
 async function carregarTicketsCliente() {
     const clienteId = document.getElementById('releaseClient').value;
     const ticketsSection = document.getElementById('ticketsSection');
-    const ticketsLoading = document.getElementById('ticketsLoading');
-    const ticketsList = document.getElementById('ticketsList');
+    const ticketsDisponiveis = document.getElementById('ticketsDisponiveis');
     
     if (!clienteId) {
         ticketsSection.style.display = 'none';
@@ -855,7 +1135,7 @@ async function carregarTicketsCliente() {
     
     // Mostrar seção de tickets
     ticketsSection.style.display = 'block';
-    ticketsLoading.style.display = 'block';
+    ticketsDisponiveis.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Carregando tickets...</div>';
     
     try {
         // Buscar cliente selecionado
@@ -864,18 +1144,15 @@ async function carregarTicketsCliente() {
             throw new Error('Cliente não encontrado');
         }
         
-        // Buscar tickets usando a mesma API da função viewClientTickets
+        // Buscar tickets usando a mesma API
         const tickets = await fetchFreshdeskTickets(cliente.name);
+        empresasCarregadas[cliente.name] = tickets;
         
-        ticketsLoading.style.display = 'none';
-        
-        // Renderizar todos os tickets selecionados (de múltiplas empresas) + tickets da empresa atual
-        renderizarTicketsMultiEmpresa(tickets, cliente);
+        renderizarTicketsDisponiveis(tickets, cliente);
         
     } catch (error) {
         console.error('Erro ao carregar tickets:', error);
-        ticketsLoading.style.display = 'none';
-        ticketsList.innerHTML = '<div style="text-align: center; padding: 20px; color: #f44336;">Erro ao carregar tickets. Tente novamente.</div>';
+        ticketsDisponiveis.innerHTML = '<div style="text-align: center; padding: 20px; color: #dc3545;">Erro ao carregar tickets. Tente novamente.</div>';
     }
 }
 
@@ -903,10 +1180,10 @@ function renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual) {
                     
                     return `
                         <div style="border: 1px solid #c8e6c9; border-radius: 6px; padding: 10px; margin-bottom: 8px; background: white;">
-                            <label style="display: flex; align-items: flex-start; cursor: pointer; margin: 0;">
+                            <div style="display: flex; align-items: flex-start; gap: 10px;">
                                 <input type="checkbox" 
                                        checked
-                                       style="margin-right: 10px; margin-top: 2px;" 
+                                       style="margin-top: 2px;" 
                                        data-ticket='${JSON.stringify(ticket)}'
                                        data-client-name="${ticket.clientName}"
                                        onchange="atualizarTicketsSelecionados(this)">
@@ -917,15 +1194,27 @@ function renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual) {
                                         </span>
                                         #${ticket.id} - ${ticket.subject || 'Sem assunto'}
                                     </div>
-                                    <div style="font-size: 0.85em; color: #666; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <div style="font-size: 0.85em; color: #666; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         ${ticket.description_text ? ticket.description_text.substring(0, 100) + '...' : 'Sem descrição'}
                                     </div>
-                                    <div style="font-size: 0.8em; color: #888;">
-                                        Status: <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px;">${statusText}</span> | 
-                                        Criado: ${createdDate}
+                                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 8px;">
+                                        <div style="font-size: 0.8em; color: #888;">
+                                            Status: <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px;">${statusText}</span> | 
+                                            Criado: ${createdDate}
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <label style="font-size: 0.85em; font-weight: bold; color: #2e7d32;">Classificação:</label>
+                                        <select style="padding: 4px 8px; border: 1px solid #4caf50; border-radius: 4px; font-size: 0.8em; background: white;" 
+                                                data-ticket-id="${ticket.id}" 
+                                                data-client-name="${ticket.clientName}"
+                                                onchange="atualizarClassificacaoTicket(this)">
+                                            <option value="bug" ${ticket.classificacao === 'bug' ? 'selected' : ''}>🐛 Bug</option>
+                                            <option value="melhoria" ${ticket.classificacao === 'melhoria' ? 'selected' : ''}>⚡ Melhoria</option>
+                                        </select>
                                     </div>
                                 </div>
-                            </label>
+                            </div>
                         </div>
                     `;
                 }).join('')}
@@ -957,13 +1246,14 @@ function renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual) {
                     
                     // Verificar se este ticket já está selecionado
                     const jaSelecionado = ticketsEmpresaAtualSelecionados.some(t => t.id === ticket.id);
+                    const ticketSelecionado = ticketsEmpresaAtualSelecionados.find(t => t.id === ticket.id);
                     
                     return `
                         <div style="border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px; margin-bottom: 8px; background: white;">
-                            <label style="display: flex; align-items: flex-start; cursor: pointer; margin: 0;">
+                            <div style="display: flex; align-items: flex-start; gap: 10px;">
                                 <input type="checkbox" 
                                        ${jaSelecionado ? 'checked' : ''}
-                                       style="margin-right: 10px; margin-top: 2px;" 
+                                       style="margin-top: 2px;" 
                                        data-ticket='${JSON.stringify({...ticket, clientName: clienteAtual.name})}'
                                        data-client-name="${clienteAtual.name}"
                                        onchange="atualizarTicketsSelecionados(this)">
@@ -971,15 +1261,29 @@ function renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual) {
                                     <div style="font-weight: bold; color: #4fc3f7; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         #${ticket.id} - ${ticket.subject || 'Sem assunto'}
                                     </div>
-                                    <div style="font-size: 0.85em; color: #666; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <div style="font-size: 0.85em; color: #666; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         ${ticket.description_text ? ticket.description_text.substring(0, 100) + '...' : 'Sem descrição'}
                                     </div>
-                                    <div style="font-size: 0.8em; color: #888;">
-                                        Status: <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px;">${statusText}</span> | 
-                                        Criado: ${createdDate}
+                                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 8px;">
+                                        <div style="font-size: 0.8em; color: #888;">
+                                            Status: <span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px;">${statusText}</span> | 
+                                            Criado: ${createdDate}
+                                        </div>
                                     </div>
+                                    ${jaSelecionado ? `
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <label style="font-size: 0.85em; font-weight: bold; color: #f57c00;">Classificação:</label>
+                                            <select style="padding: 4px 8px; border: 1px solid #ff9800; border-radius: 4px; font-size: 0.8em; background: white;" 
+                                                    data-ticket-id="${ticket.id}" 
+                                                    data-client-name="${clienteAtual.name}"
+                                                    onchange="atualizarClassificacaoTicket(this)">
+                                                <option value="bug" ${ticketSelecionado?.classificacao === 'bug' ? 'selected' : ''}>🐛 Bug</option>
+                                                <option value="melhoria" ${ticketSelecionado?.classificacao === 'melhoria' ? 'selected' : ''}>⚡ Melhoria</option>
+                                            </select>
+                                        </div>
+                                    ` : ''}
                                 </div>
-                            </label>
+                            </div>
                         </div>
                     `;
                 }).join('')}
@@ -1000,7 +1304,12 @@ function atualizarTicketsSelecionados(checkbox) {
         // Adicionar ticket à lista se não existir
         const jaExiste = ticketsSelecionadosMultiEmpresa.some(t => t.id === ticketData.id && t.clientName === clientName);
         if (!jaExiste) {
-            ticketsSelecionadosMultiEmpresa.push({...ticketData, clientName: clientName});
+            // Adicionar classificação padrão como 'melhoria'
+            ticketsSelecionadosMultiEmpresa.push({
+                ...ticketData, 
+                clientName: clientName,
+                classificacao: 'melhoria' // Classificação padrão
+            });
         }
     } else {
         // Remover ticket da lista
@@ -1010,6 +1319,32 @@ function atualizarTicketsSelecionados(checkbox) {
     }
     
     atualizarContadorTickets();
+    
+    // Re-renderizar para mostrar/ocultar o seletor de classificação
+    setTimeout(() => {
+        const clienteAtual = window.clients.find(c => c.id == document.getElementById('releaseClient').value);
+        if (clienteAtual) {
+            const ticketsEmpresaAtual = []; // Será preenchido pela API, mas para re-render usamos vazio
+            renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual);
+        }
+    }, 100);
+}
+
+// Nova função para atualizar a classificação de um ticket
+function atualizarClassificacaoTicket(selectElement) {
+    const ticketId = parseInt(selectElement.getAttribute('data-ticket-id'));
+    const clientName = selectElement.getAttribute('data-client-name');
+    const novaClassificacao = selectElement.value;
+    
+    // Encontrar e atualizar o ticket na lista global
+    const ticketIndex = ticketsSelecionadosMultiEmpresa.findIndex(t => 
+        t.id === ticketId && t.clientName === clientName
+    );
+    
+    if (ticketIndex !== -1) {
+        ticketsSelecionadosMultiEmpresa[ticketIndex].classificacao = novaClassificacao;
+        console.log(`Ticket #${ticketId} da empresa ${clientName} classificado como: ${novaClassificacao}`);
+    }
 }
 
 // Função para atualizar contador de tickets selecionados
@@ -4634,14 +4969,52 @@ select {
 </div>
 <div class="form-group" id="ticketsSection" style="display: none;">
 <label for="releaseTickets">🎫 Tickets Relacionados</label>
-<div id="ticketsContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background: #f9f9f9;">
-<div id="ticketsLoading" style="text-align: center; padding: 20px; color: #666;">
-<i class="fas fa-spinner fa-spin"></i> Carregando tickets...
+
+<!-- Lista de tickets disponíveis para seleção -->
+<div id="ticketsDisponiveis" style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px; background: white; padding: 10px; margin-bottom: 20px;">
+    <div style="text-align: center; color: #6c757d; padding: 20px;">
+        <i class="fas fa-spinner fa-spin"></i> Carregando tickets...
+    </div>
 </div>
-<div id="ticketsList"></div>
-</div>
-<div style="margin-top: 10px; font-size: 0.9em; color: #666;">
-<span id="selectedTicketsCount">0</span> tickets selecionados
+
+<!-- Seção de tickets selecionados com drag-and-drop -->
+<div style="margin-bottom: 20px;">
+    <label style="display: block; margin-bottom: 10px; font-weight: bold; color: #28a745;">Tickets Selecionados:</label>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; min-height: 200px;">
+        <!-- Zona de Bug -->
+        <div id="bugZone" class="drop-zone" 
+             style="border: 2px dashed #dc3545; border-radius: 8px; padding: 15px; background: #f8d7da; min-height: 180px;"
+             ondrop="dropTicket(event, 'bug')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <h4 style="margin: 0 0 10px 0; color: #721c24; text-align: center;">
+                🐛 Bug
+            </h4>
+            <div id="bugTickets" class="ticket-container">
+                <div style="text-align: center; color: #721c24; font-style: italic; margin-top: 50px;">
+                    Arraste tickets aqui para classificar como Bug
+                </div>
+            </div>
+        </div>
+        
+        <!-- Zona de Melhoria -->
+        <div id="melhoriaZone" class="drop-zone" 
+             style="border: 2px dashed #28a745; border-radius: 8px; padding: 15px; background: #d4edda; min-height: 180px;"
+             ondrop="dropTicket(event, 'melhoria')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <h4 style="margin: 0 0 10px 0; color: #155724; text-align: center;">
+                ⚡ Melhoria
+            </h4>
+            <div id="melhoriaTickets" class="ticket-container">
+                <div style="text-align: center; color: #155724; font-style: italic; margin-top: 50px;">
+                    Arraste tickets aqui para classificar como Melhoria
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contador de tickets -->
+    <div id="ticketCounter" style="margin-top: 10px; text-align: center; font-weight: bold; color: #495057;">
+        0 tickets selecionados (0 bugs, 0 melhorias)
+    </div>
 </div>
 </div>
 <div class="form-group"><label>📎 Anexar Documento</label>
@@ -7656,21 +8029,44 @@ function exibirRelease(d, url) {
   c.setAttribute("data-release-id", d.id);
   const arquivoJson = JSON.stringify([{ path: d.file_path }]).replace(/"/g, '&quot;');
   
-  // Preparar informações dos tickets relacionados
+  // Preparar informações dos tickets relacionados separados por classificação
   let ticketsInfo = '';
   if (d.tickets_relacionados && d.tickets_relacionados.length > 0) {
+    // Separar tickets por classificação
+    const ticketsBug = d.tickets_relacionados.filter(ticket => ticket.classificacao === 'bug');
+    const ticketsMelhoria = d.tickets_relacionados.filter(ticket => ticket.classificacao === 'melhoria' || !ticket.classificacao);
+    
     ticketsInfo = `
       <div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 6px; border-left: 4px solid #4fc3f7;">
         <strong style="color: #4fc3f7;">🎫 Tickets Relacionados (${d.tickets_relacionados.length}):</strong>
-        <div style="margin-top: 8px;">
-          ${d.tickets_relacionados.map(ticket => `
-            <div style="margin: 4px 0; font-size: 0.9em;">
-              <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #4fc3f7; text-decoration: none;">
-                #${ticket.id}
-              </a> - ${ticket.subject || 'Sem assunto'}
-            </div>
-          `).join('')}
-        </div>
+        
+        ${ticketsBug.length > 0 ? `
+          <div style="margin-top: 8px;">
+            <div style="font-weight: bold; color: #dc3545; margin-bottom: 4px;">🐛 Bugs (${ticketsBug.length}):</div>
+            ${ticketsBug.map(ticket => `
+              <div style="margin: 2px 0 2px 15px; font-size: 0.9em;">
+                <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #dc3545; text-decoration: none;">
+                  #${ticket.id}
+                </a> - ${ticket.subject || 'Sem assunto'}
+                ${ticket.clientName ? `<span style="font-size: 0.8em; color: #666; margin-left: 8px;">(${ticket.clientName})</span>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+        
+        ${ticketsMelhoria.length > 0 ? `
+          <div style="margin-top: 8px;">
+            <div style="font-weight: bold; color: #28a745; margin-bottom: 4px;">⚡ Melhorias (${ticketsMelhoria.length}):</div>
+            ${ticketsMelhoria.map(ticket => `
+              <div style="margin: 2px 0 2px 15px; font-size: 0.9em;">
+                <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #28a745; text-decoration: none;">
+                  #${ticket.id}
+                </a> - ${ticket.subject || 'Sem assunto'}
+                ${ticket.clientName ? `<span style="font-size: 0.8em; color: #666; margin-left: 8px;">(${ticket.clientName})</span>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
       </div>
     `;
   }
@@ -7782,6 +8178,7 @@ async function salvarRelease() {
         created_at: ticket.created_at,
         updated_at: ticket.updated_at,
         clientName: ticket.clientName,
+        classificacao: ticket.classificacao || 'melhoria', // Incluir classificação
         description_text: ticket.description_text ? ticket.description_text.substring(0, 500) : '' // Limitar tamanho
     }));
     
@@ -7826,7 +8223,10 @@ async function salvarRelease() {
         }
         
         const empresasCount = new Set(ticketsSelecionados.map(t => t.clientName)).size;
-        showAlert('Sucesso', `Release salva com sucesso! ${ticketsSelecionados.length} tickets relacionados de ${empresasCount} empresa(s).`);
+        const bugsCount = ticketsSelecionados.filter(t => t.classificacao === 'bug').length;
+        const melhoriaCount = ticketsSelecionados.filter(t => t.classificacao === 'melhoria').length;
+        
+        showAlert('Sucesso', `Release salva com sucesso! ${ticketsSelecionados.length} tickets relacionados de ${empresasCount} empresa(s). Classificação: ${bugsCount} bugs, ${melhoriaCount} melhorias.`);
         
         exibirRelease(data[0], file_url);
         
