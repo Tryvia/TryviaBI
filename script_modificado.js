@@ -483,7 +483,7 @@ function criarLinhaImplantacao(implantacao) {
                             
                             // Se é Kick Off concluído, destacar
                             if (isKickOff && (fase.status === 'concluido-prazo' || fase.status === 'concluido-fora')) {
-                                icone.style.color = '#2196F3';
+                                icone.style.color = '#000000';
                                 icone.style.fontSize = '16px';
                                 icone.title += ' - PROJETO INICIADO';
                             }
@@ -963,7 +963,7 @@ function carregarTimelineDetalhada(implantacao) {
                     if (fase.status === 'concluido-prazo' || fase.status === 'concluido-fora') {
                         statusBar.innerHTML = "⭐📍";
                         statusBar.setAttribute("data-tooltip", "Kick Off - PROJETO INICIADO");
-                        statusBar.style.backgroundColor = "#2196F3";
+                        statusBar.style.backgroundColor = "#000000";
                     }
                 } else if (isGoLive) {
                     statusBar.innerHTML = "🏴";
@@ -1867,4 +1867,3 @@ async function removerObservacao(index) {
         }
     }
 }
-
