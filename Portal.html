@@ -1209,8 +1209,8 @@ function renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual) {
                                                 data-ticket-id="${ticket.id}" 
                                                 data-client-name="${ticket.clientName}"
                                                 onchange="atualizarClassificacaoTicket(this)">
-                                            <option value="bug" ${ticket.classificacao === 'bug' ? 'selected' : ''}>🐛 Bug</option>
-                                            <option value="melhoria" ${ticket.classificacao === 'melhoria' ? 'selected' : ''}>⚡ Melhoria</option>
+                                            <option value="bug" ${ticket.classificacao === 'bug' ? 'selected' : ''}> Bug</option>
+                                            <option value="melhoria" ${ticket.classificacao === 'melhoria' ? 'selected' : ''}> Melhoria</option>
                                         </select>
                                     </div>
                                 </div>
@@ -1277,8 +1277,8 @@ function renderizarTicketsMultiEmpresa(ticketsEmpresaAtual, clienteAtual) {
                                                     data-ticket-id="${ticket.id}" 
                                                     data-client-name="${clienteAtual.name}"
                                                     onchange="atualizarClassificacaoTicket(this)">
-                                                <option value="bug" ${ticketSelecionado?.classificacao === 'bug' ? 'selected' : ''}>🐛 Bug</option>
-                                                <option value="melhoria" ${ticketSelecionado?.classificacao === 'melhoria' ? 'selected' : ''}>⚡ Melhoria</option>
+                                                <option value="bug" ${ticketSelecionado?.classificacao === 'bug' ? 'selected' : ''}> Bug</option>
+                                                <option value="melhoria" ${ticketSelecionado?.classificacao === 'melhoria' ? 'selected' : ''}> Melhoria</option>
                                             </select>
                                         </div>
                                     ` : ''}
@@ -4987,7 +4987,7 @@ select {
              style="border: 2px dashed #dc3545; border-radius: 8px; padding: 15px; background: #f8d7da; min-height: 180px;"
              ondrop="dropTicket(event, 'bug')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <h4 style="margin: 0 0 10px 0; color: #721c24; text-align: center;">
-                🐛 Bug
+                 Bug
             </h4>
             <div id="bugTickets" class="ticket-container">
                 <div style="text-align: center; color: #721c24; font-style: italic; margin-top: 50px;">
@@ -5001,7 +5001,7 @@ select {
              style="border: 2px dashed #28a745; border-radius: 8px; padding: 15px; background: #d4edda; min-height: 180px;"
              ondrop="dropTicket(event, 'melhoria')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
             <h4 style="margin: 0 0 10px 0; color: #155724; text-align: center;">
-                ⚡ Melhoria
+                 Melhoria
             </h4>
             <div id="melhoriaTickets" class="ticket-container">
                 <div style="text-align: center; color: #155724; font-style: italic; margin-top: 50px;">
@@ -8042,7 +8042,7 @@ function exibirRelease(d, url) {
         
         ${ticketsBug.length > 0 ? `
           <div style="margin-top: 8px;">
-            <div style="font-weight: bold; color: #dc3545; margin-bottom: 4px;">🐛 Bugs (${ticketsBug.length}):</div>
+            <div style="font-weight: bold; color: #dc3545; margin-bottom: 4px;"> Bugs (${ticketsBug.length}):</div>
             ${ticketsBug.map(ticket => `
               <div style="margin: 2px 0 2px 15px; font-size: 0.9em;">
                 <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #dc3545; text-decoration: none;">
@@ -8056,7 +8056,7 @@ function exibirRelease(d, url) {
         
         ${ticketsMelhoria.length > 0 ? `
           <div style="margin-top: 8px;">
-            <div style="font-weight: bold; color: #28a745; margin-bottom: 4px;">⚡ Melhorias (${ticketsMelhoria.length}):</div>
+            <div style="font-weight: bold; color: #28a745; margin-bottom: 4px;"> Melhorias (${ticketsMelhoria.length}):</div>
             ${ticketsMelhoria.map(ticket => `
               <div style="margin: 2px 0 2px 15px; font-size: 0.9em;">
                 <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #28a745; text-decoration: none;">
