@@ -240,10 +240,84 @@
             color: var(--secondary-color);
         }
 
+        /* Modal para lista de viagens */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px var(--shadow-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-header h2 {
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--error-color);
+        }
+
+        .viagem-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .viagem-item h4 {
+            margin: 0 0 10px 0;
+            color: var(--text-dark);
+        }
+
+        .viagem-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .viagem-info span {
+            color: #666;
+        }
+
         @media (max-width: 768px) {
             .header h1 { font-size: 2rem; }
             .form-row { grid-template-columns: 1fr; }
             .controls { padding: 15px; }
+            .modal-content { width: 95%; margin: 2% auto; }
         }
     
 
@@ -270,6 +344,7 @@
 
 </style>
     <script>
+        
         (function() {
             // Verificar se o usuário veio da página Portal.html
             const referrerPermitido = 'https://tryvia.github.io/TryviaBI/Portal.html';
@@ -287,6 +362,7 @@
                 }
             }
         })();
+       
     </script>
 </head>
 <body>
@@ -405,6 +481,16 @@
     </select>
 </div>
 
+<div class="form-group">
+    <label for="filtroDataInicio">Data de Início (De)</label>
+    <input type="date" id="filtroDataInicio" onchange="aplicarFiltros()">
+</div>
+
+<div class="form-group">
+    <label for="filtroDataFim">Data de Início (Até)</label>
+    <input type="date" id="filtroDataFim" onchange="aplicarFiltros()">
+</div>
+
 
 
 
@@ -420,21 +506,21 @@
         </div>
 
         <div class="stats">
-            <div class="stat-card">
+            <div class="stat-card" onclick="exibirListaViagens()" style="cursor: pointer;">
                 <div class="stat-number" id="totalViagens">0</div>
                 <div class="stat-label">Total de Viagens</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="viagensAtivas">0</div>
-                <div class="stat-label">Viagens Ativas</div>
+                <div class="stat-number" id="viagensPlanejadas">0</div>
+                <div class="stat-label">Viagens Planejadas</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="especialistasAtivos">0</div>
-                <div class="stat-label">Especialistas Ativos</div>
+                <div class="stat-number" id="viagensRealizadas">0</div>
+                <div class="stat-label">Viagens Realizadas</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="proximasViagens">0</div>
-                <div class="stat-label">Próximas Viagens</div>
+                <div class="stat-number" id="viagensCanceladas">0</div>
+                <div class="stat-label">Viagens Canceladas</div>
             </div>
         </div>
 
@@ -461,6 +547,19 @@
         <div class="empty-state">
             <h3>Comece adicionando sua primeira viagem!</h3>
             <p>Preencha o formulário acima para adicionar viagens ao mapa e acompanhar os deslocamentos da sua equipe.</p>
+        </div>
+    </div>
+
+    <!-- Modal para lista de viagens -->
+    <div id="modalListaViagens" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Lista de Todas as Viagens</h2>
+                <span class="close" onclick="fecharModal()">&times;</span>
+            </div>
+            <div id="listaViagensContent">
+                <!-- Conteúdo será preenchido dinamicamente -->
+            </div>
         </div>
     </div>
 
@@ -807,27 +906,14 @@
         function atualizarEstatisticas() {
             document.getElementById('totalViagens').textContent = viagens.length;
 
-            const hoje = new Date();
-            hoje.setHours(0, 0, 0, 0); // Zera hora para comparação de data
+            const viagensPlanejadas = viagens.filter(v => v.status === 'Planejada').length;
+            document.getElementById('viagensPlanejadas').textContent = viagensPlanejadas;
 
-            const viagensAtivas = viagens.filter(v =>
-                v.status === 'Em Andamento' ||
-                (v.status === 'Planejada' && new Date(v.data_inicio) <= hoje && new Date(v.data_fim) >= hoje) // Modificado aqui
-            ).length;
-            document.getElementById('viagensAtivas').textContent = viagensAtivas;
+            const viagensRealizadas = viagens.filter(v => v.status === 'Concluída').length;
+            document.getElementById('viagensRealizadas').textContent = viagensRealizadas;
 
-            const especialistasAtivos = new Set(
-                viagens.filter(v =>
-                    v.status === 'Em Andamento' ||
-                    (v.status === 'Planejada' && new Date(v.data_inicio) <= hoje && new Date(v.data_fim) >= hoje) // Modificado aqui
-                ).map(v => v.especialista)
-            ).size;
-            document.getElementById('especialistasAtivos').textContent = especialistasAtivos;
-
-            const proximasViagens = viagens.filter(v =>
-                v.status === 'Planejada' && new Date(v.data_inicio) > hoje // Modificado aqui
-            ).length;
-            document.getElementById('proximasViagens').textContent = proximasViagens;
+            const viagensCanceladas = viagens.filter(v => v.status === 'Cancelada').length;
+            document.getElementById('viagensCanceladas').textContent = viagensCanceladas;
         }
 
         // Função para atualizar o filtro de especialistas
@@ -851,13 +937,25 @@
             const filtroStatus = document.getElementById('filtroStatus').value;
             const filtroProposito = document.getElementById('filtroProposito').value;
             const filtroSetor = document.getElementById('filtroSetor').value;
+            const filtroDataInicio = document.getElementById('filtroDataInicio').value;
+            const filtroDataFim = document.getElementById('filtroDataFim').value;
 
             const viagensFiltradas = viagens.filter(viagem => {
                 const matchEspecialista = !filtroEspecialista || viagem.especialista === filtroEspecialista;
                 const matchStatus = !filtroStatus || viagem.status === filtroStatus;
                 const matchProposito = !filtroProposito || viagem.proposito === filtroProposito;
                 const matchSetor = !filtroSetor || viagem.setor === filtroSetor;
-                return matchEspecialista && matchStatus && matchProposito && matchSetor;
+                
+                // Filtro por data
+                let matchData = true;
+                if (filtroDataInicio) {
+                    matchData = matchData && new Date(viagem.data_inicio) >= new Date(filtroDataInicio);
+                }
+                if (filtroDataFim) {
+                    matchData = matchData && new Date(viagem.data_inicio) <= new Date(filtroDataFim);
+                }
+                
+                return matchEspecialista && matchStatus && matchProposito && matchSetor && matchData;
             });
 
             viagensFiltradas.forEach(viagem => adicionarMarcador(viagem));
@@ -868,6 +966,9 @@
             document.getElementById('filtroEspecialista').value = '';
             document.getElementById('filtroStatus').value = '';
             document.getElementById('filtroProposito').value = '';
+            document.getElementById('filtroSetor').value = '';
+            document.getElementById('filtroDataInicio').value = '';
+            document.getElementById('filtroDataFim').value = '';
             aplicarFiltros();
         }
 
@@ -952,6 +1053,49 @@
 
             // Se não encontrar, retornar Brasília como padrão
             return [-15.8267, -47.9218];
+        }
+
+        // Função para exibir a lista de viagens no modal
+        function exibirListaViagens() {
+            const modal = document.getElementById('modalListaViagens');
+            const content = document.getElementById('listaViagensContent');
+            
+            if (viagens.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma viagem cadastrada.</p>';
+            } else {
+                let html = '';
+                viagens.forEach(viagem => {
+                    const statusClass = `status-${viagem.status.replace(/\s/g, '-').toLowerCase()}`;
+                    html += `
+                        <div class="viagem-item">
+                            <h4>${viagem.destino} - ${viagem.especialista}</h4>
+                            <div class="viagem-info">
+                                <div><strong>Propósito:</strong> <span>${viagem.proposito}</span></div>
+                                <div><strong>Empresa:</strong> <span>${viagem.empresa || 'N/A'}</span></div>
+                                <div><strong>Setor:</strong> <span>${viagem.setor || 'N/A'}</span></div>
+                                <div><strong>Período:</strong> <span>${viagem.data_inicio} a ${viagem.data_fim}</span></div>
+                                <div><strong>Status:</strong> <span class="popup-status ${statusClass}">${viagem.status}</span></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                content.innerHTML = html;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // Função para fechar o modal
+        function fecharModal() {
+            document.getElementById('modalListaViagens').style.display = 'none';
+        }
+
+        // Fechar modal ao clicar fora dele
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalListaViagens');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
         }
 
         // Inicializar quando a página carregar
