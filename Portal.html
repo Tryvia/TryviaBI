@@ -2703,7 +2703,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
- window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 
 sessionStorage.setItem('tryvia_logged', 'true');
 }
@@ -7752,39 +7752,104 @@ async function salvarRelease() {
         return;
     }
     
-    // Usar a nova variável global de tickets selecionados de múltiplas empresas
-    const ticketsSelecionados = [...ticketsSelecionadosMultiEmpresa];
+    // Validar campos obrigatórios
+    const dataLiberacao = document.getElementById('releaseDate').value;
+    const status = document.getElementById('releaseStatus').value;
+    const sistema = document.getElementById('releaseSystem').value;
+    const versao = document.getElementById('releaseVersion').value;
+    const analista = document.getElementById('releaseAnalyst').value;
+    const dataHomologacao = document.getElementById('releaseHomologDate').value;
+    const tipo = document.getElementById('releaseType').value;
+    const clienteId = document.getElementById('releaseClient').value;
+    const arquivo = document.getElementById('releaseFile').files[0];
     
-    const d = {
-        data_liberacao: document.getElementById('releaseDate').value,
-        status: document.getElementById('releaseStatus').value,
-        sistema: document.getElementById('releaseSystem').value,
-        versao: document.getElementById('releaseVersion').value,
-        analista: document.getElementById('releaseAnalyst').value,
-        data_homologacao: document.getElementById('releaseHomologDate').value,
-        tipo: document.getElementById('releaseType').value,
-        cliente_id: document.getElementById('releaseClient').value,
-        tickets_relacionados: ticketsSelecionados,
-        arquivo: document.getElementById('releaseFile').files[0]
-    };
+    if (!dataLiberacao || !status || !sistema || !versao || !analista || !tipo || !clienteId) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
     
-    if (!d.arquivo) return alert('Selecione um arquivo.');
-    const nome = Date.now() + '_' + d.arquivo.name.replace(/\s+/g, "_");
-    const { error: e1 } = await releaseClient.storage.from('releasefiles').upload(nome, d.arquivo);
-    if (e1) return alert("Erro upload");
-    const file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/releasefiles/${nome}`;
-    const { arquivo, ...dadosParaInsert } = d;
-    const { data, error: e2 } = await releaseClient.from("releases").insert([{ ...dadosParaInsert, file_url, file_path: nome }]).select();
-    if (e2) return alert("Erro insert");
+    if (!arquivo) {
+        alert('Selecione um arquivo.');
+        return;
+    }
     
-    showAlert('Sucesso', `Release salva com sucesso! ${ticketsSelecionados.length} tickets relacionados de ${new Set(ticketsSelecionados.map(t => t.clientName)).size} empresa(s).`);
-    exibirRelease(data[0], file_url);
+    // Preparar dados dos tickets - limpar dados desnecessários para evitar problemas no Supabase
+    const ticketsSelecionados = ticketsSelecionadosMultiEmpresa.map(ticket => ({
+        id: ticket.id,
+        subject: ticket.subject || 'Sem assunto',
+        status: ticket.status,
+        priority: ticket.priority,
+        created_at: ticket.created_at,
+        updated_at: ticket.updated_at,
+        clientName: ticket.clientName,
+        description_text: ticket.description_text ? ticket.description_text.substring(0, 500) : '' // Limitar tamanho
+    }));
     
-    // Limpar formulário e resetar tickets selecionados
-    document.getElementById('releaseClient').value = '';
-    document.getElementById('ticketsSection').style.display = 'none';
-    ticketsSelecionadosMultiEmpresa = []; // Limpar tickets selecionados após salvar
-    atualizarContadorTickets();
+    try {
+        // Upload do arquivo
+        const nome = Date.now() + '_' + arquivo.name.replace(/\s+/g, "_");
+        const { error: uploadError } = await releaseClient.storage.from('releasefiles').upload(nome, arquivo);
+        
+        if (uploadError) {
+            console.error('Erro no upload:', uploadError);
+            alert("Erro ao fazer upload do arquivo: " + uploadError.message);
+            return;
+        }
+        
+        const file_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/releasefiles/${nome}`;
+        
+        // Preparar dados para inserção
+        const dadosParaInsert = {
+            data_liberacao: dataLiberacao,
+            status: status,
+            sistema: sistema,
+            versao: versao,
+            analista: analista,
+            data_homologacao: dataHomologacao,
+            tipo: tipo,
+            cliente_id: parseInt(clienteId),
+            tickets_relacionados: ticketsSelecionados,
+            file_url: file_url,
+            file_path: nome
+        };
+        
+        // Inserir no banco
+        const { data, error: insertError } = await releaseClient
+            .from("releases")
+            .insert([dadosParaInsert])
+            .select();
+        
+        if (insertError) {
+            console.error('Erro na inserção:', insertError);
+            alert("Erro ao salvar release: " + insertError.message);
+            return;
+        }
+        
+        const empresasCount = new Set(ticketsSelecionados.map(t => t.clientName)).size;
+        showAlert('Sucesso', `Release salva com sucesso! ${ticketsSelecionados.length} tickets relacionados de ${empresasCount} empresa(s).`);
+        
+        exibirRelease(data[0], file_url);
+        
+        // Limpar formulário e resetar tickets selecionados
+        document.getElementById('releaseClient').value = '';
+        document.getElementById('ticketsSection').style.display = 'none';
+        ticketsSelecionadosMultiEmpresa = [];
+        atualizarContadorTickets();
+        
+        // Limpar outros campos
+        document.getElementById('releaseDate').value = '';
+        document.getElementById('releaseStatus').value = '';
+        document.getElementById('releaseSystem').value = '';
+        document.getElementById('releaseVersion').value = '';
+        document.getElementById('releaseAnalyst').value = '';
+        document.getElementById('releaseHomologDate').value = '';
+        document.getElementById('releaseType').value = '';
+        document.getElementById('releaseFile').value = '';
+        
+    } catch (error) {
+        console.error('Erro inesperado:', error);
+        alert("Erro inesperado ao salvar release: " + error.message);
+    }
 }
 </script><script>
 async function salvarReuniao() {
