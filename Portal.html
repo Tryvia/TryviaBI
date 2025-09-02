@@ -792,6 +792,10 @@ async function carregarVisitas() {
 // Função para carregar entregas do setor do usuário logado
 async function carregarEntregas() {
     const setorUsuario = sessionStorage.getItem('setor');
+    
+    // Primeiro, garantir que os membros da equipe sejam carregados
+    await carregarMembros();
+    
     const { data, error } = await supabase
         .from('entregas')
         .select('*')
@@ -807,7 +811,7 @@ async function carregarEntregas() {
     
     // Verificar se há membros da equipe carregados
     if (!teamMembers || teamMembers.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Nenhum membro da equipe encontrado. Carregue a seção Time primeiro.</p>';
+        container.innerHTML = '<p style="color: #888;">Nenhum membro da equipe encontrado para este setor.</p>';
         return;
     }
     
