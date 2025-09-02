@@ -15644,7 +15644,7 @@ function mostrarLocalizacao(latitude, longitude, empresa) {
 function inicializarMapaVisitas() {
     console.log("Inicializando mapa de visitas...");
     const mapContainer = document.getElementById("mapContainer");
-    if (!mapContainer) return;
+    if (!mapContainer) return null;
 
     // Limpar completamente o conteúdo do container para evitar o erro de inicialização
     mapContainer.innerHTML = "";
@@ -15658,23 +15658,22 @@ function inicializarMapaVisitas() {
     // Verificar se o Leaflet está disponível
     if (typeof L === 'undefined') {
         console.error('Leaflet não está carregado');
-        return;
+        return null;
     }
 
-    // Adicionar um pequeno atraso para garantir que o DOM seja atualizado
-    setTimeout(() => {
-        // Criar mapa centrado no Brasil
-        window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
+    // Criar mapa centrado no Brasil
+    window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
 
-        // Adicionar camada de tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(window.visitasMap);
-    }, 100); // Atraso de 100ms
+    // Adicionar camada de tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(window.visitasMap);
+
+    return window.visitasMap;
 }
 
 // Função para atualizar os marcadores no mapa
-function atualizarMapaVisitas(visitas) {
+function atualizarMapaVisitas(map, visitas) {
     // Limpar marcadores existentes
     if (window.visitasMarkers) {
         window.visitasMarkers.forEach(marker => marker.remove());
@@ -15685,15 +15684,15 @@ function atualizarMapaVisitas(visitas) {
         visitas.forEach(visita => {
             if (visita.latitude && visita.longitude) {
                 const marker = L.marker([visita.latitude, visita.longitude])
-                    .addTo(window.visitasMap);
+                    .addTo(map);
                 
                 const popupContent = `
                     <div style="min-width: 200px;">
-                        <h4 style="margin: 0 0 8px 0; color: #4fc3f7;">${visita.empresa || "Empresa"}</h4>
-                        <p style="margin: 0 0 4px 0;"><strong>Especialista:</strong> ${visita.especialista || "N/A"}</p>
-                        <p style="margin: 0 0 4px 0;"><strong>Destino:</strong> ${visita.destino || "N/A"}</p>
-                        <p style="margin: 0 0 4px 0;"><strong>Status:</strong> ${visita.status || "N/A"}</p>
-                        <p style="margin: 0;"><strong>Propósito:</strong> ${visita.proposito || "N/A"}</p>
+                        <h4 style="margin: 0 0 8px 0; color: #4fc3f7;">${visita.empresa || 'Empresa'}</h4>
+                        <p style="margin: 0 0 4px 0;"><strong>Especialista:</strong> ${visita.especialista || 'N/A'}</p>
+                        <p style="margin: 0 0 4px 0;"><strong>Destino:</strong> ${visita.destino || 'N/A'}</p>
+                        <p style="margin: 0;"><strong>Status:</strong> ${visita.status || 'N/A'}</p>
+                        <p style="margin: 0;"><strong>Propósito:</strong> ${visita.proposito || 'N/A'}</p>
                     </div>
                 `;
                 
@@ -15710,13 +15709,11 @@ async function atualizarSecaoVisitas() {
         const visitas = await carregarVisitasSetor();
         renderizarVisitasPainel(visitas);
 
-        // Sempre inicializar o mapa. A função inicializarMapaVisitas já lida com a remoção do mapa anterior.
-        inicializarMapaVisitas();
-
-        // Aguardar um pouco para garantir que o mapa seja inicializado antes de adicionar os marcadores
-        setTimeout(() => {
-            atualizarMapaVisitas(visitas);
-        }, 200); // Atraso de 200ms
+        // Inicializar o mapa e adicionar os marcadores
+        const map = inicializarMapaVisitas();
+        if (map) {
+            atualizarMapaVisitas(map, visitas);
+        }
 
     } catch (error) {
         console.error("Erro ao atualizar seção de visitas:", error);
