@@ -756,24 +756,25 @@ async function carregarMembros() {
 async function carregarVisitas() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
-        .from('visitas')
+        .from('viagens')
         .select('*')
-        .eq('setor', setorUsuario);
+        .eq('setor', setorUsuario)
+        .order('data_inicio', { ascending: false });
 
     if (error) {
         console.error('Erro ao buscar visitas:', error.message);
         return;
     }
-    const container = document.getElementById('visitasList');
-    if (!container) return;
-    container.innerHTML = '';
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Nenhuma visita encontrada para este setor.</p>';
-        return;
+    
+    // Atualizar o mapa com as visitas
+    await atualizarMapaVisitas(data);
+    
+    // Atualizar contador de empresas
+    const empresasUnicas = new Set(data.map(visita => visita.empresa)).size;
+    const contadorElement = document.getElementById('empresasCount');
+    if (contadorElement) {
+        contadorElement.textContent = empresasUnicas.toString().padStart(2, '0');
     }
-    data.forEach(visita => {
-        container.innerHTML += `<div class="visita-item"><strong>${visita.titulo}</strong><br>${visita.descricao || ''}</div>`;
-    });
 }
 
 // Função para carregar entregas do setor do usuário logado
@@ -3038,7 +3039,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+//window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 
 sessionStorage.setItem('tryvia_logged', 'true');
 }
@@ -10475,10 +10476,10 @@ async function loadVisitasOnMap() {
     try {
         const setorUsuario = sessionStorage.getItem('setor');
         const { data: visitas, error } = await supabase
-            .from('visitas_setor')
+            .from('viagens')
             .select('*')
             .eq('setor', setorUsuario)
-            .order('created_at', { ascending: false });
+            .order('data_inicio', { ascending: false });
 
         if (error) throw error;
 
@@ -10496,21 +10497,6 @@ async function loadVisitasOnMap() {
             let lat = visita.latitude;
             let lng = visita.longitude;
 
-            
-            if (!lat || !lng) {
-                const coords = await geocodeAddress(`${visita.endereco}, ${visita.cidade}, ${visita.estado}, Brasil`);
-                if (coords) {
-                    lat = coords.lat;
-                    lng = coords.lng;
-                    
-                    
-                    await supabase
-                        .from('visitas_setor')
-                        .update({ latitude: lat, longitude: lng })
-                        .eq('id', visita.id);
-                }
-            }
-
             if (lat && lng) {
                
                 const marker = L.marker([lat, lng]).addTo(visitasMap);
@@ -10519,9 +10505,12 @@ async function loadVisitasOnMap() {
                 const popupContent = `
                     <div style="min-width: 200px;">
                         <h4 style="margin: 0 0 10px 0; color: #4fc3f7;">${visita.empresa}</h4>
-                        <p style="margin: 5px 0;"><strong>Cidade:</strong> ${visita.cidade}, ${visita.estado}</p>
-                        <p style="margin: 5px 0;"><strong>Data:</strong> ${visita.data_visita ? new Date(visita.data_visita).toLocaleDateString('pt-BR') : 'Não informada'}</p>
-                        <p style="margin: 5px 0;"><strong>Objetivo:</strong> ${visita.objetivo || 'Não informado'}</p>
+                        <p style="margin: 5px 0;"><strong>Destino:</strong> ${visita.destino}</p>
+                        <p style="margin: 5px 0;"><strong>Especialista:</strong> ${visita.especialista}</p>
+                        <p style="margin: 5px 0;"><strong>Propósito:</strong> ${visita.proposito}</p>
+                        <p style="margin: 5px 0;"><strong>Status:</strong> ${visita.status}</p>
+                        <p style="margin: 5px 0;"><strong>Data Início:</strong> ${visita.data_inicio ? new Date(visita.data_inicio).toLocaleDateString('pt-BR') : 'Não informada'}</p>
+                        <p style="margin: 5px 0;"><strong>Data Fim:</strong> ${visita.data_fim ? new Date(visita.data_fim).toLocaleDateString('pt-BR') : 'Não informada'}</p>
                     </div>
                 `;
                 
@@ -11979,7 +11968,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+   // window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -15300,6 +15289,71 @@ function renderTickets(tickets) {
         return;
     }
     
+
+// Função para atualizar o mapa com as visitas
+async function atualizarMapaVisitas(visitas) {
+    if (!visitasMap) {
+        console.warn('Mapa não inicializado');
+        return;
+    }
+
+    try {
+        // Limpar marcadores existentes
+        visitasMap.eachLayer(function (layer) {
+            if (layer instanceof L.Marker) {
+                visitasMap.removeLayer(layer);
+            }
+        });
+
+        let empresasCount = 0;
+
+        // Adicionar marcadores para cada visita
+        for (const visita of visitas) {
+            let lat = visita.latitude;
+            let lng = visita.longitude;
+
+            if (lat && lng) {
+                // Criar marcador
+                const marker = L.marker([lat, lng]).addTo(visitasMap);
+                
+                // Criar popup com informações da visita
+                const popupContent = `
+                    <div style="min-width: 200px;">
+                        <h4 style="margin: 0 0 10px 0; color: #4fc3f7;">${visita.empresa}</h4>
+                        <p style="margin: 5px 0;"><strong>Destino:</strong> ${visita.destino}</p>
+                        <p style="margin: 5px 0;"><strong>Especialista:</strong> ${visita.especialista}</p>
+                        <p style="margin: 5px 0;"><strong>Propósito:</strong> ${visita.proposito}</p>
+                        <p style="margin: 5px 0;"><strong>Status:</strong> ${visita.status}</p>
+                        <p style="margin: 5px 0;"><strong>Data Início:</strong> ${visita.data_inicio ? new Date(visita.data_inicio).toLocaleDateString('pt-BR') : 'Não informada'}</p>
+                        <p style="margin: 5px 0;"><strong>Data Fim:</strong> ${visita.data_fim ? new Date(visita.data_fim).toLocaleDateString('pt-BR') : 'Não informada'}</p>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                empresasCount++;
+            }
+        }
+
+        // Ajustar zoom para mostrar todos os marcadores
+        if (empresasCount > 0) {
+            const group = new L.featureGroup();
+            visitasMap.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    group.addLayer(layer);
+                }
+            });
+            if (group.getLayers().length > 0) {
+                visitasMap.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+    } catch (error) {
+        console.error('Erro ao atualizar mapa com visitas:', error);
+    }
+}
+
+
+
     // Ordenar tickets por data de criação (mais recentes primeiro)
     tickets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     
@@ -15412,3 +15466,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
+
