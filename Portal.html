@@ -15651,21 +15651,13 @@ function mostrarLocalizacao(latitude, longitude, empresa) {
 // Função para inicializar o mapa de visitas
 function inicializarMapaVisitas() {
     console.log("Inicializando mapa de visitas...");
-    const mapContainer = document.getElementById("mapContainer");
-    if (!mapContainer) {
-        console.error('Container do mapa não encontrado');
+    
+    // Encontrar o container pai onde o mapa deve ser inserido
+    let mapContainerParent = document.getElementById("mapContainer");
+    if (!mapContainerParent) {
+        console.error('Container pai do mapa não encontrado');
         return null;
     }
-
-    // Verificar se o container tem dimensões
-    const containerRect = mapContainer.getBoundingClientRect();
-    if (containerRect.width === 0 || containerRect.height === 0) {
-        console.error('Container do mapa não tem dimensões válidas');
-        return null;
-    }
-
-    // Limpar completamente o conteúdo do container para evitar o erro de inicialização
-    mapContainer.innerHTML = "";
 
     // Remove o mapa anterior, se existir
     if (window.visitasMap) {
@@ -15677,6 +15669,20 @@ function inicializarMapaVisitas() {
         window.visitasMap = null;
     }
 
+    // Criar um novo elemento div para o mapa com ID único
+    const mapId = 'mapContainer_' + Date.now();
+    const newMapContainer = document.createElement('div');
+    newMapContainer.id = mapId;
+    newMapContainer.style.cssText = `
+        width: 100%;
+        height: 400px;
+        background-color: #f0f0f0;
+    `;
+
+    // Limpar o container pai e adicionar o novo container
+    mapContainerParent.innerHTML = '';
+    mapContainerParent.appendChild(newMapContainer);
+
     // Verificar se o Leaflet está disponível
     if (typeof L === 'undefined') {
         console.error('Leaflet não está carregado');
@@ -15684,8 +15690,8 @@ function inicializarMapaVisitas() {
     }
 
     try {
-        // Criar mapa centrado no Brasil
-        window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
+        // Criar mapa centrado no Brasil usando o novo container
+        window.visitasMap = L.map(mapId).setView([-14.235, -51.9253], 4);
 
         // Adicionar camada de tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
