@@ -737,27 +737,31 @@ async function carregarProjetos() {
     });
 }
 
+let teamMembers = []; // Variável global para armazenar os membros da equipe
+
 // Função para carregar membros do setor do usuário logado
 async function carregarMembros() {
-    const setorUsuario = sessionStorage.getItem('setor');
+    const setorUsuario = sessionStorage.getItem("setor");
     const { data, error } = await supabase
-        .from('membros')
-        .select('*')
-        .eq('setor', setorUsuario);
+        .from("membros")
+        .select("*")
+        .eq("setor", setorUsuario);
 
     if (error) {
-        console.error('Erro ao buscar membros:', error.message);
+        console.error("Erro ao buscar membros:", error.message);
         return;
     }
-    const container = document.getElementById('membrosList');
+    const container = document.getElementById("membrosList");
     if (!container) return;
-    container.innerHTML = '';
+    container.innerHTML = "";
     if (!data || data.length === 0) {
         container.innerHTML = '<p style="color: #888;">Nenhum membro encontrado para este setor.</p>';
+        teamMembers = []; // Limpa a lista se não houver membros
         return;
     }
+    teamMembers = data; // Armazena os membros na variável global
     data.forEach(membro => {
-        container.innerHTML += `<div class="membro-item"><strong>${membro.nome}</strong><br>${membro.cargo || ''}</div>`;
+        container.innerHTML += `<div class="membro-item"><strong>${membro.nome}</strong><br>${membro.cargo || ""}</div>`;
     });
 }
 
@@ -800,13 +804,80 @@ async function carregarEntregas() {
     const container = document.getElementById('entregasList');
     if (!container) return;
     container.innerHTML = '';
+    
+    // Verificar se há membros da equipe carregados
+    if (!teamMembers || teamMembers.length === 0) {
+        container.innerHTML = '<p style="color: #888;">Nenhum membro da equipe encontrado. Carregue a seção Time primeiro.</p>';
+        return;
+    }
+    
     if (!data || data.length === 0) {
         container.innerHTML = '<p style="color: #888;">Nenhuma entrega encontrada para este setor.</p>';
         return;
     }
-    data.forEach(entrega => {
-        container.innerHTML += `<div class="entrega-item"><strong>${entrega.titulo}</strong><br>${entrega.descricao || ''}</div>`;
+
+    // Gerar cabeçalhos da tabela dinamicamente com base nos membros da equipe
+    let tableHeaders = '<th>Mês</th>';
+    let memberColumns = {};
+    teamMembers.forEach(member => {
+        const firstName = member.nome.split(' ')[0]; // Pega apenas o primeiro nome
+        tableHeaders += `<th>${firstName}</th>`;
+        memberColumns[firstName] = member.nome; // Mapeia primeiro nome para nome completo
     });
+    tableHeaders += '<th>% SETOR</th>';
+
+    let tableRows = 
+        `<thead>
+            <tr>
+                ${tableHeaders}
+            </tr>
+        </thead>
+        <tbody>`;
+
+    const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+
+    months.forEach(month => {
+        const entregaMes = data.find(e => e.mes && e.mes.toUpperCase() === month);
+        tableRows += `<tr><td>${month}</td>`;
+
+        // Gerar colunas para cada membro da equipe
+        for (const memberFirstName in memberColumns) {
+            const memberFullName = memberColumns[memberFirstName];
+            const percentage = entregaMes && entregaMes[memberFullName] !== undefined ? `${entregaMes[memberFullName]}%` : '-';
+            tableRows += `<td>${percentage}</td>`;
+        }
+
+        // Coluna do percentual do setor
+        const setorPercentage = entregaMes && entregaMes.setor_percentage !== undefined ? `${entregaMes.setor_percentage}%` : '-';
+        let setorClass = '';
+        if (setorPercentage !== '-') {
+            const percentageValue = parseFloat(setorPercentage);
+            if (percentageValue >= 90) {
+                setorClass = 'status-concluida'; // Verde
+            } else if (percentageValue >= 70) {
+                setorClass = 'status-andamento'; // Laranja
+            } else {
+                setorClass = 'status-cancelada'; // Vermelho
+            }
+        }
+        tableRows += `<td class="${setorClass}">${setorPercentage}</td>`;
+        tableRows += '</tr>';
+    });
+
+    tableRows += '</tbody>';
+
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                ${tableRows}
+            </table>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-primary" onclick="abrirModalAdicionarEntrega()">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i> Adicionar Entrega
+            </button>
+        </div>
+    `;
 }
 // Função global para popular o select de clientes na aba reuniões
 function populateReuniaoClientes() {
