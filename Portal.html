@@ -749,26 +749,20 @@ async function carregarMembros() {
 
     if (error) {
         console.error("Erro ao buscar membros:", error.message);
-        teamMembers = []; // Garante que a variável seja limpa em caso de erro
         return;
     }
     const container = document.getElementById("membrosList");
-    if (container) {
-        container.innerHTML = "";
-    }
+    if (!container) return;
+    container.innerHTML = "";
     if (!data || data.length === 0) {
-        if (container) {
-            container.innerHTML = '<p style="color: #888;">Nenhum membro encontrado para este setor.</p>';
-        }
+        container.innerHTML = '<p style="color: #888;">Nenhum membro encontrado para este setor.</p>';
         teamMembers = []; // Limpa a lista se não houver membros
         return;
     }
     teamMembers = data; // Armazena os membros na variável global
-    if (container) {
-        data.forEach(membro => {
-            container.innerHTML += `<div class="membro-item"><strong>${membro.nome}</strong><br>${membro.cargo || ""}</div>`;
-        });
-    }
+    data.forEach(membro => {
+        container.innerHTML += `<div class="membro-item"><strong>${membro.nome}</strong><br>${membro.cargo || ""}</div>`;
+    });
 }
 
 // Função para carregar visitas do setor do usuário logado
@@ -811,83 +805,71 @@ async function carregarEntregas() {
         console.error('Erro ao buscar entregas:', error.message);
         return;
     }
-    const container = document.getElementById('entregasList');
-    if (!container) return;
-    container.innerHTML = '';
     
     // Verificar se há membros da equipe carregados
     if (!teamMembers || teamMembers.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Nenhum membro da equipe encontrado para este setor.</p>';
+        const tableHeader = document.getElementById('entregasTableHeader');
+        const tableBody = document.getElementById('entregasTableBody');
+        if (tableHeader) tableHeader.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #888;">Nenhum membro da equipe encontrado para este setor.</td></tr>';
+        if (tableBody) tableBody.innerHTML = '';
         return;
     }
     
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Nenhuma entrega encontrada para este setor.</p>';
-        return;
-    }
-
     // Gerar cabeçalhos da tabela dinamicamente com base nos membros da equipe
-    let tableHeaders = '<th>Mês</th>';
+    const tableHeader = document.getElementById('entregasTableHeader');
+    const tableBody = document.getElementById('entregasTableBody');
+    
+    if (!tableHeader || !tableBody) return;
+    
+    let tableHeaders = '<tr><th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Mês</th>';
     let memberColumns = {};
     teamMembers.forEach(member => {
         const firstName = member.nome.split(' ')[0]; // Pega apenas o primeiro nome
-        tableHeaders += `<th>${firstName}</th>`;
+        tableHeaders += `<th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">${firstName}</th>`;
         memberColumns[firstName] = member.nome; // Mapeia primeiro nome para nome completo
     });
-    tableHeaders += '<th>% SETOR</th>';
+    tableHeaders += '<th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">% SETOR</th></tr>';
+    
+    tableHeader.innerHTML = tableHeaders;
 
-    let tableRows = 
-        `<thead>
-            <tr>
-                ${tableHeaders}
-            </tr>
-        </thead>
-        <tbody>`;
+    if (!data || data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="' + (Object.keys(memberColumns).length + 2) + '" style="text-align: center; padding: 20px; color: #888;">Nenhuma entrega encontrada para este setor.</td></tr>';
+        return;
+    }
 
     const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+    let tableRows = '';
 
     months.forEach(month => {
         const entregaMes = data.find(e => e.mes && e.mes.toUpperCase() === month);
-        tableRows += `<tr><td>${month}</td>`;
+        tableRows += `<tr><td style="padding: 10px; font-weight: bold;">${month}</td>`;
 
         // Gerar colunas para cada membro da equipe
         for (const memberFirstName in memberColumns) {
             const memberFullName = memberColumns[memberFirstName];
             const percentage = entregaMes && entregaMes[memberFullName] !== undefined ? `${entregaMes[memberFullName]}%` : '-';
-            tableRows += `<td>${percentage}</td>`;
+            tableRows += `<td style="padding: 10px; text-align: center;">${percentage}</td>`;
         }
 
         // Coluna do percentual do setor
         const setorPercentage = entregaMes && entregaMes.setor_percentage !== undefined ? `${entregaMes.setor_percentage}%` : '-';
         let setorClass = '';
+        let setorStyle = 'padding: 10px; text-align: center;';
         if (setorPercentage !== '-') {
             const percentageValue = parseFloat(setorPercentage);
             if (percentageValue >= 90) {
-                setorClass = 'status-concluida'; // Verde
+                setorStyle += ' background-color: #4caf50; color: white; font-weight: bold;'; // Verde
             } else if (percentageValue >= 70) {
-                setorClass = 'status-andamento'; // Laranja
+                setorStyle += ' background-color: #ff9800; color: white; font-weight: bold;'; // Laranja
             } else {
-                setorClass = 'status-cancelada'; // Vermelho
+                setorStyle += ' background-color: #f44336; color: white; font-weight: bold;'; // Vermelho
             }
         }
-        tableRows += `<td class="${setorClass}">${setorPercentage}</td>`;
+        tableRows += `<td style="${setorStyle}">${setorPercentage}</td>`;
         tableRows += '</tr>';
     });
 
-    tableRows += '</tbody>';
-
-    container.innerHTML = `
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                ${tableRows}
-            </table>
-        </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button class="btn btn-primary" onclick="abrirModalAdicionarEntrega()">
-                <i class="fas fa-plus" style="margin-right: 8px;"></i> Adicionar Entrega
-            </button>
-        </div>
-    `;
+    tableBody.innerHTML = tableRows;
 }
 // Função global para popular o select de clientes na aba reuniões
 function populateReuniaoClientes() {
@@ -5299,15 +5281,8 @@ select {
                 </div>
                 
                 <table style="width: 100%; border-collapse: collapse;">
-                    <thead style="background: #e3f2fd;">
-                        <tr>
-                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Mês</th>
-                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Marlos</th>
-                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Larissa</th>
-                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Renata</th>
-                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Victor</th>
-                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">% SETOR</th>
-                        </tr>
+                    <thead style="background: #e3f2fd;" id="entregasTableHeader">
+                        <!-- Cabeçalhos serão gerados dinamicamente -->
                     </thead>
                     <tbody id="entregasTableBody">
                        
@@ -9968,21 +9943,8 @@ window.onclick = function(event) {
                 <option value="DEZ">Dezembro</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="entregaMarlos">Marlos (%)</label>
-            <input type="number" id="entregaMarlos" min="0" max="100" placeholder="0-100">
-        </div>
-        <div class="form-group">
-            <label for="entregaLarissa">Larissa (%)</label>
-            <input type="number" id="entregaLarissa" min="0" max="100" placeholder="0-100">
-        </div>
-        <div class="form-group">
-            <label for="entregaRenata">Renata (%)</label>
-            <input type="number" id="entregaRenata" min="0" max="100" placeholder="0-100">
-        </div>
-        <div class="form-group">
-            <label for="entregaVictor">Victor (%)</label>
-            <input type="number" id="entregaVictor" min="0" max="100" placeholder="0-100">
+        <div id="entregaFieldsContainer">
+            <!-- Campos serão gerados dinamicamente baseados nos membros da equipe -->
         </div>
         <div class="modal-buttons">
             <button class="modal-button cancel" onclick="closeModal('addEntregaModal')">Cancelar</button>
@@ -10039,6 +10001,28 @@ function showAddEntregaModal() {
         showAlert('Atenção', 'Você não tem permissão para adicionar entregas.');
         return;
     }
+    
+    // Gerar campos dinamicamente baseados nos membros da equipe
+    const container = document.getElementById('entregaFieldsContainer');
+    if (container && teamMembers && teamMembers.length > 0) {
+        container.innerHTML = '';
+        teamMembers.forEach(member => {
+            const firstName = member.nome.split(' ')[0]; // Pega apenas o primeiro nome
+            const fieldId = `entrega${firstName}`;
+            container.innerHTML += `
+                <div class="form-group">
+                    <label for="${fieldId}">${firstName} (%)</label>
+                    <input type="number" id="${fieldId}" min="0" max="100" placeholder="0-100">
+                </div>
+            `;
+        });
+    } else {
+        // Se não há membros carregados, mostrar campos padrão ou mensagem
+        if (container) {
+            container.innerHTML = '<p style="color: #888;">Carregue os membros da equipe primeiro.</p>';
+        }
+    }
+    
     document.getElementById('addEntregaModal').classList.add('visible');
 }
 // Função para fechar modais
@@ -10198,41 +10182,55 @@ async function saveEntrega() {
     const setorUsuario = sessionStorage.getItem('setor');
     const entregaData = {
         mes: monthMap[selectedMonth],
-        marlos: parseInt(document.getElementById('entregaMarlos').value),
-        larissa: parseInt(document.getElementById('entregaLarissa').value),
-        renata: parseInt(document.getElementById('entregaRenata').value),
-        victor: parseInt(document.getElementById('entregaVictor').value),
         ano: new Date().getFullYear(),
         setor: setorUsuario,
         created_at: new Date().toISOString()
     };
 
-     
-    entregaData.percentual_setor = Math.round((entregaData.marlos + entregaData.larissa + entregaData.renata + entregaData.victor) / 4);
+    // Coletar dados dinamicamente baseados nos membros da equipe
+    let totalPercentage = 0;
+    let memberCount = 0;
+    
+    if (teamMembers && teamMembers.length > 0) {
+        teamMembers.forEach(member => {
+            const firstName = member.nome.split(' ')[0];
+            const fieldId = `entrega${firstName}`;
+            const input = document.getElementById(fieldId);
+            if (input) {
+                const value = parseInt(input.value) || 0;
+                entregaData[member.nome] = value; // Usar nome completo como chave
+                totalPercentage += value;
+                memberCount++;
+            }
+        });
+    }
+
+    // Calcular percentual do setor
+    entregaData.setor_percentage = memberCount > 0 ? Math.round(totalPercentage / memberCount) : 0;
 
     try {
-       
+        // Verificar se já existe uma entrega para este mês e ano
         const { data: existingData, error: selectError } = await supabase
             .from('entregas')
             .select('id')
             .eq('mes', entregaData.mes)
             .eq('ano', entregaData.ano)
+            .eq('setor', setorUsuario)
             .single();
 
         if (selectError && selectError.code !== 'PGRST116') {
-            
             throw selectError;
         }
 
         let result;
         if (existingData) {
-            
+            // Atualizar entrega existente
             result = await supabase
                 .from('entregas')
                 .update(entregaData)
                 .eq('id', existingData.id);
         } else {
-           
+            // Criar nova entrega
             result = await supabase
                 .from('entregas')
                 .insert([entregaData]);
@@ -10285,10 +10283,18 @@ function clearVisitForm() {
 
 function clearEntregaForm() {
     document.getElementById('entregaMonth').value = 'JAN';
-    document.getElementById('entregaMarlos').value = '';
-    document.getElementById('entregaLarissa').value = '';
-    document.getElementById('entregaRenata').value = '';
-    document.getElementById('entregaVictor').value = '';
+    
+    // Limpar campos dinâmicos baseados nos membros da equipe
+    if (teamMembers && teamMembers.length > 0) {
+        teamMembers.forEach(member => {
+            const firstName = member.nome.split(' ')[0];
+            const fieldId = `entrega${firstName}`;
+            const input = document.getElementById(fieldId);
+            if (input) {
+                input.value = '';
+            }
+        });
+    }
 }
 
 // Função para carregar dados do painel
