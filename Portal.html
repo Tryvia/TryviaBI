@@ -15595,6 +15595,11 @@ function renderizarVisitasPainel(visitas) {
     if (contador) {
         contador.textContent = visitas.length.toString().padStart(2, '0');
     }
+
+    // Atualizar o mapa com as visitas
+    if (typeof atualizarMapaVisitas === 'function') {
+        atualizarMapaVisitas(visitas);
+    }
 }
 
 // Função para obter classe CSS do status
