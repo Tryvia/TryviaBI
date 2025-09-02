@@ -15440,11 +15440,21 @@ const VISITAS_SUPABASE_URL = 'https://obwgegvrtxrlombmkaej.supabase.co';
 const VISITAS_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM';
 
 // Cliente Supabase para visitas
-const visitasClient = supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
+let visitasClient;
+if (typeof supabase !== 'undefined' && typeof supabase.createClient === 'function') {
+    visitasClient = supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
+} else if (window.supabase && typeof window.supabase.createClient === 'function') {
+    visitasClient = window.supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
+} else {
+    console.error('Supabase não está disponível ou não foi carregado corretamente.');
+}
 
 // Função para carregar visitas do setor do usuário logado
 async function carregarVisitasSetor() {
     try {
+        if (!visitasClient) {
+            throw new Error('visitasClient não inicializado');
+        }
         const setorUsuario = sessionStorage.getItem('setor');
         
         if (!setorUsuario) {
@@ -15628,7 +15638,14 @@ function mostrarLocalizacao(latitude, longitude, empresa) {
 // Função para inicializar o mapa de visitas
 function inicializarMapaVisitas() {
     const mapContainer = document.getElementById('mapContainer');
-    if (!mapContainer || window.visitasMap) return; // Evita reinicialização
+    if (!mapContainer) return;
+    if (window.visitasMap) {
+        try {
+            window.visitasMap.remove();
+        } catch (e) {
+            // Se já foi removido, ignora
+        }
+    }
 
     // Verificar se o Leaflet está disponível
     if (typeof L === 'undefined') {
