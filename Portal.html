@@ -749,20 +749,26 @@ async function carregarMembros() {
 
     if (error) {
         console.error("Erro ao buscar membros:", error.message);
+        teamMembers = []; // Garante que a variável seja limpa em caso de erro
         return;
     }
     const container = document.getElementById("membrosList");
-    if (!container) return;
-    container.innerHTML = "";
+    if (container) {
+        container.innerHTML = "";
+    }
     if (!data || data.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Nenhum membro encontrado para este setor.</p>';
+        if (container) {
+            container.innerHTML = '<p style="color: #888;">Nenhum membro encontrado para este setor.</p>';
+        }
         teamMembers = []; // Limpa a lista se não houver membros
         return;
     }
     teamMembers = data; // Armazena os membros na variável global
-    data.forEach(membro => {
-        container.innerHTML += `<div class="membro-item"><strong>${membro.nome}</strong><br>${membro.cargo || ""}</div>`;
-    });
+    if (container) {
+        data.forEach(membro => {
+            container.innerHTML += `<div class="membro-item"><strong>${membro.nome}</strong><br>${membro.cargo || ""}</div>`;
+        });
+    }
 }
 
 // Função para carregar visitas do setor do usuário logado
