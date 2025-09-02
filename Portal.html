@@ -9,6 +9,14 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+#mapContainer {
+    width: 100%;
+    height: 400px; /* ou a altura desejada */
+    background-color: #f0f0f0; /* Cor de fundo para depuração */
+}
+</style>
+
 <script>
 // Funções auxiliares para manipulação de datas sem problemas de fuso horário
 function formatDateForInput(dateString) {
@@ -15644,14 +15652,28 @@ function mostrarLocalizacao(latitude, longitude, empresa) {
 function inicializarMapaVisitas() {
     console.log("Inicializando mapa de visitas...");
     const mapContainer = document.getElementById("mapContainer");
-    if (!mapContainer) return null;
+    if (!mapContainer) {
+        console.error('Container do mapa não encontrado');
+        return null;
+    }
+
+    // Verificar se o container tem dimensões
+    const containerRect = mapContainer.getBoundingClientRect();
+    if (containerRect.width === 0 || containerRect.height === 0) {
+        console.error('Container do mapa não tem dimensões válidas');
+        return null;
+    }
 
     // Limpar completamente o conteúdo do container para evitar o erro de inicialização
     mapContainer.innerHTML = "";
 
     // Remove o mapa anterior, se existir
     if (window.visitasMap) {
-        window.visitasMap.remove();
+        try {
+            window.visitasMap.remove();
+        } catch (e) {
+            console.warn('Erro ao remover mapa anterior:', e);
+        }
         window.visitasMap = null;
     }
 
@@ -15661,15 +15683,21 @@ function inicializarMapaVisitas() {
         return null;
     }
 
-    // Criar mapa centrado no Brasil
-    window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
+    try {
+        // Criar mapa centrado no Brasil
+        window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
 
-    // Adicionar camada de tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(window.visitasMap);
+        // Adicionar camada de tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(window.visitasMap);
 
-    return window.visitasMap;
+        console.log("Mapa inicializado com sucesso");
+        return window.visitasMap;
+    } catch (error) {
+        console.error('Erro ao inicializar mapa:', error);
+        return null;
+    }
 }
 
 // Função para atualizar os marcadores no mapa
@@ -15709,11 +15737,19 @@ async function atualizarSecaoVisitas() {
         const visitas = await carregarVisitasSetor();
         renderizarVisitasPainel(visitas);
 
-        // Inicializar o mapa e adicionar os marcadores
-        const map = inicializarMapaVisitas();
-        if (map) {
-            atualizarMapaVisitas(map, visitas);
-        }
+        // Aguardar um pequeno delay para garantir que o DOM esteja pronto
+        setTimeout(() => {
+            // Inicializar o mapa e adicionar os marcadores
+            const map = inicializarMapaVisitas();
+            if (map) {
+                // Aguardar um pouco mais para garantir que o mapa esteja totalmente carregado
+                setTimeout(() => {
+                    atualizarMapaVisitas(map, visitas);
+                }, 200);
+            } else {
+                console.error('Falha ao inicializar o mapa');
+            }
+        }, 100);
 
     } catch (error) {
         console.error("Erro ao atualizar seção de visitas:", error);
