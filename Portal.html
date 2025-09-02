@@ -15642,14 +15642,17 @@ function mostrarLocalizacao(latitude, longitude, empresa) {
 
 // Função para inicializar o mapa de visitas
 function inicializarMapaVisitas() {
-    const mapContainer = document.getElementById('mapContainer');
+    console.log("Inicializando mapa de visitas...");
+    const mapContainer = document.getElementById("mapContainer");
     if (!mapContainer) return;
+
+    // Limpar completamente o conteúdo do container para evitar o erro de inicialização
+    mapContainer.innerHTML = "";
 
     // Remove o mapa anterior, se existir
     if (window.visitasMap) {
         window.visitasMap.remove();
         window.visitasMap = null;
-        mapContainer.innerHTML = "";
     }
 
     // Verificar se o Leaflet está disponível
@@ -15658,37 +15661,47 @@ function inicializarMapaVisitas() {
         return;
     }
 
-    // Criar mapa centrado no Brasil
-    window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
+    // Adicionar um pequeno atraso para garantir que o DOM seja atualizado
+    setTimeout(() => {
+        // Criar mapa centrado no Brasil
+        window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
 
-    // Adicionar camada de tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(window.visitasMap);
+        // Adicionar camada de tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(window.visitasMap);
+    }, 100); // Atraso de 100ms
+}
 
-    // Carregar e adicionar marcadores das visitas
-    carregarVisitasSetor().then(visitas => {
-        if (visitas && visitas.length > 0) {
-            visitas.forEach(visita => {
-                if (visita.latitude && visita.longitude) {
-                    const marker = L.marker([visita.latitude, visita.longitude])
-                        .addTo(window.visitasMap);
-                    
-                    const popupContent = `
-                        <div style="min-width: 200px;">
-                            <h4 style="margin: 0 0 8px 0; color: #4fc3f7;">${visita.empresa || 'Empresa'}</h4>
-                            <p style="margin: 0 0 4px 0;"><strong>Especialista:</strong> ${visita.especialista || 'N/A'}</p>
-                            <p style="margin: 0 0 4px 0;"><strong>Destino:</strong> ${visita.destino || 'N/A'}</p>
-                            <p style="margin: 0 0 4px 0;"><strong>Status:</strong> ${visita.status || 'N/A'}</p>
-                            <p style="margin: 0;"><strong>Propósito:</strong> ${visita.proposito || 'N/A'}</p>
-                        </div>
-                    `;
-                    
-                    marker.bindPopup(popupContent);
-                }
-            });
-        }
-    });
+// Função para atualizar os marcadores no mapa
+function atualizarMapaVisitas(visitas) {
+    // Limpar marcadores existentes
+    if (window.visitasMarkers) {
+        window.visitasMarkers.forEach(marker => marker.remove());
+    }
+    window.visitasMarkers = [];
+
+    if (visitas && visitas.length > 0) {
+        visitas.forEach(visita => {
+            if (visita.latitude && visita.longitude) {
+                const marker = L.marker([visita.latitude, visita.longitude])
+                    .addTo(window.visitasMap);
+                
+                const popupContent = `
+                    <div style="min-width: 200px;">
+                        <h4 style="margin: 0 0 8px 0; color: #4fc3f7;">${visita.empresa || "Empresa"}</h4>
+                        <p style="margin: 0 0 4px 0;"><strong>Especialista:</strong> ${visita.especialista || "N/A"}</p>
+                        <p style="margin: 0 0 4px 0;"><strong>Destino:</strong> ${visita.destino || "N/A"}</p>
+                        <p style="margin: 0 0 4px 0;"><strong>Status:</strong> ${visita.status || "N/A"}</p>
+                        <p style="margin: 0;"><strong>Propósito:</strong> ${visita.proposito || "N/A"}</p>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                window.visitasMarkers.push(marker);
+            }
+        });
+    }
 }
 
 // Função para atualizar a seção de visitas no painel do setor
@@ -15696,14 +15709,17 @@ async function atualizarSecaoVisitas() {
     try {
         const visitas = await carregarVisitasSetor();
         renderizarVisitasPainel(visitas);
-        // Sempre inicializar o mapa, a função inicializarMapaVisitas já lida com a remoção do mapa anterior
+
+        // Sempre inicializar o mapa. A função inicializarMapaVisitas já lida com a remoção do mapa anterior.
         inicializarMapaVisitas();
-        // Atualizar marcadores no mapa existente
-        if (typeof atualizarMapaVisitas === 'function') {
+
+        // Aguardar um pouco para garantir que o mapa seja inicializado antes de adicionar os marcadores
+        setTimeout(() => {
             atualizarMapaVisitas(visitas);
-        }
+        }, 200); // Atraso de 200ms
+
     } catch (error) {
-        console.error('Erro ao atualizar seção de visitas:', error);
+        console.error("Erro ao atualizar seção de visitas:", error);
     }
 }
 
