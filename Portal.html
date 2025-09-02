@@ -756,25 +756,24 @@ async function carregarMembros() {
 async function carregarVisitas() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
-        .from('viagens')
+        .from('visitas')
         .select('*')
-        .eq('setor', setorUsuario)
-        .order('data_inicio', { ascending: false });
+        .eq('setor', setorUsuario);
 
     if (error) {
         console.error('Erro ao buscar visitas:', error.message);
         return;
     }
-    
-    // Atualizar o mapa com as visitas
-    await atualizarMapaVisitas(data);
-    
-    // Atualizar contador de empresas
-    const empresasUnicas = new Set(data.map(visita => visita.empresa)).size;
-    const contadorElement = document.getElementById('empresasCount');
-    if (contadorElement) {
-        contadorElement.textContent = empresasUnicas.toString().padStart(2, '0');
+    const container = document.getElementById('visitasList');
+    if (!container) return;
+    container.innerHTML = '';
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p style="color: #888;">Nenhuma visita encontrada para este setor.</p>';
+        return;
     }
+    data.forEach(visita => {
+        container.innerHTML += `<div class="visita-item"><strong>${visita.titulo}</strong><br>${visita.descricao || ''}</div>`;
+    });
 }
 
 // Função para carregar entregas do setor do usuário logado
@@ -3039,7 +3038,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-//window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 
 sessionStorage.setItem('tryvia_logged', 'true');
 }
@@ -5171,21 +5170,29 @@ select {
             </h3>
             
             <!-- Mapa -->
-            <div id="mapContainer" style="height: 300px; border-radius: 10px; margin-bottom: 20px; z-index: 1;">
+            <div id="mapContainer" style="height: 200px; border-radius: 10px; margin-bottom: 20px; z-index: 1;">
               
             </div>
             
-            <!-- Contador de empresas -->
+            <!-- Lista de Visitas -->
+            <div id="visitasList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5em; margin-bottom: 10px;"></i>
+                    <p>Carregando visitas...</p>
+                </div>
+            </div>
+            
+            <!-- Contador de visitas -->
             <div style="text-align: center; margin-bottom: 15px;">
                 <span style="font-size: 1.2em; font-weight: bold; color: #4fc3f7;">
-                    <i class="fas fa-building" style="margin-right: 8px;"></i>
-                    <span id="empresasCount">05</span> Empresas
+                    <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>
+                    <span id="visitasCount">00</span> Visitas
                 </span>
             </div>
             
-            <!-- Botão para adicionar visita -->
-            <button class="btn-primary" onclick="showAddVisitModal()" style="width: 100%;">
-                <i class="fas fa-plus" style="margin-right: 8px;"></i>Adicionar Visita
+            <!-- Botão para atualizar visitas -->
+            <button class="btn-primary" onclick="atualizarSecaoVisitas()" style="width: 100%;">
+                <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>Atualizar Visitas
             </button>
         </div>
 
@@ -10476,10 +10483,10 @@ async function loadVisitasOnMap() {
     try {
         const setorUsuario = sessionStorage.getItem('setor');
         const { data: visitas, error } = await supabase
-            .from('viagens')
+            .from('visitas_setor')
             .select('*')
             .eq('setor', setorUsuario)
-            .order('data_inicio', { ascending: false });
+            .order('created_at', { ascending: false });
 
         if (error) throw error;
 
@@ -10497,6 +10504,21 @@ async function loadVisitasOnMap() {
             let lat = visita.latitude;
             let lng = visita.longitude;
 
+            
+            if (!lat || !lng) {
+                const coords = await geocodeAddress(`${visita.endereco}, ${visita.cidade}, ${visita.estado}, Brasil`);
+                if (coords) {
+                    lat = coords.lat;
+                    lng = coords.lng;
+                    
+                    
+                    await supabase
+                        .from('visitas_setor')
+                        .update({ latitude: lat, longitude: lng })
+                        .eq('id', visita.id);
+                }
+            }
+
             if (lat && lng) {
                
                 const marker = L.marker([lat, lng]).addTo(visitasMap);
@@ -10505,12 +10527,9 @@ async function loadVisitasOnMap() {
                 const popupContent = `
                     <div style="min-width: 200px;">
                         <h4 style="margin: 0 0 10px 0; color: #4fc3f7;">${visita.empresa}</h4>
-                        <p style="margin: 5px 0;"><strong>Destino:</strong> ${visita.destino}</p>
-                        <p style="margin: 5px 0;"><strong>Especialista:</strong> ${visita.especialista}</p>
-                        <p style="margin: 5px 0;"><strong>Propósito:</strong> ${visita.proposito}</p>
-                        <p style="margin: 5px 0;"><strong>Status:</strong> ${visita.status}</p>
-                        <p style="margin: 5px 0;"><strong>Data Início:</strong> ${visita.data_inicio ? new Date(visita.data_inicio).toLocaleDateString('pt-BR') : 'Não informada'}</p>
-                        <p style="margin: 5px 0;"><strong>Data Fim:</strong> ${visita.data_fim ? new Date(visita.data_fim).toLocaleDateString('pt-BR') : 'Não informada'}</p>
+                        <p style="margin: 5px 0;"><strong>Cidade:</strong> ${visita.cidade}, ${visita.estado}</p>
+                        <p style="margin: 5px 0;"><strong>Data:</strong> ${visita.data_visita ? new Date(visita.data_visita).toLocaleDateString('pt-BR') : 'Não informada'}</p>
+                        <p style="margin: 5px 0;"><strong>Objetivo:</strong> ${visita.objetivo || 'Não informado'}</p>
                     </div>
                 `;
                 
@@ -11968,7 +11987,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-   // window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -15289,71 +15308,6 @@ function renderTickets(tickets) {
         return;
     }
     
-
-// Função para atualizar o mapa com as visitas
-async function atualizarMapaVisitas(visitas) {
-    if (!visitasMap) {
-        console.warn('Mapa não inicializado');
-        return;
-    }
-
-    try {
-        // Limpar marcadores existentes
-        visitasMap.eachLayer(function (layer) {
-            if (layer instanceof L.Marker) {
-                visitasMap.removeLayer(layer);
-            }
-        });
-
-        let empresasCount = 0;
-
-        // Adicionar marcadores para cada visita
-        for (const visita of visitas) {
-            let lat = visita.latitude;
-            let lng = visita.longitude;
-
-            if (lat && lng) {
-                // Criar marcador
-                const marker = L.marker([lat, lng]).addTo(visitasMap);
-                
-                // Criar popup com informações da visita
-                const popupContent = `
-                    <div style="min-width: 200px;">
-                        <h4 style="margin: 0 0 10px 0; color: #4fc3f7;">${visita.empresa}</h4>
-                        <p style="margin: 5px 0;"><strong>Destino:</strong> ${visita.destino}</p>
-                        <p style="margin: 5px 0;"><strong>Especialista:</strong> ${visita.especialista}</p>
-                        <p style="margin: 5px 0;"><strong>Propósito:</strong> ${visita.proposito}</p>
-                        <p style="margin: 5px 0;"><strong>Status:</strong> ${visita.status}</p>
-                        <p style="margin: 5px 0;"><strong>Data Início:</strong> ${visita.data_inicio ? new Date(visita.data_inicio).toLocaleDateString('pt-BR') : 'Não informada'}</p>
-                        <p style="margin: 5px 0;"><strong>Data Fim:</strong> ${visita.data_fim ? new Date(visita.data_fim).toLocaleDateString('pt-BR') : 'Não informada'}</p>
-                    </div>
-                `;
-                
-                marker.bindPopup(popupContent);
-                empresasCount++;
-            }
-        }
-
-        // Ajustar zoom para mostrar todos os marcadores
-        if (empresasCount > 0) {
-            const group = new L.featureGroup();
-            visitasMap.eachLayer(function (layer) {
-                if (layer instanceof L.Marker) {
-                    group.addLayer(layer);
-                }
-            });
-            if (group.getLayers().length > 0) {
-                visitasMap.fitBounds(group.getBounds().pad(0.1));
-            }
-        }
-
-    } catch (error) {
-        console.error('Erro ao atualizar mapa com visitas:', error);
-    }
-}
-
-
-
     // Ordenar tickets por data de criação (mais recentes primeiro)
     tickets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     
@@ -15461,10 +15415,319 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadAllTickets();
             }, 100);
         }
+        // Carregar visitas quando a aba painel-setor for aberta
+        if (tabName === 'painel-setor') {
+            setTimeout(() => {
+                atualizarSecaoVisitas();
+            }, 100);
+        }
+    };  // Carregar visitas quando a aba painel-setor for aberta
+        if (tabName === 'painel-setor') {
+            setTimeout(() => {
+                atualizarSecaoVisitas();
+            }, 100);
+        }
     };
 });</script>
 
+<!-- Script de Integração das Visitas -->
+<script>
+// Configuração da API Supabase para visitas
+const VISITAS_SUPABASE_URL = 'https://obwgegvrtxrlombmkaej.supabase.co';
+const VISITAS_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM';
+
+// Cliente Supabase para visitas
+const visitasClient = supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
+
+// Função para carregar visitas do setor do usuário logado
+async function carregarVisitasSetor() {
+    try {
+        const setorUsuario = sessionStorage.getItem('setor');
+        
+        if (!setorUsuario) {
+            console.error('Setor do usuário não encontrado');
+            return [];
+        }
+
+        console.log('Carregando visitas para o setor:', setorUsuario);
+
+        const { data, error } = await visitasClient
+            .from('viagens')
+            .select('*')
+            .eq('setor', setorUsuario)
+            .order('data_inicio', { ascending: false });
+
+        if (error) {
+            console.error('Erro ao buscar visitas:', error.message);
+            return [];
+        }
+
+        console.log('Visitas carregadas:', data);
+        return data || [];
+    } catch (error) {
+        console.error('Erro na função carregarVisitasSetor:', error);
+        return [];
+    }
+}
+
+// Função para renderizar visitas no painel do setor
+function renderizarVisitasPainel(visitas) {
+    const container = document.getElementById('visitasList');
+    if (!container) {
+        console.error('Container visitasList não encontrado');
+        return;
+    }
+
+    container.innerHTML = '';
+
+    if (!visitas || visitas.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #666;">
+                <i class="fas fa-map-marker-alt" style="font-size: 2em; margin-bottom: 10px; color: #4fc3f7;"></i>
+                <p style="margin: 0; font-size: 1.1em;">Nenhuma visita encontrada para este setor.</p>
+            </div>
+        `;
+        return;
+    }
+
+    visitas.forEach(visita => {
+        const dataInicio = visita.data_inicio ? formatDateForDisplay(visita.data_inicio) : 'Não informada';
+        const dataFim = visita.data_fim ? formatDateForDisplay(visita.data_fim) : 'Não informada';
+        const statusClass = getStatusClassVisitas(visita.status);
+        
+        const visitaElement = document.createElement('div');
+        visitaElement.className = 'visita-item';
+        visitaElement.style.cssText = `
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #4fc3f7;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        `;
+
+        visitaElement.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div style="flex: 1;">
+                    <h4 style="margin: 0 0 5px 0; color: #4fc3f7; font-size: 1.1em;">
+                        <i class="fas fa-building" style="margin-right: 8px;"></i>
+                        ${visita.empresa || 'Empresa não informada'}
+                    </h4>
+                    <p style="margin: 0 0 5px 0; color: #666; font-size: 0.9em;">
+                        <i class="fas fa-user" style="margin-right: 5px;"></i>
+                        <strong>Especialista:</strong> ${visita.especialista || 'Não informado'}
+                    </p>
+                    <p style="margin: 0 0 5px 0; color: #666; font-size: 0.9em;">
+                        <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>
+                        <strong>Destino:</strong> ${visita.destino || 'Não informado'}
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="status-badge ${statusClass}" style="
+                        padding: 4px 8px;
+                        border-radius: 12px;
+                        font-size: 0.8em;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    ">${visita.status || 'Não informado'}</span>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <p style="margin: 0; color: #333; font-size: 0.9em;">
+                    <i class="fas fa-clipboard-list" style="margin-right: 5px;"></i>
+                    <strong>Propósito:</strong> ${visita.proposito || 'Não informado'}
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div style="background: #f8f9fa; padding: 8px; border-radius: 6px;">
+                    <small style="color: #666; font-weight: bold;">Data Início</small>
+                    <div style="color: #333;">${dataInicio}</div>
+                </div>
+                <div style="background: #f8f9fa; padding: 8px; border-radius: 6px;">
+                    <small style="color: #666; font-weight: bold;">Data Fim</small>
+                    <div style="color: #333;">${dataFim}</div>
+                </div>
+            </div>
+            
+            ${visita.latitude && visita.longitude ? `
+                <div style="margin-top: 10px;">
+                    <button onclick="mostrarLocalizacao(${visita.latitude}, ${visita.longitude}, '${visita.empresa}')" 
+                            style="background: #4fc3f7; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em;">
+                        <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>
+                        Ver no Mapa
+                    </button>
+                </div>
+            ` : ''}
+        `;
+
+        // Adicionar efeito hover
+        visitaElement.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.15)';
+        });
+
+        visitaElement.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+        });
+
+        container.appendChild(visitaElement);
+    });
+
+    // Atualizar contador de visitas
+    const contador = document.getElementById('visitasCount');
+    if (contador) {
+        contador.textContent = visitas.length.toString().padStart(2, '0');
+    }
+}
+
+// Função para obter classe CSS do status
+function getStatusClassVisitas(status) {
+    if (!status) return 'status-default';
+    
+    const statusLower = status.toLowerCase();
+    
+    if (statusLower.includes('concluída') || statusLower.includes('finalizada')) {
+        return 'status-concluida';
+    } else if (statusLower.includes('andamento') || statusLower.includes('progresso')) {
+        return 'status-andamento';
+    } else if (statusLower.includes('agendada') || statusLower.includes('planejada')) {
+        return 'status-agendada';
+    } else if (statusLower.includes('cancelada')) {
+        return 'status-cancelada';
+    }
+    
+    return 'status-default';
+}
+
+// Função para mostrar localização no mapa
+function mostrarLocalizacao(latitude, longitude, empresa) {
+    // Se existe um mapa no container, centralizar nele
+    const mapContainer = document.getElementById('mapContainer');
+    if (mapContainer && window.visitasMap) {
+        window.visitasMap.setView([latitude, longitude], 15);
+        
+        // Adicionar popup temporário
+        L.popup()
+            .setLatLng([latitude, longitude])
+            .setContent(`<strong>${empresa}</strong><br>Localização da visita`)
+            .openOn(window.visitasMap);
+    } else {
+        // Abrir no Google Maps como fallback
+        const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        window.open(url, '_blank');
+    }
+}
+
+// Função para inicializar o mapa de visitas
+function inicializarMapaVisitas() {
+    const mapContainer = document.getElementById('mapContainer');
+    if (!mapContainer) return;
+
+    // Verificar se o Leaflet está disponível
+    if (typeof L === 'undefined') {
+        console.error('Leaflet não está carregado');
+        return;
+    }
+
+    // Criar mapa centrado no Brasil
+    window.visitasMap = L.map('mapContainer').setView([-14.235, -51.9253], 4);
+
+    // Adicionar camada de tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(window.visitasMap);
+
+    // Carregar e adicionar marcadores das visitas
+    carregarVisitasSetor().then(visitas => {
+        if (visitas && visitas.length > 0) {
+            visitas.forEach(visita => {
+                if (visita.latitude && visita.longitude) {
+                    const marker = L.marker([visita.latitude, visita.longitude])
+                        .addTo(window.visitasMap);
+                    
+                    const popupContent = `
+                        <div style="min-width: 200px;">
+                            <h4 style="margin: 0 0 8px 0; color: #4fc3f7;">${visita.empresa || 'Empresa'}</h4>
+                            <p style="margin: 0 0 4px 0;"><strong>Especialista:</strong> ${visita.especialista || 'N/A'}</p>
+                            <p style="margin: 0 0 4px 0;"><strong>Destino:</strong> ${visita.destino || 'N/A'}</p>
+                            <p style="margin: 0 0 4px 0;"><strong>Status:</strong> ${visita.status || 'N/A'}</p>
+                            <p style="margin: 0;"><strong>Propósito:</strong> ${visita.proposito || 'N/A'}</p>
+                        </div>
+                    `;
+                    
+                    marker.bindPopup(popupContent);
+                }
+            });
+        }
+    });
+}
+
+// Função para atualizar a seção de visitas no painel do setor
+async function atualizarSecaoVisitas() {
+    try {
+        const visitas = await carregarVisitasSetor();
+        renderizarVisitasPainel(visitas);
+        
+        // Inicializar mapa se ainda não foi inicializado
+        if (!window.visitasMap) {
+            setTimeout(inicializarMapaVisitas, 100);
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar seção de visitas:', error);
+    }
+}
+
+// Estilos CSS para os status das visitas
+const visitasStyles = document.createElement('style');
+visitasStyles.textContent = `
+.status-concluida {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.status-andamento {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.status-agendada {
+    background-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.status-cancelada {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.status-default {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.visita-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+`;
+
+// Adicionar estilos ao documento
+if (!document.getElementById('visitas-styles')) {
+    visitasStyles.id = 'visitas-styles';
+    document.head.appendChild(visitasStyles);
+}
+
+// Exportar funções para uso global
+window.carregarVisitasSetor = carregarVisitasSetor;
+window.renderizarVisitasPainel = renderizarVisitasPainel;
+window.atualizarSecaoVisitas = atualizarSecaoVisitas;
+window.inicializarMapaVisitas = inicializarMapaVisitas;
+window.mostrarLocalizacao = mostrarLocalizacao;
+</script>
+
 </body>
 </html>
-
-
