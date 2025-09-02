@@ -15696,14 +15696,11 @@ async function atualizarSecaoVisitas() {
     try {
         const visitas = await carregarVisitasSetor();
         renderizarVisitasPainel(visitas);
-        // Inicializar mapa apenas se ainda não existe
-        if (!window.visitasMap) {
-            inicializarMapaVisitas();
-        } else {
-            // Atualizar marcadores no mapa existente
-            if (typeof atualizarMapaVisitas === 'function') {
-                atualizarMapaVisitas(visitas);
-            }
+        // Sempre inicializar o mapa, a função inicializarMapaVisitas já lida com a remoção do mapa anterior
+        inicializarMapaVisitas();
+        // Atualizar marcadores no mapa existente
+        if (typeof atualizarMapaVisitas === 'function') {
+            atualizarMapaVisitas(visitas);
         }
     } catch (error) {
         console.error('Erro ao atualizar seção de visitas:', error);
