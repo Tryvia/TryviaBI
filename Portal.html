@@ -15644,12 +15644,12 @@ function mostrarLocalizacao(latitude, longitude, empresa) {
 function inicializarMapaVisitas() {
     const mapContainer = document.getElementById('mapContainer');
     if (!mapContainer) return;
+
+    // Remove o mapa anterior, se existir
     if (window.visitasMap) {
-        try {
-            window.visitasMap.remove();
-        } catch (e) {
-            // Se já foi removido, ignora
-        }
+        window.visitasMap.remove();
+        window.visitasMap = null;
+        mapContainer.innerHTML = "";
     }
 
     // Verificar se o Leaflet está disponível
