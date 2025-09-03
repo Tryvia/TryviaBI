@@ -847,27 +847,41 @@ async function carregarEntregas() {
 
     let tableRows = '';
 
+
     months.forEach((month, index) => {
-        const entregaMes = entregasData.find(e => e.mes === (index + 1)); // Comparar com o número do mês
+        const entregaMes = entregasData.find(e => e.mes === (index + 1));
         tableRows += `<tr><td style="padding: 10px; font-weight: bold;">${month}</td>`;
 
-        // Gerar colunas para cada membro da equipe
+        // Calcular média do setor
+        let somaPercentuais = 0;
+        let membrosComValor = 0;
+
         teamMembers.forEach(member => {
-            const memberEntrega = entregaMes && entregaMes.entregas_membros ? 
-                                  entregaMes.entregas_membros.find(em => em.membro_id === member.id) : null;
-            const percentage = memberEntrega ? `${memberEntrega.percentual}%` : '-';
+            const memberEntrega = entregaMes && entregaMes.entregas_membros ?
+                entregaMes.entregas_membros.find(em => em.membro_id === member.id) : null;
+            let percentage = '-';
+            if (memberEntrega && memberEntrega.percentual !== null && memberEntrega.percentual !== undefined && memberEntrega.percentual !== '') {
+                percentage = `${memberEntrega.percentual}%`;
+                let valor = parseFloat(memberEntrega.percentual);
+                if (!isNaN(valor)) {
+                    somaPercentuais += valor;
+                    membrosComValor++;
+                }
+            }
             tableRows += `<td style="padding: 10px; text-align: center;">${percentage}</td>`;
         });
 
-        // Coluna do percentual do setor
-        console.log("Raw setor_percentage from DB:", entregaMes ? entregaMes.setor_percentage : "N/A");
-        const setorPercentage = entregaMes && entregaMes.setor_percentage !== null && entregaMes.setor_percentage !== undefined ? `${entregaMes.setor_percentage}%` : '0%';
+        // Calcular média do setor
+        let mediaSetor = 0;
+        if (membrosComValor > 0) {
+            mediaSetor = somaPercentuais / membrosComValor;
+        }
+        let setorPercentage = `${Math.round(mediaSetor)}%`;
         let setorStyle = 'padding: 10px; text-align: center;';
-        if (setorPercentage !== '0%') {
-            const percentageValue = parseFloat(setorPercentage);
-            if (percentageValue >= 90) {
+        if (mediaSetor > 0) {
+            if (mediaSetor >= 90) {
                 setorStyle += ' background-color: #4caf50; color: white; font-weight: bold;'; // Verde
-            } else if (percentageValue >= 70) {
+            } else if (mediaSetor >= 70) {
                 setorStyle += ' background-color: #ff9800; color: white; font-weight: bold;'; // Laranja
             } else {
                 setorStyle += ' background-color: #f44336; color: white; font-weight: bold;'; // Vermelho
