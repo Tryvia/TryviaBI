@@ -793,8 +793,8 @@ async function carregarVisitas() {
 async function carregarEntregas() {
     const setorUsuario = sessionStorage.getItem('setor');
     
-    // Primeiro, garantir que os membros da equipe sejam carregados
-    await carregarMembros();
+    // Primeiro, garantir que os membros da equipe sejam carregados da tabela 'time'
+    await loadTimeData();
     
     const { data, error } = await supabase
         .from('entregas')
@@ -10333,6 +10333,9 @@ async function loadTimeData() {
 
         if (error) throw error;
 
+        // Atualizar variável global teamMembers
+        teamMembers = data || [];
+
         const timeList = document.getElementById('timeList');
         
         if (data.length === 0) {
@@ -10406,65 +10409,8 @@ async function loadProjectsData() {
 
 // Carregar dados das entregas
 async function loadEntregasData() {
-    try {
-        const setorUsuario = sessionStorage.getItem('setor');
-        const { data, error } = await supabase
-            .from('entregas')
-            .select('*')
-            .eq('ano', new Date().getFullYear())
-            .eq('setor', setorUsuario)
-            .order('mes', { ascending: true });
-
-        if (error) throw error;
-
-        const tableBody = document.getElementById('entregasTableBody');
-        
-        // Meses padrão e mapeamento de números para strings
-        const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-        const monthNumberMap = {
-            1: 'JAN', 2: 'FEV', 3: 'MAR', 4: 'ABR', 5: 'MAI', 6: 'JUN',
-            7: 'JUL', 8: 'AGO', 9: 'SET', 10: 'OUT', 11: 'NOV', 12: 'DEZ'
-        };
-        
-        const entregasMap = {};
-        data.forEach(entrega => {
-            
-            const mesString = monthNumberMap[entrega.mes];
-            if (mesString) {
-                entregasMap[mesString] = entrega;
-            }
-        });
-
-        tableBody.innerHTML = meses.map(mes => {
-            const entrega = entregasMap[mes];
-            if (entrega) {
-                const percentualColor = entrega.percentual_setor >= 90 ? '#4caf50' : entrega.percentual_setor >= 70 ? '#ff9800' : '#f44336';
-                return `
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 10px; font-weight: bold;">${mes}</td>
-                        <td style="padding: 10px; text-align: center;">${entrega.marlos}%</td>
-                        <td style="padding: 10px; text-align: center;">${entrega.larissa}%</td>
-                        <td style="padding: 10px; text-align: center;">${entrega.renata}%</td>
-                        <td style="padding: 10px; text-align: center;">${entrega.victor}%</td>
-                        <td style="padding: 10px; text-align: center; background: ${percentualColor}; color: white; font-weight: bold;">${entrega.percentual_setor}%</td>
-                    </tr>
-                `;
-            } else {
-                return `
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 10px; font-weight: bold;">${mes}</td>
-                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
-                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
-                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
-                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
-                        <td style="padding: 10px; text-align: center; color: #ccc;">-</td>
-                    </tr>
-                `;
-            }
-        }).join('');
-    } catch (error) {
-        console.error('Erro ao carregar dados das entregas:', error);
-    }
+    // Usar a nova função carregarEntregas que é dinâmica
+    await carregarEntregas();
 }
 
 // Atualizar contadores de tarefas
