@@ -860,9 +860,9 @@ async function carregarEntregas() {
         });
 
         // Coluna do percentual do setor
-        const setorPercentage = entregaMes && entregaMes.setor_percentage !== undefined ? `${entregaMes.setor_percentage}%` : '-';
+        const setorPercentage = entregaMes && entregaMes.setor_percentage !== null && entregaMes.setor_percentage !== undefined ? `${entregaMes.setor_percentage}%` : '0%';
         let setorStyle = 'padding: 10px; text-align: center;';
-        if (setorPercentage !== '-') {
+        if (setorPercentage !== '0%') {
             const percentageValue = parseFloat(setorPercentage);
             if (percentageValue >= 90) {
                 setorStyle += ' background-color: #4caf50; color: white; font-weight: bold;'; // Verde
@@ -10277,10 +10277,11 @@ async function saveEntrega() {
 
         // 3. Atualizar o percentual do setor na tabela 'entregas'
         const setorPercentage = memberCount > 0 ? Math.round(totalPercentage / memberCount) : 0;
+        console.log('Calculated setorPercentage:', setorPercentage, 'from totalPercentage:', totalPercentage, 'and memberCount:', memberCount);
         const { error: updateEntregaError } = await supabase
-            .from('entregas')
+            .from("entregas")
             .update({ percentual_setor: setorPercentage })
-            .eq('id', entregaId);
+            .eq("id", entregaId);
         if (updateEntregaError) throw updateEntregaError;
 
         showAlert('Sucesso', 'Entrega salva com sucesso!');
