@@ -860,6 +860,7 @@ async function carregarEntregas() {
         });
 
         // Coluna do percentual do setor
+        console.log("Raw setor_percentage from DB:", entregaMes ? entregaMes.setor_percentage : "N/A");
         const setorPercentage = entregaMes && entregaMes.setor_percentage !== null && entregaMes.setor_percentage !== undefined ? `${entregaMes.setor_percentage}%` : '0%';
         let setorStyle = 'padding: 10px; text-align: center;';
         if (setorPercentage !== '0%') {
