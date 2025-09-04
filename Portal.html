@@ -6912,7 +6912,7 @@ async function fetchAndRenderClients() {
       <i class="fas fa-ticket-alt"></i> Ver Tickets
     </button>
     <button class="btn-integracoes" onclick="viewClientIntegracoes(${client.id}, '${client.name}', '${client.CNPJ || ''}')">
-      <i class="fas fa-plug"></i> Integrações Ativas
+      <i class="fas fa-plug"></i> Integrações 
     </button>
   </div>
 
@@ -9061,7 +9061,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="integracoesModal" class="tickets-modal">
     <div class="tickets-modal-content">
         <div class="tickets-modal-header">
-            <h2 id="integracoesModalTitle">Integrações Ativas</h2>
+            <h2 id="integracoesModalTitle">Integrações</h2>
             <span class="tickets-modal-close" onclick="closeIntegracoesModal()">&times;</span>
         </div>
         <div id="integracoesModalContent">
@@ -9190,7 +9190,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
     const title = document.getElementById("integracoesModalTitle");
     const content = document.getElementById("integracoesModalContent");
     
-    title.textContent = `Integrações Ativas - ${clientName}`;
+    title.textContent = `Integrações - ${clientName}`;
     content.innerHTML = `
         <div class="loading-tickets">
             <i class="fas fa-spinner fa-spin"></i>
@@ -9241,11 +9241,11 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
             return;
         }
         
-        // Renderizar as integrações
+        // Renderizar as integrações com status baseado no campo 'erro' (API retorna 'erro', não 'error')
         const integracoesHtml = integracoesData.integracoes.map(integracao => {
-            const statusIcon = integracao.status === 'Ativo' ? '✅' : '✅';
-            const statusClass = integracao.status === 'Ativo' ? 'ativo' : 'erro';
-            
+            const status = integracao.erro === false ? 'Inativo' : 'Ativo';
+            const statusIcon = status === 'Ativo' ? '✅' : '❌';
+            const statusClass = status === 'Ativo' ? 'ativo' : 'erro';
             return `
                 <div class="integracao-item ${statusClass}">
                     <div class="integracao-header">
@@ -9253,7 +9253,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
                             ${statusIcon} <strong>${integracao.sistema || 'Sistema não informado'}</strong>
                         </div>
                         <div class="integracao-status ${statusClass}">
-                            ${integracao.status || 'Ativo'}
+                            ${status}
                         </div>
                     </div>
                     <div class="integracao-details">
@@ -13927,12 +13927,12 @@ document.addEventListener('change', function(e) {
 }
 
 .integracao-status.ativo {
-    background-color: #4caf50;
+    background-color: #198975;
     color: white;
 }
 
 .integracao-status.erro {
-    background-color: #198975;
+    background-color: #bc4a4a;
     color: white;
 }
 
