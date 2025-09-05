@@ -1063,7 +1063,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 window.onload = async function () {
     const { data, error } = await supabaseClient
-        .from("especialista__")
+        .from("infor_funcionario")
         .select("*")
         .eq("id", 2)
         .single();
@@ -1160,7 +1160,7 @@ async function salvarModificacoes() {
         }
     });
 
-    const { data, error } = await supabaseClient.from("especialista__").upsert([{
+    const { data, error } = await supabaseClient.from("infor_funcionario").upsert([{
         id: 2,
         nome: nome,
         funcao: cargo,
