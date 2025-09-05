@@ -6820,7 +6820,7 @@ async function fetchAndRenderClients() {
      .from('clients')
      .select(`
         *,
-        products (
+        products_cliente (
             id, name, quantity
         ),
         integrations (
