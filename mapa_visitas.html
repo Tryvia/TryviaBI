@@ -689,7 +689,7 @@
             // ----------------------------------------
 
             const { data, error } = await supabase
-                .from('viagens')
+                .from('mapa_viagens')
                 .insert([novaViagem])
                 .select(); // Adicionado .select() para retornar os dados inseridos, incluindo o ID gerado pelo Supabase
 
@@ -799,7 +799,7 @@
             };
 
             const { data, error } = await supabase
-                .from('viagens')
+                .from('mapa_viagens')
                 .update(viagemAtualizada)
                 .eq('id', id)
                 .select(); // Adicionado .select() para retornar os dados atualizados
@@ -838,7 +838,7 @@
             }
 
             const { error } = await supabase
-                .from('viagens')
+                .from('mapa_viagens')
                 .delete()
                 .eq('id', id);
 
@@ -891,7 +891,7 @@
         // Função para carregar dados do Supabase
         async function carregarDadosDoSupabase() {
             const { data, error } = await supabase
-                .from('viagens')
+                .from('mapa_viagens')
                 .select('*');
 
             if (error) {
