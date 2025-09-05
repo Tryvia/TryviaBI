@@ -15567,7 +15567,7 @@ async function carregarVisitasSetor() {
         console.log('Carregando visitas para o setor:', setorUsuario);
 
         const { data, error } = await visitasClient
-            .from('viagens')
+            .from('mapa_viagens')
             .select('*')
             .eq('setor', setorUsuario)
             .order('data_inicio', { ascending: false });
