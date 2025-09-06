@@ -4727,24 +4727,38 @@ select {
                 <label for="editClientPhone" style="margin-top: 15px;">Telefone</label>
                 <input id="editClientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
                 <label for="editClientStatus" style="margin-top: 15px;">Status do Cliente</label>
-                <select id="editClientStatus">
-                    <option value="Cliente Ativo">Cliente Ativo</option>
-                    <option value="Cliente Inativo">Cliente Inativo</option>
-                </select>
+                <select id="editClientStatus"></select>
                 <label for="editClientGroup" style="margin-top: 15px;">Grupo</label>
-                <select id="editClientGroup">
-                    <option value="Nenhum">Nenhum</option>
-                    <option value="JCA">JCA</option>
-                    <option value="Guanabara">Guanabara</option>
-                    <option value="Águia Branca">Águia Branca</option>
-                </select>
+                <select id="editClientGroup"></select>
                 <label for="editClientSubgroup" style="margin-top: 15px;">Subgrupo</label>
-                <select id="editClientSubgroup">
-                    <option value="Nenhum">Nenhum</option>
-                    <option value="Carga">Carga</option>
-                    <option value="Urbano">Urbano</option>
-                    <option value="Rodoviário">Rodoviário</option>
-                </select>
+                <select id="editClientSubgroup"></select>
+<script>
+// Carregar opções dinâmicas para status, grupo e subgrupo
+async function loadClientSelectOptions() {
+    // Status
+    const { data: statuses } = await supabase.from('client_statuses').select('id, name');
+    const statusSelect = document.getElementById('editClientStatus');
+    statusSelect.innerHTML = '<option value="">Nenhum</option>';
+    statuses?.forEach(s => {
+        statusSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+    });
+    // Grupo
+    const { data: groups } = await supabase.from('client_groups').select('id, name');
+    const groupSelect = document.getElementById('editClientGroup');
+    groupSelect.innerHTML = '<option value="">Nenhum</option>';
+    groups?.forEach(g => {
+        groupSelect.innerHTML += `<option value="${g.id}">${g.name}</option>`;
+    });
+    // Subgrupo (pode ser filtrado por parent_group_id, se necessário)
+    const subgroupSelect = document.getElementById('editClientSubgroup');
+    subgroupSelect.innerHTML = '<option value="">Nenhum</option>';
+    groups?.forEach(g => {
+        subgroupSelect.innerHTML += `<option value="${g.id}">${g.name}</option>`;
+    });
+}
+// Chame ao abrir o modal/aba de edição
+document.addEventListener('DOMContentLoaded', loadClientSelectOptions);
+</script>
                 <label for="editClientCfEmpresa" style="margin-top: 15px;">Email</label>
                 <input id="editClientCfEmpresa" placeholder="Valor do campo cf_empresa no Freshdesk..." type="text"/>
                 <label for="editClientBiLink" style="margin-top: 15px;">Link do Dashboard BI</label>
