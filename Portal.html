@@ -9419,7 +9419,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
 }
 
 // Função para consultar integrações por CNPJ
-async function consultarIntegracoesPorCNPJ(cnpj) {
+async function consultarIntegracoesPorcnpj(cnpj) {
     try {
         // Chamar a API Flask para obter as integrações
         const response = await fetch(`http://127.0.0.1:5000/api/integracoes/consultar-por-cnpj`, {
