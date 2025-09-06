@@ -9,6 +9,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="client_functions.js"></script>
 <style>
 #mapContainer {
     width: 100%;
@@ -17,88 +18,7 @@
 }
 </style>
 
-<script>
-// Funções auxiliares para manipulação de datas sem problemas de fuso horário
-function formatDateForInput(dateString) {
-    if (!dateString) return "";
-    
-    // Se a data já está no formato YYYY-MM-DD, retorna diretamente
-    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        return dateString;
-    }
-    
-    // Para datas ISO, extrair apenas a parte da data
-    if (dateString.includes("T")) {
-        return dateString.split("T")[0];
-    }
-    
-    // Para outras datas, criar a data e extrair os componentes manualmente
-    const date = new Date(dateString);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    
-    return `${year}-${month}-${day}`;
-}
 
-function formatDateForDisplay(dateString) {
-    if (!dateString) return "Não informada";
-    
-    // Se a data está no formato YYYY-MM-DD, criar Date sem problemas de fuso horário
-    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = dateString.split("-");
-        const date = new Date(year, month - 1, day); // month - 1 porque Date usa 0-11 para meses
-        return date.toLocaleDateString("pt-BR");
-    }
-    
-    // Para datas ISO, extrair apenas a parte da data e processar
-    if (dateString.includes("T")) {
-        const datePart = dateString.split("T")[0];
-        const [year, month, day] = datePart.split("-");
-        const date = new Date(year, month - 1, day);
-        return date.toLocaleDateString("pt-BR");
-    }
-    
-    // Para outras datas, usar o método padrão
-    return new Date(dateString).toLocaleDateString("pt-BR");
-}
-
-// Função para formatar data e hora corretamente para exibição
-function formatDateTimeForDisplay(dateString) {
-    if (!dateString) return 'Data não informada';
-    
-    // Para datas ISO, extrair a parte da data e processar
-    if (dateString.includes('T')) {
-        const datePart = dateString.split('T')[0];
-        const timePart = dateString.split('T')[1];
-        
-        // Extrair componentes da data
-        const [year, month, day] = datePart.split('-');
-        const date = new Date(year, month - 1, day);
-        
-        // Extrair componentes do horário
-        const [hours, minutes] = timePart.split(':');
-        
-        // Formatar data no padrão brasileiro
-        const formattedDate = date.toLocaleDateString('pt-BR');
-        
-        // Formatar horário
-        const formattedTime = `${hours}:${minutes}`;
-        
-        return `${formattedDate} às ${formattedTime}`;
-    }
-    
-    // Se a data está no formato YYYY-MM-DD, criar Date sem problemas de fuso horário
-    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = dateString.split('-');
-        const date = new Date(year, month - 1, day);
-        return date.toLocaleDateString('pt-BR');
-    }
-    
-    // Para outras datas, usar o método padrão
-    return new Date(dateString).toLocaleDateString('pt-BR');
-}
-</script>
 <style>
 button, a.button, .btn {
     font-weight: 500;
@@ -642,6 +562,7 @@ select {
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="client_functions.js"></script>
 <script>
 // Função para popular responsáveis no formulário de nova reunião
 function populateReuniaoResponsaveis() {
@@ -3138,7 +3059,7 @@ sessionStorage.setItem('tryvia_logged', 'true');
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
-const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
+const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODIzMzAzNSwiZXhwIjoyMDYzODA5MDM1fQ.CVXkKh9yul_Mv2YMhPsDo4CmkQevxpkeI1CtitORpJ0';
 const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
 </script>
 <div class="modal-overlay" id="customModal">
@@ -4733,18 +4654,17 @@ select {
                 </select>
                 <label for="editClientGroup" style="margin-top: 15px;">Grupo</label>
                 <select id="editClientGroup">
-    <option value="">Nenhum</option>
-    <option value="4">JCA</option>
-    <option value="1">GRUPO GUANABARA</option>
-    <option value="7">VIAÇÃO ÁGUIA BRANCA S/A</option>
-    <!-- ...outros grupos... -->
-</select>
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="JCA">JCA</option>
+                    <option value="Guanabara">Guanabara</option>
+                    <option value="Águia Branca">Águia Branca</option>
+                </select>
                 <label for="editClientSubgroup" style="margin-top: 15px;">Subgrupo</label>
                 <select id="editClientSubgroup">
-                    <option value="4">Nenhum</option>
-                    <option value="1">Carga</option>
-                    <option value="2">Urbano</option>
-                    <option value="3">Rodoviário</option>
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="Carga">Carga</option>
+                    <option value="Urbano">Urbano</option>
+                    <option value="Rodoviário">Rodoviário</option>
                 </select>
                 <label for="editClientCfEmpresa" style="margin-top: 15px;">Email</label>
                 <input id="editClientCfEmpresa" placeholder="Valor do campo cf_empresa no Freshdesk..." type="text"/>
@@ -5918,6 +5838,7 @@ select {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="client_functions.js"></script>
 <script>
         
         let resolveModalPromise;
