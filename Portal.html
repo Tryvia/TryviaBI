@@ -4565,9 +4565,9 @@ select {
             <label for="filterClientGroup">Filtrar por Grupo</label>
             <select id="filterClientGroup" onchange="filterClientsByGroup()">
                 <option value="">Todos os grupos</option>
-                <option value="JCA">JCA</option>
-                <option value="Guanabara">Guanabara</option>
-                <option value="Águia Branca">Águia Branca</option>
+                <option value="4">JCA</option>
+    <option value="1">GRUPO GUANABARA</option>
+    <option value="7">VIAÇÃO ÁGUIA BRANCA S/A</option>
                 <option value="Nenhum">Nenhum</option>
             </select>
         </div>
@@ -4575,10 +4575,11 @@ select {
             <label for="filterClientSubgroup">Filtrar por Subgrupo</label>
             <select id="filterClientSubgroup" onchange="filterClientsByGroup()">
                 <option value="">Todos os subgrupos</option>
-                <option value="Carga">Carga</option>
-                <option value="Urbano">Urbano</option>
-                <option value="Rodoviário">Rodoviário</option>
-                <option value="Nenhum">Nenhum</option>
+     <option value="4">Nenhum</option>
+                    <option value="1">Carga</option>
+                    <option value="2">Urbano</option>
+                    <option value="3">Rodoviário</option>
+                </select>
             </select>
         </div>
         <div class="form-group">
@@ -6550,8 +6551,8 @@ function addEditProduct() {
 
         // Função para filtrar clientes por grupo, subgrupo e nome
         function filterClientsByGroup() {
-            const selectedGroup = document.getElementById('filterClientGroup').value.trim().toLowerCase();
-            const selectedSubgroup = document.getElementById('filterClientSubgroup').value.trim().toLowerCase();
+            const selectedGroup = document.getElementById('filterClientGroup').value;
+            const selectedSubgroup = document.getElementById('filterClientSubgroup').value;
             const searchName = document.getElementById('filterClientName').value.trim().toLowerCase();
             let selectedStatus = document.getElementById('filterClientStatus').value.trim();
             const clientCards = document.querySelectorAll('#clientsList .client-card-vertical');
@@ -6562,8 +6563,8 @@ function addEditProduct() {
                 if (!client) return;
 
                 const clientName = (client.name || '').toLowerCase();
-                const clientGroup = (client.group || '').toLowerCase();
-                const clientSubgroup = (client.subgroup || '').toLowerCase();
+                const clientGroupId = client.group_id ? String(client.group_id) : '';
+                const clientSubgroupId = client.subgroup_id ? String(client.subgroup_id) : '';
                 // Status pelo relacionamento
                 let clientStatus = '';
                 if (client.client_statuses && client.client_statuses.name) {
@@ -6571,8 +6572,8 @@ function addEditProduct() {
                 } else if (client.status) {
                     clientStatus = client.status;
                 }
-                const matchesGroup = selectedGroup === '' || clientGroup === selectedGroup;
-                const matchesSubgroup = selectedSubgroup === '' || clientSubgroup === selectedSubgroup;
+                const matchesGroup = selectedGroup === '' || clientGroupId === selectedGroup;
+                const matchesSubgroup = selectedSubgroup === '' || clientSubgroupId === selectedSubgroup;
                 const matchesName = searchName === '' || clientName.includes(searchName);
                 // O filtro agora compara o status normalizado
                 const matchesStatus = selectedStatus === '' || clientStatus.toLowerCase() === selectedStatus.toLowerCase();
@@ -6828,18 +6829,18 @@ async function fetchAndRenderClients() {
    const userType = localStorage.getItem('user_type');
    const clientId = sessionStorage.getItem('client_id');
      let query = supabase
-         .from('clients')
-         .select(`
-                *,
-                client_groups:group_id(id, name, parent_group_id),
-                client_statuses:status_id(name),
-                products_cliente (
-                        id, name, quantity
-                ),
-                integrations_cliente (
-                        id, type, system
-                )
-         `);
+     .from('clients')
+     .select(`
+        id, name, email, phone, bi_link, cnpj, cf_empresa, id_cliente, group_id, status_id, logo_id, subgroup_id,
+        client_groups:group_id(id, name, parent_group_id),
+        client_statuses:status_id(name),
+        products_cliente (
+            id, name, quantity
+        ),
+        integrations_cliente (
+            id, type, system
+        )
+     `);
 
      // Carregar todos os grupos para o filtro de subgrupo
      if (!window.clientGroupsList) {
@@ -7418,7 +7419,51 @@ const { data, error } = await query;
             }
         }
 
-        
+        async function fetchAndRenderHomologacoes() {
+            const { data, error } = await supabase
+                .from('homologacoes')
+                .select('*')
+                .order('data_liberacao', { ascending: false });
+
+            const grid = document.getElementById('homologacoesGrid');
+            const empty = document.getElementById('emptyStateHomologacao');
+
+            if (error || !data || data.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'flex';
+                return;
+            }
+
+            empty.style.display = 'none';
+            grid.innerHTML = data.map(h => {
+               
+                const arquivosData = encodeURIComponent(JSON.stringify(h.arquivos || []));
+                
+                let html = "";
+                html += '<div class="homologacao-card">';
+                html += '<h4>Versão: ' + h.versao + '</h4>';
+                html += '<p><strong>Especialista:</strong> ' + h.especialista + '</p>';
+                html += '<p><strong>Sistema:</strong> ' + h.sistema + '</p>';
+                html += '<p><strong>Liberação:</strong> ' + h.data_liberacao + '</p>';
+                html += '<p><strong>Homologação:</strong> ' + (h.data_homologacao || '-') + '</p>';
+                html += '<p><strong>Obs:</strong> ' + (h.observacao || '-') + '</p>';
+                if (h.arquivos && h.arquivos.length) {
+                    html += '<p><strong>Arquivos:</strong><br>' +
+                        h.arquivos.map((file, i) =>
+                            `<span>📄 ${file.nome}</span>`
+                        ).join('<br>') +
+                    '</p>';
+                   
+                    html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
+                }
+                
+                html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
+                html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
+                html += '</div>';
+                return html;
+            }).join('');
+        }
+
         const uploadAreaHomologacao = document.getElementById('uploadAreaHomologacao');
         const fileInputHomologacao = document.getElementById('fileInputHomologacao');
         const fileListHomologacao = document.getElementById('fileListHomologacao');
