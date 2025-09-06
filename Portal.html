@@ -6549,28 +6549,32 @@ function addEditProduct() {
 
         // Função para filtrar clientes por grupo, subgrupo e nome
         function filterClientsByGroup() {
-            const selectedGroup = document.getElementById('filterClientGroup').value.toLowerCase();
-            const selectedSubgroup = document.getElementById('filterClientSubgroup').value.toLowerCase();
-            const searchName = document.getElementById('filterClientName').value.toLowerCase();
-            const selectedStatus = document.getElementById('filterClientStatus').value;
+            const selectedGroup = document.getElementById('filterClientGroup').value.trim().toLowerCase();
+            const selectedSubgroup = document.getElementById('filterClientSubgroup').value.trim().toLowerCase();
+            const searchName = document.getElementById('filterClientName').value.trim().toLowerCase();
+            let selectedStatus = document.getElementById('filterClientStatus').value.trim();
             const clientCards = document.querySelectorAll('#clientsList .client-card-vertical');
-            
             let visibleCount = 0;
-                      clientCards.forEach(card => {
+            clientCards.forEach(card => {
                 const clientId = card.dataset.clientId;
                 const client = clients.find(c => c.id == clientId);
                 if (!client) return;
 
-                const clientName = client.name.toLowerCase();
-                const clientGroup = client.group ? client.group.toLowerCase() : "";
-                const clientSubgroup = client.subgroup ? client.subgroup.toLowerCase() : "";
-                const clientStatus = client.status || "";
-                
+                const clientName = (client.name || '').toLowerCase();
+                const clientGroup = (client.group || '').toLowerCase();
+                const clientSubgroup = (client.subgroup || '').toLowerCase();
+                // Status pelo relacionamento
+                let clientStatus = '';
+                if (client.client_statuses && client.client_statuses.name) {
+                    clientStatus = client.client_statuses.name;
+                } else if (client.status) {
+                    clientStatus = client.status;
+                }
                 const matchesGroup = selectedGroup === '' || clientGroup === selectedGroup;
                 const matchesSubgroup = selectedSubgroup === '' || clientSubgroup === selectedSubgroup;
                 const matchesName = searchName === '' || clientName.includes(searchName);
-                const matchesStatus = selectedStatus === '' || clientStatus === selectedStatus;
-                
+                // O filtro agora compara o status normalizado
+                const matchesStatus = selectedStatus === '' || clientStatus.toLowerCase() === selectedStatus.toLowerCase();
                 if (matchesGroup && matchesSubgroup && matchesName && matchesStatus) {
                     card.style.display = 'block';
                     visibleCount++;
@@ -6767,10 +6771,16 @@ if (name && email && phone) {
         logoPath = logoFilePath;
     }
 
+    // Mapear status para status_id
+    let status_id = null;
+    if (status === 'Cliente Ativo') status_id = 1;
+    else if (status === 'Cliente Inativo') status_id = 3;
+    // Mapear grupo para group (ou group_id se existir)
+    // Aqui mantemos o campo group como string, pois não há group_id na tabela
     const { data: clientData, error: clientError } = await supabase
         .from('clients') 
         .insert([
-            { name, email, phone, status, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
+            { name, email, phone, status_id, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
         ]);
 
                 if (currentProducts.length > 0) {
@@ -6816,17 +6826,25 @@ if (name && email && phone) {
 async function fetchAndRenderClients() {
    const userType = localStorage.getItem('user_type');
    const clientId = sessionStorage.getItem('client_id');
-   let query = supabase
-     .from('clients')
-     .select(`
-        *,
-        products_cliente (
-            id, name, quantity
-        ),
-        integrations_cliente (
-            id, type, system
-        )
-     `);
+     let query = supabase
+         .from('clients')
+         .select(`
+                *,
+                client_groups:group_id(id, name, parent_group_id),
+                client_statuses:status_id(name),
+                products_cliente (
+                        id, name, quantity
+                ),
+                integrations_cliente (
+                        id, type, system
+                )
+         `);
+
+     // Carregar todos os grupos para o filtro de subgrupo
+     if (!window.clientGroupsList) {
+         const { data: allGroups } = await supabase.from('client_groups').select('id, name, parent_group_id');
+         window.clientGroupsList = allGroups || [];
+     }
    
    if (
      userType === 'client' &&
@@ -7540,61 +7558,61 @@ const { data, error } = await query;
         });
 
         
-        function limparHomologacaoForm() {
-            document.getElementById('homologacaoForm').reset();
-            arquivosHomologacaoSelecionados = [];
-            fileListHomologacao.innerHTML = '';
-            document.getElementById('fileInputHomologacao').value = '';
-        }
+        function filterClientsByGroup() {
+            const selectedGroup = document.getElementById('filterClientGroup').value.toLowerCase();
+            const selectedSubgroup = document.getElementById('filterClientSubgroup').value.toLowerCase();
+            const searchName = document.getElementById('filterClientName').value.toLowerCase();
+            const selectedStatus = document.getElementById('filterClientStatus').value;
+            const clientCards = document.querySelectorAll('#clientsList .client-card-vertical');
+            let visibleCount = 0;
+            clientCards.forEach(card => {
+                const clientId = card.dataset.clientId;
+                const client = clients.find(c => c.id == clientId);
+                if (!client) return;
 
-        
-        document.getElementById('dataLiberacao').valueAsDate = new Date();
-
-        
-        async function fetchAndRenderHomologacoes() {
-            const { data, error } = await supabase
-                .from('homologacoes')
-                .select('*')
-                .order('data_liberacao', { ascending: false });
-
-            const grid = document.getElementById('homologacoesGrid');
-            const empty = document.getElementById('emptyStateHomologacao');
-
-            if (error || !data || data.length === 0) {
-                grid.innerHTML = '';
-                empty.style.display = 'flex';
-                return;
-            }
-
-            empty.style.display = 'none';
-            grid.innerHTML = data.map(h => {
-               
-                const arquivosData = encodeURIComponent(JSON.stringify(h.arquivos || []));
-                
-                let html = "";
-                html += '<div class="homologacao-card">';
-                html += '<h4>Versão: ' + h.versao + '</h4>';
-                html += '<p><strong>Especialista:</strong> ' + h.especialista + '</p>';
-                html += '<p><strong>Sistema:</strong> ' + h.sistema + '</p>';
-                html += '<p><strong>Liberação:</strong> ' + h.data_liberacao + '</p>';
-                html += '<p><strong>Homologação:</strong> ' + (h.data_homologacao || '-') + '</p>';
-                html += '<p><strong>Obs:</strong> ' + (h.observacao || '-') + '</p>';
-                if (h.arquivos && h.arquivos.length) {
-                    html += '<p><strong>Arquivos:</strong><br>' +
-                        h.arquivos.map((file, i) =>
-                            `<span>📄 ${file.nome}</span>`
-                        ).join('<br>') +
-                    '</p>';
-                   
-                    html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
+                const clientName = (client.name || '').toLowerCase();
+                const clientGroup = (client.client_groups?.name || '').toLowerCase();
+                // Subgrupo: se usar hierarquia, pode ser o nome do grupo pai
+                let clientSubgroup = '';
+                if (client.client_groups && client.client_groups.parent_group_id && window.clientGroupsList) {
+                    const parent = window.clientGroupsList.find(g => g.id === client.client_groups.parent_group_id);
+                    clientSubgroup = (parent?.name || '').toLowerCase();
                 }
-                
-                html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
-                html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
-                html += '</div>';
-                return html;
-            }).join('');
+                const clientStatus = (client.client_statuses?.name || '').toLowerCase();
+                const matchesGroup = selectedGroup === '' || clientGroup === selectedGroup;
+                const matchesSubgroup = selectedSubgroup === '' || clientSubgroup === selectedSubgroup;
+                const matchesName = searchName === '' || clientName.includes(searchName);
+                const matchesStatus = selectedStatus === '' || clientStatus.toLowerCase() === selectedStatus.toLowerCase();
+                if (matchesGroup && matchesSubgroup && matchesName && matchesStatus) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            // Mostrar/esconder estado vazio
+            const emptyState = document.querySelector('#clientsList .empty-state');
+            if (emptyState) {
+                if (visibleCount === 0 && clientCards.length > 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = `
+                        <div class="empty-state-icon">🔍</div>
+                        <p>Nenhum cliente encontrado</p>
+                        <p>Tente ajustar os filtros</p>
+                    `;
+                } else if (clientCards.length === 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = `
+                        <div class="empty-state-icon">👥</div>
+                        <p>Nenhum cliente encontrado</p>
+                        <p>Adicione clientes para começar</p>
+                    `;
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
         }
+        
 
         
         async function filtrarHomologacoes() {
