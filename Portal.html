@@ -3902,7 +3902,7 @@ select {
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
                         <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Clientes Ativos</h3>
-                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="clientesAtivos">-</p>
+                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="activeClientsCount">-</p>
                 </div>
                 <div style="font-size: 3em; color: #0277bd; opacity: 0.7;">👥</div>
             </div>
@@ -3912,7 +3912,7 @@ select {
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Clientes Inativos</h3>
-                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #c62828;" id="clientesInativos">-</p>
+                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #c62828;" id="inactiveClientsCount">-</p>
                     </div>
                     <div style="font-size: 3em; color: #c62828; opacity: 0.7;">🚫</div>
                 </div>
@@ -6872,7 +6872,7 @@ async function fetchAndRenderClients() {
     </div>
 
     <div class="client-logo-vertical">
-      ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
+     ${client.client_logos?.url ? `<img src="${client.client_logos.url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
     </div>
 
     <p class="add-logo-text">${client.logo_url ? '' : 'Adicionar Logo'}</p>
@@ -7166,6 +7166,47 @@ if (editingIntegrations.length > 0) {
                 showAlert('Atenção', 'Por favor, preencha todos os campos e selecione um arquivo para o documento do cliente.');
             }
         }
+        
+     async function updateClientStatusCounts() {
+  try {
+        const { data: clients, error } = await supabase
+            .from('clients')
+            .select('id, name, status_id, client_statuses:status_id(name)');
+
+    if (error) throw error;
+
+    // Armazena globalmente para outras funções, se precisar
+    window.clients = clients;
+
+    let activeCount = 0;
+    let inactiveCount = 0;
+
+    clients.forEach(client => {
+      const statusName = client.client_statuses?.name?.toLowerCase() || '';
+      if (statusName.includes('ativo')) activeCount++;
+      else if (statusName.includes('inativo')) inactiveCount++;
+    });
+
+    // Atualiza a UI
+    const elAtivos = document.getElementById('activeClientsCount');
+const elInativos = document.getElementById('inactiveClientsCount');
+if (elAtivos) elAtivos.textContent = activeCount;
+if (elInativos) elInativos.textContent = inactiveCount;
+
+  } catch (error) {
+    console.error('Erro ao atualizar contadores de status de clientes:', error);
+   const elAtivos = document.getElementById('activeClientsCount');
+const elInativos = document.getElementById('inactiveClientsCount');
+if (elAtivos) elAtivos.textContent = '-';
+if (elInativos) elInativos.textContent = '-';
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    updateClientStatusCounts();
+});
+
+
 
         // Função para verificar se um documento já foi avaliado
         async function isDocumentEvaluated(documentId) {
@@ -7281,7 +7322,12 @@ if (editingIntegrations.length > 0) {
 const clientId = sessionStorage.getItem('client_id');
 let query = supabase
   .from('clients')
-  .select('id, name, logo_url, bi_link')
+  .select(`
+    id, 
+    name, 
+    bi_link,
+    client_logos(url)
+  `)
   .not('bi_link', 'is', null)
   .not('bi_link', 'eq', '');
 if (
@@ -7318,7 +7364,7 @@ const { data, error } = await query;
             container.innerHTML = data.map(client => `
                 <div class="dashboard-card">
                     <div class="client-logo-vertical">
-                        ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
+                        ${client.client_logos?.url ? `<img src="${client.client_logos.url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
                     </div>
                     <h3>${client.name}</h3>
                     <a href="${client.bi_link}" target="_blank" class="btn-bi">
@@ -8546,10 +8592,24 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 function atualizarMetricasClientes() {
   if (!window.clients || !Array.isArray(window.clients)) return;
-  const ativos = window.clients.filter(c => c.status && c.status.toLowerCase() === 'cliente ativo').length;
-  const inativos = window.clients.filter(c => c.status && c.status.toLowerCase().includes('inativo')).length;
-  document.getElementById('clientesAtivos').textContent = ativos;
-  document.getElementById('clientesInativos').textContent = inativos;
+
+    const ativos = window.clients.filter(c => {
+        if (c.client_statuses && c.client_statuses.name) {
+            return c.client_statuses.name.toLowerCase().includes('ativo') && !c.client_statuses.name.toLowerCase().includes('inativo');
+        }
+        return c.status_id === 1 || c.status_id === 2; // IDs de Cliente Ativo
+    }).length;
+    const inativos = window.clients.filter(c => {
+        if (c.client_statuses && c.client_statuses.name) {
+            return c.client_statuses.name.toLowerCase().includes('inativo');
+        }
+        return c.status_id === 3; // ID de Cliente Inativo
+    }).length;
+
+const elAtivos = document.getElementById('activeClientsCount');
+const elInativos = document.getElementById('inactiveClientsCount');
+if (elAtivos) elAtivos.textContent = ativos;
+if (elInativos) elInativos.textContent = inativos;
 }
 </script>
 <script>
@@ -8804,8 +8864,13 @@ async function loadHighlightClients() {
         carousel.innerHTML = '<div style="text-align: center; padding: 20px; min-width: 100%;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
 
         const { data: clients, error } = await supabase
-            .from('clients')
-            .select('id, name, logo_url, bi_link')
+    .from('clients')
+    .select(`
+        id, 
+        name, 
+        bi_link,
+        client_logos(url)
+    `)
             .not('bi_link', 'is', null)
             .not('bi_link', 'eq', '')
             .limit(5);
@@ -8823,8 +8888,8 @@ async function loadHighlightClients() {
             carousel.innerHTML = clients.map(client => `
                 <div class="client-highlight-card" style="min-width: 200px; background: #ffffff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; cursor: pointer;" onclick="window.open('${client.bi_link}', '_blank')">
                     <div style="width: 80px; height: 80px; margin: 0 auto 15px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                        ${client.logo_url ? 
-                            `<img src="${client.logo_url}" alt="${client.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                        ${client.client_logos?.url ?
+                            `<img src="${client.client_logos.url}" alt="${client.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
                             `<span style="font-size: 2em; color: #29b6f6;">${client.name.charAt(0).toUpperCase()}</span>`
                         }
                     </div>
@@ -12090,7 +12155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+   window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
