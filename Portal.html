@@ -6745,7 +6745,7 @@ function addEditProduct() {
             const email = document.getElementById('clientEmail').value;
             const phone = document.getElementById('clientPhone').value;
             const status = document.getElementById('clientStatus').value;
-            const group = document.getElementById('clientGroup').value;
+            const group_id = document.getElementById("clientGroup").value;
             const subgroup = document.getElementById('clientSubgroup').value;
             const biLink = document.getElementById('clientBiLink').value;
             
@@ -6780,7 +6780,7 @@ if (name && email && phone) {
     const { data: clientData, error: clientError } = await supabase
         .from('clients') 
         .insert([
-            { name, email, phone, status_id, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
+            { name, email, phone, status_id, group_id, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
         ]);
 
                 if (currentProducts.length > 0) {
@@ -7042,10 +7042,9 @@ async function editClient(clientId) {
             const name = document.getElementById('editClientName').value;
             const email = document.getElementById('editClientEmail').value;
             const phone = document.getElementById('editClientPhone').value;
-            const status_id = document.getElementById('editClientStatus').value;
+            const status_id = document.getElementById("editClientStatus").value;
             const group_id = document.getElementById('editClientGroup').value;
-            // Se existir um campo de subgrupo normalizado, use subgroup_id, senão remova
-            // const subgroup_id = document.getElementById('editClientSubgroup').value;
+            const subgroup = document.getElementById('editClientSubgroup').value;
             const biLink = document.getElementById('editClientBiLink').value;
             const logoFileInput = document.getElementById('editClientLogo');
             const newLogoFile = logoFileInput.files[0];
@@ -7090,7 +7089,7 @@ async function editClient(clientId) {
 
             const { error: clientError } = await supabase
                 .from('clients')
-                .update({ name, email, phone, status_id, group_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
+                .update({ name, email, phone, status_id, group_id, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
                 .eq('id', clientId);
 
             if (clientError) {
