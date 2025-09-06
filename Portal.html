@@ -6746,7 +6746,7 @@ function addEditProduct() {
             const phone = document.getElementById('clientPhone').value;
             const status = document.getElementById('clientStatus').value;
             const group_id = document.getElementById("clientGroup").value;
-            const subgroup = document.getElementById('clientSubgroup').value;
+            const subgroup_id = document.getElementById("clientSubgroup").value;
             const biLink = document.getElementById('clientBiLink').value;
             
             let logoUrl = null;
@@ -6780,7 +6780,7 @@ if (name && email && phone) {
     const { data: clientData, error: clientError } = await supabase
         .from('clients') 
         .insert([
-            { name, email, phone, status_id, group_id, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
+            { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
         ]);
 
                 if (currentProducts.length > 0) {
@@ -7044,7 +7044,7 @@ async function editClient(clientId) {
             const phone = document.getElementById('editClientPhone').value;
             const status_id = document.getElementById("editClientStatus").value;
             const group_id = document.getElementById('editClientGroup').value;
-            const subgroup = document.getElementById('editClientSubgroup').value;
+            const subgroup_id = document.getElementById('editClientSubgroup').value;
             const biLink = document.getElementById('editClientBiLink').value;
             const logoFileInput = document.getElementById('editClientLogo');
             const newLogoFile = logoFileInput.files[0];
@@ -7089,7 +7089,7 @@ async function editClient(clientId) {
 
             const { error: clientError } = await supabase
                 .from('clients')
-                .update({ name, email, phone, status_id, group_id, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
+                .update({ name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
                 .eq('id', clientId);
 
             if (clientError) {
@@ -12173,7 +12173,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-   window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+  window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
