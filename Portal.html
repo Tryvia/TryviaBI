@@ -6931,7 +6931,7 @@ async function fetchAndRenderClients() {
     <button class="btn-tickets" onclick="viewClientTickets(${client.id}, '${client.name}', '${client.email}')">
       <i class="fas fa-ticket-alt"></i> Ver Tickets
     </button>
-    <button class="btn-integracoes" onclick="viewClientIntegracoes(${client.id}, '${client.name}', '${client.CNPJ || ''}')">
+    <button class="btn-integracoes" onclick="viewClientIntegracoes(${client.id}, '${client.name}', '${client.cnpj || ''}')">
       <i class="fas fa-plug"></i> Integrações 
     </button>
   </div>
@@ -9397,7 +9397,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
             <div class="integracoes-info">
                 <p><strong>Cliente:</strong> ${integracoesData.cliente?.nome || clientName}</p>
                 <p><strong>ID Cliente:</strong> ${integracoesData.cliente?.id_cliente || idCliente}</p>
-                <p><strong>CNPJ:</strong> ${integracoesData.cliente?.cnpj || clientData.CNPJ || 'Não informado'}</p>
+                <p><strong>cnpj:</strong> ${integracoesData.cliente?.cnpj || clientData.cnpj || 'Não informado'}</p>
                 <p><strong>Total de Integrações:</strong> ${integracoesData.total_integracoes || 0}</p>
                 ${integracoesData.observacao ? `<p><em>${integracoesData.observacao}</em></p>` : ''}
             </div>
