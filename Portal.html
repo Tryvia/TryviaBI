@@ -7044,9 +7044,12 @@ async function editClient(clientId) {
             const name = document.getElementById('editClientName').value;
             const email = document.getElementById('editClientEmail').value;
             const phone = document.getElementById('editClientPhone').value;
-            const status_id = document.getElementById("editClientStatus").value;
-            const group_id = document.getElementById('editClientGroup').value;
-            const subgroup_id = document.getElementById('editClientSubgroup').value;
+            let status_id = document.getElementById("editClientStatus").value;
+            let group_id = document.getElementById('editClientGroup').value;
+            let subgroup_id = document.getElementById('editClientSubgroup').value;
+            status_id = status_id === "" ? null : Number(status_id);
+            group_id = group_id === "" ? null : Number(group_id);
+            subgroup_id = subgroup_id === "" ? null : Number(subgroup_id);
             const biLink = document.getElementById('editClientBiLink').value;
             const logoFileInput = document.getElementById('editClientLogo');
             const newLogoFile = logoFileInput.files[0];
@@ -8927,14 +8930,14 @@ async function loadHighlightClients() {
         const carousel = document.getElementById('clientsCarousel');
         carousel.innerHTML = '<div style="text-align: center; padding: 20px; min-width: 100%;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
 
-        const { data: clients, error } = await releaseClient
-    .from('clients')
-    .select(`
-        id, 
-        name, 
-        bi_link,
-        client_logos(url)
-    `)
+       const { data: clients, error } = await releaseClient
+  .from('clients')
+  .select(`
+      id, 
+      name, 
+      bi_link,
+      client_logos:client_logos!clients_logo_path_fkey (url)
+  `)
             .not('bi_link', 'is', null)
             .not('bi_link', 'eq', '')
             .limit(5);
