@@ -6866,19 +6866,19 @@ async function fetchAndRenderClients() {
                 return;
             }
 
-            clients = data;
-            window.clients = data || []; 
-            atualizarMetricasClientes();
-            if (clients.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">👥</div>
-                        <p>Nenhum cliente encontrado</p>
-                        <p>Adicione clientes para começar</p>
-                    </div>
-                `;
-                return;
-            }
+          let clients = data;       
+window.clients = clients || []; 
+atualizarMetricasClientes();
+if (clients.length === 0) {
+    container.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <p>Nenhum cliente encontrado</p>
+            <p>Adicione clientes para começar</p>
+        </div>
+    `;
+    return;
+}
 
             container.innerHTML = clients.map(client => `
 
