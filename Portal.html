@@ -6447,7 +6447,7 @@ function addEditProduct() {
                     return;
                 }
 
-                const fotoUrl = `${SUPABASE_URL}/storage/v1/object/public/funcionariofotos/${fotoPath}`;
+                const fotoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/funcionariofotos/${fotoPath}`;
 
                 const { data, error } = await releaseClient
                     .from('gestao_funcionarios')
@@ -6641,7 +6641,7 @@ function addEditProduct() {
                     return;
                 }
 
-                const publicURL = `${SUPABASE_URL}/storage/v1/object/public/documentfiles/${filePath}`;
+                const publicURL = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/documentfiles/${filePath}`;
 
                 const { data, error } = await releaseClient
                     .from('documents_setor')
@@ -6769,7 +6769,7 @@ if (name && email && phone) {
             return;
         }
 
-        logoUrl = `${SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
+        logoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
         logoPath = logoFilePath;
     }
 
@@ -6828,7 +6828,7 @@ if (name && email && phone) {
 async function fetchAndRenderClients() {
    const userType = localStorage.getItem('user_type');
    const clientId = sessionStorage.getItem('client_id');
-     let query = supabase
+     let query = releaseClient
      .from('clients')
      .select(`
         id, name, email, phone, bi_link, cnpj, cf_empresa, id_cliente, group_id, status_id, logo_id, subgroup_id,
@@ -7074,7 +7074,7 @@ async function editClient(clientId) {
                     showAlert('Erro', 'Erro ao fazer upload do novo logo.');
                     return;
                 }
-                logoUrl = `${SUPABASE_URL}/storage/v1/object/public/clientlogos/${newLogoPath}`;
+                logoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientlogos/${newLogoPath}`;
                 logoPath = newLogoPath;
 
                 if (currentClient && currentClient.logo_path) {
@@ -7177,7 +7177,7 @@ if (editingIntegrations.length > 0) {
                     return;
                 }
 
-                const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
+                const publicURL = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
 
                 const { data, error } = await releaseClient
                     .from('client_documents') 
@@ -7353,7 +7353,7 @@ document.addEventListener("DOMContentLoaded", function() {
         async function fetchAndRenderDashboards() {
        const userType = localStorage.getItem('user_type');
 const clientId = sessionStorage.getItem('client_id');
-let query = supabase
+let query = releaseClient
   .from('clients')
   .select(`
           id, 
@@ -8217,7 +8217,7 @@ async function gerarPDFVisita() {
         showAlert('Erro', 'Erro ao salvar relatório de visita no cliente.');
       } else {
         // Gerar URL pública do arquivo
-        const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
+        const publicURL = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
         // Inserir registro na tabela client_documents
         const title = `Relatório de Visita - ${dateStr}`;
         const type = 'relatorio';
@@ -10251,7 +10251,7 @@ async function saveTeamMember() {
         if (uploadError) {
             console.error('Erro ao fazer upload da foto:', uploadError);
         } else {
-            memberData.foto_url = `${SUPABASE_URL}/storage/v1/object/public/team-photos/${photoPath}`;
+            memberData.foto_url = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/team-photos/${photoPath}`;
         }
     }
 
@@ -11520,7 +11520,7 @@ async function salvarPDFNoCliente(pdfBlob, clientId) {
             return;
         }
 
-        const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
+        const publicURL = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
 
         const { data, error } = await releaseClient
             .from('client_documents')
