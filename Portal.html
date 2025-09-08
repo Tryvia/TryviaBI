@@ -6736,68 +6736,92 @@ function addEditProduct() {
         }
 
         // --- Client  ---
-      async function saveClient() {
+      // --- Client ---
+async function saveClient() {
     if (!permissoes.includes('saveClient')) {
         showAlert('Atenção', 'Você não tem permissão para adicionar clientes.');
         return;
     }
-            const name = document.getElementById('clientName').value;
-            const email = document.getElementById('clientEmail').value;
-            const phone = document.getElementById('clientPhone').value;
-            const status = document.getElementById('clientStatus').value;
-            const group_id = document.getElementById("clientGroup").value;
-            const subgroup_id = document.getElementById("clientSubgroup").value;
-            const biLink = document.getElementById('clientBiLink').value;
-            
-            let logoUrl = null;
-            let logoPath = null;
+    
+    try {
+        const name = document.getElementById('clientName').value;
+        const email = document.getElementById('clientEmail').value;
+        const phone = document.getElementById('clientPhone').value;
+        const status = document.getElementById('clientStatus').value;
+        const group_id = document.getElementById("clientGroup").value;
+        const subgroup_id = document.getElementById("clientSubgroup").value;
+        const biLink = document.getElementById('clientBiLink').value;
+        
+        let logoUrl = null;
+        let logoPath = null;
 
-if (name && email && phone) {
-    const logoFileInput = document.getElementById('clientLogo');
-    if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
-        const logoFile = logoFileInput.files[0];
-        const logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
-        const { data: uploadData, error: uploadError } = await releaseClient.storage
-            .from('clientlogos')
-            .upload(logoFilePath, logoFile);
+        if (name && email && phone) {
+            // Processar upload da logo se existir
+            const logoFileInput = document.getElementById('clientLogo');
+            if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
+                const logoFile = logoFileInput.files[0];
+                const logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
+                
+                // Upload do arquivo
+                const { data: uploadData, error: uploadError } = await releaseClient.storage
+                    .from('clientlogos')
+                    .upload(logoFilePath, logoFile);
 
-        if (uploadError) {
-            console.error('Erro ao fazer upload do logo:', uploadError.message);
-            showAlert('Erro', 'Erro ao fazer upload do logo.');
-            return;
-        }
-
-        logoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
-        logoPath = logoFilePath;
-    }
-    apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc'
-    // Mapear status para status_id
-    let status_id = null;
-    if (status === 'Cliente Ativo') status_id = 1;
-    else if (status === 'Cliente Inativo') status_id = 3;
-    // Mapear grupo para group (ou group_id se existir)
-    // Aqui mantemos o campo group como string, pois não há group_id na tabela
-    const { data: clientData, error: clientError } = await releaseClient
-        .from('clients') 
-        .insert([
-            { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
-        ]);
-
-                if (currentProducts.length > 0) {
-                    const productsToInsert = currentProducts.map(p => ({
-                        client_id: clientId,
-                        name: p.name,
-                        quantity: p.quantity
-                    }));
-                    const { error: productsError } = await releaseClient
-                        .from('products_cliente') 
-                        .insert(productsToInsert);
-
-                    if (productsError) {
-                        console.error('Erro ao salvar produtos:', productsError.message);
-                        showAlert('Erro', 'Cliente salvo, mas erro ao salvar produtos. Verifique as permissões da tabela de produtos.');
-                    }
+                if (uploadError) {
+                    console.error('Erro ao fazer upload do logo:', uploadError.message);
+                    showAlert('Erro', 'Erro ao fazer upload do logo.');
+                    return;
                 }
+
+                // Gerar URL pública para o logo
+                logoPath = logoFilePath;
+                logoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
+            }
+
+            // Mapear status para status_id
+            let status_id = null;
+            if (status === 'Cliente Ativo') status_id = 1;
+            else if (status === 'Cliente Inativo') status_id = 3;
+            
+            // Converter group_id e subgroup_id para números se necessário
+            const numericGroupId = group_id ? parseInt(group_id) : null;
+            const numericSubgroupId = subgroup_id ? parseInt(subgroup_id) : null;
+            
+            // Inserir dados na tabela clients
+            const { data: clientData, error: clientError } = await releaseClient
+                .from('clients') 
+                .insert([
+                    { 
+                        name, 
+                        email, 
+                        phone, 
+                        status_id, 
+                        group_id: numericGroupId, 
+                        subgroup_id: numericSubgroupId, 
+                        logo_url: logoUrl, 
+                        logo_path: logoPath, 
+                        bi_link: biLink 
+                    }
+                ]);
+
+            if (clientError) {
+                console.error('Erro ao salvar cliente:', clientError.message);
+                showAlert('Erro', 'Erro ao salvar cliente.');
+                return;
+            }
+
+            showAlert('Sucesso', 'Cliente adicionado com sucesso!');
+            // Limpar formulário ou redirecionar
+            clearClientForm(); // Você precisaria implementar esta função
+            // Ou redirecionar: window.location.href = 'pagina-de-clientes.html';
+        } else {
+            showAlert('Atenção', 'Nome, e-mail e telefone são obrigatórios.');
+        }
+    } catch (error) {
+        console.error('Erro ao processar o salvamento do cliente:', error);
+        showAlert('Erro', 'Ocorreu um erro ao processar a solicitação.');
+    }
+}
                 
                 showAlert('Sucesso', 'Cliente salvo com sucesso!');
                 document.getElementById('clientName').value = '';
@@ -6819,10 +6843,7 @@ if (name && email && phone) {
                 fetchAndRenderClients(); 
                 showClientTab('view-clients'); 
                 
-            } else {
-                showAlert('Atenção', 'Por favor, preencha todos os campos obrigatórios do cliente.');
-            }
-        }
+        showAlert('Atenção', 'Por favor, preencha todos os campos obrigatórios do cliente.');
 async function fetchAndRenderClients() {
    const userType = localStorage.getItem('user_type');
    const clientId = sessionStorage.getItem('client_id');
