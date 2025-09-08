@@ -6828,7 +6828,7 @@ if (name && email && phone) {
 async function fetchAndRenderClients() {
    const userType = localStorage.getItem('user_type');
    const clientId = sessionStorage.getItem('client_id');
-     let query = releaseClient
+     let query = supabase
      .from('clients')
      .select(`
         id, name, email, phone, bi_link, cnpj, cf_empresa, id_cliente, group_id, status_id, logo_id, subgroup_id,
