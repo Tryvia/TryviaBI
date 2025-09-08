@@ -8,7 +8,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.36.0/dist/supabase.min.js"></script>
 <style>
 #mapContainer {
     width: 100%;
@@ -3132,7 +3132,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+//window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 
 sessionStorage.setItem('tryvia_logged', 'true');
 }
@@ -6086,7 +6086,6 @@ select {
 
         
         let documents = [];
-        let clients = [];
         let currentProducts = []; 
         let editingProducts = []; 
         let arquivosHomologacaoSelecionados = []; 
@@ -6422,6 +6421,7 @@ function addEditProduct() {
             showClientTab('view-client-documents');
             await fetchAndRenderClientDocuments(clientId);
         }
+
 
         // --- Funcionarios  ---
         async function adicionarFuncionario() {
@@ -6866,7 +6866,7 @@ async function fetchAndRenderClients() {
                 return;
             }
 
-          let clients = data;       
+          clients = data;       
 window.clients = clients || []; 
 atualizarMetricasClientes();
 if (clients.length === 0) {
@@ -12228,7 +12228,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-  window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+  //window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -15678,11 +15678,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // Configuração da API Supabase para visitas
 const VISITAS_SUPABASE_URL = 'https://obwgegvrtxrlombmkaej.supabase.co';
 const VISITAS_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM';
-
 // Cliente Supabase para visitas
+
 let visitasClient;
-if (typeof supabase !== 'undefined' && typeof supabase.createClient === 'function') {
-    visitasClient = supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
+if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+    visitasClient = window.supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
 } else if (window.supabase && typeof window.supabase.createClient === 'function') {
     visitasClient = window.supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
 } else {
