@@ -7356,10 +7356,10 @@ const clientId = sessionStorage.getItem('client_id');
 let query = supabase
   .from('clients')
   .select(`
-    id, 
-    name, 
-    bi_link,
-    client_logos(url)
+          id, 
+      name, 
+      bi_link,
+      client_logos:client_logos!clients_logo_path_fkey (url)
   `)
   .not('bi_link', 'is', null)
   .not('bi_link', 'eq', '');
