@@ -15683,9 +15683,7 @@ const VISITAS_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
 // Cliente Supabase para visitas
 
 let visitasClient;
-if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
-    visitasClient = window.supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
-} else if (window.supabase && typeof window.supabase.createClient === 'function') {
+if (window.supabase && typeof window.supabase.createClient === 'function') {
     visitasClient = window.supabase.createClient(VISITAS_SUPABASE_URL, VISITAS_SUPABASE_KEY);
 } else {
     console.error('Supabase não está disponível ou não foi carregado corretamente.');
