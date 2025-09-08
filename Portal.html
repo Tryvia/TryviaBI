@@ -661,7 +661,7 @@ function populateReuniaoResponsaveis() {
 // Função para carregar tarefas do setor do usuário logado
 async function carregarTarefas() {
     const setorUsuario = sessionStorage.getItem('setor');
-    const { data, error } = await supabase
+    const { data, error } = await releaseClient
         .from('tarefas_painel_setor')
         .select('*')
         .eq('setor', setorUsuario);
@@ -716,7 +716,7 @@ async function carregarTarefas() {
 // Função para carregar projetos do setor do usuário logado
 async function carregarProjetos() {
     const setorUsuario = sessionStorage.getItem('setor');
-    const { data, error } = await supabase
+    const { data, error } = await releaseClient
         .from('projetos_painel_setor')
         .select('*')
         .eq('setor', setorUsuario);
@@ -742,7 +742,7 @@ let teamMembers = []; // Variável global para armazenar os membros da equipe
 // Função para carregar membros do setor do usuário logado
 async function carregarMembros() {
     const setorUsuario = sessionStorage.getItem("setor");
-    const { data, error } = await supabase
+    const { data, error } = await releaseClient
         .from("membros")
         .select("*")
         .eq("setor", setorUsuario);
@@ -768,7 +768,7 @@ async function carregarMembros() {
 // Função para carregar visitas do setor do usuário logado
 async function carregarVisitas() {
     const setorUsuario = sessionStorage.getItem('setor');
-    const { data, error } = await supabase
+    const { data, error } = await releaseClient
         .from('visitas')
         .select('*')
         .eq('setor', setorUsuario);
@@ -797,7 +797,7 @@ async function carregarEntregas() {
     await loadTimeData();
     
     // Buscar entregas da tabela 'entregas' e os percentuais dos membros da 'entregas_membros'
-    const { data: entregasData, error: entregasError } = await supabase
+    const { data: entregasData, error: entregasError } = await releaseClient
         .from("entregas_painel_setor")
         .select("id, mes, ano, setor_percentage, entregas_membros_painel_setor(membro_id, percentual)")
         .eq("setor", setorUsuario)
@@ -1458,7 +1458,7 @@ async function salvarContatoCS() {
             }
 
             try {
-                const { data: result, error } = await supabase
+                const { data: result, error } = await releaseClient
                     .from('cs_contacts')
                     .insert([
                         {
@@ -1494,7 +1494,7 @@ async function fetchAndRenderContatosCS() {
     const container = document.getElementById('csContactsList');
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p>Carregando contatos...</p></div>';
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('cs_contacts')
             .select('*')
             .order('contact_date', { ascending: false });
@@ -3902,7 +3902,7 @@ select {
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
                         <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Clientes Ativos</h3>
-                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="clientesAtivos">-</p>
+                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="activeClientsCount">-</p>
                 </div>
                 <div style="font-size: 3em; color: #0277bd; opacity: 0.7;">👥</div>
             </div>
@@ -3912,7 +3912,7 @@ select {
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Clientes Inativos</h3>
-                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #c62828;" id="clientesInativos">-</p>
+                        <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #c62828;" id="inactiveClientsCount">-</p>
                     </div>
                     <div style="font-size: 3em; color: #c62828; opacity: 0.7;">🚫</div>
                 </div>
@@ -4565,9 +4565,9 @@ select {
             <label for="filterClientGroup">Filtrar por Grupo</label>
             <select id="filterClientGroup" onchange="filterClientsByGroup()">
                 <option value="">Todos os grupos</option>
-                <option value="JCA">JCA</option>
-                <option value="Guanabara">Guanabara</option>
-                <option value="Águia Branca">Águia Branca</option>
+                <option value="4">JCA</option>
+    <option value="1">GRUPO GUANABARA</option>
+    <option value="7">VIAÇÃO ÁGUIA BRANCA S/A</option>
                 <option value="Nenhum">Nenhum</option>
             </select>
         </div>
@@ -4575,10 +4575,11 @@ select {
             <label for="filterClientSubgroup">Filtrar por Subgrupo</label>
             <select id="filterClientSubgroup" onchange="filterClientsByGroup()">
                 <option value="">Todos os subgrupos</option>
-                <option value="Carga">Carga</option>
-                <option value="Urbano">Urbano</option>
-                <option value="Rodoviário">Rodoviário</option>
-                <option value="Nenhum">Nenhum</option>
+     <option value="4">Nenhum</option>
+                    <option value="1">Carga</option>
+                    <option value="2">Urbano</option>
+                    <option value="3">Rodoviário</option>
+                </select>
             </select>
         </div>
         <div class="form-group">
@@ -4632,17 +4633,17 @@ select {
                 </select>
                 <label for="clientGroup" style="margin-top: 15px;">Grupo</label>
                 <select id="clientGroup">
-                    <option value="Nenhum">Nenhum</option>
-                    <option value="JCA">JCA</option>
-                    <option value="Guanabara">Guanabara</option>
-                    <option value="Águia Branca">Águia Branca</option>
+                    <option value="">Nenhum</option>
+    <option value="4">JCA</option>
+    <option value="1">GRUPO GUANABARA</option>
+    <option value="7">VIAÇÃO ÁGUIA BRANCA S/A</option>
                 </select>
                 <label for="clientSubgroup" style="margin-top: 15px;">Subgrupo</label>
                 <select id="clientSubgroup">
-                    <option value="Nenhum">Nenhum</option>
-                    <option value="Carga">Carga</option>
-                    <option value="Urbano">Urbano</option>
-                    <option value="Rodoviário">Rodoviário</option>
+                   <option value="4">Nenhum</option>
+                    <option value="1">Carga</option>
+                    <option value="2">Urbano</option>
+                    <option value="3">Rodoviário</option>
                 </select>
                 <label for="clientCfEmpresa" style="margin-top: 15px;">Email</label>
                 <input id="clientCfEmpresa" placeholder="Valor do campo cf_empresa no Freshdesk..." type="text"/>
@@ -4728,22 +4729,23 @@ select {
                 <input id="editClientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
                 <label for="editClientStatus" style="margin-top: 15px;">Status do Cliente</label>
                 <select id="editClientStatus">
-                    <option value="Cliente Ativo">Cliente Ativo</option>
-                    <option value="Cliente Inativo">Cliente Inativo</option>
+                    <option value="2">Cliente Ativo</option>
+                    <option value="3">Cliente Inativo</option>
                 </select>
                 <label for="editClientGroup" style="margin-top: 15px;">Grupo</label>
                 <select id="editClientGroup">
-                    <option value="Nenhum">Nenhum</option>
-                    <option value="JCA">JCA</option>
-                    <option value="Guanabara">Guanabara</option>
-                    <option value="Águia Branca">Águia Branca</option>
-                </select>
+    <option value="">Nenhum</option>
+    <option value="4">JCA</option>
+    <option value="1">GRUPO GUANABARA</option>
+    <option value="7">VIAÇÃO ÁGUIA BRANCA S/A</option>
+    <!-- ...outros grupos... -->
+</select>
                 <label for="editClientSubgroup" style="margin-top: 15px;">Subgrupo</label>
                 <select id="editClientSubgroup">
-                    <option value="Nenhum">Nenhum</option>
-                    <option value="Carga">Carga</option>
-                    <option value="Urbano">Urbano</option>
-                    <option value="Rodoviário">Rodoviário</option>
+                    <option value="4">Nenhum</option>
+                    <option value="1">Carga</option>
+                    <option value="2">Urbano</option>
+                    <option value="3">Rodoviário</option>
                 </select>
                 <label for="editClientCfEmpresa" style="margin-top: 15px;">Email</label>
                 <input id="editClientCfEmpresa" placeholder="Valor do campo cf_empresa no Freshdesk..." type="text"/>
@@ -6006,7 +6008,7 @@ select {
 
             
             try {
-                const { error } = await supabase
+                const { error } = await releaseClient
                     .from('tarefas_painel_setor')
                     .upsert([
                         { tipo: tipo, quantidade: novoValor }
@@ -6022,7 +6024,7 @@ select {
         // Função para carregar contadores de tarefas
         async function carregarContadoresDeTarefas() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await releaseClient
                     .from('tarefas_painel_setor')
                     .select('*');
 
@@ -6072,7 +6074,7 @@ select {
         }
 
                 for (const update of updates) {
-                    const { error } = await supabase
+                    const { error } = await releaseClient
                         .from('tarefas_painel_setor')
                         .upsert([update], { onConflict: ['tipo'] });
 
@@ -6435,7 +6437,7 @@ function addEditProduct() {
 
             if (nome && funcao && link && foto) {
                 const fotoPath = `funcionarios/${Date.now()}_${foto.name}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
+                const { data: uploadData, error: uploadError } = await releaseClient.storage
                     .from('funcionariofotos')
                     .upload(fotoPath, foto);
 
@@ -6447,7 +6449,7 @@ function addEditProduct() {
 
                 const fotoUrl = `${SUPABASE_URL}/storage/v1/object/public/funcionariofotos/${fotoPath}`;
 
-                const { data, error } = await supabase
+                const { data, error } = await releaseClient
                     .from('gestao_funcionarios')
                     .insert([
                         { nome, funcao, foto_url: fotoUrl, foto_path: fotoPath, link }
@@ -6470,7 +6472,7 @@ function addEditProduct() {
         }
 
         async function fetchAndRenderFuncionarios() {
-            const { data, error } = await supabase
+            const { data, error } = await releaseClient
                 .from('gestao_funcionarios')
                 .select('*');
 
@@ -6524,7 +6526,7 @@ function addEditProduct() {
             }
 
             if (fotoPath) {
-                const { error: storageError } = await supabase.storage
+                const { error: storageError } = await releaseClient.storage
                     .from('funcionariofotos')
                     .remove([fotoPath]);
 
@@ -6533,7 +6535,7 @@ function addEditProduct() {
                 }
             }
 
-            const { error: dbError } = await supabase
+            const { error: dbError } = await releaseClient
                 .from('gestao_funcionarios')
                 .delete()
                 .eq('id', id);
@@ -6549,28 +6551,32 @@ function addEditProduct() {
 
         // Função para filtrar clientes por grupo, subgrupo e nome
         function filterClientsByGroup() {
-            const selectedGroup = document.getElementById('filterClientGroup').value.toLowerCase();
-            const selectedSubgroup = document.getElementById('filterClientSubgroup').value.toLowerCase();
-            const searchName = document.getElementById('filterClientName').value.toLowerCase();
-            const selectedStatus = document.getElementById('filterClientStatus').value;
+            const selectedGroup = document.getElementById('filterClientGroup').value;
+            const selectedSubgroup = document.getElementById('filterClientSubgroup').value;
+            const searchName = document.getElementById('filterClientName').value.trim().toLowerCase();
+            let selectedStatus = document.getElementById('filterClientStatus').value.trim();
             const clientCards = document.querySelectorAll('#clientsList .client-card-vertical');
-            
             let visibleCount = 0;
-                      clientCards.forEach(card => {
+            clientCards.forEach(card => {
                 const clientId = card.dataset.clientId;
                 const client = clients.find(c => c.id == clientId);
                 if (!client) return;
 
-                const clientName = client.name.toLowerCase();
-                const clientGroup = client.group ? client.group.toLowerCase() : "";
-                const clientSubgroup = client.subgroup ? client.subgroup.toLowerCase() : "";
-                const clientStatus = client.status || "";
-                
-                const matchesGroup = selectedGroup === '' || clientGroup === selectedGroup;
-                const matchesSubgroup = selectedSubgroup === '' || clientSubgroup === selectedSubgroup;
+                const clientName = (client.name || '').toLowerCase();
+                const clientGroupId = client.group_id ? String(client.group_id) : '';
+                const clientSubgroupId = client.subgroup_id ? String(client.subgroup_id) : '';
+                // Status pelo relacionamento
+                let clientStatus = '';
+                if (client.client_statuses && client.client_statuses.name) {
+                    clientStatus = client.client_statuses.name;
+                } else if (client.status) {
+                    clientStatus = client.status;
+                }
+                const matchesGroup = selectedGroup === '' || clientGroupId === selectedGroup;
+                const matchesSubgroup = selectedSubgroup === '' || clientSubgroupId === selectedSubgroup;
                 const matchesName = searchName === '' || clientName.includes(searchName);
-                const matchesStatus = selectedStatus === '' || clientStatus === selectedStatus;
-                
+                // O filtro agora compara o status normalizado
+                const matchesStatus = selectedStatus === '' || clientStatus.toLowerCase() === selectedStatus.toLowerCase();
                 if (matchesGroup && matchesSubgroup && matchesName && matchesStatus) {
                     card.style.display = 'block';
                     visibleCount++;
@@ -6625,7 +6631,7 @@ function addEditProduct() {
 
             if (title && author && type && file) {
                 const filePath = `${Date.now()}_${file.name}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
+                const { data: uploadData, error: uploadError } = await releaseClient.storage
                     .from('documentfiles')
                     .upload(filePath, file);
 
@@ -6637,7 +6643,7 @@ function addEditProduct() {
 
                 const publicURL = `${SUPABASE_URL}/storage/v1/object/public/documentfiles/${filePath}`;
 
-                const { data, error } = await supabase
+                const { data, error } = await releaseClient
                     .from('documents_setor')
                     .insert([
                         { title, author, type, file_url: publicURL, file_path: filePath }
@@ -6660,7 +6666,7 @@ function addEditProduct() {
         }
 
         async function fetchAndRenderDocuments() {
-            const { data, error } = await supabase
+            const { data, error } = await releaseClient
                 .from('documents_setor')
                 .select('*');
 
@@ -6707,7 +6713,7 @@ function addEditProduct() {
     if (!confirmed) {
         return;
     }
-            const { error: storageError } = await supabase.storage
+            const { error: storageError } = await releaseClient.storage
                 .from('documentfiles')
                 .remove([filePath]);
 
@@ -6717,7 +6723,7 @@ function addEditProduct() {
                 return;
             }
 
-            const { error: dbError } = await supabase
+            const { error: dbError } = await releaseClient
                 .from('documents_setor')
                 .delete()
                 .eq('id', id);
@@ -6741,8 +6747,8 @@ function addEditProduct() {
             const email = document.getElementById('clientEmail').value;
             const phone = document.getElementById('clientPhone').value;
             const status = document.getElementById('clientStatus').value;
-            const group = document.getElementById('clientGroup').value;
-            const subgroup = document.getElementById('clientSubgroup').value;
+            const group_id = document.getElementById("clientGroup").value;
+            const subgroup_id = document.getElementById("clientSubgroup").value;
             const biLink = document.getElementById('clientBiLink').value;
             
             let logoUrl = null;
@@ -6753,7 +6759,7 @@ if (name && email && phone) {
     if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
         const logoFile = logoFileInput.files[0];
         const logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await releaseClient.storage
             .from('clientlogos')
             .upload(logoFilePath, logoFile);
 
@@ -6767,10 +6773,16 @@ if (name && email && phone) {
         logoPath = logoFilePath;
     }
 
-    const { data: clientData, error: clientError } = await supabase
+    // Mapear status para status_id
+    let status_id = null;
+    if (status === 'Cliente Ativo') status_id = 1;
+    else if (status === 'Cliente Inativo') status_id = 3;
+    // Mapear grupo para group (ou group_id se existir)
+    // Aqui mantemos o campo group como string, pois não há group_id na tabela
+    const { data: clientData, error: clientError } = await releaseClient
         .from('clients') 
         .insert([
-            { name, email, phone, status, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
+            { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
         ]);
 
                 if (currentProducts.length > 0) {
@@ -6779,7 +6791,7 @@ if (name && email && phone) {
                         name: p.name,
                         quantity: p.quantity
                     }));
-                    const { error: productsError } = await supabase
+                    const { error: productsError } = await releaseClient
                         .from('products_cliente') 
                         .insert(productsToInsert);
 
@@ -6816,10 +6828,12 @@ if (name && email && phone) {
 async function fetchAndRenderClients() {
    const userType = localStorage.getItem('user_type');
    const clientId = sessionStorage.getItem('client_id');
-   let query = supabase
+     let query = supabase
      .from('clients')
      .select(`
-        *,
+        id, name, email, phone, bi_link, cnpj, cf_empresa, id_cliente, group_id, status_id, logo_id, subgroup_id,
+        client_groups:group_id(id, name, parent_group_id),
+        client_statuses:status_id(name),
         products_cliente (
             id, name, quantity
         ),
@@ -6827,6 +6841,12 @@ async function fetchAndRenderClients() {
             id, type, system
         )
      `);
+
+     // Carregar todos os grupos para o filtro de subgrupo
+     if (!window.clientGroupsList) {
+         const { data: allGroups } = await releaseClient.from('client_groups').select('id, name, parent_group_id');
+         window.clientGroupsList = allGroups || [];
+     }
    
    if (
      userType === 'client' &&
@@ -6872,7 +6892,7 @@ async function fetchAndRenderClients() {
     </div>
 
     <div class="client-logo-vertical">
-      ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
+     ${client.client_logos?.url ? `<img src="${client.client_logos.url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
     </div>
 
     <p class="add-logo-text">${client.logo_url ? '' : 'Adicionar Logo'}</p>
@@ -6911,7 +6931,7 @@ async function fetchAndRenderClients() {
     <button class="btn-tickets" onclick="viewClientTickets(${client.id}, '${client.name}', '${client.email}')">
       <i class="fas fa-ticket-alt"></i> Ver Tickets
     </button>
-    <button class="btn-integracoes" onclick="viewClientIntegracoes(${client.id}, '${client.name}', '${client.CNPJ || ''}')">
+    <button class="btn-integracoes" onclick="viewClientIntegracoes(${client.id}, '${client.name}', '${client.cnpj || ''}')">
       <i class="fas fa-plug"></i> Integrações 
     </button>
   </div>
@@ -6934,7 +6954,7 @@ async function fetchAndRenderClients() {
   }
 
             if (logoPath) {
-                const { error: storageError } = await supabase.storage
+                const { error: storageError } = await releaseClient.storage
                     .from('clientlogos') 
                     .remove([logoPath]);
 
@@ -6943,7 +6963,7 @@ async function fetchAndRenderClients() {
                 }
             }
 
-            const { error: dbError } = await supabase
+            const { error: dbError } = await releaseClient
                 .from('clients') 
                 .delete()
                 .eq('id', id);
@@ -7024,9 +7044,9 @@ async function editClient(clientId) {
             const name = document.getElementById('editClientName').value;
             const email = document.getElementById('editClientEmail').value;
             const phone = document.getElementById('editClientPhone').value;
-            const status = document.getElementById('editClientStatus').value;
-            const group = document.getElementById('editClientGroup').value;
-            const subgroup = document.getElementById('editClientSubgroup').value;
+            const status_id = document.getElementById("editClientStatus").value;
+            const group_id = document.getElementById('editClientGroup').value;
+            const subgroup_id = document.getElementById('editClientSubgroup').value;
             const biLink = document.getElementById('editClientBiLink').value;
             const logoFileInput = document.getElementById('editClientLogo');
             const newLogoFile = logoFileInput.files[0];
@@ -7042,7 +7062,7 @@ async function editClient(clientId) {
 
             if (newLogoFile) {
                 const newLogoPath = `logos/${Date.now()}_${newLogoFile.name}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
+                const { data: uploadData, error: uploadError } = await releaseClient.storage
                     .from('clientlogos') 
                     .upload(newLogoPath, newLogoFile);
 
@@ -7055,7 +7075,7 @@ async function editClient(clientId) {
                 logoPath = newLogoPath;
 
                 if (currentClient && currentClient.logo_path) {
-                    const { error: deleteOldLogoError } = await supabase.storage
+                    const { error: deleteOldLogoError } = await releaseClient.storage
                         .from('clientlogos')
                         .remove([currentClient.logo_path]);
                     if (deleteOldLogoError) {
@@ -7069,9 +7089,9 @@ async function editClient(clientId) {
                 }
             }
 
-            const { error: clientError } = await supabase
+            const { error: clientError } = await releaseClient
                 .from('clients')
-                .update({ name, email, phone, status, group, subgroup, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
+                .update({ name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
                 .eq('id', clientId);
 
             if (clientError) {
@@ -7079,17 +7099,17 @@ async function editClient(clientId) {
                 showAlert('Erro', 'Erro ao atualizar cliente.');
                 return;
             }
-            await supabase.from('integrations_cliente').delete().eq('client_id', clientId);
+            await releaseClient.from('integrations_cliente').delete().eq('client_id', clientId);
 if (editingIntegrations.length > 0) {
   const integrationsToInsert = editingIntegrations.map(i => ({
     client_id: parseInt(clientId),
     type: i.type,
     system: i.system
   }));
-  await supabase.from('integrations_cliente').insert(integrationsToInsert);
+  await releaseClient.from('integrations_cliente').insert(integrationsToInsert);
 }
 
-            const { error: deleteProductsError } = await supabase
+            const { error: deleteProductsError } = await releaseClient
                 .from('products_cliente')
                 .delete()
                 .eq('client_id', clientId);
@@ -7105,7 +7125,7 @@ if (editingIntegrations.length > 0) {
                     name: p.name,
                     quantity: p.quantity
                 }));
-                const { error: insertProductsError } = await supabase
+                const { error: insertProductsError } = await releaseClient
                     .from('products_cliente')
                     .insert(productsToInsert);
 
@@ -7134,7 +7154,7 @@ if (editingIntegrations.length > 0) {
 
             if (title && type && file) {
                 const filePath = `client_documents/${clientId}/${Date.now()}_${file.name}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
+                const { data: uploadData, error: uploadError } = await releaseClient.storage
                     .from('clientdocumentfiles') 
                     .upload(filePath, file);
 
@@ -7146,7 +7166,7 @@ if (editingIntegrations.length > 0) {
 
                 const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
 
-                const { data, error } = await supabase
+                const { data, error } = await releaseClient
                     .from('client_documents') 
                     .insert([
                         { client_id: clientId, title, type, file_url: publicURL, file_path: filePath }
@@ -7166,11 +7186,52 @@ if (editingIntegrations.length > 0) {
                 showAlert('Atenção', 'Por favor, preencha todos os campos e selecione um arquivo para o documento do cliente.');
             }
         }
+        
+     async function updateClientStatusCounts() {
+  try {
+        const { data: clients, error } = await releaseClient
+            .from('clients')
+            .select('id, name, status_id, client_statuses:status_id(name)');
+
+    if (error) throw error;
+
+    // Armazena globalmente para outras funções, se precisar
+    window.clients = clients;
+
+    let activeCount = 0;
+    let inactiveCount = 0;
+
+    clients.forEach(client => {
+      const statusName = client.client_statuses?.name?.toLowerCase() || '';
+      if (statusName.includes('ativo')) activeCount++;
+      else if (statusName.includes('inativo')) inactiveCount++;
+    });
+
+    // Atualiza a UI
+    const elAtivos = document.getElementById('activeClientsCount');
+const elInativos = document.getElementById('inactiveClientsCount');
+if (elAtivos) elAtivos.textContent = activeCount;
+if (elInativos) elInativos.textContent = inactiveCount;
+
+  } catch (error) {
+    console.error('Erro ao atualizar contadores de status de clientes:', error);
+   const elAtivos = document.getElementById('activeClientsCount');
+const elInativos = document.getElementById('inactiveClientsCount');
+if (elAtivos) elAtivos.textContent = '-';
+if (elInativos) elInativos.textContent = '-';
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    updateClientStatusCounts();
+});
+
+
 
         // Função para verificar se um documento já foi avaliado
         async function isDocumentEvaluated(documentId) {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await releaseClient
                     .from('visit_evaluations')
                     .select('id')
                     .eq('document_id', documentId)
@@ -7187,7 +7248,7 @@ if (editingIntegrations.length > 0) {
         }
 
         async function fetchAndRenderClientDocuments(clientId) {
-            const { data, error } = await supabase
+            const { data, error } = await releaseClient
                 .from('client_documents') 
                 .select('*')
                 .eq('client_id', clientId);
@@ -7251,7 +7312,7 @@ if (editingIntegrations.length > 0) {
     if (!confirmed) {
         return;
     }
-            const { error: storageError } = await supabase.storage
+            const { error: storageError } = await releaseClient.storage
                 .from('clientdocumentfiles') 
                 .remove([filePath]);
 
@@ -7261,7 +7322,7 @@ if (editingIntegrations.length > 0) {
                 return;
             }
 
-            const { error: dbError } = await supabase
+            const { error: dbError } = await releaseClient
                 .from('client_documents') 
                 .delete()
                 .eq('id', documentId);
@@ -7281,7 +7342,12 @@ if (editingIntegrations.length > 0) {
 const clientId = sessionStorage.getItem('client_id');
 let query = supabase
   .from('clients')
-  .select('id, name, logo_url, bi_link')
+  .select(`
+    id, 
+    name, 
+    bi_link,
+    client_logos(url)
+  `)
   .not('bi_link', 'is', null)
   .not('bi_link', 'eq', '');
 if (
@@ -7318,7 +7384,7 @@ const { data, error } = await query;
             container.innerHTML = data.map(client => `
                 <div class="dashboard-card">
                     <div class="client-logo-vertical">
-                        ${client.logo_url ? `<img src="${client.logo_url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
+                        ${client.client_logos?.url ? `<img src="${client.client_logos.url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
                     </div>
                     <h3>${client.name}</h3>
                     <a href="${client.bi_link}" target="_blank" class="btn-bi">
@@ -7353,7 +7419,51 @@ const { data, error } = await query;
             }
         }
 
-        
+        async function fetchAndRenderHomologacoes() {
+            const { data, error } = await releaseClient
+                .from('homologacoes')
+                .select('*')
+                .order('data_liberacao', { ascending: false });
+
+            const grid = document.getElementById('homologacoesGrid');
+            const empty = document.getElementById('emptyStateHomologacao');
+
+            if (error || !data || data.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'flex';
+                return;
+            }
+
+            empty.style.display = 'none';
+            grid.innerHTML = data.map(h => {
+               
+                const arquivosData = encodeURIComponent(JSON.stringify(h.arquivos || []));
+                
+                let html = "";
+                html += '<div class="homologacao-card">';
+                html += '<h4>Versão: ' + h.versao + '</h4>';
+                html += '<p><strong>Especialista:</strong> ' + h.especialista + '</p>';
+                html += '<p><strong>Sistema:</strong> ' + h.sistema + '</p>';
+                html += '<p><strong>Liberação:</strong> ' + h.data_liberacao + '</p>';
+                html += '<p><strong>Homologação:</strong> ' + (h.data_homologacao || '-') + '</p>';
+                html += '<p><strong>Obs:</strong> ' + (h.observacao || '-') + '</p>';
+                if (h.arquivos && h.arquivos.length) {
+                    html += '<p><strong>Arquivos:</strong><br>' +
+                        h.arquivos.map((file, i) =>
+                            `<span>📄 ${file.nome}</span>`
+                        ).join('<br>') +
+                    '</p>';
+                   
+                    html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
+                }
+                
+                html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
+                html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
+                html += '</div>';
+                return html;
+            }).join('');
+        }
+
         const uploadAreaHomologacao = document.getElementById('uploadAreaHomologacao');
         const fileInputHomologacao = document.getElementById('fileInputHomologacao');
         const fileListHomologacao = document.getElementById('fileListHomologacao');
@@ -7457,7 +7567,7 @@ const { data, error } = await query;
 
             for (let file of arquivosHomologacaoSelecionados) {
                 const path = `homologacoes/${Date.now()}_${file.name}`;
-                const { data, error } = await supabase.storage.from('homologacaoarquivos').upload(path, file);
+                const { data, error } = await releaseClient.storage.from('homologacaoarquivos').upload(path, file);
                 if (error) {
                     showAlert('Erro', `Erro ao enviar o arquivo ${file.name}: ${error.message}`);
                     btn.innerHTML = textoOriginal;
@@ -7465,11 +7575,11 @@ const { data, error } = await query;
                     return;
                 }
                 
-                const { data: publicData } = supabase.storage.from('homologacaoarquivos').getPublicUrl(path);
+                const { data: publicData } = releaseClient.storage.from('homologacaoarquivos').getPublicUrl(path);
                 arquivosParaSalvar.push({ nome: file.name, path: path, url: publicData.publicUrl });
             }
 
-            const { error: insertError } = await supabase.from('homologacoes').insert([{
+            const { error: insertError } = await releaseClient.from('homologacoes').insert([{
                 especialista,
                 versao,
                 data_liberacao: dataLiberacao,
@@ -7494,61 +7604,61 @@ const { data, error } = await query;
         });
 
         
-        function limparHomologacaoForm() {
-            document.getElementById('homologacaoForm').reset();
-            arquivosHomologacaoSelecionados = [];
-            fileListHomologacao.innerHTML = '';
-            document.getElementById('fileInputHomologacao').value = '';
-        }
+        function filterClientsByGroup() {
+            const selectedGroup = document.getElementById('filterClientGroup').value.toLowerCase();
+            const selectedSubgroup = document.getElementById('filterClientSubgroup').value.toLowerCase();
+            const searchName = document.getElementById('filterClientName').value.toLowerCase();
+            const selectedStatus = document.getElementById('filterClientStatus').value;
+            const clientCards = document.querySelectorAll('#clientsList .client-card-vertical');
+            let visibleCount = 0;
+            clientCards.forEach(card => {
+                const clientId = card.dataset.clientId;
+                const client = clients.find(c => c.id == clientId);
+                if (!client) return;
 
-        
-        document.getElementById('dataLiberacao').valueAsDate = new Date();
-
-        
-        async function fetchAndRenderHomologacoes() {
-            const { data, error } = await supabase
-                .from('homologacoes')
-                .select('*')
-                .order('data_liberacao', { ascending: false });
-
-            const grid = document.getElementById('homologacoesGrid');
-            const empty = document.getElementById('emptyStateHomologacao');
-
-            if (error || !data || data.length === 0) {
-                grid.innerHTML = '';
-                empty.style.display = 'flex';
-                return;
-            }
-
-            empty.style.display = 'none';
-            grid.innerHTML = data.map(h => {
-               
-                const arquivosData = encodeURIComponent(JSON.stringify(h.arquivos || []));
-                
-                let html = "";
-                html += '<div class="homologacao-card">';
-                html += '<h4>Versão: ' + h.versao + '</h4>';
-                html += '<p><strong>Especialista:</strong> ' + h.especialista + '</p>';
-                html += '<p><strong>Sistema:</strong> ' + h.sistema + '</p>';
-                html += '<p><strong>Liberação:</strong> ' + h.data_liberacao + '</p>';
-                html += '<p><strong>Homologação:</strong> ' + (h.data_homologacao || '-') + '</p>';
-                html += '<p><strong>Obs:</strong> ' + (h.observacao || '-') + '</p>';
-                if (h.arquivos && h.arquivos.length) {
-                    html += '<p><strong>Arquivos:</strong><br>' +
-                        h.arquivos.map((file, i) =>
-                            `<span>📄 ${file.nome}</span>`
-                        ).join('<br>') +
-                    '</p>';
-                   
-                    html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
+                const clientName = (client.name || '').toLowerCase();
+                const clientGroup = (client.client_groups?.name || '').toLowerCase();
+                // Subgrupo: se usar hierarquia, pode ser o nome do grupo pai
+                let clientSubgroup = '';
+                if (client.client_groups && client.client_groups.parent_group_id && window.clientGroupsList) {
+                    const parent = window.clientGroupsList.find(g => g.id === client.client_groups.parent_group_id);
+                    clientSubgroup = (parent?.name || '').toLowerCase();
                 }
-                
-                html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
-                html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
-                html += '</div>';
-                return html;
-            }).join('');
+                const clientStatus = (client.client_statuses?.name || '').toLowerCase();
+                const matchesGroup = selectedGroup === '' || clientGroup === selectedGroup;
+                const matchesSubgroup = selectedSubgroup === '' || clientSubgroup === selectedSubgroup;
+                const matchesName = searchName === '' || clientName.includes(searchName);
+                const matchesStatus = selectedStatus === '' || clientStatus.toLowerCase() === selectedStatus.toLowerCase();
+                if (matchesGroup && matchesSubgroup && matchesName && matchesStatus) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            // Mostrar/esconder estado vazio
+            const emptyState = document.querySelector('#clientsList .empty-state');
+            if (emptyState) {
+                if (visibleCount === 0 && clientCards.length > 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = `
+                        <div class="empty-state-icon">🔍</div>
+                        <p>Nenhum cliente encontrado</p>
+                        <p>Tente ajustar os filtros</p>
+                    `;
+                } else if (clientCards.length === 0) {
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = `
+                        <div class="empty-state-icon">👥</div>
+                        <p>Nenhum cliente encontrado</p>
+                        <p>Adicione clientes para começar</p>
+                    `;
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
         }
+        
 
         
         async function filtrarHomologacoes() {
@@ -7557,7 +7667,7 @@ const { data, error } = await query;
     const dataInicio = document.getElementById('filtroDataInicio')?.value;
     const dataFim = document.getElementById('filtroDataFim')?.value;
 
-    const { data, error } = await supabase
+    const { data, error } = await releaseClient
         .from('homologacoes')
         .select('*')
         .order('data_liberacao', { ascending: false });
@@ -7629,7 +7739,7 @@ const { data, error } = await query;
             for (const arquivo of arquivos) {
                 try {
                     
-                    const { data, error } = await supabase
+                    const { data, error } = await releaseClient
                         .storage
                         .from('homologacaoarquivos')
                         .createSignedUrl(arquivo.path, 60, { download: true }); 
@@ -7674,7 +7784,7 @@ const { data, error } = await query;
             
             if (arquivos && arquivos.length > 0) {
                 const pathsToDelete = arquivos.map(a => a.path);
-                const { error: storageError } = await supabase.storage
+                const { error: storageError } = await releaseClient.storage
                     .from('homologacaoarquivos')
                     .remove(pathsToDelete);
 
@@ -7685,7 +7795,7 @@ const { data, error } = await query;
             }
 
             
-            const { error: dbError } = await supabase
+            const { error: dbError } = await releaseClient
                 .from('homologacoes')
                 .delete()
                 .eq('id', id);
@@ -7720,7 +7830,7 @@ const { data, error } = await query;
       async function editHomologacaoFromButton(button, homologacaoId) {
         try {
             // Buscar dados da homologação
-            const { data, error } = await supabase
+            const { data, error } = await releaseClient
                 .from('homologacoes')
                 .select('*')
                 .eq('id', homologacaoId)
@@ -7777,7 +7887,7 @@ const { data, error } = await query;
                     };
 
                     // Atualizar homologação
-                    const { error: updateError } = await supabase
+                    const { error: updateError } = await releaseClient
                         .from('homologacoes')
                         .update(updateData)
                         .eq('id', homologacaoId);
@@ -7788,7 +7898,7 @@ const { data, error } = await query;
                     const files = document.getElementById('editHomologacaoFiles').files;
                     if (files.length > 0) {
                         // Buscar arquivos existentes
-                        const { data: existingData } = await supabase
+                        const { data: existingData } = await releaseClient
                             .from('homologacoes')
                             .select('arquivos')
                             .eq('id', homologacaoId)
@@ -7800,7 +7910,7 @@ const { data, error } = await query;
                             const fileName = `homologacao_${homologacaoId}_${Date.now()}_${file.name}`;
                             
                             // Upload do arquivo
-                            const { error: uploadError } = await supabase.storage
+                            const { error: uploadError } = await releaseClient.storage
                                 .from('homologacoes')
                                 .upload(fileName, file);
 
@@ -7815,7 +7925,7 @@ const { data, error } = await query;
                         }
 
                         // Atualizar lista de arquivos
-                        const { error: filesError } = await supabase
+                        const { error: filesError } = await releaseClient
                             .from('homologacoes')
                             .update({ arquivos: existingFiles })
                             .eq('id', homologacaoId);
@@ -7942,7 +8052,7 @@ function atualizarGraficoStatus() {
 }
 
 async function carregarGraficoComparativo() {
-    const { data: visitas, error } = await supabase.from('visitas').select('*');
+    const { data: visitas, error } = await releaseClient.from('visitas').select('*');
     if (error) {
         console.error('Erro ao buscar visitas:', error.message);
         return;
@@ -8086,7 +8196,7 @@ async function gerarPDFVisita() {
       const sanitizedFileName = sanitizeFileName(`Relatorio_Visita_${clienteEmpresa}_${dateStr}.pdf`);
       const filePath = `client_documents/${clienteId}/${Date.now()}_${sanitizedFileName}`;
       const file = new File([pdfBlob], sanitizedFileName, { type: 'application/pdf' });
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await releaseClient.storage
         .from('clientdocumentfiles')
         .upload(filePath, file);
       if (uploadError) {
@@ -8098,7 +8208,7 @@ async function gerarPDFVisita() {
         // Inserir registro na tabela client_documents
         const title = `Relatório de Visita - ${dateStr}`;
         const type = 'relatorio';
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
           .from('client_documents')
           .insert([
             { client_id: clienteId, title, type, file_url: publicURL, file_path: filePath }
@@ -8546,10 +8656,24 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 function atualizarMetricasClientes() {
   if (!window.clients || !Array.isArray(window.clients)) return;
-  const ativos = window.clients.filter(c => c.status && c.status.toLowerCase() === 'cliente ativo').length;
-  const inativos = window.clients.filter(c => c.status && c.status.toLowerCase().includes('inativo')).length;
-  document.getElementById('clientesAtivos').textContent = ativos;
-  document.getElementById('clientesInativos').textContent = inativos;
+
+    const ativos = window.clients.filter(c => {
+        if (c.client_statuses && c.client_statuses.name) {
+            return c.client_statuses.name.toLowerCase().includes('ativo') && !c.client_statuses.name.toLowerCase().includes('inativo');
+        }
+        return c.status_id === 1 || c.status_id === 2; // IDs de Cliente Ativo
+    }).length;
+    const inativos = window.clients.filter(c => {
+        if (c.client_statuses && c.client_statuses.name) {
+            return c.client_statuses.name.toLowerCase().includes('inativo');
+        }
+        return c.status_id === 3; // ID de Cliente Inativo
+    }).length;
+
+const elAtivos = document.getElementById('activeClientsCount');
+const elInativos = document.getElementById('inactiveClientsCount');
+if (elAtivos) elAtivos.textContent = ativos;
+if (elInativos) elInativos.textContent = inativos;
 }
 </script>
 <script>
@@ -8613,11 +8737,11 @@ async function loadDashboardMetrics() {
     try {
         // Carregar contadores de cada tabela
         const [clientsResult, homologacoesResult, releasesResult, reunioesResult, evaluationsResult] = await Promise.all([
-            supabase.from('clients').select('id', { count: 'exact', head: true }),
-            supabase.from('homologacoes').select('id', { count: 'exact', head: true }),
+            releaseClient.from('clients').select('id', { count: 'exact', head: true }),
+            releaseClient.from('homologacoes').select('id', { count: 'exact', head: true }),
             releaseClient.from('releases').select('id', { count: 'exact', head: true }),
             releaseClient.from('reunioes').select('id', { count: 'exact', head: true }),
-            supabase.from('visit_evaluations').select('rating')
+            releaseClient.from('visit_evaluations').select('rating')
         ]);
 
         dashboardData.totalClients = clientsResult.count || 0;
@@ -8674,8 +8798,8 @@ async function loadRecentActivities() {
 
         
         const [clientsData, homologacoesData, releasesData, reunioesData] = await Promise.all([
-            supabase.from('clients').select('id, name, created_at').order('created_at', { ascending: false }).limit(3),
-            supabase.from('homologacoes').select('id, especialista, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
+            releaseClient.from('clients').select('id, name, created_at').order('created_at', { ascending: false }).limit(3),
+            releaseClient.from('homologacoes').select('id, especialista, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
             releaseClient.from('releases').select('id, sistema, versao, data_liberacao').order('data_liberacao', { ascending: false }).limit(3),
             releaseClient.from('reunioes').select('id, cliente, data, tipo').order('data', { ascending: false }).limit(3)
         ]);
@@ -8803,9 +8927,14 @@ async function loadHighlightClients() {
         const carousel = document.getElementById('clientsCarousel');
         carousel.innerHTML = '<div style="text-align: center; padding: 20px; min-width: 100%;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
 
-        const { data: clients, error } = await supabase
-            .from('clients')
-            .select('id, name, logo_url, bi_link')
+        const { data: clients, error } = await releaseClient
+    .from('clients')
+    .select(`
+        id, 
+        name, 
+        bi_link,
+        client_logos(url)
+    `)
             .not('bi_link', 'is', null)
             .not('bi_link', 'eq', '')
             .limit(5);
@@ -8823,8 +8952,8 @@ async function loadHighlightClients() {
             carousel.innerHTML = clients.map(client => `
                 <div class="client-highlight-card" style="min-width: 200px; background: #ffffff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; cursor: pointer;" onclick="window.open('${client.bi_link}', '_blank')">
                     <div style="width: 80px; height: 80px; margin: 0 auto 15px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                        ${client.logo_url ? 
-                            `<img src="${client.logo_url}" alt="${client.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                        ${client.client_logos?.url ?
+                            `<img src="${client.client_logos.url}" alt="${client.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
                             `<span style="font-size: 2em; color: #29b6f6;">${client.name.charAt(0).toUpperCase()}</span>`
                         }
                     </div>
@@ -8889,7 +9018,7 @@ async function createCharts() {
 // Gráfico de Homologações por Mês
 async function createHomologacoesChart() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('homologacoes')
             .select('data_liberacao');
 
@@ -9162,7 +9291,7 @@ function closeIntegracoesModal() {
 async function viewClientIntegracoes(clientId, clientName, cnpj) {
     // Buscar cliente no Supabase para obter o id_cliente
     try {
-        const { data: clientData, error: clientError } = await supabase
+        const { data: clientData, error: clientError } = await releaseClient
             .from('clients')
             .select('*')
             .eq('id', clientId)
@@ -9202,7 +9331,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
     
     try {
         // Buscar cliente no Supabase para obter dados completos
-        const { data: clientData, error: clientError } = await supabase
+        const { data: clientData, error: clientError } = await releaseClient
             .from('clients')
             .select('*')
             .eq('id', clientId)
@@ -9268,7 +9397,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
             <div class="integracoes-info">
                 <p><strong>Cliente:</strong> ${integracoesData.cliente?.nome || clientName}</p>
                 <p><strong>ID Cliente:</strong> ${integracoesData.cliente?.id_cliente || idCliente}</p>
-                <p><strong>CNPJ:</strong> ${integracoesData.cliente?.cnpj || clientData.CNPJ || 'Não informado'}</p>
+                <p><strong>cnpj:</strong> ${integracoesData.cliente?.cnpj || clientData.cnpj || 'Não informado'}</p>
                 <p><strong>Total de Integrações:</strong> ${integracoesData.total_integracoes || 0}</p>
                 ${integracoesData.observacao ? `<p><em>${integracoesData.observacao}</em></p>` : ''}
             </div>
@@ -9290,7 +9419,7 @@ async function showIntegracoesModal(clientName, clientId, idCliente) {
 }
 
 // Função para consultar integrações por CNPJ
-async function consultarIntegracoesPorCNPJ(cnpj) {
+async function consultarIntegracoesPorcnpj(cnpj) {
     try {
         // Chamar a API Flask para obter as integrações
         const response = await fetch(`http://127.0.0.1:5000/api/integracoes/consultar-por-cnpj`, {
@@ -9331,7 +9460,7 @@ async function consultarIntegracoesPorCNPJ(cnpj) {
 async function consultarIntegracoesPorIdCliente(idCliente) {
     try {
         // Tenta buscar dados reais da API Flask
-        const response = await fetch(`https://05cda1911277.ngrok-free.app/api/integracoes/${idCliente}`, {
+        const response = await fetch(`https://bdab735a5426.ngrok-free.app/api/integracoes/${idCliente}`, {
     headers: {
         'ngrok-skip-browser-warning': 'true'
     }
@@ -10071,7 +10200,7 @@ async function saveTask() {
     };
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('tarefas_painel_setor')
             .insert([taskData]);
 
@@ -10102,7 +10231,7 @@ async function saveTeamMember() {
     const photoFile = document.getElementById('memberPhoto').files[0];
     if (photoFile) {
         const photoPath = `team/${Date.now()}_${photoFile.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await releaseClient.storage
             .from('team-photos')
             .upload(photoPath, photoFile);
 
@@ -10114,7 +10243,7 @@ async function saveTeamMember() {
     }
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('time_painel_setor')
             .insert([memberData]);
 
@@ -10147,7 +10276,7 @@ async function saveProject() {
     };
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('projetos_painel_setor')
             .insert([projectData]);
 
@@ -10177,7 +10306,7 @@ async function saveVisit() {
     };
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('visitas_setor')
             .insert([visitData]);
 
@@ -10205,7 +10334,7 @@ async function saveEntrega() {
 
     try {
         // 1. Verificar se já existe uma entrada para o mês/ano/setor na tabela 'entregas'
-        let { data: existingEntrega, error: selectEntregaError } = await supabase
+        let { data: existingEntrega, error: selectEntregaError } = await releaseClient
             .from('entregas_painel_setor')
             .select('id')
             .eq('mes', monthMap[selectedMonth])
@@ -10222,7 +10351,7 @@ async function saveEntrega() {
             entregaId = existingEntrega.id;
         } else {
             // Se não existe, criar uma nova entrada na tabela 'entregas'
-            const { data: newEntrega, error: insertEntregaError } = await supabase
+            const { data: newEntrega, error: insertEntregaError } = await releaseClient
                 .from('entregas_painel_setor')
                 .insert([
                     {
@@ -10252,7 +10381,7 @@ async function saveEntrega() {
                     const percentageValue = parseInt(input.value) || 0;
 
                     // Verificar se já existe uma entrada para este membro/entrega
-                    const { data: existingMemberEntrega, error: selectMemberEntregaError } = await supabase
+                    const { data: existingMemberEntrega, error: selectMemberEntregaError } = await releaseClient
                         .from('entregas_membros_painel_setor')
                         .select('id')
                         .eq('entrega_id', entregaId)
@@ -10265,14 +10394,14 @@ async function saveEntrega() {
 
                     if (existingMemberEntrega) {
                         // Atualizar percentual existente
-                        const { error: updateMemberEntregaError } = await supabase
+                        const { error: updateMemberEntregaError } = await releaseClient
                             .from('entregas_membros_painel_setor')
                             .update({ percentual: percentageValue })
                             .eq('id', existingMemberEntrega.id);
                         if (updateMemberEntregaError) throw updateMemberEntregaError;
                     } else {
                         // Inserir novo percentual
-                        const { error: insertMemberEntregaError } = await supabase
+                        const { error: insertMemberEntregaError } = await releaseClient
                             .from('entregas_membros_painel_setor')
                             .insert([
                                 {
@@ -10293,7 +10422,7 @@ async function saveEntrega() {
         // 3. Atualizar o percentual do setor na tabela 'entregas'
         const setorPercentage = memberCount > 0 ? Math.round(totalPercentage / memberCount) : 0;
         console.log('Calculated setorPercentage:', setorPercentage, 'from totalPercentage:', totalPercentage, 'and memberCount:', memberCount);
-        const { error: updateEntregaError } = await supabase
+        const { error: updateEntregaError } = await releaseClient
             .from("entregas")
             .update({ percentual_setor: setorPercentage })
             .eq("id", entregaId);
@@ -10385,7 +10514,7 @@ async function loadPainelData() {
 async function loadTimeData() {
     try {
         const setorUsuario = sessionStorage.getItem('setor');
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('time_painel_setor')
             .select('*')
             .eq('ativo', true)
@@ -10431,7 +10560,7 @@ async function loadTimeData() {
 async function loadProjectsData() {
     try {
         const setorUsuario = sessionStorage.getItem('setor');
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('projetos_painel_setor')
             .select('*')
             .eq('setor', setorUsuario)
@@ -10477,7 +10606,7 @@ async function loadEntregasData() {
 // Atualizar contadores de tarefas
 async function updateTaskCounters() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('tarefas_painel_setor')
             .select('tipo');
 
@@ -10585,7 +10714,7 @@ async function initializeMap() {
 async function loadVisitasOnMap() {
     try {
         const setorUsuario = sessionStorage.getItem('setor');
-        const { data: visitas, error } = await supabase
+        const { data: visitas, error } = await releaseClient
             .from('visitas_setor')
             .select('*')
             .eq('setor', setorUsuario)
@@ -10615,7 +10744,7 @@ async function loadVisitasOnMap() {
                     lng = coords.lng;
                     
                     
-                    await supabase
+                    await releaseClient
                         .from('visitas_setor')
                         .update({ latitude: lat, longitude: lng })
                         .eq('id', visita.id);
@@ -10699,7 +10828,7 @@ async function saveVisit() {
     };
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('visitas_setor')
             .insert([visitData]);
 
@@ -10735,7 +10864,7 @@ async function excluirProjeto(projetoId) {
 
     if (confirmacao) {
         try {
-            const { error } = await supabase
+            const { error } = await releaseClient
                 .from('projetos_painel_setor')
                 .delete()
                 .eq('id', projetoId);
@@ -11331,7 +11460,7 @@ document.addEventListener('keydown', function(event) {
 <script>
 async function buscarClienteIdPorEmpresa(nomeEmpresa) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('clients')
             .select('id')
             .eq('name', nomeEmpresa)
@@ -11368,7 +11497,7 @@ async function salvarPDFNoCliente(pdfBlob, clientId) {
 
     if (title && type && file) {
         const filePath = `client_documents/${clientId}/${Date.now()}_${file.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await releaseClient.storage
             .from('clientdocumentfiles')
             .upload(filePath, file);
 
@@ -11380,7 +11509,7 @@ async function salvarPDFNoCliente(pdfBlob, clientId) {
 
         const publicURL = `${SUPABASE_URL}/storage/v1/object/public/clientdocumentfiles/${filePath}`;
 
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('client_documents')
             .insert([
                 { client_id: clientId, title, type, file_url: publicURL, file_path: filePath }
@@ -11540,7 +11669,7 @@ async function submitEvaluation() {
     
     try {
         // Salvar no Supabase
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('visit_evaluations')
             .insert([evaluation]);
         
@@ -11756,7 +11885,7 @@ async function loadEvaluations() {
     
     try {
         
-        const { data: evaluations, error } = await supabase
+        const { data: evaluations, error } = await releaseClient
             .from('visit_evaluations')
             .select('*')
             .order('created_at', { ascending: false });
@@ -11852,7 +11981,7 @@ async function loadClientFilter(evaluations) {
     
     try {
        
-        const { data: clients, error } = await supabase
+        const { data: clients, error } = await releaseClient
             .from('clients')
             .select('id, name')
             .in('id', clientIds);
@@ -11994,7 +12123,7 @@ async function deleteEvaluation(evaluationId) {
     }
     
     try {
-        const { error } = await supabase
+        const { error } = await releaseClient
             .from('visit_evaluations')
             .delete()
             .eq('id', evaluationId);
@@ -12017,7 +12146,7 @@ async function deleteEvaluation(evaluationId) {
 // Função para verificar se um documento já foi avaliado
 async function isDocumentEvaluated(documentId) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('visit_evaluations')
             .select('id')
             .eq('document_id', documentId)
@@ -12090,7 +12219,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+  window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -12425,7 +12554,7 @@ async function salvarEdicaoUsuario(usuarioId) {
 // Função para carregar clientes no select
 async function carregarClientesNoSelect() {
     try {
-        const { data: clientes, error } = await supabase
+        const { data: clientes, error } = await releaseClient
             .from('clients')
             .select('id, name')
             .order('name', { ascending: true });
@@ -12512,7 +12641,7 @@ async function criarLoginCliente() {
         }
 
         
-        const { data: cliente, error: clientError } = await supabase
+        const { data: cliente, error: clientError } = await releaseClient
             .from('clients')
             .select('name')
             .eq('id', clienteId)
@@ -12746,7 +12875,7 @@ let usuarios = [];
 // Função para buscar e renderizar usuários
 async function fetchAndRenderUsuarios() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('usuarios')
             .select('*')
             .order('nome');
@@ -12872,7 +13001,7 @@ async function excluirUsuario(userId) {
     }
 
     try {
-        const { error } = await supabase
+        const { error } = await releaseClient
             .from('usuarios')
             .delete()
             .eq('id', userId);
@@ -12917,7 +13046,7 @@ async function adicionarUsuario() {
 
     try {
         // Verificar se o email já existe
-        const { data: existingUser } = await supabase
+        const { data: existingUser } = await releaseClient
             .from('usuarios')
             .select('id')
             .eq('email', email)
@@ -12929,7 +13058,7 @@ async function adicionarUsuario() {
         }
 
         // Inserir novo usuário
-        const { error } = await supabase
+        const { error } = await releaseClient
             .from('usuarios')
             .insert([{
                 nome: nome,
@@ -12994,7 +13123,7 @@ async function criarLoginCliente() {
 
     try {
         // Verificar se o email já existe
-        const { data: existingUser } = await supabase
+        const { data: existingUser } = await releaseClient
             .from('usuarios')
             .select('id')
             .eq('email', email)
@@ -13010,7 +13139,7 @@ async function criarLoginCliente() {
         const nomeCliente = cliente ? cliente.name : `Cliente ${clienteId}`;
 
         // Inserir novo usuário cliente
-        const { error } = await supabase
+        const { error } = await releaseClient
             .from('usuarios')
             .insert([{
                 nome: nomeCliente,
@@ -13243,7 +13372,7 @@ async function salvarEdicaoUsuario(event) {
         }
 
         // Atualizar no banco de dados
-        const { error } = await supabase
+        const { error } = await releaseClient
             .from('usuarios')
             .update(dadosAtualizacao)
             .eq('id', userId);
@@ -13315,7 +13444,7 @@ let trainingProducts = [];
 // Função para carregar produtos do Supabase
 async function loadTrainingProducts() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('training_products')
             .select('*')
             .order('name');
@@ -13394,7 +13523,7 @@ async function loadTrainingVideos(productId) {
     const videosList = document.getElementById('videosList');
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('training_videos')
             .select('*')
             .eq('product_id', productId)
@@ -13462,7 +13591,7 @@ async function loadTrainingVideos(productId) {
 // Função para reproduzir vídeo
 async function playTrainingVideo(videoId) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('training_videos')
             .select('*')
             .eq('id', videoId)
@@ -13588,7 +13717,7 @@ async function addTrainingProduct(event) {
     }
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('training_products')
             .insert([{
                 name: name,
@@ -13693,7 +13822,7 @@ let submitBtn = null;
             const fileExtension = file.name.split('.').pop();
             const fileName = `training-videos/${currentProduct}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExtension}`;
             // Upload do arquivo para Supabase Storage
-            const { data: uploadData, error: uploadError } = await supabase.storage
+            const { data: uploadData, error: uploadError } = await releaseClient.storage
                 .from('training-videos')
                 .upload(fileName, file);
             if (uploadError) {
@@ -13710,7 +13839,7 @@ let submitBtn = null;
         }
 
         // Obter próximo order_index
-        const { data: maxOrderData } = await supabase
+        const { data: maxOrderData } = await releaseClient
             .from('training_videos')
             .select('order_index')
             .eq('product_id', currentProduct)
@@ -13720,7 +13849,7 @@ let submitBtn = null;
         const nextOrderIndex = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].order_index + 1 : 1;
 
         // Inserir registro no banco
-        const { data, error } = await supabase
+        const { data, error } = await releaseClient
             .from('training_videos')
             .insert([{
                 product_id: currentProduct,
@@ -13739,7 +13868,7 @@ let submitBtn = null;
             console.error('Erro ao salvar vídeo:', error);
             // Remover arquivo do storage se falhou ao salvar no banco
             if (videoPathToSave) {
-                await supabase.storage.from('training-videos').remove([videoPathToSave]);
+                await releaseClient.storage.from('training-videos').remove([videoPathToSave]);
             }
             showAlert('Erro', 'Erro ao salvar informações do vídeo. Tente novamente.');
             return;
@@ -13780,7 +13909,7 @@ async function deleteTrainingVideo(videoId) {
     
     try {
         // Buscar informações do vídeo para obter o caminho do arquivo
-        const { data: videoData, error: fetchError } = await supabase
+        const { data: videoData, error: fetchError } = await releaseClient
             .from('training_videos')
             .select('video_path')
             .eq('id', videoId)
@@ -13793,7 +13922,7 @@ async function deleteTrainingVideo(videoId) {
         }
         
         // Excluir registro do banco
-        const { error: deleteError } = await supabase
+        const { error: deleteError } = await releaseClient
             .from('training_videos')
             .delete()
             .eq('id', videoId);
@@ -13806,7 +13935,7 @@ async function deleteTrainingVideo(videoId) {
         
         // Excluir arquivo do storage
         if (videoData.video_path) {
-            const { error: storageError } = await supabase.storage
+            const { error: storageError } = await releaseClient.storage
                 .from('training-videos')
                 .remove([videoData.video_path]);
                 
@@ -14426,7 +14555,7 @@ async function salvarImplantacao(event) {
     btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Salvando...';
     
     try {
-        const { data: result, error } = await supabase
+        const { data: result, error } = await releaseClient
             .from('status_projetos')
             .insert([
                 {
@@ -15299,7 +15428,7 @@ async function loadAllTickets() {
     
     try {
         // Buscar todos os clientes primeiro
-        const { data: clients, error: clientsError } = await supabase
+        const { data: clients, error: clientsError } = await releaseClient
             .from('clients')
             .select('*');
             
