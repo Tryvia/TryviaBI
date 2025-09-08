@@ -662,7 +662,7 @@ function populateReuniaoResponsaveis() {
 async function carregarTarefas() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
-        .from('tarefas_painel_setor')
+        .from('tarefas')
         .select('*')
         .eq('setor', setorUsuario);
 
@@ -717,7 +717,7 @@ async function carregarTarefas() {
 async function carregarProjetos() {
     const setorUsuario = sessionStorage.getItem('setor');
     const { data, error } = await supabase
-        .from('projetos_painel_setor')
+        .from('projetos')
         .select('*')
         .eq('setor', setorUsuario);
 
@@ -798,8 +798,8 @@ async function carregarEntregas() {
     
     // Buscar entregas da tabela 'entregas' e os percentuais dos membros da 'entregas_membros'
     const { data: entregasData, error: entregasError } = await supabase
-        .from("entregas_painel_setor")
-        .select("id, mes, ano, setor_percentage, entregas_membros_painel_setor(membro_id, percentual)")
+        .from("entregas")
+        .select("id, mes, ano, setor_percentage, entregas_membros(membro_id, percentual)")
         .eq("setor", setorUsuario)
         .eq("ano", new Date().getFullYear());
 
@@ -5299,7 +5299,7 @@ select {
             <!-- Tabela de Entregas por Mês -->
             <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 <div style="background: #4fc3f7; color: white; padding: 15px; text-align: center; font-weight: bold;">
-                    SLA Por Mês
+                    Time Implantação & Projetos
                 </div>
                 
                 <table style="width: 100%; border-collapse: collapse;">
@@ -6007,7 +6007,7 @@ select {
             
             try {
                 const { error } = await supabase
-                    .from('tarefas_painel_setor')
+                    .from('tarefas')
                     .upsert([
                         { tipo: tipo, quantidade: novoValor }
                     ], { onConflict: ['tipo'] });
@@ -6023,7 +6023,7 @@ select {
         async function carregarContadoresDeTarefas() {
             try {
                 const { data, error } = await supabase
-                    .from('tarefas_painel_setor')
+                    .from('tarefas')
                     .select('*');
 
                 if (error) throw error;
@@ -6073,7 +6073,7 @@ select {
 
                 for (const update of updates) {
                     const { error } = await supabase
-                        .from('tarefas_painel_setor')
+                        .from('tarefas')
                         .upsert([update], { onConflict: ['tipo'] });
 
                     if (error) throw error;
@@ -6448,7 +6448,7 @@ function addEditProduct() {
                 const fotoUrl = `${SUPABASE_URL}/storage/v1/object/public/funcionariofotos/${fotoPath}`;
 
                 const { data, error } = await supabase
-                    .from('gestao_funcionarios')
+                    .from('especialistas')
                     .insert([
                         { nome, funcao, foto_url: fotoUrl, foto_path: fotoPath, link }
                     ]);
@@ -6471,7 +6471,7 @@ function addEditProduct() {
 
         async function fetchAndRenderFuncionarios() {
             const { data, error } = await supabase
-                .from('gestao_funcionarios')
+                .from('especialistas')
                 .select('*');
 
             const container = document.getElementById('funcionariosList');
@@ -6534,7 +6534,7 @@ function addEditProduct() {
             }
 
             const { error: dbError } = await supabase
-                .from('gestao_funcionarios')
+                .from('especialistas')
                 .delete()
                 .eq('id', id);
 
@@ -6638,7 +6638,7 @@ function addEditProduct() {
                 const publicURL = `${SUPABASE_URL}/storage/v1/object/public/documentfiles/${filePath}`;
 
                 const { data, error } = await supabase
-                    .from('documents_setor')
+                    .from('documents')
                     .insert([
                         { title, author, type, file_url: publicURL, file_path: filePath }
                     ]);
@@ -6661,7 +6661,7 @@ function addEditProduct() {
 
         async function fetchAndRenderDocuments() {
             const { data, error } = await supabase
-                .from('documents_setor')
+                .from('documents')
                 .select('*');
 
             const container = document.getElementById('documentsList');
@@ -6718,7 +6718,7 @@ function addEditProduct() {
             }
 
             const { error: dbError } = await supabase
-                .from('documents_setor')
+                .from('documents')
                 .delete()
                 .eq('id', id);
 
@@ -6780,7 +6780,7 @@ if (name && email && phone) {
                         quantity: p.quantity
                     }));
                     const { error: productsError } = await supabase
-                        .from('products_cliente') 
+                        .from('products') 
                         .insert(productsToInsert);
 
                     if (productsError) {
@@ -6820,10 +6820,10 @@ async function fetchAndRenderClients() {
      .from('clients')
      .select(`
         *,
-        products_cliente (
+        products (
             id, name, quantity
         ),
-        integrations_cliente (
+        integrations (
             id, type, system
         )
      `);
@@ -7079,18 +7079,18 @@ async function editClient(clientId) {
                 showAlert('Erro', 'Erro ao atualizar cliente.');
                 return;
             }
-            await supabase.from('integrations_cliente').delete().eq('client_id', clientId);
+            await supabase.from('integrations').delete().eq('client_id', clientId);
 if (editingIntegrations.length > 0) {
   const integrationsToInsert = editingIntegrations.map(i => ({
     client_id: parseInt(clientId),
     type: i.type,
     system: i.system
   }));
-  await supabase.from('integrations_cliente').insert(integrationsToInsert);
+  await supabase.from('integrations').insert(integrationsToInsert);
 }
 
             const { error: deleteProductsError } = await supabase
-                .from('products_cliente')
+                .from('products')
                 .delete()
                 .eq('client_id', clientId);
 
@@ -7106,7 +7106,7 @@ if (editingIntegrations.length > 0) {
                     quantity: p.quantity
                 }));
                 const { error: insertProductsError } = await supabase
-                    .from('products_cliente')
+                    .from('products')
                     .insert(productsToInsert);
 
                 if (insertProductsError) {
@@ -10072,7 +10072,7 @@ async function saveTask() {
 
     try {
         const { data, error } = await supabase
-            .from('tarefas_painel_setor')
+            .from('tarefas')
             .insert([taskData]);
 
         if (error) throw error;
@@ -10115,7 +10115,7 @@ async function saveTeamMember() {
 
     try {
         const { data, error } = await supabase
-            .from('time_painel_setor')
+            .from('time')
             .insert([memberData]);
 
         if (error) throw error;
@@ -10148,7 +10148,7 @@ async function saveProject() {
 
     try {
         const { data, error } = await supabase
-            .from('projetos_painel_setor')
+            .from('projetos')
             .insert([projectData]);
 
         if (error) throw error;
@@ -10206,7 +10206,7 @@ async function saveEntrega() {
     try {
         // 1. Verificar se já existe uma entrada para o mês/ano/setor na tabela 'entregas'
         let { data: existingEntrega, error: selectEntregaError } = await supabase
-            .from('entregas_painel_setor')
+            .from('entregas')
             .select('id')
             .eq('mes', monthMap[selectedMonth])
             .eq('ano', currentYear)
@@ -10223,7 +10223,7 @@ async function saveEntrega() {
         } else {
             // Se não existe, criar uma nova entrada na tabela 'entregas'
             const { data: newEntrega, error: insertEntregaError } = await supabase
-                .from('entregas_painel_setor')
+                .from('entregas')
                 .insert([
                     {
                         mes: monthMap[selectedMonth],
@@ -10253,7 +10253,7 @@ async function saveEntrega() {
 
                     // Verificar se já existe uma entrada para este membro/entrega
                     const { data: existingMemberEntrega, error: selectMemberEntregaError } = await supabase
-                        .from('entregas_membros_painel_setor')
+                        .from('entregas_membros')
                         .select('id')
                         .eq('entrega_id', entregaId)
                         .eq('membro_id', member.id)
@@ -10266,14 +10266,14 @@ async function saveEntrega() {
                     if (existingMemberEntrega) {
                         // Atualizar percentual existente
                         const { error: updateMemberEntregaError } = await supabase
-                            .from('entregas_membros_painel_setor')
+                            .from('entregas_membros')
                             .update({ percentual: percentageValue })
                             .eq('id', existingMemberEntrega.id);
                         if (updateMemberEntregaError) throw updateMemberEntregaError;
                     } else {
                         // Inserir novo percentual
                         const { error: insertMemberEntregaError } = await supabase
-                            .from('entregas_membros_painel_setor')
+                            .from('entregas_membros')
                             .insert([
                                 {
                                     entrega_id: entregaId,
@@ -10386,7 +10386,7 @@ async function loadTimeData() {
     try {
         const setorUsuario = sessionStorage.getItem('setor');
         const { data, error } = await supabase
-            .from('time_painel_setor')
+            .from('time')
             .select('*')
             .eq('ativo', true)
             .eq('setor', setorUsuario)
@@ -10432,7 +10432,7 @@ async function loadProjectsData() {
     try {
         const setorUsuario = sessionStorage.getItem('setor');
         const { data, error } = await supabase
-            .from('projetos_painel_setor')
+            .from('projetos')
             .select('*')
             .eq('setor', setorUsuario)
             .order('created_at', { ascending: false });
@@ -10478,7 +10478,7 @@ async function loadEntregasData() {
 async function updateTaskCounters() {
     try {
         const { data, error } = await supabase
-            .from('tarefas_painel_setor')
+            .from('tarefas')
             .select('tipo');
 
         if (error) throw error;
@@ -10736,7 +10736,7 @@ async function excluirProjeto(projetoId) {
     if (confirmacao) {
         try {
             const { error } = await supabase
-                .from('projetos_painel_setor')
+                .from('projetos')
                 .delete()
                 .eq('id', projetoId);
 
@@ -14427,7 +14427,7 @@ async function salvarImplantacao(event) {
     
     try {
         const { data: result, error } = await supabase
-            .from('status_projetos')
+            .from('implantacoes')
             .insert([
                 {
                     especialista: especialista,
@@ -14519,7 +14519,7 @@ async function salvarNovaImplantacao(event) {
         if (isEdicao) {
             // Atualizar implantação existente
             const response = await window.supabaseClient
-                .from('status_projetos')
+                .from('implantacoes')
                 .update(dadosImplantacao)
                 .eq('id', implantacaoEditando.id);
             
@@ -14530,7 +14530,7 @@ async function salvarNovaImplantacao(event) {
             dadosImplantacao.created_at = new Date().toISOString();
             
             const response = await window.supabaseClient
-                .from('status_projetos')
+                .from('implantacoes')
                 .insert([dadosImplantacao]);
             
             result = response.data;
@@ -14624,7 +14624,7 @@ async function carregarImplantacoesLista() {
         }
         
         const { data, error } = await window.supabaseClient
-            .from('status_projetos')
+            .from('implantacoes')
             .select('*')
             .order('created_at', { ascending: false });
 
@@ -14925,7 +14925,7 @@ async function excluirImplantacao(id, projeto, cliente) {
         }
         
         const { error } = await window.supabaseClient
-            .from('status_projetos')
+            .from('implantacoes')
             .delete()
             .eq('id', id);
 
@@ -15567,7 +15567,7 @@ async function carregarVisitasSetor() {
         console.log('Carregando visitas para o setor:', setorUsuario);
 
         const { data, error } = await visitasClient
-            .from('mapa_viagens')
+            .from('viagens')
             .select('*')
             .eq('setor', setorUsuario)
             .order('data_inicio', { ascending: false });
