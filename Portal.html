@@ -7094,7 +7094,17 @@ async function editClient(clientId) {
 
             const { error: clientError } = await releaseClient
                 .from('clients')
-                .update({ name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink })
+                .update({
+    name,
+    email,
+    phone,
+    status_id,
+    group_id,
+    subgroup_id,
+    logo_id: logoId,     // Atualiza a FK para a tabela client_logos
+    logo_path: logoPath, // Atualiza o caminho do arquivo
+    bi_link: biLink
+  })
                 .eq('id', clientId);
 
             if (clientError) {
