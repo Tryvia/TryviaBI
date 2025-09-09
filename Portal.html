@@ -799,7 +799,7 @@ async function carregarEntregas() {
     // Buscar entregas da tabela 'entregas' e os percentuais dos membros da 'entregas_membros'
     const { data: entregasData, error: entregasError } = await releaseClient
         .from("entregas_painel_setor")
-        .select("id, mes, ano, setor_percentage, entregas_membros_painel_setor(membro_id, percentual)")
+        .select("id, mes, ano, percentual_setor, entregas_membros_painel_setor(membro_id, percentual)")
         .eq("setor", setorUsuario)
         .eq("ano", new Date().getFullYear());
 
