@@ -10434,7 +10434,7 @@ async function saveEntrega() {
         const setorPercentage = memberCount > 0 ? Math.round(totalPercentage / memberCount) : 0;
         console.log('Calculated setorPercentage:', setorPercentage, 'from totalPercentage:', totalPercentage, 'and memberCount:', memberCount);
         const { error: updateEntregaError } = await releaseClient
-            .from("entregas")
+            .from("entregas_painel_setor")
             .update({ percentual_setor: setorPercentage })
             .eq("id", entregaId);
         if (updateEntregaError) throw updateEntregaError;
