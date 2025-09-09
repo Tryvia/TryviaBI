@@ -3141,12 +3141,8 @@ sessionStorage.setItem('tryvia_logged', 'true');
 }
 const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
-const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc'; 
+const RELEASE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODIzMzAzNSwiZXhwIjoyMDYzODA5MDM1fQ.CVXkKh9yul_Mv2YMhPsDo4CmkQevxpkeI1CtitORpJ0';
 const releaseClient = supabase.createClient(RELEASE_SUPABASE_URL, RELEASE_SUPABASE_KEY);
-console.log('SUPABASE URL', RELEASE_SUPABASE_URL);
-console.log('SUPABASE KEY length', RELEASE_SUPABASE_KEY ? RELEASE_SUPABASE_KEY.length : null);
-console.log('releaseClient', releaseClient);
-
 </script>
 <div class="modal-overlay" id="customModal">
 <div class="modal-content">
@@ -6748,6 +6744,7 @@ function addEditProduct() {
         showAlert('Atenção', 'Você não tem permissão para adicionar clientes.');
         return;
     }
+
             const name = document.getElementById('clientName').value;
             const email = document.getElementById('clientEmail').value;
             const phone = document.getElementById('clientPhone').value;
@@ -6777,7 +6774,10 @@ if (name && email && phone) {
         logoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientlogos/${logoFilePath}`;
         logoPath = logoFilePath;
     }
-    
+    const { data: publicUrlData } = releaseClient
+  .storage.from('clientlogos')
+  .getPublicUrl(logoFilePath);
+logoUrl = publicUrlData?.publicUrl;
     // Mapear status para status_id
     let status_id = null;
     if (status === 'Cliente Ativo') status_id = 1;
@@ -6785,10 +6785,13 @@ if (name && email && phone) {
     // Mapear grupo para group (ou group_id se existir)
     // Aqui mantemos o campo group como string, pois não há group_id na tabela
     const { data: clientData, error: clientError } = await releaseClient
-        .from('clients') 
-        .insert([
-            { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, bi_link: biLink }
-        ]);
+         .from('clients')
+  .insert([{ name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, bi_link: biLink }])
+  .select('id')
+  .single();
+
+if (clientError) { console.error(clientError); return; }
+const clientId = clientData.id;
 
                 if (currentProducts.length > 0) {
                     const productsToInsert = currentProducts.map(p => ({
@@ -6806,6 +6809,15 @@ if (name && email && phone) {
                     }
                 }
                 
+                if (currentProducts.length > 0) {
+  const productsToInsert = currentProducts.map(p => ({
+    client_id: clientId,
+    name: p.name,
+    quantity: p.quantity
+  }));
+  await releaseClient.from('products_cliente').insert(productsToInsert);
+}
+ 
                 showAlert('Sucesso', 'Cliente salvo com sucesso!');
                 document.getElementById('clientName').value = '';
                 document.getElementById('clientEmail').value = '';
