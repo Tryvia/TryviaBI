@@ -6781,7 +6781,7 @@ if (name && email && phone) {
     const { data: clientData, error: clientError } = await releaseClient
         .from('clients') 
         .insert([
-            { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, logo_path: logoPath, bi_link: biLink }
+            { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, bi_link: biLink }
         ]);
 
                 if (currentProducts.length > 0) {
