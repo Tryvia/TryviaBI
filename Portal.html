@@ -6783,7 +6783,14 @@ function addEditProduct() {
                 const { data: clientData, error: clientError } = await releaseClient
                     .from('clients')
                     .insert([
-                        { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, bi_link: biLink }
+                        {  name,
+    email,
+    phone,
+    status_id: statusId === "" ? null : Number(statusId), // aqui precisa existir em client_statuses
+    group_id: groupId === "" ? null : Number(groupId),
+    subgroup_id: subgroupId === "" ? null : Number(subgroupId),
+    logo_url: logoUrl,
+    bi_link: biLink }
                     ])
                     .select('id')
                     .single();
