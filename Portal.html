@@ -6751,27 +6751,41 @@ function addEditProduct() {
             const group_id = document.getElementById("clientGroup").value;
             const subgroup_id = document.getElementById("clientSubgroup").value;
             const biLink = document.getElementById('clientBiLink').value;
-            
-            let logoUrl = null;
+
+            let logoId = null;
+            let logoFilePath = null;
 
             if (name && email && phone) {
                 const logoFileInput = document.getElementById('clientLogo');
                 if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
                     const logoFile = logoFileInput.files[0];
-                    const logoFilePath = `client_logos/${Date.now()}_${logoFile.name}`;
+                    logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
                     const { data: uploadData, error: uploadError } = await releaseClient.storage
-                        .from('client_logos')
+                        .from('clientlogos')
                         .upload(logoFilePath, logoFile);
-
                     if (uploadError) {
                         console.error('Erro ao fazer upload do logo:', uploadError.message);
                         showAlert('Erro', 'Erro ao fazer upload do logo.');
                         return;
                     }
-
                     // Obter URL pública do logo
-                    const { data: publicUrlData } = releaseClient.storage.from('client_logos').getPublicUrl(logoFilePath);
-                    logoUrl = publicUrlData?.publicUrl;
+                    let logoUrl = null;
+                    const { data: publicUrlData } = releaseClient.storage.from('clientlogos').getPublicUrl(logoFilePath);
+                    if (publicUrlData && publicUrlData.publicUrl) {
+                        logoUrl = publicUrlData.publicUrl;
+                    }
+                    // Inserir na tabela client_logos e pegar o id
+                    const { data: logoData, error: logoError } = await releaseClient
+                        .from('client_logos')
+                        .insert([{ url: logoUrl, path: logoFilePath, file_type: logoFile.type }])
+                        .select('id')
+                        .single();
+                    if (logoError) {
+                        console.error('Erro ao inserir logo na tabela client_logos:', logoError.message);
+                        showAlert('Erro', 'Erro ao salvar logo no banco.');
+                        return;
+                    }
+                    logoId = logoData.id;
                 }
 
                 // Mapear status para status_id
@@ -6783,14 +6797,7 @@ function addEditProduct() {
                 const { data: clientData, error: clientError } = await releaseClient
                     .from('clients')
                     .insert([
-                        {  name,
-    email,
-    phone,
-    status_id: statusId === "" ? null : Number(statusId), // aqui precisa existir em client_statuses
-    group_id: groupId === "" ? null : Number(groupId),
-    subgroup_id: subgroupId === "" ? null : Number(subgroupId),
-    logo_url: logoUrl,
-    bi_link: biLink }
+                        { name, email, phone, status_id, group_id, subgroup_id, logo_id: logoId, bi_link: biLink }
                     ])
                     .select('id')
                     .single();
