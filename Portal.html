@@ -6758,9 +6758,9 @@ function addEditProduct() {
                 const logoFileInput = document.getElementById('clientLogo');
                 if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
                     const logoFile = logoFileInput.files[0];
-                    const logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
+                    const logoFilePath = `client_logos/${Date.now()}_${logoFile.name}`;
                     const { data: uploadData, error: uploadError } = await releaseClient.storage
-                        .from('clientlogos')
+                        .from('client_logos')
                         .upload(logoFilePath, logoFile);
 
                     if (uploadError) {
@@ -6770,7 +6770,7 @@ function addEditProduct() {
                     }
 
                     // Obter URL pública do logo
-                    const { data: publicUrlData } = releaseClient.storage.from('clientlogos').getPublicUrl(logoFilePath);
+                    const { data: publicUrlData } = releaseClient.storage.from('client_logos').getPublicUrl(logoFilePath);
                     logoUrl = publicUrlData?.publicUrl;
                 }
 
@@ -6960,7 +6960,7 @@ if (clients.length === 0) {
 
             if (logoPath) {
                 const { error: storageError } = await releaseClient.storage
-                    .from('clientlogos') 
+                    .from('client_logos') 
                     .remove([logoPath]);
 
                 if (storageError) {
@@ -7071,7 +7071,7 @@ async function editClient(clientId) {
             if (newLogoFile) {
                 const newLogoPath = `logos/${Date.now()}_${newLogoFile.name}`;
                 const { data: uploadData, error: uploadError } = await releaseClient.storage
-                    .from('clientlogos') 
+                    .from('client_logos') 
                     .upload(newLogoPath, newLogoFile);
 
                 if (uploadError) {
@@ -7079,12 +7079,12 @@ async function editClient(clientId) {
                     showAlert('Erro', 'Erro ao fazer upload do novo logo.');
                     return;
                 }
-                logoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/clientlogos/${newLogoPath}`;
+                logoUrl = `${RELEASE_SUPABASE_URL}/storage/v1/object/public/client_logos/${newLogoPath}`;
                 logoPath = newLogoPath;
 
                 if (currentClient && currentClient.logo_path) {
                     const { error: deleteOldLogoError } = await releaseClient.storage
-                        .from('clientlogos')
+                        .from('client_logos')
                         .remove([currentClient.logo_path]);
                     if (deleteOldLogoError) {
                         console.warn('Aviso: Erro ao deletar logo antigo do Storage:', deleteOldLogoError.message);
