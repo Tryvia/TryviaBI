@@ -6744,130 +6744,88 @@ function addEditProduct() {
         showAlert('Atenção', 'Você não tem permissão para adicionar clientes.');
         return;
     }
-           const name = document.getElementById('clientName').value.trim();
-const email = document.getElementById('clientEmail').value.trim();
-const phone = document.getElementById('clientPhone').value.trim();
-const status = document.getElementById('clientStatus').value;
-const group_id = document.getElementById('clientGroup').value || null;
-const subgroup_id = document.getElementById('clientSubgroup').value || null;
-const biLink = document.getElementById('clientBiLink').value.trim();
+            const name = document.getElementById('clientName').value;
+            const email = document.getElementById('clientEmail').value;
+            const phone = document.getElementById('clientPhone').value;
+            const status = document.getElementById('clientStatus').value;
+            const group_id = document.getElementById("clientGroup").value;
+            const subgroup_id = document.getElementById("clientSubgroup").value;
+            const biLink = document.getElementById('clientBiLink').value;
+            
+            let logoUrl = null;
 
-if (!name || !email || !phone) {
-  showAlert('Atenção', 'Por favor, preencha todos os campos obrigatórios do cliente.');
-  return;
-}
+            if (name && email && phone) {
+                const logoFileInput = document.getElementById('clientLogo');
+                if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
+                    const logoFile = logoFileInput.files[0];
+                    const logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
+                    const { data: uploadData, error: uploadError } = await releaseClient.storage
+                        .from('clientlogos')
+                        .upload(logoFilePath, logoFile);
 
-// Mapear status para status_id (ajuste conforme sua tabela)
-let status_id = null;
-if (status === 'Cliente Ativo') status_id = 1;
-else if (status === 'Cliente Inativo') status_id = 3;
+                    if (uploadError) {
+                        console.error('Erro ao fazer upload do logo:', uploadError.message);
+                        showAlert('Erro', 'Erro ao fazer upload do logo.');
+                        return;
+                    }
 
-// Upload do logo (opcional)
-let logoUrl = null;
-let logoPath = null;
-const logoFileInput = document.getElementById('clientLogo');
-if (logoFileInput && logoFileInput.files && logoFileInput.files[0]) {
-  const logoFile = logoFileInput.files[0];
-  const logoFilePath = `clientlogos/${Date.now()}_${logoFile.name}`;
+                    // Obter URL pública do logo
+                    const { data: publicUrlData } = releaseClient.storage.from('clientlogos').getPublicUrl(logoFilePath);
+                    logoUrl = publicUrlData?.publicUrl;
+                }
 
-  const { data: uploadData, error: uploadError } = await releaseClient
-    .storage
-    .from('clientlogos')
-    .upload(logoFilePath, logoFile, { cacheControl: '3600', upsert: false });
+                // Mapear status para status_id
+                let status_id = null;
+                if (status === 'Cliente Ativo') status_id = 1;
+                else if (status === 'Cliente Inativo') status_id = 3;
 
-  if (uploadError) {
-    console.error('Erro ao fazer upload do logo:', uploadError);
-    showAlert('Erro', 'Erro ao fazer upload do logo.');
-    return;
-  }
+                // Inserir cliente e capturar o id retornado
+                const { data: clientData, error: clientError } = await releaseClient
+                    .from('clients')
+                    .insert([
+                        { name, email, phone, status_id, group_id, subgroup_id, logo_url: logoUrl, bi_link: biLink }
+                    ])
+                    .select('id')
+                    .single();
 
-  // Recupera a URL pública do arquivo
-  const { data: publicUrlData, error: publicUrlError } = releaseClient
-    .storage
-    .from('clientlogos')
-    .getPublicUrl(logoFilePath);
+                if (clientError) { console.error(clientError); showAlert('Erro', 'Erro ao salvar cliente.'); return; }
+                const clientId = clientData.id;
 
-  if (publicUrlError) {
-    console.warn('Erro ao obter public URL do logo:', publicUrlError);
-    // podemos continuar sem url pública
-  } else {
-    logoUrl = publicUrlData.publicUrl;
-    logoPath = logoFilePath;
-  }
-}
+                // Inserir produtos vinculados
+                if (currentProducts.length > 0) {
+                    const productsToInsert = currentProducts.map(p => ({
+                        client_id: clientId,
+                        name: p.name,
+                        quantity: p.quantity
+                    }));
+                    const { error: productsError } = await releaseClient
+                        .from('products_cliente')
+                        .insert(productsToInsert);
+                    if (productsError) {
+                        console.error('Erro ao salvar produtos:', productsError.message);
+                        showAlert('Erro', 'Cliente salvo, mas erro ao salvar produtos. Verifique as permissões da tabela de produtos.');
+                    }
+                }
 
-// Inserir cliente e capturar o id retornado
-const { data: clientData, error: clientError } = await releaseClient
-  .from('clients')
-  .insert([
-    {
-      name,
-      email,
-      phone,
-      status_id,
-      group_id,
-      subgroup_id,
-      logo_url: logoUrl,
-      logo_path: logoPath, // se sua tabela tem esse campo, armazene o caminho
-      bi_link: biLink
-    }
-  ])
-  .select('id') // garante que o id seja retornado
-  .single(); // espera um único registro
-
-if (clientError) {
-  console.error('Erro ao inserir cliente:', clientError);
-  showAlert('Erro', 'Erro ao salvar cliente. Verifique permissões.');
-  return;
-}
-
-const clientId = clientData?.id;
-if (!clientId) {
-  console.error('ID do cliente não retornado depois do insert:', clientData);
-  showAlert('Erro', 'Erro inesperado: id do cliente não retornado.');
-  return;
-}
-
-// Inserir produtos relacionados (se houver)
-if (Array.isArray(currentProducts) && currentProducts.length > 0) {
-  const productsToInsert = currentProducts.map(p => ({
-    client_id: clientId,
-    name: p.name,
-    quantity: p.quantity
-  }));
-
-  const { error: productsError } = await releaseClient
-    .from('products_cliente')
-    .insert(productsToInsert);
-
-  if (productsError) {
-    console.error('Erro ao salvar produtos:', productsError);
-    showAlert('Erro', 'Cliente salvo, mas erro ao salvar produtos. Verifique permissões da tabela de produtos.');
-    // não abortamos porque cliente já foi salvo
-  }
-}
-
-// Success UI and cleanup
-showAlert('Sucesso', 'Cliente salvo com sucesso!');
-document.getElementById('clientName').value = '';
-document.getElementById('clientEmail').value = '';
-document.getElementById('clientPhone').value = '';
-document.getElementById('clientStatus').value = 'Cliente Ativo';
-document.getElementById('clientGroup').value = 'Nenhum';
-document.getElementById('clientSubgroup').value = 'Nenhum';
-document.getElementById('clientBiLink').value = '';
-if (logoFileInput) logoFileInput.value = '';
-const preview = document.getElementById('logoPreview');
-if (preview) {
-  preview.innerHTML = `
-    <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
-    <p>Clique para adicionar logo</p>
-  `;
-}
-currentProducts = [];
-updateProductsList('currentProducts', 'productsContainer');
-fetchAndRenderClients();
-showClientTab('view-clients');
+                showAlert('Sucesso', 'Cliente salvo com sucesso!');
+                document.getElementById('clientName').value = '';
+                document.getElementById('clientEmail').value = '';
+                document.getElementById('clientPhone').value = '';
+                document.getElementById('clientStatus').value = 'Cliente Ativo';
+                document.getElementById('clientGroup').value = 'Nenhum';
+                document.getElementById('clientSubgroup').value = 'Nenhum';
+                document.getElementById('clientBiLink').value = '';
+                if (logoFileInput) { 
+                    logoFileInput.value = ''; 
+                }
+                document.getElementById('logoPreview').innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 10px;">📷</div>
+                    <p>Clique para adicionar logo</p>
+                `;
+                currentProducts = [];
+                updateProductsList('currentProducts', 'productsContainer');
+                fetchAndRenderClients(); 
+                showClientTab('view-clients'); 
             } else {
                 showAlert('Atenção', 'Por favor, preencha todos os campos obrigatórios do cliente.');
             }
