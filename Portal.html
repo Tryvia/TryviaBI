@@ -43,6 +43,8 @@ function formatDateForInput(dateString) {
 let currentProducts = []; 
 currentProducts = [];
 
+
+
 function formatDateForDisplay(dateString) {
     if (!dateString) return "Não informada";
     
@@ -129,6 +131,23 @@ a:contains('Ver Ata'),
 }
 </style>
 
+<style>
+/* Padronizar proporção da tela de Gerenciar Logins */
+#gerenciar-logins.content-section {
+    margin: 10 auto !important;
+    max-width: 1200px !important;
+    padding: 0 20px !important;
+    background: rgba(179, 229, 252, 0.95) !important;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px #78bfea;
+}
+#gerenciar-logins.content-section * {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+</style>
 
 <style>
 .reuniao-item,
@@ -2466,32 +2485,6 @@ document.addEventListener('DOMContentLoaded', function() {
             line-height: 1.5;
         }
 
-        /* CSS específico para o modal de edição de usuário */
-        #modalEditarUsuario .modal-content {
-            background-color: #ffffff !important;
-            color: #333333 !important;
-            text-align: left !important;
-            max-width: 900px !important;
-        }
-
-        #modalEditarUsuario .permissions-container {
-            background-color: #ffffff !important;
-            color: #333333 !important;
-        }
-
-        #modalEditarUsuario .permission-item {
-            background-color: #f8f9fa !important;
-            color: #333333 !important;
-        }
-
-        #modalEditarUsuario .permission-item label {
-            color: #333333 !important;
-        }
-
-        #modalEditarUsuario .section-title,
-        #modalEditarUsuario .subsection-title {
-            color: #333333 !important;
-        }
 
         .modal-buttons {
             display: flex;
@@ -3921,7 +3914,7 @@ select {
                 </div>
             </div>
 
-        <div class="metric-card" style="background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('homologacao')">
+        <div class="metric-card" style="background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('gerenciar-logins')">
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
                     <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Homologações</h3>
@@ -5863,63 +5856,6 @@ select {
     </div>
 </div>
 
-<!-- Modal de Edição de Usuário -->
-<div class="modal-overlay" id="modalEditarUsuario">
-    <div class="modal-content" style="max-width: 600px;">
-        <h3 style="color: #4fc3f7; margin-bottom: 20px;">
-            <i class="fas fa-user-edit" style="margin-right: 10px;"></i>
-            Editar Usuário
-        </h3>
-        <form id="formEditarUsuario">
-            <input type="hidden" id="editarIdUsuario1" name="id">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarNomeUsuario1">Nome Completo</label>
-                    <input type="text" id="editarNomeUsuario1" placeholder="Nome completo do usuário" required>
-                </div>
-                <div class="form-group">
-                    <label for="editarEmailUsuario1">Email</label>
-                    <input type="email" id="editarEmailUsuario1" placeholder="Email do usuário" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarSenhaUsuario1">Nova Senha (opcional)</label>
-                    <input type="password" id="editarSenhaUsuario1" placeholder="Deixe em branco para não alterar">
-                </div>
-                <div class="form-group">
-                    <label for="editarConfirmarSenhaUsuario1">Confirmar Nova Senha</label>
-                    <input type="password" id="editarConfirmarSenhaUsuario1" placeholder="Confirme a nova senha">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="editarSetorUsuario1">Setor</label>
-                <select id="editarSetorUsuario1">
-                    <option value="">Selecione o setor</option>
-                    <option value="Time de implantação">Time de implantação</option>
-                    <option value="CS">CS</option>
-                    <option value="Suporte">Suporte</option>
-                    <option value="Tecnico">Técnico</option>
-                    <option value="Dev">Dev</option>
-                    <option value="Produto">Produto</option>
-                    <option value="Comercial">Comercial</option>
-                    <option value="Administrativo">Administrativo</option>
-                    <option value="TI">TI</option>
-                </select>
-            </div>
-            <div class="permissions-container">
-                <div class="section-title">Permissões</div>
-                <div class="permissions-grid" id="editpermissoesContainer">
-                    <!-- Permissões serão carregadas dinamicamente aqui -->
-                </div>
-            </div>
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button type="button" class="modal-button cancel" onclick="closeEditarUsuarioModal()">Cancelar</button>
-                <button type="submit" class="modal-button confirm">Salvar Alterações</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -12834,71 +12770,6 @@ function showClientWelcomeMessage(clientName) {
     }
 }
 </script>
-
-
-
-
-<!-- Modal de Edição de Usuário -->
-<div class="modal-overlay" id="modalEditarUsuario">
-    <div class="modal-content" style="max-width: 600px;">
-        <h3 style="color: #4fc3f7; margin-bottom: 20px;">
-            <i class="fas fa-user-edit" style="margin-right: 10px;"></i>
-            Editar Usuário
-        </h3>
-        <form id="formEditarUsuario2">
-            <input type="hidden" id="editarIdUsuario2" name="id">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarNomeUsuario2">Nome Completo</label>
-                    <input type="text" id="editarNomeUsuario2" placeholder="Nome completo do usuário" required>
-                </div>
-                <div class="form-group">
-                    <label for="editarEmailUsuario2">Email</label>
-                    <input type="email" id="editarEmailUsuario2" placeholder="Email do usuário" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="editarSenhaUsuario2">Nova Senha (opcional)</label>
-                    <input type="password" id="editarSenhaUsuario2" placeholder="Deixe em branco para não alterar">
-                </div>
-                <div class="form-group">
-                    <label for="editarConfirmarSenhaUsuario2">Confirmar Nova Senha</label>
-                    <input type="password" id="editarConfirmarSenhaUsuario2" placeholder="Confirme a nova senha">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="editarSetorUsuario2">Setor</label>
-                <select id="editarSetorUsuario2">
-                    <option value="">Selecione o setor</option>
-                    <option value="Time de implantação">Time de implantação</option>
-                    <option value="CS">CS</option>
-                    <option value="Suporte">Suporte</option>
-                    <option value="Tecnico">Técnico</option>
-                    <option value="Dev">Dev</option>
-                    <option value="Produto">Produto</option>
-                    <option value="Comercial">Comercial</option>
-                    <option value="Administrativo">Administrativo</option>
-                    <option value="TI">TI</option>
-                </select>
-            </div>
-            <div class="permissions-container">
-                <div class="section-title">Permissões</div>
-<div class="permissions-grid" id="editPermissoesContainer">
-                    
-                </div>
-            </div>
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button type="button" class="modal-button cancel" onclick="closeEditarUsuarioModal()">Cancelar</button>
-                <button type="submit" class="modal-button confirm">Salvar Alterações</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-
-
 <script>
 
 // Variável global para armazenar usuários
@@ -12995,27 +12866,7 @@ function limparFiltrosUsuarios() {
     renderUsuarios(usuarios);
 }
 
-// Função para editar usuário
-async function editarUsuario(userId) {
-    // Buscar o usuário na lista
-    const usuario = usuarios.find(u => u.id === userId);
-    if (!usuario) {
-        showAlert('Erro', 'Usuário não encontrado!');
-        return;
-    }
 
-    // Preencher o formulário de edição
-    document.getElementById('editarIdUsuario2').value = usuario.id || '';
-    document.getElementById('editarNomeUsuario2').value = usuario.nome || '';
-    document.getElementById('editarEmailUsuario2').value = usuario.email || '';
-    document.getElementById('editarSetorUsuario2').value = usuario.setor || '';
-
-    // Carregar permissões
-    carregarPermissoesEdicao(usuario.permissoes || []);
-
-    // Abrir o modal de edição
-    document.getElementById('modalEditarUsuario').classList.add('visible');
-}
 
 // Função para excluir usuário
 async function excluirUsuario(userId) {
@@ -13356,10 +13207,7 @@ function carregarPermissoesEdicao(permissoesUsuario) {
     });
 }
 
-// Função para fechar o modal de edição
-function closeEditarUsuarioModal() {
-    document.getElementById('modalEditarUsuario').classList.remove('visible');
-}
+
 
 // Função para salvar as alterações do usuário
 async function salvarEdicaoUsuario(event) {
@@ -14289,23 +14137,6 @@ let todosLoginsUsuarios = [];
 let loginsFiltrados = [];
 let usuarioEditandoLogin = null;
 
-// Permissões disponíveis
-const permissoesDisponiveis = [
-    { value: 'inicio', label: 'Início' },
-    { value: 'painel-setor', label: 'Painel do Setor' },
-    { value: 'dashboard', label: 'Dashboards' },
-    { value: 'clients', label: 'Clientes' },
-    { value: 'homologacao', label: 'Homologação' },
-    { value: 'release', label: 'Release' },
-    { value: 'reunioes', label: 'Reuniões' },
-    { value: 'documents', label: 'Time de Implantação' },
-    { value: 'evaluations', label: 'Avaliações' },
-    { value: 'relatorioVisita', label: 'Relatório de Visita' },
-    { value: 'gestao', label: 'Gestão' },
-    { value: 'gerenciar-logins', label: 'Gerenciar Logins' },
-    { value: 'cs', label: 'CS' },
-    { value: 'treinamento', label: 'Treinamento' }
-];
 
 // Função para carregar usuários para gerenciamento de logins
 async function carregarLoginsUsuarios() {
@@ -16061,6 +15892,1029 @@ window.renderizarVisitasPainel = renderizarVisitasPainel;
 window.atualizarSecaoVisitas = atualizarSecaoVisitas;
 window.inicializarMapaVisitas = inicializarMapaVisitas;
 window.mostrarLocalizacao = mostrarLocalizacao;
+</script>
+
+<!-- Modal de Edição de Usuário -->
+<div id="modalEditarUsuario" class="modal-editar-usuario" style="display: none;">
+    <div class="modal-editar-usuario-content">
+        <div class="modal-editar-usuario-header">
+            <h2><i class="fas fa-user-edit"></i> Editar Usuário</h2>
+            <span class="modal-editar-usuario-close">&times;</span>
+        </div>
+        
+        <div class="modal-editar-usuario-body">
+            <!-- Informações do Usuário -->
+            <div class="usuario-info-section">
+                <h3><i class="fas fa-info-circle"></i> Informações do Usuário</h3>
+                <div class="usuario-info-grid">
+                    <div class="info-item">
+                        <label>Nome:</label>
+                        <span id="usuarioNome">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Email:</label>
+                        <span id="usuarioEmail">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Status:</label>
+                        <span id="usuarioStatus" class="status-badge">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Último Acesso:</label>
+                        <span id="usuarioUltimoAcesso">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Permissões -->
+            <div class="permissoes-section">
+                <h3><i class="fas fa-shield-alt"></i> Gerenciar Permissões</h3>
+                <div class="permissoes-container">
+                    <div class="permissoes-disponiveis">
+                        <h4>Permissões Disponíveis</h4>
+                        <div class="permissoes-search">
+                            <input type="text" id="searchPermissoes" placeholder="Buscar permissões..." class="search-input">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div id="listaPermissoesDisponiveis" class="permissoes-list">
+                            <!-- Permissões disponíveis serão carregadas aqui -->
+                        </div>
+                    </div>
+                    
+                    <div class="permissoes-usuario">
+                        <h4>Permissões do Usuário</h4>
+                        <div id="listaPermissoesUsuario" class="permissoes-list">
+                            <!-- Permissões do usuário serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Alteração de Senha -->
+            <div class="senha-section">
+                <h3><i class="fas fa-key"></i> Alterar Senha</h3>
+                <div class="senha-form">
+                    <div class="form-group">
+                        <label for="novaSenha">Nova Senha:</label>
+                        <div class="password-input-container">
+                            <input type="password" id="novaSenha" class="form-input" placeholder="Digite a nova senha">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('novaSenha')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <span class="strength-text" id="strengthText">Digite uma senha</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmarSenha">Confirmar Senha:</label>
+                        <div class="password-input-container">
+                            <input type="password" id="confirmarSenha" class="form-input" placeholder="Confirme a nova senha">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('confirmarSenha')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-match" id="passwordMatch"></div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="forcarTrocaSenha">
+                        <label for="forcarTrocaSenha">Forçar troca de senha no próximo login</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-editar-usuario-footer">
+            <button type="button" class="btn-cancelar" onclick="fecharModalEditarUsuario()">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="button" class="btn-salvar" onclick="salvarAlteracoesUsuario()">
+                <i class="fas fa-save"></i> Salvar Alterações
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos do Modal de Edição de Usuário */
+.modal-editar-usuario {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+}
+
+.modal-editar-usuario-content {
+    background-color: #ffffff;
+    margin: 2% auto;
+    padding: 0;
+    border-radius: 15px;
+    width: 95%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-editar-usuario-header {
+    background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-editar-usuario-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.modal-editar-usuario-header h2 i {
+    margin-right: 10px;
+}
+
+.modal-editar-usuario-close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.modal-editar-usuario-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.modal-editar-usuario-body {
+    padding: 30px;
+    background-color: #f8f9fa;
+}
+
+/* Seção de Informações do Usuário */
+.usuario-info-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.usuario-info-section h3 {
+    color: #4fc3f7;
+    margin: 0 0 20px 0;
+    font-size: 1.2em;
+    font-weight: 600;
+    border-bottom: 2px solid #e3f2fd;
+    padding-bottom: 10px;
+}
+
+.usuario-info-section h3 i {
+    margin-right: 10px;
+}
+
+.usuario-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.info-item span {
+    font-size: 1em;
+    color: #333;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.ativo {
+    background-color: #4caf50;
+    color: white;
+}
+
+.status-badge.inativo {
+    background-color: #f44336;
+    color: white;
+}
+
+.status-badge.suspenso {
+    background-color: #ff9800;
+    color: white;
+}
+
+/* Seção de Permissões */
+.permissoes-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.permissoes-section h3 {
+    color: #4fc3f7;
+    margin: 0 0 20px 0;
+    font-size: 1.2em;
+    font-weight: 600;
+    border-bottom: 2px solid #e3f2fd;
+    padding-bottom: 10px;
+}
+
+.permissoes-section h3 i {
+    margin-right: 10px;
+}
+
+.permissoes-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.permissoes-disponiveis,
+.permissoes-usuario {
+    border: 2px solid #e3f2fd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fafafa;
+}
+
+.permissoes-disponiveis h4,
+.permissoes-usuario h4 {
+    margin: 0 0 15px 0;
+    color: #555;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.permissoes-search {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4fc3f7;
+    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.1);
+}
+
+.permissoes-search i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.permissoes-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background: white;
+}
+
+.permissao-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.permissao-item:last-child {
+    border-bottom: none;
+}
+
+.permissao-item:hover {
+    background-color: #f8f9fa;
+}
+
+.permissao-info {
+    flex: 1;
+}
+
+.permissao-nome {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.permissao-descricao {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.permissao-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-adicionar,
+.btn-remover {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-adicionar {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-adicionar:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+}
+
+.btn-remover {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-remover:hover {
+    background-color: #da190b;
+    transform: translateY(-1px);
+}
+
+/* Seção de Senha */
+.senha-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.senha-section h3 {
+    color: #4fc3f7;
+    margin: 0 0 20px 0;
+    font-size: 1.2em;
+    font-weight: 600;
+    border-bottom: 2px solid #e3f2fd;
+    padding-bottom: 10px;
+}
+
+.senha-section h3 i {
+    margin-right: 10px;
+}
+
+.senha-form {
+    display: grid;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.password-input-container {
+    position: relative;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #4fc3f7;
+    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.1);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #4fc3f7;
+}
+
+.password-strength {
+    margin-top: 8px;
+}
+
+.strength-bar {
+    width: 100%;
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.strength-text {
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: block;
+}
+
+.password-match {
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.password-match.match {
+    color: #4caf50;
+}
+
+.password-match.no-match {
+    color: #f44336;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4fc3f7;
+}
+
+.checkbox-group label {
+    font-size: 0.9em;
+    color: #555;
+    cursor: pointer;
+}
+
+/* Footer do Modal */
+.modal-editar-usuario-footer {
+    background-color: #f8f9fa;
+    padding: 20px 30px;
+    border-radius: 0 0 15px 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.btn-cancelar,
+.btn-salvar {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-cancelar {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-cancelar:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+.btn-salvar {
+    background-color: #4fc3f7;
+    color: white;
+}
+
+.btn-salvar:hover {
+    background-color: #29b6f6;
+    transform: translateY(-1px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .modal-editar-usuario-content {
+        width: 98%;
+        margin: 1% auto;
+        max-height: 98vh;
+    }
+    
+    .permissoes-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .usuario-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-editar-usuario-header,
+    .modal-editar-usuario-body,
+    .modal-editar-usuario-footer {
+        padding: 20px;
+    }
+    
+    .modal-editar-usuario-footer {
+        flex-direction: column;
+    }
+    
+    .btn-cancelar,
+    .btn-salvar {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Scrollbar personalizada */
+.permissoes-list::-webkit-scrollbar,
+.modal-editar-usuario-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.permissoes-list::-webkit-scrollbar-track,
+.modal-editar-usuario-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.permissoes-list::-webkit-scrollbar-thumb,
+.modal-editar-usuario-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.permissoes-list::-webkit-scrollbar-thumb:hover,
+.modal-editar-usuario-content::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+</style>
+
+<script>
+// Variáveis globais para o modal de edição de usuário
+let usuarioAtualEditando = null;
+let permissoesDisponiveis = [
+    {"id": "dashboard", "nome": "Dashboards", "descricao": "Dashboards"},
+    {"id": "gerenciar-logins", "nome": "Gerenciar Logins", "descricao": "Gerenciar Logins"},
+    {"id": "painel-setor", "nome": "Painel do Setor", "descricao": "Painel do Setor"},
+    {"id": "clients", "nome": "Clientes", "descricao": "Clientes"},
+    {"id": "homologacao", "nome": "Homologação", "descricao": "Homologação"},
+    {"id": "https://tryvia.github.io/TryviaBI/mapa_visitas.html", "nome": "Visitas", "descricao": "Visitas"},
+    {"id": "https://tryvia.github.io/TryviaBI/calendario.html", "nome": "Calendário", "descricao": "Calendário"},
+    {"id": "https://tryvia.github.io/TryviaBI/linha%20do%20tempo.html", "nome": "MVP", "descricao": "MVP"},
+    {"id": "https://tryvia.github.io/TryviaBI/implanta%C3%A7%C3%A3o.html", "nome": "Implantações", "descricao": "Implantações"},
+    {"id": "release", "nome": "Release", "descricao": "Release"},
+    {"id": "treinamento", "nome": "Treinamento", "descricao": "Treinamento"},
+    {"id": "reunioes", "nome": "Reuniões", "descricao": "Reuniões"},
+    {"id": "relatorioVisita", "nome": "Relatório de Visita", "descricao": "Relatório de Visita"},
+    {"id": "documents", "nome": "Time de Implantação", "descricao": "Time de Implantação"},
+    {"id": "evaluations", "nome": "Avaliações", "descricao": "Avaliações"},
+    {"id": "gestao", "nome": "Gestão", "descricao": "Gestão"},
+    {"id": "cs", "nome": "cs", "descricao": "cs"},
+    {"id": "saveClient", "nome": "Salvar Cliente", "descricao": "Salvar Cliente"},
+    {"id": "editClient", "nome": "Editar Cliente", "descricao": "Editar Cliente"},
+    {"id": "updateClient", "nome": "Atualizar Cliente", "descricao": "Atualizar Cliente"},
+    {"id": "deleteClient", "nome": "Excluir Cliente", "descricao": "Excluir Cliente"},
+    {"id": "addClientDocument", "nome": "Adicionar Documento do Cliente", "descricao": "Adicionar Documento do Cliente"},
+    {"id": "deleteClientDocument", "nome": "Excluir Documento do Cliente", "descricao": "Excluir Documento do Cliente"},
+    {"id": "addProduct", "nome": "Adicionar Produto", "descricao": "Adicionar Produto"},
+    {"id": "removeProduct", "nome": "Remover Produto", "descricao": "Remover Produto"},
+    {"id": "addEditProduct", "nome": "Adicionar/Editar Produto", "descricao": "Adicionar/Editar Produto"},
+    {"id": "addIntegration", "nome": "Adicionar Integração", "descricao": "Adicionar Integração"},
+    {"id": "addEditIntegration", "nome": "Adicionar/Editar Integração", "descricao": "Adicionar/Editar Integração"},
+    {"id": "removeIntegration", "nome": "Remover Integração", "descricao": "Remover Integração"},
+    {"id": "addDocument", "nome": "Adicionar Documento do time", "descricao": "Adicionar Documento do time"},
+    {"id": "deleteDocument", "nome": "Excluir Documento do time", "descricao": "Excluir Documento do time"},
+    {"id": "submitHomologacao", "nome": "Adicionar homologação", "descricao": "Adicionar homologação"},
+    {"id": "deleteHomologacao", "nome": "Excluir Homologação", "descricao": "Excluir Homologação"},
+    {"id": "salvarRelease", "nome": "Salvar Release", "descricao": "Salvar Release"},
+    {"id": "deleteRelease", "nome": "Excluir Release", "descricao": "Excluir Release"},
+    {"id": "salvarReuniao", "nome": "Salvar Reunião", "descricao": "Salvar Reunião"},
+    {"id": "showAddVideoModal", "nome": "Adicionar Video", "descricao": "Adicionar Video"},
+    {"id": "showAddProductModal", "nome": "Adicionar Produto", "descricao": "Adicionar Produto"},
+    {"id": "deleteTrainingVideo", "nome": "Excluir Video", "descricao": "Excluir Video"},
+    {"id": "alterarQuantidade", "nome": "Alterar Quantidade nas tarefas", "descricao": "Alterar Quantidade nas tarefas"},
+    {"id": 'saveTasks', 'nome': 'Salvar Tarefas', 'descricao': 'Salvar Tarefas'},
+    {"id": 'abrirModalTarefa', 'nome': 'Adicionar Tarefa', 'descricao': 'Adicionar Tarefa'},
+    {"id": 'abrirModalMembro', 'nome': 'Adicionar Membro do Time', 'descricao': 'Adicionar Membro do Time'},
+    {"id": 'abrirModalProjeto', 'nome': 'Adicionar Projeto', 'descricao': 'Adicionar Projeto'},
+    {"id": 'abrirModalVisita', 'nome': 'Adicionar Visita', 'descricao': 'Adicionar Visita'},
+    {"id": 'abrirModalEntrega', 'nome': 'Adicionar Entrega', 'descricao': 'Adicionar Entrega'},
+    {"id": 'saveTask', 'nome': 'Salvar Tarefa', 'descricao': 'Salvar Tarefa'},
+    {"id": 'saveProject', 'nome': 'Salvar Projeto', 'descricao': 'Salvar Projeto'},
+    {"id": 'excluirProjeto', 'nome': 'Excluir Projeto', 'descricao': 'Excluir Projeto'}
+];
+
+// Função para abrir o modal de edição de usuário
+async function editarUsuario(usuarioId) {
+    try {
+        // Buscar dados do usuário
+        const { data: usuario, error } = await releaseClient
+            .from('usuarios')
+            .select('*')
+            .eq('id', usuarioId)
+            .single();
+
+        if (error) {
+            console.error('Erro ao buscar usuário:', error);
+            showAlert('Erro', 'Erro ao carregar dados do usuário.');
+            return;
+        }
+
+        usuarioAtualEditando = usuario;
+        
+        // Preencher informações do usuário
+        document.getElementById('usuarioNome').textContent = usuario.nome || '-';
+        document.getElementById('usuarioEmail').textContent = usuario.email || '-';
+        document.getElementById('usuarioStatus').textContent = 'Ativo';
+        document.getElementById('usuarioStatus').className = 'status-badge ativo';
+        document.getElementById('usuarioUltimoAcesso').textContent = 'Não informado';
+
+        // Carregar permissões
+        carregarPermissoes();
+        
+        // Limpar campos de senha
+        document.getElementById('novaSenha').value = '';
+        document.getElementById('confirmarSenha').value = '';
+        document.getElementById('forcarTrocaSenha').checked = false;
+        
+        // Resetar indicadores de força da senha
+        resetPasswordStrength();
+        
+        // Mostrar modal
+        document.getElementById('modalEditarUsuario').style.display = 'block';
+        
+    } catch (error) {
+        console.error('Erro ao abrir modal de edição:', error);
+        showAlert('Erro', 'Erro inesperado ao abrir modal de edição.');
+    }
+}
+
+// Função para carregar permissões no modal
+function carregarPermissoes() {
+    const listaDisponiveis = document.getElementById('listaPermissoesDisponiveis');
+    const listaUsuario = document.getElementById('listaPermissoesUsuario');
+    
+    const permissoesUsuario = usuarioAtualEditando.permissoes || [];
+    
+    // Carregar permissões disponíveis (que o usuário não possui)
+    const permissoesNaoPossui = permissoesDisponiveis.filter(p => !permissoesUsuario.includes(p.id));
+    listaDisponiveis.innerHTML = permissoesNaoPossui.map(permissao => `
+        <div class="permissao-item">
+            <div class="permissao-info">
+                <div class="permissao-nome">${permissao.nome}</div>
+                <div class="permissao-descricao">${permissao.descricao}</div>
+            </div>
+            <div class="permissao-actions">
+                <button class="btn-adicionar" onclick="adicionarPermissao('${permissao.id}')">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    // Carregar permissões do usuário
+    const permissoesPossui = permissoesDisponiveis.filter(p => permissoesUsuario.includes(p.id));
+    listaUsuario.innerHTML = permissoesPossui.map(permissao => `
+        <div class="permissao-item">
+            <div class="permissao-info">
+                <div class="permissao-nome">${permissao.nome}</div>
+                <div class="permissao-descricao">${permissao.descricao}</div>
+            </div>
+            <div class="permissao-actions">
+                <button class="btn-remover" onclick="removerPermissao('${permissao.id}')">
+                    <i class="fas fa-minus"></i> Remover
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Função para adicionar permissão
+function adicionarPermissao(permissaoId) {
+    if (!usuarioAtualEditando.permissoes) {
+        usuarioAtualEditando.permissoes = [];
+    }
+    
+    if (!usuarioAtualEditando.permissoes.includes(permissaoId)) {
+        usuarioAtualEditando.permissoes.push(permissaoId);
+        carregarPermissoes();
+    }
+}
+
+// Função para remover permissão
+function removerPermissao(permissaoId) {
+    if (usuarioAtualEditando.permissoes) {
+        usuarioAtualEditando.permissoes = usuarioAtualEditando.permissoes.filter(p => p !== permissaoId);
+        carregarPermissoes();
+    }
+}
+
+// Função para filtrar permissões
+function filtrarPermissoes() {
+    const termo = document.getElementById('searchPermissoes').value.toLowerCase();
+    const items = document.querySelectorAll('#listaPermissoesDisponiveis .permissao-item');
+    
+    items.forEach(item => {
+        const nome = item.querySelector('.permissao-nome').textContent.toLowerCase();
+        const descricao = item.querySelector('.permissao-descricao').textContent.toLowerCase();
+        
+        if (nome.includes(termo) || descricao.includes(termo)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Função para alternar visibilidade da senha
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const button = input.nextElementSibling;
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+    }
+}
+
+// Função para verificar força da senha
+function checkPasswordStrength(password) {
+    let strength = 0;
+    let feedback = '';
+    
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    
+    switch (strength) {
+        case 0:
+        case 1:
+            strengthFill.style.width = '20%';
+            strengthFill.style.backgroundColor = '#f44336';
+            feedback = 'Muito fraca';
+            break;
+        case 2:
+            strengthFill.style.width = '40%';
+            strengthFill.style.backgroundColor = '#ff9800';
+            feedback = 'Fraca';
+            break;
+        case 3:
+            strengthFill.style.width = '60%';
+            strengthFill.style.backgroundColor = '#ffc107';
+            feedback = 'Média';
+            break;
+        case 4:
+            strengthFill.style.width = '80%';
+            strengthFill.style.backgroundColor = '#4caf50';
+            feedback = 'Forte';
+            break;
+        case 5:
+            strengthFill.style.width = '100%';
+            strengthFill.style.backgroundColor = '#2e7d32';
+            feedback = 'Muito forte';
+            break;
+    }
+    
+    strengthText.textContent = feedback;
+    strengthText.style.color = strengthFill.style.backgroundColor;
+}
+
+// Função para verificar se as senhas coincidem
+function checkPasswordMatch() {
+    const novaSenha = document.getElementById('novaSenha').value;
+    const confirmarSenha = document.getElementById('confirmarSenha').value;
+    const matchDiv = document.getElementById('passwordMatch');
+    
+    if (confirmarSenha === '') {
+        matchDiv.textContent = '';
+        matchDiv.className = 'password-match';
+        return;
+    }
+    
+    if (novaSenha === confirmarSenha) {
+        matchDiv.textContent = '✓ Senhas coincidem';
+        matchDiv.className = 'password-match match';
+    } else {
+        matchDiv.textContent = '✗ Senhas não coincidem';
+        matchDiv.className = 'password-match no-match';
+    }
+}
+
+// Função para resetar indicadores de senha
+function resetPasswordStrength() {
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    const matchDiv = document.getElementById('passwordMatch');
+    
+    strengthFill.style.width = '0%';
+    strengthFill.style.backgroundColor = '#e0e0e0';
+    strengthText.textContent = 'Digite uma senha';
+    strengthText.style.color = '#666';
+    
+    matchDiv.textContent = '';
+    matchDiv.className = 'password-match';
+}
+
+// Função para fechar o modal
+function fecharModalEditarUsuario() {
+    document.getElementById('modalEditarUsuario').style.display = 'none';
+    usuarioAtualEditando = null;
+}
+
+// Função para salvar alterações do usuário
+async function salvarAlteracoesUsuario() {
+    if (!usuarioAtualEditando) {
+        showAlert('Erro', 'Nenhum usuário selecionado para edição.');
+        return;
+    }
+
+    const novaSenha = document.getElementById('novaSenha').value;
+    const confirmarSenha = document.getElementById('confirmarSenha').value;
+    const forcarTroca = document.getElementById('forcarTrocaSenha').checked;
+
+    // Validações
+    if (novaSenha && novaSenha !== confirmarSenha) {
+        showAlert('Erro', 'As senhas não coincidem.');
+        return;
+    }
+
+    if (novaSenha && novaSenha.length < 6) {
+        showAlert('Erro', 'A nova senha deve ter pelo menos 6 caracteres.');
+        return;
+    }
+
+    if (!usuarioAtualEditando.permissoes || usuarioAtualEditando.permissoes.length === 0) {
+        showAlert('Erro', 'O usuário deve ter pelo menos uma permissão.');
+        return;
+    }
+
+    try {
+        // Preparar dados para atualização
+        const dadosAtualizacao = {
+            permissoes: usuarioAtualEditando.permissoes
+        };
+
+        // Incluir senha apenas se foi fornecida
+        if (novaSenha && novaSenha.trim() !== '') {
+            dadosAtualizacao.senha = novaSenha;
+        }
+
+        // Atualizar no Supabase
+        const { data, error } = await releaseClient
+            .from('usuarios')
+            .update(dadosAtualizacao)
+            .eq('id', usuarioAtualEditando.id)
+            .select();
+
+        if (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            showAlert('Erro', 'Erro ao atualizar usuário: ' + error.message);
+            return;
+        }
+
+        showAlert('Sucesso', 'Usuário atualizado com sucesso!');
+        fecharModalEditarUsuario();
+        
+        // Recarregar lista de usuários se a função existir
+        if (typeof fetchAndRenderUsuarios === 'function') {
+            fetchAndRenderUsuarios();
+        }
+        if (typeof carregarLoginsUsuarios === 'function') {
+            carregarLoginsUsuarios();
+        }
+
+    } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+        showAlert('Erro', 'Erro inesperado ao atualizar usuário.');
+    }
+}
+
+// Event listeners para os campos de senha
+document.addEventListener('DOMContentLoaded', function() {
+    const novaSenhaInput = document.getElementById('novaSenha');
+    const confirmarSenhaInput = document.getElementById('confirmarSenha');
+    const searchInput = document.getElementById('searchPermissoes');
+    const modalClose = document.querySelector('.modal-editar-usuario-close');
+    
+    if (novaSenhaInput) {
+        novaSenhaInput.addEventListener('input', function() {
+            if (this.value) {
+                checkPasswordStrength(this.value);
+            } else {
+                resetPasswordStrength();
+            }
+            checkPasswordMatch();
+        });
+    }
+    
+    if (confirmarSenhaInput) {
+        confirmarSenhaInput.addEventListener('input', checkPasswordMatch);
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', filtrarPermissoes);
+    }
+    
+    if (modalClose) {
+        modalClose.addEventListener('click', fecharModalEditarUsuario);
+    }
+    
+    // Fechar modal ao clicar fora dele
+    document.getElementById('modalEditarUsuario').addEventListener('click', function(e) {
+        if (e.target === this) {
+            fecharModalEditarUsuario();
+        }
+    });
+});
 </script>
 
 </body>
