@@ -10,30 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body>
-    <script>
-
-async function salvarModificacoes() {
-    const nome = document.getElementById("nome").value;
-    const cargo = document.getElementById("cargo").value;
-    const link = document.getElementById("link").value;
-    const foto = document.getElementById("foto").value;
-
-    const { data, error } = await supabaseClient.from("especialistas").insert([{
-        nome: nome,
-        funcao: cargo,
-        foto_url: foto,
-        link: link
-    }]);
-
-    if (error) {
-        alert("Erro ao salvar: " + error.message);
-    } else {
-        alert("Salvo com sucesso!");
-    }
-}
-</script>
-
-</script>
     <style>
         * {
             margin: 0;
@@ -555,7 +531,6 @@ async function salvarModificacoes() {
             width: 16px;
             height: 16px;
             box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
-            /* animation: visitPulse 2s infinite; */
         }
         
         @keyframes visitPulse {
@@ -571,6 +546,39 @@ async function salvarModificacoes() {
                 transform: scale(1);
                 box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
             }
+        }
+
+        /* Estilo para notificações */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        .notification.warning {
+            background-color: #ffc107;
+            color: #333;
         }
         
         @media (max-width: 1200px) {
@@ -588,8 +596,7 @@ async function salvarModificacoes() {
             }
         }
     </style>
-</head>
-<body>
+
     <div class="container">
         <div class="sidebar">
             <div class="profile-photo">
@@ -733,11 +740,26 @@ async function salvarModificacoes() {
     
     <input type="file" id="photoInput" accept="image/*" style="display: none;">
     
+    <!-- Div para notificações -->
+    <div id="notification" class="notification"></div>
+    
     <script>
         // Variáveis globais para o mapa
         let map;
         let visitMarkers = [];
         let isFormVisible = true;
+        
+        // Função para mostrar notificações
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
         
         // Inicializar o mapa
         function initMap() {
@@ -884,118 +906,43 @@ async function salvarModificacoes() {
             document.getElementById("empresasCount").textContent = clientItems.length;
         }
         
-        // Função para salvar visitas e adicionar marcadores no mapa
-        async function salvarVisitas() {
-            // Limpar marcadores existentes
-            visitMarkers.forEach(marker => {
-                map.removeLayer(marker);
-            });
-            visitMarkers = [];
-            
-            // Obter todos os clientes
-            const clientItems = document.querySelectorAll(".client-item");
-            const clientsData = [];
-            
-            clientItems.forEach(clientItem => {
-                const nameInput = clientItem.querySelector("input[placeholder='Nome do Cliente']");
-                const locationInput = clientItem.querySelector("input[placeholder='Local/Estado']");
-                
-                // Verificar se os elementos existem antes de tentar acessar suas propriedades
-                if (nameInput && locationInput) {
-                    const name = nameInput.value.trim();
-                    const location = locationInput.value.trim();
-                    
-                    if (name && location) {
-                        // Se tem coordenadas salvas, usar elas
-                        if (clientItem.dataset.lat && clientItem.dataset.lng) {
-                            const lat = parseFloat(clientItem.dataset.lat);
-                            const lng = parseFloat(clientItem.dataset.lng);
-                            addVisitMarker(lat, lng, name, location);
-                            clientsData.push({ name, location, lat, lng });
-                        } else {
-                            // Caso contrário, usar coordenadas aproximadas baseadas no estado/local
-                            const coords = getApproximateCoordinates(location);
-                            if (coords) {
-                                addVisitMarker(coords.lat, coords.lng, name, location);
-                                clientsData.push({ name, location, lat: coords.lat, lng: coords.lng });
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Salvar dados no localStorage
-            localStorage.setItem('visitasClientes', JSON.stringify(clientsData));
-// Agora salvando no Supabase também
-const especialistaId = 1;
-for (const client of clientsData) {
-    const { name, location, lat, lng } = client;
-    const dataAtual = new Date().toISOString();
-
-    const { error } = await supabaseClient.from("visitas_especialista").insert([{
-        especialista_id: especialistaId,
-        cliente: name,
-        local: location,
-        lat: lat,
-        lng: lng,
-        data: dataAtual
-    }]);
-
-    if (error) {
-        console.error("Erro ao salvar visita:", error.message);
-        alert("Erro ao salvar alguma visita: " + error.message);
-        return;
-    }
-}
-
-            
-            alert(`${visitMarkers.length} visitas salvas com sucesso no Supabase!`);
-        }
-        
         // Função para adicionar marcador de visita no mapa
         function addVisitMarker(lat, lng, name, location) {
-            const marker = L.circleMarker([lat, lng], {
-                radius: 8,
-                fillColor: "#28a745",
-                color: "white",
-                weight: 3,
-                opacity: 1,
-                fillOpacity: 0.8,
-                className: "visit-marker"
-            }).addTo(map);
-            
-            marker.bindPopup(`
-                <div style="text-align: center;">
-                    <strong>${name}</strong><br>
-                    <small>${location}</small>
-                </div>
-            `);
-            
+            const marker = L.marker([lat, lng]).addTo(map);
+            marker.bindPopup(`<b>${name}</b><br>${location}`);
             visitMarkers.push(marker);
         }
         
-        // Função para obter coordenadas aproximadas baseadas no estado/cidade
+        // Função para obter coordenadas aproximadas
         function getApproximateCoordinates(location) {
             const coordinates = {
-                "São Paulo": { lat: -23.5505, lng: -46.6333 },
-                "Rio de Janeiro": { lat: -22.9068, lng: -43.1729 },
-                "Belo Horizonte": { lat: -19.9167, lng: -43.9345 },
-                "Salvador": { lat: -12.9714, lng: -38.5014 },
-                "Brasília": { lat: -15.8267, lng: -47.9218 },
-                "Fortaleza": { lat: -3.7319, lng: -38.5267 },
-                "Manaus": { lat: -3.1190, lng: -60.0217 },
-                "Curitiba": { lat: -25.4284, lng: -49.2733 },
-                "Recife": { lat: -8.0476, lng: -34.8770 },
-                "Porto Alegre": { lat: -30.0346, lng: -51.2177 },
-                "Goiânia": { lat: -16.6869, lng: -49.2648 },
-                "Belém": { lat: -1.4558, lng: -48.5044 },
-                "Guarulhos": { lat: -23.4538, lng: -46.5333 },
-                "Campinas": { lat: -22.9099, lng: -47.0626 },
-                "São Luís": { lat: -2.5387, lng: -44.2825 },
-                "São Gonçalo": { lat: -22.8267, lng: -43.0537 },
-                "Maceió": { lat: -9.6658, lng: -35.7353 },
-                "Duque de Caxias": { lat: -22.7856, lng: -43.3117 },
-                "Natal": { lat: -5.7945, lng: -35.2110 }
+                "acre": { lat: -8.77, lng: -70.55 },
+                "alagoas": { lat: -9.71, lng: -35.73 },
+                "amapá": { lat: 1.41, lng: -51.77 },
+                "amazonas": { lat: -3.07, lng: -61.66 },
+                "bahia": { lat: -12.96, lng: -38.51 },
+                "ceará": { lat: -3.71, lng: -38.54 },
+                "distrito federal": { lat: -15.83, lng: -47.86 },
+                "espírito santo": { lat: -19.19, lng: -40.34 },
+                "goiás": { lat: -16.64, lng: -49.31 },
+                "maranhão": { lat: -2.55, lng: -44.30 },
+                "mato grosso": { lat: -12.64, lng: -55.42 },
+                "mato grosso do sul": { lat: -20.51, lng: -54.54 },
+                "minas gerais": { lat: -18.10, lng: -44.38 },
+                "pará": { lat: -5.53, lng: -52.29 },
+                "paraíba": { lat: -7.06, lng: -35.55 },
+                "paraná": { lat: -24.89, lng: -51.55 },
+                "pernambuco": { lat: -8.28, lng: -35.07 },
+                "piauí": { lat: -8.28, lng: -43.68 },
+                "rio de janeiro": { lat: -22.84, lng: -43.15 },
+                "rio grande do norte": { lat: -5.22, lng: -36.52 },
+                "rio grande do sul": { lat: -30.01, lng: -51.22 },
+                "rondônia": { lat: -11.22, lng: -62.80 },
+                "roraima": { lat: 1.89, lng: -61.22 },
+                "santa catarina": { lat: -27.33, lng: -49.44 },
+                "são paulo": { lat: -23.55, lng: -46.64 },
+                "sergipe": { lat: -10.90, lng: -37.07 },
+                "tocantins": { lat: -10.25, lng: -48.25 }
             };
             
             // Procurar por correspondência exata ou parcial
@@ -1010,177 +957,302 @@ for (const client of clientsData) {
             return { lat: -14.2350, lng: -51.9253 };
         }
         
-        // Função para carregar visitas salvas do localStorage
+        // Função para salvar visitas e adicionar marcadores no mapa
+        async function salvarVisitas() {
+            try {
+                // Limpar marcadores existentes
+                visitMarkers.forEach(marker => {
+                    map.removeLayer(marker);
+                });
+                visitMarkers = [];
+                
+                // Obter todos os clientes
+                const clientItems = document.querySelectorAll(".client-item");
+                const clientsData = [];
+                
+                clientItems.forEach(clientItem => {
+                    const nameInput = clientItem.querySelector("input[placeholder='Nome do Cliente']") || 
+                                     clientItem.querySelector("input:first-child");
+                    const locationInput = clientItem.querySelector("input[placeholder='Local/Estado']") || 
+                                         clientItem.querySelector("input:nth-child(2)");
+                    
+                    // Verificar se os elementos existem antes de tentar acessar suas propriedades
+                    if (nameInput && locationInput) {
+                        const name = nameInput.value.trim();
+                        const location = locationInput.value.trim();
+                        
+                        if (name && location) {
+                            // Se tem coordenadas salvas, usar elas
+                            if (clientItem.dataset.lat && clientItem.dataset.lng) {
+                                const lat = parseFloat(clientItem.dataset.lat);
+                                const lng = parseFloat(clientItem.dataset.lng);
+                                addVisitMarker(lat, lng, name, location);
+                                clientsData.push({ name, location, lat, lng });
+                            } else {
+                                // Caso contrário, usar coordenadas aproximadas baseadas no estado/local
+                                const coords = getApproximateCoordinates(location);
+                                if (coords) {
+                                    addVisitMarker(coords.lat, coords.lng, name, location);
+                                    clientsData.push({ name, location, lat: coords.lat, lng: coords.lng });
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                if (clientsData.length === 0) {
+                    showNotification("Nenhuma visita para salvar. Adicione clientes primeiro.", "warning");
+                    return;
+                }
+                
+                // Salvar dados no localStorage como backup
+                localStorage.setItem('visitasClientes', JSON.stringify(clientsData));
+                
+                // Salvar no Supabase
+                const especialistaId = 1;
+                let savedCount = 0;
+                let errorCount = 0;
+                
+                for (const client of clientsData) {
+                    const { name, location, lat, lng } = client;
+                    const dataAtual = new Date().toISOString();
+
+                    try {
+                        const { error } = await supabaseClient.from("visitas_especialista").insert([{
+                            especialista_id: especialistaId,
+                            cliente: name,
+                            local: location,
+                            latitude: lat,  // Mudança aqui: usando 'latitude' em vez de 'lat'
+                            longitude: lng, // Mudança aqui: usando 'longitude' em vez de 'lng'
+                            data_visita: dataAtual // Mudança aqui: usando 'data_visita' em vez de 'data'
+                        }]);
+
+                        if (error) {
+                            console.error("Erro ao salvar visita:", error.message);
+                            errorCount++;
+                        } else {
+                            savedCount++;
+                        }
+                    } catch (err) {
+                        console.error("Erro inesperado:", err);
+                        errorCount++;
+                    }
+                }
+                
+                // Mostrar resultado
+                if (savedCount > 0 && errorCount === 0) {
+                    showNotification(`${savedCount} visitas salvas com sucesso!`, "success");
+                } else if (savedCount > 0 && errorCount > 0) {
+                    showNotification(`${savedCount} visitas salvas, ${errorCount} falharam. Verifique o console.`, "warning");
+                } else {
+                    showNotification("Erro ao salvar visitas. Verifique a estrutura da tabela no Supabase.", "error");
+                }
+                
+            } catch (error) {
+                console.error("Erro geral:", error);
+                showNotification("Erro inesperado ao salvar visitas.", "error");
+            }
+        }
         
-async function carregarVisitasSalvas() {
-    const especialistaId = 1; // ajustar conforme necessário
+        // Função para carregar visitas salvas do Supabase
+        async function carregarVisitasSalvas() {
+            try {
+                const especialistaId = 1;
 
-    const { data: visitas, error } = await supabaseClient
-        .from("visitas_especialista")
-        .select("*")
-        .eq("especialista_id", especialistaId);
+                const { data: visitas, error } = await supabaseClient
+                    .from("visitas_especialista")
+                    .select("*")
+                    .eq("especialista_id", especialistaId);
 
-    if (error) {
-        console.error("Erro ao carregar visitas:", error.message);
-        return;
-    }
+                if (error) {
+                    console.error("Erro ao carregar visitas:", error.message);
+                    showNotification("Erro ao carregar visitas salvas.", "error");
+                    return;
+                }
 
-    // Limpar marcadores existentes
-    visitMarkers.forEach(marker => {
-        map.removeLayer(marker);
-    });
-    visitMarkers = [];
+                // Limpar marcadores existentes
+                visitMarkers.forEach(marker => {
+                    map.removeLayer(marker);
+                });
+                visitMarkers = [];
 
-    // Limpar lista de clientes
-    const clientsList = document.getElementById("clientsList");
-    const clientItems = clientsList.querySelectorAll(".client-item");
-    clientItems.forEach(item => item.remove());
+                // Limpar lista de clientes
+                const clientsList = document.getElementById("clientsList");
+                const clientItems = clientsList.querySelectorAll(".client-item");
+                clientItems.forEach(item => item.remove());
 
-    // Recriar clientes e marcadores
-    visitas.forEach(client => {
-        addClientToList(client.cliente, client.local, client.lat, client.lng);
-        addVisitMarker(client.lat, client.lng, client.cliente, client.local);
-    });
+                // Recriar clientes e marcadores
+                if (visitas && visitas.length > 0) {
+                    visitas.forEach(client => {
+                        const lat = client.latitude || client.lat; // Suporte para ambos os nomes
+                        const lng = client.longitude || client.lng; // Suporte para ambos os nomes
+                        addClientToList(client.cliente, client.local, lat, lng);
+                        addVisitMarker(lat, lng, client.cliente, client.local);
+                    });
+                    showNotification(`${visitas.length} visitas carregadas com sucesso!`, "success");
+                } else {
+                    showNotification("Nenhuma visita salva encontrada.", "warning");
+                }
 
-    updateClientCount();
-}
+                updateClientCount();
+            } catch (error) {
+                console.error("Erro ao carregar visitas:", error);
+                showNotification("Erro inesperado ao carregar visitas.", "error");
+            }
+        }
 
-document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function() {
             initMap();
-            carregarVisitasSalvas(); // Carregar visitas salvas
+            // Aguardar um pouco para o mapa carregar antes de carregar as visitas
+            setTimeout(() => {
+                carregarVisitasSalvas();
+            }, 1000);
         });
     </script>
 
-        <button id="salvarBtn" onclick="salvarModificacoes()">Salvar Modificações</button>
-        
-        
+    <button id="salvarBtn" onclick="salvarModificacoes()">Salvar Modificações</button>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = "https://mzjdmhgkrroajmsfwryu.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://mzjdmhgkrroajmsfwryu.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-window.onload = async function () {
-    const { data, error } = await supabaseClient
-        .from("infor_funcionario")
-        .select("*")
-        .eq("id", 1)
-        .single();
+        window.onload = async function () {
+            try {
+                const { data, error } = await supabaseClient
+                    .from("infor_funcionario")
+                    .select("*")
+                    .eq("id", 1)
+                    .single();
 
-    if (data) {
-        document.querySelector(".name-section h1").innerText = data.nome || "";
-        document.querySelector(".name-section p").innerText = data.funcao || "";
-        document.getElementById("treinamentos").innerText = data.treinamentos || 0;
-        document.getElementById("reunioes").innerText = data.reunioes || 0;
-        document.getElementById("homologacoes").innerText = data.homologacoes || 0;
-        document.getElementById("projetos").innerText = data.projetos || 0;
-        document.getElementById("performance").innerText = data.performance || "0%";
-         const tbody = document.querySelector("#projectsTable tbody");
-        tbody.innerHTML = "";
-        if (data.projetos_lista && Array.isArray(data.projetos_lista)) {
-            data.projetos_lista.forEach(proj => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td contenteditable="true">${proj.nome}</td>
-                    <td><span class="company-tag tag-gasparzinho" contenteditable="true">${proj.empresa}</span></td>
-                    <td><button class="remove-button" onclick="removeRow(this)">×</button></td>
-                `;
-            });
+                if (error) {
+                    console.error("Erro ao carregar dados do funcionário:", error);
+                    showNotification("Erro ao carregar dados do funcionário.", "error");
+                    return;
+                }
+
+                if (data) {
+                    document.querySelector(".name-section h1").innerText = data.nome || "";
+                    document.querySelector(".name-section p").innerText = data.funcao || "";
+                    document.getElementById("treinamentos").innerText = data.treinamentos || 0;
+                    document.getElementById("reunioes").innerText = data.reunioes || 0;
+                    document.getElementById("homologacoes").innerText = data.homologacoes || 0;
+                    document.getElementById("projetos").innerText = data.projetos || 0;
+                    document.getElementById("performance").innerText = data.performance || "0%";
+                    
+                    const tbody = document.querySelector("#projectsTable tbody");
+                    tbody.innerHTML = "";
+                    if (data.projetos_lista && Array.isArray(data.projetos_lista)) {
+                        data.projetos_lista.forEach(proj => {
+                            const row = tbody.insertRow();
+                            row.innerHTML = `
+                                <td contenteditable="true">${proj.nome}</td>
+                                <td><span class="company-tag tag-gasparzinho" contenteditable="true">${proj.empresa}</span></td>
+                                <td><button class="remove-button" onclick="removeRow(this)">×</button></td>
+                            `;
+                        });
+                    }
+                    
+                    // Acompanhamentos
+                    const ulAcomp = document.getElementById("acompanhamentos");
+                    ulAcomp.innerHTML = "";
+                    if (data.acompanhamentos && Array.isArray(data.acompanhamentos)) {
+                        data.acompanhamentos.forEach(item => {
+                            const li = document.createElement("li");
+                            li.contentEditable = true;
+                            li.textContent = item;
+                            ulAcomp.appendChild(li);
+                        });
+                    }
+
+                    // MVP
+                    const ulMvp = document.getElementById("mvp");
+                    ulMvp.innerHTML = "";
+                    if (data.mvp && Array.isArray(data.mvp)) {
+                        data.mvp.forEach(item => {
+                            const li = document.createElement("li");
+                            li.contentEditable = true;
+                            li.textContent = item;
+                            ulMvp.appendChild(li);
+                        });
+                    }
+                    
+                    // Foto
+                    if (data.foto_url) {
+                        const placeholder = document.querySelector(".profile-photo-placeholder");
+                        placeholder.innerHTML = `<img src="${data.foto_url}" alt="Foto do perfil">`;
+                    }
+                }
+            } catch (error) {
+                console.error("Erro inesperado:", error);
+                showNotification("Erro inesperado ao carregar dados.", "error");
+            }
+        };
+
+        async function salvarModificacoes() {
+            try {
+                const nome = document.querySelector(".name-section h1").innerText;
+                const cargo = document.querySelector(".name-section p").innerText;
+                const treinamentos = parseInt(document.getElementById("treinamentos").innerText);
+                const reunioes = parseInt(document.getElementById("reunioes").innerText);
+                const homologacoes = parseInt(document.getElementById("homologacoes").innerText);
+                const performance = document.getElementById("performance").innerText;
+
+                // Coletar projetos da tabela
+                const projetos = [];
+                const rows = document.querySelectorAll("#projectsTable tbody tr");
+                rows.forEach(row => {
+                    const nomeProjeto = row.cells[0]?.innerText || "";
+                    const empresa = row.cells[1]?.innerText || "";
+                    if (nomeProjeto && empresa) {
+                        projetos.push({ nome: nomeProjeto, empresa: empresa });
+                    }
+                });
+
+                // Coletar acompanhamentos
+                const acompanhamentos = [];
+                const acompItems = document.querySelectorAll("#acompanhamentos li");
+                acompItems.forEach(item => {
+                    if (item.innerText.trim()) {
+                        acompanhamentos.push(item.innerText.trim());
+                    }
+                });
+
+                // Coletar MVP
+                const mvp = [];
+                const mvpItems = document.querySelectorAll("#mvp li");
+                mvpItems.forEach(item => {
+                    if (item.innerText.trim()) {
+                        mvp.push(item.innerText.trim());
+                    }
+                });
+
+                const { data, error } = await supabaseClient.from("infor_funcionario").upsert([{
+                    id: 5,
+                    nome: nome,
+                    funcao: cargo,
+                    treinamentos: treinamentos,
+                    reunioes: reunioes,
+                    homologacoes: homologacoes,
+                    projetos: projetos.length,
+                    performance: performance,
+                    projetos_lista: projetos,
+                    acompanhamentos: acompanhamentos,
+                    mvp: mvp
+                }]);
+
+                if (error) {
+                    showNotification("Erro ao salvar: " + error.message, "error");
+                } else {
+                    showNotification("Dados salvos com sucesso!", "success");
+                }
+            } catch (error) {
+                console.error("Erro inesperado:", error);
+                showNotification("Erro inesperado ao salvar dados.", "error");
+            }
         }
-        // Acompanhamentos
-        const ulAcomp = document.getElementById("acompanhamentos");
-        ulAcomp.innerHTML = "";
-        if (data.acompanhamentos && Array.isArray(data.acompanhamentos)) {
-            data.acompanhamentos.forEach(item => {
-                const li = document.createElement("li");
-                li.contentEditable = true;
-                li.textContent = item;
-                ulAcomp.appendChild(li);
-            });
-        }
-
-        // MVP
-        const ulMvp = document.getElementById("mvp");
-        ulMvp.innerHTML = "";
-        if (data.mvp && Array.isArray(data.mvp)) {
-            data.mvp.forEach(item => {
-                const li = document.createElement("li");
-                li.contentEditable = true;
-                li.textContent = item;
-                ulMvp.appendChild(li);
-            });
-        }
-
-        
-        
-        // Foto
-        if (data.foto_url) {
-            const placeholder = document.querySelector(".profile-photo-placeholder");
-            placeholder.innerHTML = `<img src="${data.foto_url}" alt="Foto do perfil">`;
-        }
-    }
-};
-
-
-async function salvarModificacoes() {
-    const nome = document.querySelector(".name-section h1").innerText;
-    const cargo = document.querySelector(".name-section p").innerText;
-    const treinamentos = parseInt(document.getElementById("treinamentos").innerText);
-    const reunioes = parseInt(document.getElementById("reunioes").innerText);
-    const homologacoes = parseInt(document.getElementById("homologacoes").innerText);
-    const performance = document.getElementById("performance").innerText;
-
-    // Coletar projetos da tabela
-    const projetos = [];
-    const rows = document.querySelectorAll("#projectsTable tbody tr");
-    rows.forEach(row => {
-        const nomeProjeto = row.cells[0]?.innerText || "";
-        const empresa = row.cells[1]?.innerText || "";
-        if (nomeProjeto && empresa) {
-            projetos.push({ nome: nomeProjeto, empresa: empresa });
-        }
-    });
-
-    // Coletar acompanhamentos
-    const acompanhamentos = [];
-    const acompItems = document.querySelectorAll("#acompanhamentos li");
-    acompItems.forEach(item => {
-        if (item.innerText.trim()) {
-            acompanhamentos.push(item.innerText.trim());
-        }
-    });
-
-    // Coletar MVP
-    const mvp = [];
-    const mvpItems = document.querySelectorAll("#mvp li");
-    mvpItems.forEach(item => {
-        if (item.innerText.trim()) {
-            mvp.push(item.innerText.trim());
-        }
-    });
-
-    const { data, error } = await supabaseClient.from("infor_funcionario").upsert([{
-        id: 1,
-        nome: nome,
-        funcao: cargo,
-        treinamentos: treinamentos,
-        reunioes: reunioes,
-        homologacoes: homologacoes,
-        projetos: projetos.length,
-        performance: performance,
-        projetos_lista: projetos,
-        acompanhamentos: acompanhamentos,
-        mvp: mvp
-    }]);
-
-    if (error) {
-        alert("Erro ao salvar: " + error.message);
-    } else {
-        alert("Salvo com sucesso!");
-    }
-}
-</script>
+    </script>
 </body>
 </html>
 
