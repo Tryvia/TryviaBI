@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="pt-BR">
@@ -18,6 +19,17 @@
 </style>
 
 <script>
+    // Função para exibir apenas a data (dd/mm/aaaa), ignorando horário UTC
+function formatDateOnlyBR(dateString) {
+    if (!dateString) return 'Não informada';
+    const match = dateString.match(/^\d{4}-\d{2}-\d{2}/);
+    if (match) {
+        const [ano, mes, dia] = match[0].split('-');
+        return `${dia}/${mes}/${ano}`;
+    }
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+}
 // Funções auxiliares para manipulação de datas sem problemas de fuso horário
 function formatDateForInput(dateString) {
     if (!dateString) return "";
@@ -45,62 +57,19 @@ currentProducts = [];
 
 
 
-function formatDateForDisplay(dateString) {
-    if (!dateString) return "Não informada";
-    
-    // Se a data está no formato YYYY-MM-DD, criar Date sem problemas de fuso horário
-    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = dateString.split("-");
-        const date = new Date(year, month - 1, day); // month - 1 porque Date usa 0-11 para meses
-        return date.toLocaleDateString("pt-BR");
-    }
-    
-    // Para datas ISO, extrair apenas a parte da data e processar
-    if (dateString.includes("T")) {
-        const datePart = dateString.split("T")[0];
-        const [year, month, day] = datePart.split("-");
-        const date = new Date(year, month - 1, day);
-        return date.toLocaleDateString("pt-BR");
-    }
-    
-    // Para outras datas, usar o método padrão
-    return new Date(dateString).toLocaleDateString("pt-BR");
-}
 
-// Função para formatar data e hora corretamente para exibição
+// Função global para formatar data/hora com ajuste de fuso horário
 function formatDateTimeForDisplay(dateString) {
     if (!dateString) return 'Data não informada';
-    
-    // Para datas ISO, extrair a parte da data e processar
-    if (dateString.includes('T')) {
-        const datePart = dateString.split('T')[0];
-        const timePart = dateString.split('T')[1];
-        
-        // Extrair componentes da data
-        const [year, month, day] = datePart.split('-');
-        const date = new Date(year, month - 1, day);
-        
-        // Extrair componentes do horário
-        const [hours, minutes] = timePart.split(':');
-        
-        // Formatar data no padrão brasileiro
-        const formattedDate = date.toLocaleDateString('pt-BR');
-        
-        // Formatar horário
-        const formattedTime = `${hours}:${minutes}`;
-        
-        return `${formattedDate} às ${formattedTime}`;
-    }
-    
-    // Se a data está no formato YYYY-MM-DD, criar Date sem problemas de fuso horário
-    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = dateString.split('-');
-        const date = new Date(year, month - 1, day);
-        return date.toLocaleDateString('pt-BR');
-    }
-    
-    // Para outras datas, usar o método padrão
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'America/Sao_Paulo'
+    });
 }
 </script>
 <style>
@@ -757,6 +726,23 @@ async function carregarProjetos() {
         container.innerHTML += `<div class="projeto-item"><strong>${projeto.nome}</strong><br>${projeto.descricao || ''}</div>`;
     });
 }
+
+function formatDateOnlyBR(dateString) {
+    if (!dateString) return 'Não informada';
+    const match = dateString.match(/^\d{4}-\d{2}-\d{2}/);
+    if (match) {
+        const [ano, mes, dia] = match[0].split('-');
+        return `${dia}/${mes}/${ano}`;
+    }
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+}
+                        <div>
+                            <span style="color: #333;">${formatDateOnlyBR(implantacao.data_inicio)}</span>
+                            <span style="color: #333;">${formatDateOnlyBR(implantacao.data_termino)}</span>
+                        </div>
+    const dataInicio = visita.data_inicio ? formatDateOnlyBR(visita.data_inicio) : 'Não informada';
+    const dataFim = visita.data_fim ? formatDateOnlyBR(visita.data_fim) : 'Não informada';
 
 let teamMembers = []; // Variável global para armazenar os membros da equipe
 
@@ -3128,7 +3114,7 @@ try {
 }
 
 if (!sessionStorage.getItem('tryvia_logged')) {
-window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+//window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 
 sessionStorage.setItem('tryvia_logged', 'true');
 }
@@ -3941,6 +3927,16 @@ select {
                     <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #7b1fa2;" id="totalReunioes">-</p>
                 </div>
                 <div style="font-size: 3em; color: #7b1fa2; opacity: 0.7;">📅</div>
+            </div>
+        </div>
+
+        <div class="metric-card" style="background: linear-gradient(135deg, var(--primary-color) 0%, rgb(78 212 208) 100%); border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(3, 169, 244, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;" onclick="showTab('https://tryvia.github.io/TryviaBI/mapa_visitas.html')">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin: 0; color: #000; font-size: 1.1em; margin-bottom: 8px;">Total de Visitas</h3>
+                    <p style="margin: 0; font-size: 2.5em; font-weight: bold; color: #0277bd;" id="totalVisitas">-</p>
+                </div>
+                <div style="font-size: 3em; color: #0277bd; opacity: 0.7;">🗺️</div>
             </div>
         </div>
 
@@ -8662,6 +8658,7 @@ let dashboardData = {
     totalHomologacoes: 0,
     totalReleases: 0,
     totalReunioes: 0,
+    totalVisitas: 0,
     averageRating: 0.0,
     recentActivities: [],
     highlightClients: [],
@@ -8717,6 +8714,9 @@ async function loadDashboardMetrics() {
         dashboardData.totalReleases = releasesResult.count || 0;
         dashboardData.totalReunioes = reunioesResult.count || 0;
 
+        // Carregar total de visitas da API do Supabase de visitas
+        await loadTotalVisitas();
+
         // Calcular avaliação média
         if (evaluationsResult.data && evaluationsResult.data.length > 0) {
             const totalRating = evaluationsResult.data.reduce((sum, evaluation) => sum + evaluation.rating, 0);
@@ -8729,10 +8729,12 @@ async function loadDashboardMetrics() {
     const elHomologacoes = document.getElementById('totalHomologacoes');
     const elReleases = document.getElementById('totalReleases');
     const elReunioes = document.getElementById('totalReunioes');
+    const elVisitas = document.getElementById('totalVisitas');
     const elRating = document.getElementById('averageRatingHome');
     if (elHomologacoes) elHomologacoes.textContent = dashboardData.totalHomologacoes;
     if (elReleases) elReleases.textContent = dashboardData.totalReleases;
     if (elReunioes) elReunioes.textContent = dashboardData.totalReunioes;
+    if (elVisitas) elVisitas.textContent = dashboardData.totalVisitas;
     if (elRating) elRating.textContent = dashboardData.averageRating;
 
         // Adicionar animação aos cards
@@ -8754,7 +8756,34 @@ async function loadDashboardMetrics() {
         document.getElementById('totalHomologacoes').textContent = '0';
         document.getElementById('totalReleases').textContent = '0';
         document.getElementById('totalReunioes').textContent = '0';
+        document.getElementById('totalVisitas').textContent = '0';
         document.getElementById('averageRatingHome').textContent = '0.0';
+    }
+}
+
+// Função para carregar total de visitas da API do Supabase de visitas
+async function loadTotalVisitas() {
+    try {
+        // Usar o cliente Supabase de visitas já configurado
+        if (!visitasClient) {
+            console.error('Cliente Supabase de visitas não está disponível');
+            dashboardData.totalVisitas = 0;
+            return;
+        }
+
+        const { data, error, count } = await visitasClient
+            .from('mapa_viagens')
+            .select('id', { count: 'exact', head: true });
+
+        if (error) {
+            console.error('Erro ao buscar total de visitas:', error);
+            dashboardData.totalVisitas = 0;
+        } else {
+            dashboardData.totalVisitas = count || 0;
+        }
+    } catch (error) {
+        console.error('Erro na função loadTotalVisitas:', error);
+        dashboardData.totalVisitas = 0;
     }
 }
 
@@ -8783,7 +8812,7 @@ async function loadRecentActivities() {
                     color: '#4fc3f7',
                     title: 'Novo Cliente',
                     description: client.name,
-                    date: new Date(client.created_at),
+                    date: client.created_at, // string ISO
                     action: () => showTab('clients')
                 });
             });
@@ -8798,7 +8827,7 @@ async function loadRecentActivities() {
                     color: '#66bb6a',
                     title: 'Homologação',
                     description: `${homol.versao} - ${homol.especialista}`,
-                    date: new Date(homol.data_liberacao),
+                    date: homol.data_liberacao, // string ISO
                     action: () => showTab('homologacao')
                 });
             });
@@ -8813,7 +8842,7 @@ async function loadRecentActivities() {
                     color: '#ff7043',
                     title: 'Release',
                     description: `${release.sistema} ${release.versao}`,
-                    date: new Date(release.data_liberacao),
+                    date: release.data_liberacao, // string ISO
                     action: () => showTab('release')
                 });
             });
@@ -8831,13 +8860,13 @@ async function loadRecentActivities() {
                     let horaStr = horarioReuniao;
                     // Se data estiver no formato ISO, junta corretamente
                     if (/^\d{4}-\d{2}-\d{2}/.test(dataStr) && /^\d{2}:\d{2}/.test(horaStr)) {
-                        dataHora = new Date(dataStr + 'T' + horaStr);
+                        dataHora = dataStr + 'T' + horaStr;
                     } else {
                         // fallback: só data
-                        dataHora = new Date(dataStr);
+                        dataHora = dataStr;
                     }
                 } else {
-                    dataHora = new Date(dataReuniao);
+                    dataHora = dataReuniao;
                 }
                 activities.push({
                     type: 'reuniao',
@@ -8845,15 +8874,19 @@ async function loadRecentActivities() {
                     color: '#ab47bc',
                     title: 'Reunião',
                     description: `${reuniao.tipo} - ${reuniao.cliente}`,
-                    date: dataHora,
+                    date: dataHora, // string ISO
                     action: () => showTab('reunioes')
                 });
             });
         }
 
-        // Ordenar 
-        activities.sort((a, b) => b.date - a.date);
-        activities = activities.slice(0, 10); 
+        // Ordenar por data/hora decrescente (mais recente primeiro)
+        activities.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return dateB - dateA;
+        });
+        activities = activities.slice(0, 10);
 
         // Renderizar atividades
         if (activities.length === 0) {
@@ -8864,18 +8897,35 @@ async function loadRecentActivities() {
                 </div>
             `;
         } else {
-            activitiesList.innerHTML = activities.map(activity => `
+            activitiesList.innerHTML = activities.map(activity => {
+                let dataFormatada = 'Não informada';
+                let hora = '';
+                if (activity.date) {
+                    try {
+                        dataFormatada = formatDateOnlyBR(activity.date);
+                        if (activity.date.length > 10 && activity.date.includes('T')) {
+                            const d = new Date(activity.date);
+                            if (!isNaN(d.getTime())) {
+                                hora = ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                            }
+                        }
+                    } catch (e) {
+                        dataFormatada = 'Não informada';
+                    }
+                }
+                return `
                 <div class="activity-item" style="background: rgba(179, 229, 252, 0.95); border-left: 4px solid ${activity.color}; padding: 16px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;" onclick="(${activity.action.toString()})()">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div style="font-size: 1.5em;">${activity.icon}</div>
                         <div style="flex: 1;">
                             <div style="font-weight: bold; color: #000; margin-bottom: 4px;">${activity.title}</div>
                             <div style="color: #333; margin-bottom: 4px;">${activity.description}</div>
-                            <div style="font-size: 0.85em; color: #666;">${activity.date.toLocaleDateString('pt-BR')} às ${activity.date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+                            <div style="font-size: 0.85em; color: #666;">${dataFormatada}${hora}</div>
                         </div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
     } catch (error) {
@@ -12187,7 +12237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-  window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+  //window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -14787,11 +14837,11 @@ function renderizarImplantacoes(implantacoes) {
                     </div>
                     <div style="min-width: 0;">
                         <strong style="color: #4fc3f7;">Data de Início:</strong><br>
-                        <span style="color: #333;">${formatDateForDisplay(implantacao.data_inicio)}</span>
+                        <span style="color: #333;">${formatDateOnlyBR(implantacao.data_inicio)}</span>
                     </div>
                     <div style="min-width: 0;">
                         <strong style="color: #4fc3f7;">Data de Término:</strong><br>
-                        <span style="color: #333;">${formatDateForDisplay(implantacao.data_termino)}</span>
+                        <span style="color: #333;">${formatDateOnlyBR(implantacao.data_termino)}</span>
                     </div>
                     <div style="min-width: 0;">
                         <strong style="color: #4fc3f7;">Tickets Pendentes:</strong><br>
@@ -15596,8 +15646,8 @@ function renderizarVisitasPainel(visitas) {
     }
 
     visitas.forEach(visita => {
-        const dataInicio = visita.data_inicio ? formatDateForDisplay(visita.data_inicio) : 'Não informada';
-        const dataFim = visita.data_fim ? formatDateForDisplay(visita.data_fim) : 'Não informada';
+    const dataInicio = visita.data_inicio ? formatDateTimeForDisplay(visita.data_inicio) : 'Não informada';
+    const dataFim = visita.data_fim ? formatDateTimeForDisplay(visita.data_fim) : 'Não informada';
         const statusClass = getStatusClassVisitas(visita.status);
         
         const visitaElement = document.createElement('div');
