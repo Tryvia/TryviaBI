@@ -737,12 +737,10 @@ function formatDateOnlyBR(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR');
 }
-                        <div>
-                            <span style="color: #333;">${formatDateOnlyBR(implantacao.data_inicio)}</span>
-                            <span style="color: #333;">${formatDateOnlyBR(implantacao.data_termino)}</span>
-                        </div>
-    const dataInicio = visita.data_inicio ? formatDateOnlyBR(visita.data_inicio) : 'Não informada';
-    const dataFim = visita.data_fim ? formatDateOnlyBR(visita.data_fim) : 'Não informada';
+
+// Exemplo de uso da função formatDateOnlyBR:
+// const dataInicio = visita.data_inicio ? formatDateOnlyBR(visita.data_inicio) : 'Não informada';
+// const dataFim = visita.data_fim ? formatDateOnlyBR(visita.data_fim) : 'Não informada';
 
 let teamMembers = []; // Variável global para armazenar os membros da equipe
 
@@ -8481,16 +8479,6 @@ const { data, error } = await query;
     agrupado[cli].push(r);
   });
 
-function populateReuniaoClientes() {
-  const select = document.getElementById('reuniaoCliente');
-  if (!select) return;
-  select.innerHTML = '<option value="">Selecione um cliente...</option>';
-  if (!window.clients || !Array.isArray(window.clients)) return;
-  window.clients.forEach(c => {
-    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-  });
-}
-
   // Filtros ativos
   const filtroCliente = document.getElementById("filtroReuniaoCliente")?.value?.toLowerCase() || "";
   const filtroParticipante = document.getElementById("filtroReuniaoParticipante")?.value?.toLowerCase() || "";
@@ -13322,7 +13310,10 @@ async function salvarEdicaoUsuario(event) {
 }
 
 // Adicionar event listener para o formulário de edição
-document.getElementById('formEditarUsuario2').addEventListener('submit', salvarEdicaoUsuario);
+const formEditarUsuario2 = document.getElementById('formEditarUsuario2');
+if (formEditarUsuario2) {
+    formEditarUsuario2.addEventListener('submit', salvarEdicaoUsuario);
+}
 
 // Event listeners para permissões
 document.addEventListener('DOMContentLoaded', function() {
