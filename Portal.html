@@ -4616,6 +4616,8 @@ select {
 <input id="clientEmail" placeholder="email@exemplo.com" type="email"/>
                 <label for="clientPhone" style="margin-top: 15px;">Telefone</label>
                 <input id="clientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
+                <label for="clientCNPJ" style="margin-top: 15px;">CNPJ</label>
+                <input id="clientCNPJ" placeholder="00.000.000/0000-00" type="text"/>
                 <label for="clientStatus" style="margin-top: 15px;">Status do Cliente</label>
                 <select id="clientStatus">
                     <option value="Cliente Ativo">Cliente Ativo</option>
@@ -4717,6 +4719,8 @@ select {
 <input id="editClientEmail" placeholder="email@exemplo.com" type="email"/>
                 <label for="editClientPhone" style="margin-top: 15px;">Telefone</label>
                 <input id="editClientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
+                <label for="editClientCNPJ" style="margin-top: 15px;">CNPJ</label>
+                <input id="editClientCNPJ" placeholder="00.000.000/0000-00" type="text"/>
                 <label for="editClientStatus" style="margin-top: 15px;">Status do Cliente</label>
                 <select id="editClientStatus">
                     <option value="2">Cliente Ativo</option>
@@ -6677,6 +6681,7 @@ function addEditProduct() {
             const name = document.getElementById('clientName').value;
             const email = document.getElementById('clientEmail').value;
             const phone = document.getElementById('clientPhone').value;
+            const cnpj = document.getElementById('clientCNPJ').value;
             const status = document.getElementById('clientStatus').value;
             const group_id = document.getElementById("clientGroup").value;
             const subgroup_id = document.getElementById("clientSubgroup").value;
@@ -6727,7 +6732,7 @@ function addEditProduct() {
                 const { data: clientData, error: clientError } = await releaseClient
                     .from('clients')
                     .insert([
-                        { name, email, phone, status_id, group_id, subgroup_id, logo_id: logoId, bi_link: biLink }
+                        { name, email, phone, cnpj, status_id, group_id, subgroup_id, logo_id: logoId, bi_link: biLink }
                     ])
                     .select('id')
                     .single();
@@ -6755,6 +6760,7 @@ function addEditProduct() {
                 document.getElementById('clientName').value = '';
                 document.getElementById('clientEmail').value = '';
                 document.getElementById('clientPhone').value = '';
+                document.getElementById('clientCNPJ').value = '';
                 document.getElementById('clientStatus').value = 'Cliente Ativo';
                 document.getElementById('clientGroup').value = 'Nenhum';
                 document.getElementById('clientSubgroup').value = 'Nenhum';
@@ -6963,6 +6969,7 @@ async function editClient(clientId) {
     document.getElementById('editClientName').value = clientToEdit.name;
     document.getElementById('editClientEmail').value = clientToEdit.email;
     document.getElementById('editClientPhone').value = clientToEdit.phone;
+    document.getElementById('editClientCNPJ').value = clientToEdit.cnpj || '';
     document.getElementById('editClientStatus').value = clientToEdit.status || 'Cliente Ativo';
     document.getElementById('editClientGroup').value = clientToEdit.group || 'Nenhum';
     document.getElementById('editClientSubgroup').value = clientToEdit.subgroup || 'Nenhum';
@@ -6993,6 +7000,7 @@ async function editClient(clientId) {
             const name = document.getElementById('editClientName').value;
             const email = document.getElementById('editClientEmail').value;
             const phone = document.getElementById('editClientPhone').value;
+            const cnpj = document.getElementById('editClientCNPJ').value;
             let status_id = document.getElementById("editClientStatus").value;
             let group_id = document.getElementById('editClientGroup').value;
             let subgroup_id = document.getElementById('editClientSubgroup').value;
@@ -7041,20 +7049,21 @@ async function editClient(clientId) {
                 }
             }
 
-            const { error: clientError } = await releaseClient
-                .from('clients')
-                .update({
-    name,
-    email,
-    phone,
-    status_id,
-    group_id,
-    subgroup_id,
+                        const { error: clientError } = await releaseClient
+                                .from('clients')
+                                .update({
+        name,
+        email,
+        phone,
+        cnpj,
+        status_id,
+        group_id,
+        subgroup_id,
 
-    logo_path: logoPath, // Atualiza o caminho do arquivo
-    bi_link: biLink
-  })
-                .eq('id', clientId);
+        logo_path: logoPath, // Atualiza o caminho do arquivo
+        bi_link: biLink
+    })
+                                .eq('id', clientId);
 
             if (clientError) {
                 console.error('Erro ao atualizar cliente no banco de dados:', clientError.message);
