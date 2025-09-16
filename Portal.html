@@ -6685,8 +6685,7 @@ function addEditProduct() {
             const status = document.getElementById('clientStatus').value;
             let group_id = document.getElementById("clientGroup").value;
             let subgroup_id = document.getElementById("clientSubgroup").value;
-            group_id = group_id === "" ? null : Number(group_id);
-            subgroup_id = subgroup_id === "" ? null : Number(subgroup_id);
+
             const biLink = document.getElementById('clientBiLink').value;
 
             let logoId = null;
@@ -7019,10 +7018,11 @@ async function editClient(clientId) {
             const cnpj = document.getElementById('editClientCNPJ').value;
             let status_val = document.getElementById("editClientStatus").value;
             let group_id = document.getElementById('editClientGroup').value;
-            let subgroup_id = document.getElementById('editClientSubgroup').value;
+            let subgroup_id = document.getElementById("editClientSubgroup").value;
             // Normaliza group/subgroup
             group_id = group_id === "" ? null : Number(group_id);
             subgroup_id = subgroup_id === "" ? null : Number(subgroup_id);
+
             // Resolve status_id: pode ser já um id numérico ou um nome
             let status_id = null;
             if (status_val && status_val !== '') {
@@ -7044,8 +7044,7 @@ async function editClient(clientId) {
             } else {
                 status_id = null;
             }
-            group_id = group_id === "" ? null : Number(group_id);
-            subgroup_id = subgroup_id === "" ? null : Number(subgroup_id);
+
             const biLink = document.getElementById('editClientBiLink').value;
             const logoFileInput = document.getElementById('editClientLogo');
             const newLogoFile = logoFileInput.files[0];
