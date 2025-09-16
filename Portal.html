@@ -3858,7 +3858,7 @@ select {
 
 <h1>Portal - Tryvia</h1>
 <div class="profile-info">
-<img alt="Profile Picture" src="tryvia.png"/>
+<img id="profilePictureDisplay" alt="Profile Picture" src="tryvia.png"/>
 <span><span id="nomeUsuario">Usuário</span></span>
 </div>
 </header>
@@ -5344,6 +5344,10 @@ select {
             <div class="form-group">
                 <label for="usuarioEmail">Email</label>
                 <input type="email" id="usuarioEmail" placeholder="Digite o email do usuário">
+            </div>
+            <div class="form-group">
+                <label for="usuarioProfilePicture">Foto de Perfil</label>
+                <input type="file" id="usuarioProfilePicture" accept="image/*">
             </div>
         </div>
         <div class="form-row">
@@ -10898,10 +10902,6 @@ async function excluirProjeto(projetoId) {
 }
 </script>
 
-</body>
-    </script>
-</body>
-</html>
 
 
 <script>
@@ -12395,7 +12395,9 @@ async function adicionarUsuario() {
                 email: email,
                 senha: senha, 
                 permissoes: permissoes,
-                setor: setor
+                setor: setor,
+                profile_picture_url: profilePictureUrl,
+                profile_picture_path: profilePicturePath
             }])
             .select();
 
@@ -16022,6 +16024,11 @@ window.mostrarLocalizacao = mostrarLocalizacao;
                         <div class="password-match" id="passwordMatch"></div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="editProfilePicture">Foto de Perfil:</label>
+                        <input type="file" id="editProfilePicture" accept="image/*">
+                    </div>
+
                     <div class="checkbox-group">
                         <input type="checkbox" id="forcarTrocaSenha">
                         <label for="forcarTrocaSenha">Forçar troca de senha no próximo login</label>
@@ -16858,9 +16865,30 @@ async function salvarAlteracoesUsuario() {
         return;
     }
 
-    const novaSenha = document.getElementById('novaSenha').value;
-    const confirmarSenha = document.getElementById('confirmarSenha').value;
-    const forcarTroca = document.getElementById('forcarTrocaSenha').checked;
+const novaSenha = document.getElementById('novaSenha').value;
+const confirmarSenha = document.getElementById('confirmarSenha').value;
+const forcarTroca = document.getElementById('forcarTrocaSenha').checked;
+    const profilePictureFile = document.getElementById('editProfilePicture').files[0];
+
+    let profilePictureUrl = usuarioAtualEditando.profile_picture_url;
+    let profilePicturePath = usuarioAtualEditando.profile_picture_path;
+
+    if (profilePictureFile) {
+        const uploadResult = await uploadProfilePicture(profilePictureFile);
+        if (uploadResult.url) {
+            profilePictureUrl = uploadResult.url;
+            profilePicturePath = uploadResult.path;
+            // Se houver uma imagem antiga, tentar removê-la
+            if (usuarioAtualEditando.profile_picture_path) {
+                const { error: deleteError } = await supabase.storage
+                    .from('profile_pictures')
+                    .remove([usuarioAtualEditando.profile_picture_path]);
+                if (deleteError) {
+                    console.warn('Erro ao deletar foto de perfil antiga:', deleteError.message);
+                }
+            }
+        }
+    }
 
     // Validações
     if (novaSenha && novaSenha !== confirmarSenha) {
@@ -16881,7 +16909,9 @@ async function salvarAlteracoesUsuario() {
     try {
         // Preparar dados para atualização
         const dadosAtualizacao = {
-            permissoes: usuarioAtualEditando.permissoes
+            permissoes: usuarioAtualEditando.permissoes,
+            profile_picture_url: profilePictureUrl,
+            profile_picture_path: profilePicturePath
         };
 
         // Incluir senha apenas se foi fornecida
@@ -16956,6 +16986,86 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+
+
+    // Função para fazer upload da imagem de perfil para o Supabase Storage
+    async function uploadProfilePicture(file) {
+        if (!file) return { url: null, path: null };
+
+        const filePath = `profile_pictures/${Date.now()}_${file.name}`;
+        const { data, error } = await supabase.storage
+            .from('profile_pictures')
+            .upload(filePath, file);
+
+        if (error) {
+            console.error('Erro ao fazer upload da imagem de perfil:', error.message);
+            showAlert('Erro', 'Erro ao fazer upload da imagem de perfil.');
+            return { url: null, path: null };
+        }
+
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/profile_pictures/${filePath}`;
+        return { url: publicUrl, path: filePath };
+    }
+
+    // Função para atualizar a URL da imagem de perfil no banco de dados do usuário
+    async function updateUserProfilePicture(userId, profilePictureUrl, profilePicturePath) {
+        const { error } = await supabase
+            .from('users') // Assumindo que você tem uma tabela 'users' para armazenar informações do usuário
+            .update({ profile_picture_url: profilePictureUrl, profile_picture_path: profilePicturePath })
+            .eq('id', userId);
+
+        if (error) {
+            console.error('Erro ao atualizar a imagem de perfil do usuário no banco de dados:', error.message);
+            showAlert('Erro', 'Erro ao atualizar a imagem de perfil do usuário.');
+            return false;
+        }
+        return true;
+    }
+
+    
+
+
+
+
+
+
+    async function loadUserProfilePicture() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const { data, error } = await supabase
+                .from('usuarios')
+                .select('profile_picture_url')
+                .eq('email', user.email)
+                .single();
+
+            if (error) {
+                console.error('Erro ao carregar foto de perfil:', error.message);
+                return;
+            }
+
+            const profilePictureDisplay = document.getElementById('profilePictureDisplay');
+            if (profilePictureDisplay && data && data.profile_picture_url) {
+                profilePictureDisplay.src = data.profile_picture_url;
+            } else if (profilePictureDisplay) {
+                profilePictureDisplay.src = 'tryvia.png'; // Imagem padrão se não houver foto
+            }
+        }
+    }
+
+    // Chamar a função ao carregar a página
+    document.addEventListener('DOMContentLoaded', loadUserProfilePicture);
+
+    // Chamar a função após o login (exemplo, ajuste conforme sua lógica de login)
+    // Por exemplo, se você tiver uma função de login que é chamada após o sucesso:
+    // async function handleLoginSuccess() {
+    //     await loadUserProfilePicture();
+    //     // ... outras ações de login
+    // }
+
+
+
 </script>
 
 </body>
