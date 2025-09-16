@@ -12715,6 +12715,50 @@ window.showTab = function(tabId) {
     }
 };
 </script>
+<script>
+// Função para carregar a foto de perfil do usuário logado
+async function loadProfilePicture() {
+    const profilePictureDisplay = document.getElementById("profilePictureDisplay");
+    if (!profilePictureDisplay) {
+        console.warn("Elemento #profilePictureDisplay não encontrado.");
+        return;
+    }
+
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (!userEmail) {
+        console.log("Nenhum usuário logado encontrado. Usando imagem padrão.");
+        profilePictureDisplay.src = "tryvia.png";
+        return;
+    }
+
+    try {
+        const { data, error } = await releaseClient
+            .from("usuarios")
+            .select("profile_picture_url")
+            .eq("email", userEmail)
+            .single();
+
+        if (error) {
+            console.error("Erro ao buscar foto de perfil:", error.message);
+            profilePictureDisplay.src = "tryvia.png";
+            return;
+        }
+
+        if (data && data.profile_picture_url) {
+            profilePictureDisplay.src = data.profile_picture_url;
+        } else {
+            console.log("URL da foto de perfil não encontrada para o usuário. Usando imagem padrão.");
+            profilePictureDisplay.src = "tryvia.png";
+        }
+    } catch (err) {
+        console.error("Erro inesperado ao carregar foto de perfil:", err);
+        profilePictureDisplay.src = "tryvia.png";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadProfilePicture);
+</script>
 </body>
 
 
@@ -17068,5 +17112,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
-</body>
-</html>
+
+
+
+<script>
+// Função para carregar a foto de perfil do usuário logado
+async function loadProfilePicture() {
+    const profilePictureDisplay = document.getElementById("profilePictureDisplay");
+    if (!profilePictureDisplay) {
+        console.warn("Elemento #profilePictureDisplay não encontrado.");
+        return;
+    }
+
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (!userEmail) {
+        console.log("Nenhum usuário logado encontrado. Usando imagem padrão.");
+        profilePictureDisplay.src = "tryvia.png";
+        return;
+    }
+
+    try {
+        const { data, error } = await releaseClient
+            .from("usuarios")
+            .select("profile_picture_url")
+            .eq("email", userEmail)
+            .single();
+
+        if (error) {
+            console.error("Erro ao buscar foto de perfil:", error.message);
+            profilePictureDisplay.src = "tryvia.png";
+            return;
+        }
+
+        if (data && data.profile_picture_url) {
+            profilePictureDisplay.src = data.profile_picture_url;
+        } else {
+            console.log("URL da foto de perfil não encontrada para o usuário. Usando imagem padrão.");
+            profilePictureDisplay.src = "tryvia.png";
+        }
+    } catch (err) {
+        console.error("Erro inesperado ao carregar foto de perfil:", err);
+        profilePictureDisplay.src = "tryvia.png";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadProfilePicture);
+</script>
+
+
