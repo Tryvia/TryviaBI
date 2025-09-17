@@ -6840,8 +6840,9 @@ async function fetchAndRenderClients() {
                 return;
             }
 
-          clients = data;       
-window.clients = clients || []; 
+          // Ordena os clientes por ordem alfabética antes de atribuir
+          clients = data.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));       
+          window.clients = clients || []; 
 atualizarMetricasClientes();
 if (clients.length === 0) {
     container.innerHTML = `
