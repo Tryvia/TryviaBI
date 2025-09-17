@@ -665,7 +665,7 @@
                     </div>
                 </div>
                 <div class="date-info">
-                    <div contenteditable="true" class="editable">Maio / 2025</div>
+                    <input type="month" id="mesAno" class="editable" value="2025-05" style="border: none; background: transparent; font-size: 14px; color: #666; cursor: pointer;">
                 </div>
             </div>
             
@@ -1140,6 +1140,7 @@
                     document.getElementById("homologacoes").innerText = data.homologacoes || 0;
                     document.getElementById("projetos").innerText = data.projetos || 0;
                     document.getElementById("performance").innerText = data.performance || "0%";
+                    document.getElementById("mesAno").value = data.mes_ano || "2025-05";
                     
                     const tbody = document.querySelector("#projectsTable tbody");
                     tbody.innerHTML = "";
@@ -1198,6 +1199,7 @@
                 const reunioes = parseInt(document.getElementById("reunioes").innerText);
                 const homologacoes = parseInt(document.getElementById("homologacoes").innerText);
                 const performance = document.getElementById("performance").innerText;
+                const mesAno = document.getElementById("mesAno").value;
 
                 // Coletar projetos da tabela
                 const projetos = [];
@@ -1237,6 +1239,7 @@
                     homologacoes: homologacoes,
                     projetos: projetos.length,
                     performance: performance,
+                    mes_ano: mesAno,
                     projetos_lista: projetos,
                     acompanhamentos: acompanhamentos,
                     mvp: mvp
