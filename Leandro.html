@@ -25,10 +25,10 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 250px 1fr;
             gap: 20px;
             height: 100vh;
         }
@@ -203,7 +203,7 @@
         
         .content-grid {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 500px;
             gap: 20px;
             flex: 1;
         }
@@ -234,7 +234,7 @@
         
         .projects-table th {
             background: #f8f9fa;
-            padding: 15px;
+            padding: 18px 15px;
             text-align: left;
             font-weight: bold;
             color: #333;
@@ -242,8 +242,9 @@
         }
         
         .projects-table td {
-            padding: 12px 15px;
+            padding: 18px 15px;
             border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
         }
         
         .projects-table tr:hover {
@@ -265,6 +266,346 @@
         .tag-rio { background: #e0f2f1; color: #00695c; }
         .tag-transmoretti { background: #fce4ec; color: #ad1457; }
         .tag-top { background: #e8eaf6; color: #3f51b5; }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-concluido { background: #d4edda; color: #155724; }
+        .status-andamento { background: #d1ecf1; color: #0c5460; }
+        .status-pendente { background: #fff3cd; color: #856404; }
+        .status-pausado { background: #f8d7da; color: #721c24; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .refresh-button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+        
+        .refresh-button:hover {
+            background: #357abd;
+        }
+        
+        .refresh-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .project-details {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .gestor-info {
+            font-size: 11px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .sistema-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .mvp-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .mvp-item:hover {
+            background: #e9ecef;
+            border-color: #4a90e2;
+        }
+        
+        .mvp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .mvp-empresa {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .mvp-status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .mvp-details {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .mvp-sistema {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .mvp-resumo {
+            font-size: 11px;
+            color: #555;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .acomp-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .acomp-item:hover {
+            background: #e9ecef;
+            border-color: #4a90e2;
+        }
+        
+        .acomp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .acomp-cliente {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .acomp-tipo {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .tipo-implantacao { background: #e3f2fd; color: #1565c0; }
+        .tipo-suporte { background: #fff3e0; color: #ef6c00; }
+        .tipo-treinamento { background: #e8f5e8; color: #2e7d32; }
+        .tipo-manutencao { background: #fce4ec; color: #ad1457; }
+        
+        .acomp-details {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .acomp-projeto {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .acomp-tickets {
+            background: #ffebee;
+            color: #c62828;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .acomp-resumo {
+            font-size: 11px;
+            color: #555;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .acomp-setor {
+            background: #e0f2f1;
+            color: #00695c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        /* Estilo para container de acompanhamentos com rolamento */
+        .acompanhamentos-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 15px;
+        }
+        
+        /* Estilo personalizado para a barra de rolamento */
+        .acompanhamentos-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .acompanhamentos-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .acompanhamentos-container::-webkit-scrollbar-thumb {
+            background: #4a90e2;
+            border-radius: 3px;
+        }
+        
+        .acompanhamentos-container::-webkit-scrollbar-thumb:hover {
+            background: #357abd;
+        }
+        
+        /* Estilo para container de MVPs com rolamento */
+        .mvps-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .mvps-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .mvps-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .mvps-container::-webkit-scrollbar-thumb {
+            background: #4a90e2;
+            border-radius: 3px;
+        }
+        
+        .mvps-container::-webkit-scrollbar-thumb:hover {
+            background: #357abd;
+        }
+        
+        /* Estilo específico para a tabela de implantações */
+        #implantacoes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #implantacoes-table th {
+            background: #f8f9fa;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        #implantacoes-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+        
+        #implantacoes-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Estilo para container de implantações com rolamento */
+        .implantacoes-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 15px;
+        }
+        
+        /* Estilo personalizado para a barra de rolamento das implantações */
+        .implantacoes-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .implantacoes-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .implantacoes-container::-webkit-scrollbar-thumb {
+            background: #4a90e2;
+            border-radius: 3px;
+        }
+        
+        .implantacoes-container::-webkit-scrollbar-thumb:hover {
+            background: #357abd;
+        }
         
         .bottom-sections {
             display: grid;
@@ -672,43 +1013,98 @@
             <div class="content-grid">
                 <div class="left-panel">
                     <div class="projects-section">
-                        <h2>Implantações e Projetos</h2>
-                        <table class="projects-table" id="projectsTable">
-                            <thead>
-                                <tr>
-                                    <th>Projetos</th>
-                                    <th>Empresa</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <button class="add-button" onclick="addProject()">+ Adicionar Projeto</button>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2>Implantações</h2>
+                                              <button class="refresh-button" onclick="carregarImplantacoes()" id="refresh-btn">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                    
+                    <div id="loading-message" class="loading" style="display: none;">
+                        <i class="fas fa-spinner"></i>
+                        <p>Carregando implantações...</p>
+                    </div>
+                    
+                    <div id="error-message" class="error" style="display: none;"></div>
+                    
+                    <div class="implantacoes-container">
+                        <div class="table-container">
+                            <table id="implantacoes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Empresa</th>
+                                        <th>Projetos</th>
+                                        <th>Sistema</th>
+                                        <th>%</th>
+                                        <th>Data de Início</th>
+                                        <th>Data Fim (Previsão)</th>
+                                        <th>Status</th>
+                                        <th>Gestor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projects-tbody">
+                                    <!-- Os dados serão carregados aqui via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     </div>
                     
                     <div class="bottom-sections">
                         <div class="info-section">
-                            <h3>Acompanhamentos</h3>
-                            <ul id="acompanhamentos">
-                            </ul>
-                            <button class="add-button" onclick="addAcompanhamento()">+ Adicionar</button>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h3>Acompanhamentos</h3>
+                                <button class="refresh-button" onclick="carregarAcompanhamentos()" id="refresh-acomp-btn" style="padding: 5px 10px; font-size: 12px;">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                            
+                            <div id="loading-acomp-message" class="loading" style="display: none; padding: 20px;">
+                                <i class="fas fa-spinner" style="font-size: 16px;"></i>
+                                <p style="font-size: 12px;">Carregando acompanhamentos...</p>
+                            </div>
+                            
+                            <div id="error-acomp-message" class="error" style="display: none; font-size: 12px;"></div>
+                            
+                            <div class="acompanhamentos-container">
+                                <ul id="acompanhamentos">
+                                    <!-- Os dados serão carregados aqui via JavaScript -->
+                                </ul>
+                            </div>
                         </div>
                         
                         <div class="info-section mvp-section">
-                            <h3>MVP</h3>
-                            <ul id="mvp">
-                            </ul>
-                            <button class="add-button" onclick="addMVP()">+ Adicionar</button>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h3>MVPs</h3>
+                                <button class="refresh-button" onclick="carregarMVPs()" id="refresh-mvp-btn" style="padding: 5px 10px; font-size: 12px;">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                            
+                            <div id="loading-mvp-message" class="loading" style="display: none; padding: 20px;">
+                                <i class="fas fa-spinner" style="font-size: 16px;"></i>
+                                <p style="font-size: 12px;">Carregando MVPs...</p>
+                            </div>
+                            
+                            <div id="error-mvp-message" class="error" style="display: none; font-size: 12px;"></div>
+                            
+                            <div class="mvps-container">
+                                <ul id="mvp">
+                                    <!-- Os dados serão carregados aqui via JavaScript -->
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="right-panel">
                     <div class="visits-section">
-                        <h2>Visitas</h2>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2>Visitas</h2>
+                            <button class="refresh-button" onclick="carregarVisitasRenata()" id="refresh-visitas-btn" style="padding: 5px 10px; font-size: 12px;">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                        </div>
                         <div class="map-container">
                             
 <div class="brazil-map">
@@ -726,9 +1122,6 @@
     
 <div class="map-legend">
     <div><strong>Total de Empresas:</strong> <span id="empresasCount">0</span></div>
-    <button class="add-button" onclick="addClient()">+ Cliente</button>
-    <button class="add-button" onclick="salvarVisitas()" style="margin-top: 10px; background-color: #007bff;">💾 Salvar Visitas</button>
-</div>
 </div>
 
                         </div>
@@ -759,6 +1152,339 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 4000);
+        }
+        
+        // Função para formatar data
+        function formatDate(dateString) {
+            if (!dateString) return 'Data não informada';
+            return new Date(dateString).toLocaleDateString('pt-BR');
+        }
+        
+        // Função para obter cor do status
+        function getStatusClass(status) {
+            if (!status) return 'status-pendente';
+            
+            const statusLower = status.toLowerCase();
+            if (statusLower.includes('concluído') || statusLower.includes('concluido') || statusLower.includes('finalizado')) {
+                return 'status-concluido';
+            } else if (statusLower.includes('andamento')) {
+                return 'status-andamento';
+            } else if (statusLower.includes('pendente')) {
+                return 'status-pendente';
+            } else if (statusLower.includes('pausado')) {
+                return 'status-pausado';
+            }
+            return 'status-pendente';
+        }
+        
+        // Função para obter classe do tipo
+        function getTipoClass(tipo) {
+            if (!tipo) return 'tipo-implantacao';
+            
+            const tipoLower = tipo.toLowerCase();
+            if (tipoLower.includes('implantacao') || tipoLower.includes('implantação')) {
+                return 'tipo-implantacao';
+            } else if (tipoLower.includes('suporte')) {
+                return 'tipo-suporte';
+            } else if (tipoLower.includes('treinamento')) {
+                return 'tipo-treinamento';
+            } else if (tipoLower.includes('manutencao') || tipoLower.includes('manutenção')) {
+                return 'tipo-manutencao';
+            }
+            return 'tipo-implantacao';
+        }
+        
+        // Função principal para carregar acompanhamentos da Renata Braga
+        async function carregarAcompanhamentos() {
+            const loadingMessage = document.getElementById('loading-acomp-message');
+            const errorMessage = document.getElementById('error-acomp-message');
+            const refreshBtn = document.getElementById('refresh-acomp-btn');
+            const acompList = document.getElementById('acompanhamentos');
+            
+            try {
+                // Mostrar loading
+                loadingMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                refreshBtn.disabled = true;
+                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                // Configuração do Supabase (API diferente)
+                const SUPABASE_URL = "https://mzjdmhgkrroajmsfwryu.supabase.co";
+                const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc";
+                
+                // Verificar se o Supabase está disponível
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Biblioteca Supabase não carregada');
+                }
+                
+                const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                
+                // Buscar dados do Supabase
+                const { data, error } = await supabaseClient
+                    .from('status_projetos')
+                    .select('*')
+                    .eq('especialista', 'Leandro Gomes')
+                    .order('data', { ascending: false });
+
+                if (error) {
+                    throw error;
+                }
+
+                // Limpar lista
+                acompList.innerHTML = '';
+                
+                if (!data || data.length === 0) {
+                    acompList.innerHTML = `
+                        <li style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+                            <i class="fas fa-inbox" style="font-size: 24px; margin-bottom: 5px; display: block;"></i>
+                            Nenhum acompanhamento encontrado para Leandro Gomes
+                        </li>
+                    `;
+                } else {
+                    // Preencher lista com dados
+                    data.forEach(acomp => {
+                        const li = document.createElement('li');
+                        li.className = 'acomp-item';
+                        li.style.listStyle = 'none';
+                        
+                        const tipoClass = getTipoClass(acomp.tipo);
+                        
+                        li.innerHTML = `
+                            <div class="acomp-header">
+                                <div class="acomp-cliente">${acomp.cliente || 'Cliente não informado'}</div>
+                                <span class="acomp-tipo ${tipoClass}">
+                                    ${acomp.tipo || 'Tipo não informado'}
+                                </span>
+                            </div>
+                            <div class="acomp-details">
+                                <span class="acomp-projeto">${acomp.projeto || 'Projeto não informado'}</span>
+                                ${acomp.tickets ? `<span class="acomp-tickets">${acomp.tickets} tickets</span>` : ''}
+                                ${acomp.tickets_pendentes ? `<span class="acomp-tickets">${acomp.tickets_pendentes} pendentes</span>` : ''}
+                                ${acomp.setor ? `<span class="acomp-setor">${acomp.setor}</span>` : ''}
+                                <div style="font-size: 10px; color: #888; margin-top: 4px;">
+                                    ${formatDate(acomp.data)}
+                                    ${acomp.data_inicio && acomp.data_termino ? 
+                                        ` | ${formatDate(acomp.data_inicio)} - ${formatDate(acomp.data_termino)}` : ''}
+                                </div>
+                            </div>
+                            ${acomp.resumo ? `<div class="acomp-resumo">${acomp.resumo}</div>` : ''}
+                        `;
+                        
+                        acompList.appendChild(li);
+                    });
+                    
+                    showNotification(`${data.length} acompanhamentos carregados com sucesso!`, 'success');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar acompanhamentos:', error);
+                errorMessage.textContent = `Erro ao carregar acompanhamentos: ${error.message}`;
+                errorMessage.style.display = 'block';
+                showNotification('Erro ao carregar acompanhamentos', 'error');
+            } finally {
+                loadingMessage.style.display = 'none';
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+            }
+        }
+        
+        // Função principal para carregar MVPs da Renata Braga
+        async function carregarMVPs() {
+            const loadingMessage = document.getElementById('loading-mvp-message');
+            const errorMessage = document.getElementById('error-mvp-message');
+            const refreshBtn = document.getElementById('refresh-mvp-btn');
+            const mvpList = document.getElementById('mvp');
+            
+            try {
+                // Mostrar loading
+                loadingMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                refreshBtn.disabled = true;
+                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                // Configuração do Supabase
+                const SUPABASE_URL = "https://obwgegvrtxrlombmkaej.supabase.co";
+                const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM";
+                
+                // Verificar se o Supabase está disponível
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Biblioteca Supabase não carregada');
+                }
+                
+                const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                
+                // Buscar dados do Supabase
+                const { data, error } = await supabaseClient
+                    .from('mvps')
+                    .select('*')
+                    .eq('especialista', 'Leandro Gomes')
+                    .order('data_inicio', { ascending: false });
+
+                if (error) {
+                    throw error;
+                }
+
+                // Limpar lista
+                mvpList.innerHTML = '';
+                
+                if (!data || data.length === 0) {
+                    mvpList.innerHTML = `
+                        <li style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+                            <i class="fas fa-inbox" style="font-size: 24px; margin-bottom: 5px; display: block;"></i>
+                            Nenhum MVP encontrado para Leandro Gomes
+                        </li>
+                    `;
+                } else {
+                    // Preencher lista com dados
+                    data.forEach(mvp => {
+                        const li = document.createElement('li');
+                        li.className = 'mvp-item';
+                        li.style.listStyle = 'none';
+                        
+                        const statusClass = getStatusClass(mvp.status);
+                        
+                        li.innerHTML = `
+                            <div class="mvp-header">
+                                <div class="mvp-empresa">${mvp.empresa || 'Empresa não informada'}</div>
+                                <span class="mvp-status ${statusClass}">
+                                    ${mvp.status || 'Pendente'}
+                                </span>
+                            </div>
+                            <div class="mvp-details">
+                                <span class="mvp-sistema">${mvp.sistema || 'Sistema não informado'}</span>
+                                <span style="font-size: 10px; color: #888;">
+                                    ${formatDate(mvp.data_inicio)} - ${formatDate(mvp.data_fim)}
+                                </span>
+                            </div>
+                            ${mvp.resumo ? `<div class="mvp-resumo">${mvp.resumo}</div>` : ''}
+                        `;
+                        
+                        mvpList.appendChild(li);
+                    });
+                    
+                    showNotification(`${data.length} MVPs carregados com sucesso!`, 'success');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar MVPs:', error);
+                errorMessage.textContent = `Erro ao carregar MVPs: ${error.message}`;
+                errorMessage.style.display = 'block';
+                showNotification('Erro ao carregar MVPs', 'error');
+            } finally {
+                loadingMessage.style.display = 'none';
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+            }
+        }
+        
+        // Função principal para carregar implantações da Renata Braga
+        async function carregarImplantacoes() {
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const tbody = document.getElementById('projects-tbody');
+            
+            try {
+                // Mostrar loading
+                loadingMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                refreshBtn.disabled = true;
+                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
+                
+                // Configuração do Supabase
+                const SUPABASE_URL = "https://obwgegvrtxrlombmkaej.supabase.co";
+                const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM";
+                
+                // Verificar se o Supabase está disponível
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Biblioteca Supabase não carregada');
+                }
+                
+                const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                
+                // Buscar dados do Supabase
+                const { data, error } = await supabaseClient
+                    .from('painel_implantacoes')
+                    .select('*')
+                    .eq('especialista', 'Leandro Gomes')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    throw error;
+                }
+
+                // Limpar tabela
+                tbody.innerHTML = '';
+                
+                // Aplicar rolamento apenas se houver mais de 10 implantações
+                const container = document.querySelector('.implantacoes-container');
+                if (data && data.length > 10) {
+                    container.classList.add('with-scroll');
+                } else {
+                    container.classList.remove('with-scroll');
+                }
+                
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+                                <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+                                Nenhuma implantação encontrada para Leandro Gomes
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    // Preencher tabela com dados
+                    data.forEach(implantacao => {
+                        const row = document.createElement('tr');
+                        
+                        const progressoValue = implantacao.progresso || 0;
+                        const statusClass = getStatusClass(implantacao.status);
+                        
+                        row.innerHTML = `
+                            <td>
+                                <span class="company-tag tag-viacao">${implantacao.empresa}</span>
+                            </td>
+                            <td>${implantacao.projeto}</td>
+                            <td>
+                                <span class="sistema-info">${implantacao.sistema}</span>
+                            </td>
+                            <td>
+                                <div style="min-width: 60px;">
+                                    <div style="font-size: 12px; font-weight: bold; margin-bottom: 3px;">${progressoValue}%</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${progressoValue}%"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${formatDate(implantacao.created_at)}</td>
+                            <td>${formatDate(implantacao.updated_at)}</td>
+                            <td>
+                                <span class="status-badge ${statusClass}">
+                                    ${implantacao.status || 'Pendente'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="gestor-info">${implantacao.gestor}</div>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                    });
+                    
+                    showNotification(`${data.length} implantações carregadas com sucesso!`, 'success');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar implantações:', error);
+                errorMessage.textContent = `Erro ao carregar implantações: ${error.message}`;
+                errorMessage.style.display = 'block';
+                showNotification('Erro ao carregar implantações', 'error');
+            } finally {
+                loadingMessage.style.display = 'none';
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
+            }
         }
         
         // Inicializar o mapa
@@ -839,8 +1565,14 @@
             const table = document.getElementById("projectsTable").getElementsByTagName("tbody")[0];
             const newRow = table.insertRow();
             newRow.innerHTML = `
-                <td contenteditable="true">Novo Projeto</td>
                 <td><span class="company-tag tag-gasparzinho" contenteditable="true">Nova Empresa</span></td>
+                <td contenteditable="true">Novo Projeto</td>
+                <td contenteditable="true">Sistema</td>
+                <td contenteditable="true">0%</td>
+                <td contenteditable="true">Data Início</td>
+                <td contenteditable="true">Data Fim</td>
+                <td contenteditable="true">Status</td>
+                <td contenteditable="true">Gestor</td>
                 <td><button class="remove-button" onclick="removeRow(this)">×</button></td>
             `;
         }
@@ -880,6 +1612,9 @@
                     element.style.transform = "scale(1)";
                     element.style.color = statId === "performance" ? "white" : "#333";
                 }, 300);
+                
+                // CORREÇÃO: Salvar automaticamente após editar
+                salvarModificacoes();
             }
         }
         
@@ -945,58 +1680,32 @@
                 "tocantins": { lat: -10.25, lng: -48.25 }
             };
             
-            // Procurar por correspondência exata ou parcial
-            for (const [city, coords] of Object.entries(coordinates)) {
-                if (location.toLowerCase().includes(city.toLowerCase()) || 
-                    city.toLowerCase().includes(location.toLowerCase())) {
+            const locationLower = location.toLowerCase();
+            for (const [state, coords] of Object.entries(coordinates)) {
+                if (locationLower.includes(state)) {
                     return coords;
                 }
             }
             
-            // Se não encontrar, retornar coordenadas do centro do Brasil
+            // Coordenadas padrão (centro do Brasil)
             return { lat: -14.2350, lng: -51.9253 };
         }
         
-        // Função para salvar visitas e adicionar marcadores no mapa
+        // Função para salvar visitas (mantida do código original)
         async function salvarVisitas() {
             try {
-                // Limpar marcadores existentes
-                visitMarkers.forEach(marker => {
-                    map.removeLayer(marker);
-                });
-                visitMarkers = [];
-                
-                // Obter todos os clientes
                 const clientItems = document.querySelectorAll(".client-item");
                 const clientsData = [];
                 
-                clientItems.forEach(clientItem => {
-                    const nameInput = clientItem.querySelector("input[placeholder='Nome do Cliente']") || 
-                                     clientItem.querySelector("input:first-child");
-                    const locationInput = clientItem.querySelector("input[placeholder='Local/Estado']") || 
-                                         clientItem.querySelector("input:nth-child(2)");
+                clientItems.forEach(item => {
+                    const inputs = item.querySelectorAll("input");
+                    const name = inputs[0]?.value?.trim();
+                    const location = inputs[1]?.value?.trim();
+                    const lat = parseFloat(item.dataset.lat) || -14.2350;
+                    const lng = parseFloat(item.dataset.lng) || -51.9253;
                     
-                    // Verificar se os elementos existem antes de tentar acessar suas propriedades
-                    if (nameInput && locationInput) {
-                        const name = nameInput.value.trim();
-                        const location = locationInput.value.trim();
-                        
-                        if (name && location) {
-                            // Se tem coordenadas salvas, usar elas
-                            if (clientItem.dataset.lat && clientItem.dataset.lng) {
-                                const lat = parseFloat(clientItem.dataset.lat);
-                                const lng = parseFloat(clientItem.dataset.lng);
-                                addVisitMarker(lat, lng, name, location);
-                                clientsData.push({ name, location, lat, lng });
-                            } else {
-                                // Caso contrário, usar coordenadas aproximadas baseadas no estado/local
-                                const coords = getApproximateCoordinates(location);
-                                if (coords) {
-                                    addVisitMarker(coords.lat, coords.lng, name, location);
-                                    clientsData.push({ name, location, lat: coords.lat, lng: coords.lng });
-                                }
-                            }
-                        }
+                    if (name && location) {
+                        clientsData.push({ name, location, lat, lng });
                     }
                 });
                 
@@ -1008,66 +1717,45 @@
                 // Salvar dados no localStorage como backup
                 localStorage.setItem('visitasClientes', JSON.stringify(clientsData));
                 
-                // Salvar no Supabase
-                const especialistaId = 5;
-                let savedCount = 0;
-                let errorCount = 0;
-                
-                for (const client of clientsData) {
-                    const { name, location, lat, lng } = client;
-                    const dataAtual = new Date().toISOString();
-
-                    try {
-                        const { error } = await supabaseClient.from("visitas_especialista").insert([{
-                            especialista_id: especialistaId,
-                            cliente: name,
-                            local: location,
-                            latitude: lat,  // Mudança aqui: usando 'latitude' em vez de 'lat'
-                            longitude: lng, // Mudança aqui: usando 'longitude' em vez de 'lng'
-                            data_visita: dataAtual // Mudança aqui: usando 'data_visita' em vez de 'data'
-                        }]);
-
-                        if (error) {
-                            console.error("Erro ao salvar visita:", error.message);
-                            errorCount++;
-                        } else {
-                            savedCount++;
-                        }
-                    } catch (err) {
-                        console.error("Erro inesperado:", err);
-                        errorCount++;
-                    }
-                }
-                
-                // Mostrar resultado
-                if (savedCount > 0 && errorCount === 0) {
-                    showNotification(`${savedCount} visitas salvas com sucesso!`, "success");
-                } else if (savedCount > 0 && errorCount > 0) {
-                    showNotification(`${savedCount} visitas salvas, ${errorCount} falharam. Verifique o console.`, "warning");
-                } else {
-                    showNotification("Erro ao salvar visitas. Verifique a estrutura da tabela no Supabase.", "error");
-                }
+                showNotification(`${clientsData.length} visitas salvas localmente!`, "success");
                 
             } catch (error) {
-                console.error("Erro geral:", error);
-                showNotification("Erro inesperado ao salvar visitas.", "error");
+                console.error("Erro ao salvar visitas:", error);
+                showNotification("Erro ao salvar visitas.", "error");
             }
         }
         
-        // Função para carregar visitas salvas do Supabase
-        async function carregarVisitasSalvas() {
+        // Função para carregar visitas da Renata Braga do Supabase
+        async function carregarVisitasRenata() {
+            const refreshBtn = document.getElementById('refresh-visitas-btn');
+            
             try {
-                const especialistaId = 5;
-
-                const { data: visitas, error } = await supabaseClient
-                    .from("visitas_especialista")
-                    .select("*")
-                    .eq("especialista_id", especialistaId);
+                // Mostrar loading no botão
+                if (refreshBtn) {
+                    refreshBtn.disabled = true;
+                    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
+                }
+                
+                // Configuração do Supabase para viagens
+                const SUPABASE_VIAGENS_URL = "https://obwgegvrtxrlombmkaej.supabase.co";
+                const SUPABASE_VIAGENS_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM";
+                
+                // Verificar se o Supabase está disponível
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Biblioteca Supabase não carregada');
+                }
+                
+                const supabaseViagensClient = supabase.createClient(SUPABASE_VIAGENS_URL, SUPABASE_VIAGENS_KEY);
+                
+                // Buscar visitas da Renata Braga
+                const { data, error } = await supabaseViagensClient
+                    .from('mapa_viagens')
+                    .select('*')
+                    .eq('especialista', 'Leandro Gomes')
+                    .order('data_inicio', { ascending: false });
 
                 if (error) {
-                    console.error("Erro ao carregar visitas:", error.message);
-                    showNotification("Erro ao carregar visitas salvas.", "error");
-                    return;
+                    throw error;
                 }
 
                 // Limpar marcadores existentes
@@ -1081,23 +1769,114 @@
                 const clientItems = clientsList.querySelectorAll(".client-item");
                 clientItems.forEach(item => item.remove());
 
-                // Recriar clientes e marcadores
-                if (visitas && visitas.length > 0) {
-                    visitas.forEach(client => {
-                        const lat = client.latitude || client.lat; // Suporte para ambos os nomes
-                        const lng = client.longitude || client.lng; // Suporte para ambos os nomes
-                        addClientToList(client.cliente, client.local, lat, lng);
-                        addVisitMarker(lat, lng, client.cliente, client.local);
+                if (data && data.length > 0) {
+                    // Adicionar visitas do Supabase
+                    data.forEach(visita => {
+                        const empresa = visita.empresa || visita.destino || 'Empresa não informada';
+                        const destino = visita.destino || 'Destino não informado';
+                        const proposito = visita.proposito || '';
+                        const status = visita.status || 'Pendente';
+                        const setor = visita.setor || '';
+                        
+                        // Criar descrição completa
+                        let descricao = destino;
+                        if (proposito) descricao += ` - ${proposito}`;
+                        if (setor) descricao += ` (${setor})`;
+                        if (status) descricao += ` [${status}]`;
+                        
+                        // Adicionar à lista de clientes
+                        addClientToList(empresa, descricao, visita.latitude, visita.longitude);
+                        
+                        // Adicionar marcador no mapa com cor baseada no status
+                        const marker = L.marker([visita.latitude, visita.longitude]).addTo(map);
+                        
+                        // Popup com informações detalhadas
+                        const popupContent = `
+                            <div style="font-size: 12px;">
+                                <b>${empresa}</b><br>
+                                <strong>Destino:</strong> ${destino}<br>
+                                ${proposito ? `<strong>Propósito:</strong> ${proposito}<br>` : ''}
+                                ${setor ? `<strong>Setor:</strong> ${setor}<br>` : ''}
+                                <strong>Status:</strong> <span style="color: ${getStatusColor(status)}">${status}</span><br>
+                                ${visita.data_inicio ? `<strong>Data Início:</strong> ${formatDate(visita.data_inicio)}<br>` : ''}
+                                ${visita.data_fim ? `<strong>Data Fim:</strong> ${formatDate(visita.data_fim)}` : ''}
+                            </div>
+                        `;
+                        
+                        marker.bindPopup(popupContent);
+                        visitMarkers.push(marker);
                     });
-                    showNotification(`${visitas.length} visitas carregadas com sucesso!`, "success");
+                    
+                    showNotification(`${data.length} visitas da Leandro Gomes carregadas!`, "success");
                 } else {
-                    showNotification("Nenhuma visita salva encontrada.", "warning");
+                    showNotification("Nenhuma visita encontrada para Leandro Gomes", "warning");
                 }
 
                 updateClientCount();
+                
+            } catch (error) {
+                console.error("Erro ao carregar visitas da Leandro Gomes:", error);
+                showNotification(`Erro ao carregar visitas: ${error.message}`, "error");
+                
+                // Fallback para localStorage se houver erro
+                carregarVisitasSalvas();
+            } finally {
+                // Restaurar botão
+                if (refreshBtn) {
+                    refreshBtn.disabled = false;
+                    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
+                }
+            }
+        }
+        
+        // Função para obter cor baseada no status
+        function getStatusColor(status) {
+            if (!status) return '#666';
+            
+            const statusLower = status.toLowerCase();
+            if (statusLower.includes('concluído') || statusLower.includes('concluido') || statusLower.includes('finalizado')) {
+                return '#28a745'; // Verde
+            } else if (statusLower.includes('andamento') || statusLower.includes('em andamento')) {
+                return '#007bff'; // Azul
+            } else if (statusLower.includes('pendente')) {
+                return '#ffc107'; // Amarelo
+            } else if (statusLower.includes('cancelado') || statusLower.includes('pausado')) {
+                return '#dc3545'; // Vermelho
+            }
+            return '#6c757d'; // Cinza padrão
+        }
+
+        // Função para carregar visitas salvas do localStorage
+        function carregarVisitasSalvas() {
+            try {
+                const visitasSalvas = localStorage.getItem('visitasClientes');
+                if (visitasSalvas) {
+                    const visitas = JSON.parse(visitasSalvas);
+                    
+                    // Limpar marcadores existentes
+                    visitMarkers.forEach(marker => {
+                        map.removeLayer(marker);
+                    });
+                    visitMarkers = [];
+
+                    // Limpar lista de clientes
+                    const clientsList = document.getElementById("clientsList");
+                    const clientItems = clientsList.querySelectorAll(".client-item");
+                    clientItems.forEach(item => item.remove());
+
+                    // Recriar clientes e marcadores
+                    if (visitas && visitas.length > 0) {
+                        visitas.forEach(client => {
+                            addClientToList(client.name, client.location, client.lat, client.lng);
+                            addVisitMarker(client.lat, client.lng, client.name, client.location);
+                        });
+                        showNotification(`${visitas.length} visitas carregadas!`, "success");
+                    }
+
+                    updateClientCount();
+                }
             } catch (error) {
                 console.error("Erro ao carregar visitas:", error);
-                showNotification("Erro inesperado ao carregar visitas.", "error");
             }
         }
 
@@ -1105,7 +1884,7 @@
             initMap();
             // Aguardar um pouco para o mapa carregar antes de carregar as visitas
             setTimeout(() => {
-                carregarVisitasSalvas();
+                carregarVisitasRenata(); // Carregar visitas da Renata Braga do Supabase
             }, 1000);
         });
     </script>
@@ -1142,19 +1921,6 @@
                     document.getElementById("performance").innerText = data.performance || "0%";
                     document.getElementById("mesAno").value = data.mes_ano || "2025-05";
                     
-                    const tbody = document.querySelector("#projectsTable tbody");
-                    tbody.innerHTML = "";
-                    if (data.projetos_lista && Array.isArray(data.projetos_lista)) {
-                        data.projetos_lista.forEach(proj => {
-                            const row = tbody.insertRow();
-                            row.innerHTML = `
-                                <td contenteditable="true">${proj.nome}</td>
-                                <td><span class="company-tag tag-gasparzinho" contenteditable="true">${proj.empresa}</span></td>
-                                <td><button class="remove-button" onclick="removeRow(this)">×</button></td>
-                            `;
-                        });
-                    }
-                    
                     // Acompanhamentos
                     const ulAcomp = document.getElementById("acompanhamentos");
                     ulAcomp.innerHTML = "";
@@ -1185,6 +1951,16 @@
                         placeholder.innerHTML = `<img src="${data.foto_url}" alt="Foto do perfil">`;
                     }
                 }
+                
+                // Carregar implantações da Renata Braga após carregar dados do funcionário
+                carregarImplantacoes();
+                
+                // Carregar MVPs da Renata Braga
+                carregarMVPs();
+                
+                // Carregar acompanhamentos da Renata Braga
+                carregarAcompanhamentos();
+                
             } catch (error) {
                 console.error("Erro inesperado:", error);
                 showNotification("Erro inesperado ao carregar dados.", "error");
@@ -1200,17 +1976,6 @@
                 const homologacoes = parseInt(document.getElementById("homologacoes").innerText);
                 const performance = document.getElementById("performance").innerText;
                 const mesAno = document.getElementById("mesAno").value;
-
-                // Coletar projetos da tabela
-                const projetos = [];
-                const rows = document.querySelectorAll("#projectsTable tbody tr");
-                rows.forEach(row => {
-                    const nomeProjeto = row.cells[0]?.innerText || "";
-                    const empresa = row.cells[1]?.innerText || "";
-                    if (nomeProjeto && empresa) {
-                        projetos.push({ nome: nomeProjeto, empresa: empresa });
-                    }
-                });
 
                 // Coletar acompanhamentos
                 const acompanhamentos = [];
@@ -1237,10 +2002,9 @@
                     treinamentos: treinamentos,
                     reunioes: reunioes,
                     homologacoes: homologacoes,
-                    projetos: projetos.length,
+                    projetos: parseInt(document.getElementById("projetos").innerText), // CORREÇÃO: Ler valor do DOM
                     performance: performance,
                     mes_ano: mesAno,
-                    projetos_lista: projetos,
                     acompanhamentos: acompanhamentos,
                     mvp: mvp
                 }]);
@@ -1258,4 +2022,3 @@
     </script>
 </body>
 </html>
-
