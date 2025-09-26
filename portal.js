@@ -11066,7 +11066,6 @@ async function loadAllDocuments() {
 }
 
 
-
 // Função loadDocuments corrigida com debug e validações adicionais
 async function loadDocuments() {
     const documentsList = document.getElementById('documentsList');
