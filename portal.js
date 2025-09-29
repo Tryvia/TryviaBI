@@ -11021,12 +11021,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-
-
-
-
-
-
 async function loadAllDocuments() {
     const setorUsuario = sessionStorage.getItem("setor");
     let query = releaseClient
