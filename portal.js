@@ -3407,7 +3407,7 @@ c.innerHTML = `
   ${ticketsInfo}
   <div style="display:flex; justify-content:space-between; margin-top:10px;">
     <a href="${url}" class="btn-secondary" target="_blank">Ver Arquivo</a>
-    <button class="btn-secondary" style="background-color:#dc3545;" onclick="deleteRelease(${d.id}, '${arquivoJson}')">Excluir</button>
+    <button class="btn-secondary" style="background-color:#dc3545;" onclick="deleteRelease('${d.id}', '[]')">Excluir</button>
   </div>
 `;
 document.getElementById("releaseList").appendChild(c);
