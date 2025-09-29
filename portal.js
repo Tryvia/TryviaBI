@@ -3397,19 +3397,7 @@ function exibirRelease(d, url) {
     `;
   }
   
-c.innerHTML = `
-  <div class="document-header"><span class="document-type">${d.tipo}</span></div>
-  <div class="document-title">${d.sistema} - ${d.versao}</div>
-  <div class="document-author">${d.analista}</div>
-  <p>Status: ${d.status}</p>
-  <p>Data Liberação: ${d.data_liberacao}</p>
-  <p>Data Homologação: ${d.data_homologacao}</p>
-  ${ticketsInfo}
-  <div style="display:flex; justify-content:space-between; margin-top:10px;">
-    <a href="${url}" class="btn-secondary" target="_blank">Ver Arquivo</a>
-    <button class="btn-secondary" style="background-color:#dc3545;" 
-      onclick='deleteRelease("${d.id}", ${JSON.stringify(arquivoJson)})'>Excluir</button>
-  </div>`;
+c.innerHTML = <div class="document-header"><span class="document-type">${d.tipo}</span></div> <div class="document-title">${d.sistema} - ${d.versao}</div> <div class="document-author">${d.analista}</div> <p>Status: ${d.status}</p> <p>Data Liberação: ${d.data_liberacao}</p> <p>Data Homologação: ${d.data_homologacao}</p> ${ticketsInfo} <div style="display:flex; justify-content:space-between; margin-top:10px;"> <a href="${url}" class="btn-secondary" target="_blank">Ver Arquivo</a> <button class="btn-secondary" style="background-color:#dc3545;" onclick="deleteRelease(${d.id}, '${arquivoJson}')">Excluir</button> </div>; document.getElementById("releaseList").appendChild(c); }
 
 async function carregarReleases() {
     const { data, error } = await releaseClient
