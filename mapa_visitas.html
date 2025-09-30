@@ -903,16 +903,16 @@
         }
 
         // Função para atualizar as estatísticas
-        function atualizarEstatisticas() {
-            document.getElementById('totalViagens').textContent = viagens.length;
+        function atualizarEstatisticas(dados = viagens) {
+            document.getElementById('totalViagens').textContent = dados.length;
 
-            const viagensPlanejadas = viagens.filter(v => v.status === 'Planejada').length;
+            const viagensPlanejadas = dados.filter(v => v.status === 'Planejada').length;
             document.getElementById('viagensPlanejadas').textContent = viagensPlanejadas;
 
-            const viagensRealizadas = viagens.filter(v => v.status === 'Concluída').length;
+            const viagensRealizadas = dados.filter(v => v.status === 'Concluída').length;
             document.getElementById('viagensRealizadas').textContent = viagensRealizadas;
 
-            const viagensCanceladas = viagens.filter(v => v.status === 'Cancelada').length;
+            const viagensCanceladas = dados.filter(v => v.status === 'Cancelada').length;
             document.getElementById('viagensCanceladas').textContent = viagensCanceladas;
         }
 
@@ -959,6 +959,9 @@
             });
 
             viagensFiltradas.forEach(viagem => adicionarMarcador(viagem));
+            
+            // Atualizar estatísticas com os dados filtrados
+            atualizarEstatisticas(viagensFiltradas);
         }
 
         // Função para limpar todos os filtros
@@ -970,6 +973,9 @@
             document.getElementById('filtroDataInicio').value = '';
             document.getElementById('filtroDataFim').value = '';
             aplicarFiltros();
+            
+            // Atualizar estatísticas com todos os dados após limpar filtros
+            atualizarEstatisticas(viagens);
         }
 
         // Função para centralizar o mapa
@@ -1060,11 +1066,37 @@
             const modal = document.getElementById('modalListaViagens');
             const content = document.getElementById('listaViagensContent');
             
-            if (viagens.length === 0) {
-                content.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma viagem cadastrada.</p>';
+            // Aplicar os mesmos filtros que são usados no mapa
+            const filtroEspecialista = document.getElementById('filtroEspecialista').value;
+            const filtroStatus = document.getElementById('filtroStatus').value;
+            const filtroProposito = document.getElementById('filtroProposito').value;
+            const filtroSetor = document.getElementById('filtroSetor').value;
+            const filtroDataInicio = document.getElementById('filtroDataInicio').value;
+            const filtroDataFim = document.getElementById('filtroDataFim').value;
+
+            const viagensFiltradas = viagens.filter(viagem => {
+                const matchEspecialista = !filtroEspecialista || viagem.especialista === filtroEspecialista;
+                const matchStatus = !filtroStatus || viagem.status === filtroStatus;
+                const matchProposito = !filtroProposito || viagem.proposito === filtroProposito;
+                const matchSetor = !filtroSetor || viagem.setor === filtroSetor;
+                
+                // Filtro por data
+                let matchData = true;
+                if (filtroDataInicio) {
+                    matchData = matchData && new Date(viagem.data_inicio) >= new Date(filtroDataInicio);
+                }
+                if (filtroDataFim) {
+                    matchData = matchData && new Date(viagem.data_inicio) <= new Date(filtroDataFim);
+                }
+                
+                return matchEspecialista && matchStatus && matchProposito && matchSetor && matchData;
+            });
+            
+            if (viagensFiltradas.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666;">Nenhuma viagem encontrada com os filtros aplicados.</p>';
             } else {
                 let html = '';
-                viagens.forEach(viagem => {
+                viagensFiltradas.forEach(viagem => {
                     const statusClass = `status-${viagem.status.replace(/\s/g, '-').toLowerCase()}`;
                     html += `
                         <div class="viagem-item">
