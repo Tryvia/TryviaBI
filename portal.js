@@ -370,7 +370,7 @@ function populateReleaseClientes() {
 // Função para buscar tickets do Freshdesk
 async function fetchFreshdeskTickets(clientName) {
     try {
-        const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(clientName)}`);
+        const response = await fetch(`https://77h9ikc6ney8.manus.space/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(clientName)}`);
         
         if (!response.ok) {
             throw new Error(`Erro na API: ${response.status}`);
@@ -4593,7 +4593,7 @@ async function viewClientTickets(clientId, clientName, clientEmail) {
     
     try {
         // Buscar tickets do cliente via API
-        const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(clientName)}`);
+        const response = await fetch(`https://77h9ikc6ney8.manus.space/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(clientName)}`);
         
         if (!response.ok) {
             throw new Error(`Erro na API: ${response.status}`);
@@ -4979,7 +4979,7 @@ window.onclick = function(event) {
                 
                 try {
                     // Buscar tickets do cliente via API usando cf_empresa
-                    const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
+                    const response = await fetch(`https://77h9ikc6ney8.manus.space/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
                     
                     if (!response.ok) {
                         throw new Error(`Erro na API: ${response.status}`);
@@ -5106,7 +5106,7 @@ window.onclick = function(event) {
                 
                 try {
                     // Buscar tickets do cliente via API usando cf_empresa
-                    const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
+                    const response = await fetch(`https://77h9ikc6ney8.manus.space/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
                     
                     if (!response.ok) {
                         throw new Error(`Erro na API: ${response.status}`);
@@ -9899,7 +9899,7 @@ async function loadAllTickets() {
             if (!client.email) return [];
             
             try {
-                const response = await fetch(`https://servis-tikctes.onrender.com/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(client.name )}`);
+                const response = await fetch(`https://77h9ikc6ney8.manus.space/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(client.name )}`);
                 if (!response.ok) return [];
                 
                 const tickets = await response.json();
