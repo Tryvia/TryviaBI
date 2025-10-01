@@ -4831,20 +4831,35 @@ async function consultarIntegracoesPorcnpj(cnpj) {
 // Função para consultar integrações por ID Cliente
 async function consultarIntegracoesPorIdCliente(idCliente) {
     try {
-        // Tenta buscar dados reais da API Flask
-        const response = await fetch(`https://6c1b22afd688.ngrok-free.app/api/integracoes/${idCliente}`, {
-    headers: {
-        'ngrok-skip-browser-warning': 'true'
-    }
-});
+        // Tenta buscar dados reais da API SingServices
+        const response = await fetch(`https://singservices.newsgps.com.br/api/SingServices/GetIntegracao?idCliente=${idCliente}`, {
+            headers: {
+                'accept': '*/*',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImludGVncmFjYW9wb3J0YWwiLCJyb2xlIjoiU2luZ1NlcnZpY2VzIiwiVmlnZW5jaWEiOiIxNTAiLCJDbGllbnRlIjoiMSIsIm5iZiI6MTc1OTM0NDAzMiwiZXhwIjoxNzU5NDMwNDMyLCJpYXQiOjE3NTkzNDQwMzJ9.90qrjNxMfazTG5FL7fsh4OKZnskTnSC5RVamIhHX5Nc'
+            }
+        });
         if (!response.ok) {
-            throw new Error(`Erro na API Flask: ${response.status} ${response.statusText}`);
+            throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
         }
         const result = await response.json();
-        if (result.erro) {
-            return { erro: result.erro };
-        }
-        return result;
+
+        // Formata o resultado para o formato esperado pelo frontend
+        return {
+            sucesso: !result.erro,
+            cliente: {
+                nome: result.cliente?.nome || null,
+                id_cliente: idCliente
+            },
+            integracoes: result.map(item => ({
+                sistema: item.sistema,
+                entidade: item.entidade,
+                dataUltimaIntegracao: item.ultimaIntegracao,
+                status: item.erro ? 'Erro' : 'Ativo',
+                erro: item.erro || false
+            })),
+            total_integracoes: result.length,
+            observacao: result.erro ? result.mensagem : null
+        };
     } catch (error) {
         // Se falhar, retorna dados de demonstração
         console.error('Erro na consulta de integrações por ID Cliente:', error);
