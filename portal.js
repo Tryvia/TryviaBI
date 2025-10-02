@@ -9,7 +9,7 @@ try {
   permissoes = [];
 }
 if (!sessionStorage.getItem('tryvia_logged')) {
-window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+window.location.href = 'https://tryvia.github.io/dev/tryvia_portal_dev.html';
 sessionStorage.setItem('tryvia_logged', 'true');
 }
    // Função para exibir apenas a data (dd/mm/aaaa), ignorando horário UTC
@@ -194,7 +194,8 @@ async function carregarMembros() {
     const { data, error } = await releaseClient
         .from("usuarios")
         .select("*")
-        .eq("setor", setorUsuario);
+        .eq("setor", setorUsuario)
+            ;
 
     if (error) {
         console.error("Erro ao buscar membros:", error.message);
@@ -3650,7 +3651,8 @@ async function carregarReunioes() {
     const clientId = sessionStorage.getItem('client_id');
     const setorUsuario = sessionStorage.getItem("setor");
     
-    let query = releaseClient.from("reunioes").select("*").order("data", { ascending: false });
+    let query = releaseClient.from("reunioes").select("*").eq("setor", setorUsuario)
+            .order("data", { ascending: false });
     
     // Filtro por cliente (para usuários do tipo 'client')
     if (
@@ -7025,7 +7027,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function logoutTryvia() {
     sessionStorage.removeItem('tryvia_logged');
     localStorage.removeItem('username');
-    window.location.href = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+    window.location.href = 'https://tryvia.github.io/dev/tryvia_portal_dev.html';
 }
 
 // ===== FUNÇÕES PARA GERENCIAR USUÁRIOS =====
@@ -9201,6 +9203,7 @@ async function carregarImplantacoesLista() {
         const { data, error } = await window.supabaseClient
             .from('status_projetos')
             .select('*')
+            .eq('setor', sessionStorage.getItem('setor'))
             .order('created_at', { ascending: false });
 
         if (error) {
@@ -9432,7 +9435,7 @@ function renderizarImplantacoes(implantacoes) {
                             <i class="fas fa-edit"></i>
                             Editar
                         </button>
-                                               <button onclick="excluirImplantacao("${implantacao.id}", "${implantacao.projeto}", "${implantacao.cliente}")" style="
+                                               <button onclick="excluirImplantacao('${implantacao.id}', '${implantacao.projeto}', '${implantacao.cliente}')" style="
                             background-color: #f44336; 
                             color: white; 
                             border: none; 
@@ -10869,7 +10872,8 @@ async function abrirModalEditarReuniao(reuniaoId) {
         // Buscar dados da reunião
         const { data, error } = await releaseClient
             .from("reunioes")
-            .select("*")
+            .select("*").eq("setor", setorUsuario)
+            
             .eq("id", reuniaoId)
             .single();
 
@@ -11040,7 +11044,8 @@ async function loadAllDocuments() {
     const setorUsuario = sessionStorage.getItem("setor");
     let query = releaseClient
         .from("documents_setor")
-        .select("*");
+        .select("*").eq("setor", setorUsuario)
+            ;
 
     if (setorUsuario) {
         query = query.eq("setor", setorUsuario);
