@@ -7972,6 +7972,7 @@ function carregarPermissoesEdicao(permissoesUsuario) {
         { id: 'deleteRelease', label: 'Excluir Release', categoria: 'Releases' },
         
         { id: 'salvarReuniao', label: 'Salvar Reunião', categoria: 'Reuniões' },
+        { id: 'excluirReuniao', label: 'Excluir Reunião', categoria: 'Reuniões' },
         
         { id: 'alterarQuantidade', label: 'Alterar Quantidade nas tarefas', categoria: 'Painel do Setor' },
         { id: 'saveTasks', label: 'Salvar Tarefas', categoria: 'Painel do Setor' },
