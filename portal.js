@@ -4837,7 +4837,7 @@ async function consultarIntegracoesPorIdCliente(idCliente) {
         const response = await fetch(`https://singservices.newsgps.com.br/api/SingServices/GetIntegracao?idCliente=${idCliente}`, {
             headers: {
                 'accept': '*/*',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImludGVncmFjYW9wb3J0YWwiLCJyb2xlIjoiU2luZ1NlcnZpY2VzIiwiVmlnZW5jaWEiOiIxNTAiLCJDbGllbnRlIjoiMSIsIm5iZiI6MTc1OTM0NDAzMiwiZXhwIjoxNzU5NDMwNDMyLCJpYXQiOjE3NTkzNDQwMzJ9.90qrjNxMfazTG5FL7fsh4OKZnskTnSC5RVamIhHX5Nc'
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImludGVncmFjYW9wb3J0YWwiLCJyb2xlIjoiU2luZ1NlcnZpY2VzIiwiVmlnZW5jaWEiOiIxNTAiLCJDbGllbnRlIjoiMSIsIm5iZiI6MTc1OTc1NzA2MCwiZXhwIjoxNzU5ODQzNDYwLCJpYXQiOjE3NTk3NTcwNjB9.MRxCfZThI49015aBKsRwe6m0EQRSSvACFmLEtzDTV8k'
             }
         });
         if (!response.ok) {
