@@ -12,7 +12,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 <script>
     const setorUsuario = sessionStorage.getItem('setor');
 const RELEASE_SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
@@ -34,6 +33,10 @@ function showTab(tabId) {
     if (selectedTab) {
         selectedTab.style.display = 'block';
         selectedTab.classList.add('active');
+    }
+
+    if (tabId === 'documents') {
+        loadDocuments();
     }
 
     // Remove a classe active de todos os botões
@@ -326,6 +329,7 @@ Salvar Alterações
     <!-- Cabeçalho de Boas-vindas -->
     <div class="welcome-header" style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; color: white; box-shadow: 0 8px 25px rgba(41, 182, 246, 0.3);">
         <h2 style="margin: 0; font-size: 2.5em; margin-bottom: 10px;">
+            <i class="fas fa-home" style="margin-right: 15px;"></i>
             Bem-vindo ao Portal Tryvia
         </h2>
         <p style="margin: 0; font-size: 1.2em; opacity: 0.9;" id="welcomeMessage">
@@ -562,7 +566,7 @@ Salvar Alterações
     Novo Resumo
 </button>
 <div class="form-container">
-<h3 style="margin-bottom: 20px;">Adicionar Novo Documento de Implantação</h3>
+<h3 style="margin-bottom: 20px;">Adicionar Novo Documento </h3>
 <div class="form-row">
 <div class="form-group">
 <label for="documentTitle">Título</label>
@@ -572,10 +576,6 @@ Salvar Alterações
                 <label for="documentAuthor">Autor</label>
                 <select id="documentAuthor">
                     <option value="">Selecione o autor</option>
-                     <option value="Julyana">Julyana</option>
-                    <option value="Marlos">Marlos</option>
-                    <option value="Renata">Renata</option>
-                    <option value="Larissa">Larissa</option>
                 </select>
                 </div>
 </div>
@@ -1070,7 +1070,7 @@ Salvar Alterações
 <label for="clientName">Nome do Cliente</label>
 <input id="clientName" placeholder="Nome completo ou da empresa..." type="text"/>
 <label for="clientEmail" style="margin-top: 15px;">CF Empresa (Campo Freshdesk)</label>
-<input id="clientEmail" placeholder="email@exemplo.com" type="email"/>
+<input id="clientCfEmpresa" placeholder="Valor do campo cf_empresa no Freshdesk..." type="text"/>
                 <label for="clientPhone" style="margin-top: 15px;">Telefone</label>
                 <input id="clientPhone" placeholder="(XX) XXXXX-XXXX" type="tel"/>
                 <label for="clientCNPJ" style="margin-top: 15px;">CNPJ</label>
@@ -1082,7 +1082,7 @@ Salvar Alterações
                 </select>
                 <label for="clientGroup" style="margin-top: 15px;">Grupo</label>
                 <select id="clientGroup">
-                    <option value="">Nenhum</option>
+                    <option value="10">Nenhum</option>
     <option value="4">JCA</option>
     <option value="1">GRUPO GUANABARA</option>
     <option value="7">VIAÇÃO ÁGUIA BRANCA S/A</option>
@@ -1095,7 +1095,7 @@ Salvar Alterações
                     <option value="3">Rodoviário</option>
                 </select>
                 <label for="clientCfEmpresa" style="margin-top: 15px;">Email</label>
-                <input id="clientCfEmpresa" placeholder="Valor do campo cf_empresa no Freshdesk..." type="text"/>
+                <input id="clientEmail" placeholder="email@exemplo.com" type="email"/>
                 <label for="clientBiLink" style="margin-top: 15px;">Link do Dashboard BI</label>
                 <input id="clientBiLink" placeholder="https://app.powerbi.com/dashboard/..." type="url"/>
 </div>
@@ -1905,7 +1905,7 @@ Salvar Alterações
         
         <div class="permission-item">
             <input type="checkbox" id="perm-documents" value="documents">
-            <label for="perm-documents">Documentos</label>
+            <label for="perm-documents">Time de Implantação</label>
         </div>
         
         <div class="permission-item">
@@ -2049,14 +2049,6 @@ Salvar Alterações
         </div>
     </div>
 
-     <div class="permissions-grid">
-        <div class="permission-item">
-            <input type="checkbox" id="perm-excluirReuniao" value="excluirReuniao">
-            <label for="perm-excluirReuniao">Excluir Reunião</label>
-        </div>
-    </div>
-
-             
     <!-- Funções de Treinamento -->
     <div class="subsection-title">Funções de Treinamento</div>
 
