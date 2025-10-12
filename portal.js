@@ -4830,65 +4830,6 @@ async function consultarIntegracoesPorcnpj(cnpj) {
     }
 }
 
-// Função para consultar integrações por ID Cliente
-async function consultarIntegracoesPorIdCliente(idCliente) {
-    try {
-        // Tenta buscar dados reais da API SingServices
-        const response = await fetch(`https://singservices.newsgps.com.br/api/SingServices/GetIntegracao?idCliente=${idCliente}`, {
-            headers: {
-                'accept': '*/*',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImludGVncmFjYW9wb3J0YWwiLCJyb2xlIjoiU2luZ1NlcnZpY2VzIiwiVmlnZW5jaWEiOiIxNTAiLCJDbGllbnRlIjoiMSIsIm5iZiI6MTc1OTc1NzA2MCwiZXhwIjoxNzU5ODQzNDYwLCJpYXQiOjE3NTk3NTcwNjB9.MRxCfZThI49015aBKsRwe6m0EQRSSvACFmLEtzDTV8k'
-            }
-        });
-        if (!response.ok) {
-            throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
-        }
-        const result = await response.json();
-
-        // Formata o resultado para o formato esperado pelo frontend
-        return {
-            sucesso: !result.erro,
-            cliente: {
-                nome: result.cliente?.nome || null,
-                id_cliente: idCliente
-            },
-            integracoes: result.map(item => ({
-                sistema: item.sistema,
-                entidade: item.entidade,
-                dataUltimaIntegracao: item.ultimaIntegracao,
-                status: item.erro ? 'Erro' : 'Ativo',
-                erro: item.erro || false
-            })),
-            total_integracoes: result.length,
-            observacao: result.erro ? result.mensagem : null
-        };
-    } catch (error) {
-        // Se falhar, retorna dados de demonstração
-        console.error('Erro na consulta de integrações por ID Cliente:', error);
-        const integracoesDemo = [
-            {
-                sistema: "Sistema Demo 1",
-                entidade: "Entidade Demo 1",
-                dataUltimaIntegracao: new Date().toISOString(),
-                status: "Ativo"
-            },
-            {
-                sistema: "Sistema Demo 2",
-                entidade: "Entidade Demo 2",
-                dataUltimaIntegracao: new Date(Date.now() - 86400000).toISOString(),
-                status: "Ativo"
-            }
-        ];
-        return {
-            sucesso: false,
-            cliente: null,
-            integracoes: integracoesDemo,
-            total_integracoes: integracoesDemo.length,
-            observacao: "Dados de demonstração - API externa não disponível no momento"
-        };
-    }
-}
-
 // Função para obter classe CSS do status do ticket
 function getTicketStatusClass(status) {
     const statusMap = {
@@ -11157,3 +11098,4 @@ async function loadDocuments() {
     // Debug: Log final
     console.log('Documentos exibidos na tela:', documentosFiltrados.length);
 }
+  
