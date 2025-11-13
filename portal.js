@@ -2,86 +2,6 @@
       emailjs.init("4DvVlBCto4HMC88CF");
    })();
 const PDF_SERVER_URL = 'https://servis-pdf.onrender.com';
-
-// Função para alternar o estado de colapso da sidebar
-
-// Controle de exibição das abas Visão Geral e Atividades na tela inicial
-// Não sobrescreve `showInicioTab` caso já exista (ex: definida em `tabs.js`).
-if (!window.showInicioTab) {
-    window.showInicioTab = function(tab) {
-        // Tenta encontrar por classe (HTML atual usa .activities-section) ou por id legado
-        const atividadesSection = document.querySelector('.activities-section') || document.getElementById('atividades-section');
-        if (!atividadesSection) return;
-        if (tab === 'atividades') {
-            atividadesSection.style.display = 'block';
-        } else {
-            atividadesSection.style.display = 'none';
-        }
-    };
-}
-// Enhance the Inicio tab toggler to set button active styles and update last update time
-function markInicioTabButtons(activeTab) {
-    try {
-        const btnVisao = document.getElementById('btn-visao-geral');
-        const btnAtividades = document.getElementById('btn-atividades');
-        if (btnVisao) btnVisao.classList.toggle('inicio-tab-active', activeTab === 'visao-geral');
-        if (btnAtividades) btnAtividades.classList.toggle('inicio-tab-active', activeTab === 'atividades');
-    } catch (e) {
-        // silent
-    }
-}
-
-function updateInicioLastUpdate() {
-    const el = document.getElementById('lastUpdateHome');
-    if (!el) return;
-    const now = new Date();
-    const hh = String(now.getHours()).padStart(2,'0');
-    const mm = String(now.getMinutes()).padStart(2,'0');
-    const ss = String(now.getSeconds()).padStart(2,'0');
-    el.textContent = `Última atualização: ${hh}:${mm}:${ss}`;
-}
-
-// If a global showInicioTab exists (defined above), wrap it to also mark buttons
-if (window.showInicioTab) {
-    const originalShowInicioTab = window.showInicioTab;
-    window.showInicioTab = function(tab) {
-        try {
-            originalShowInicioTab(tab);
-        } catch (e) {
-            console.warn('showInicioTab error', e);
-        }
-        // set active styles
-        markInicioTabButtons(tab);
-        // update last update time when showing visão-geral
-        if (tab === 'visao-geral') updateInicioLastUpdate();
-    };
-}
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarToggle = document.querySelector('.sidebar-toggle');
-    const mainContent = document.querySelector('.main-content');
-    const logo = document.getElementById('sidebarLogo'); // Novo: Obter o elemento da logo
-    
-    if (sidebar && sidebarToggle) {
-        sidebar.classList.toggle('collapsed');
-        sidebarToggle.classList.toggle('rotated');
-        
-        // Ajusta o conteúdo principal quando a sidebar é toggleada
-        if (mainContent) {
-            mainContent.style.marginLeft = sidebar.classList.contains('collapsed') ? '70px' : '250px';
-            mainContent.style.width = sidebar.classList.contains('collapsed') ? 'calc(100% - 70px)' : 'calc(100% - 250px)';
-        }
-
-        // Novo: Trocar a logo
-        if (logo) {
-            if (sidebar.classList.contains('collapsed')) {
-                logo.src = 'logo11.png'; // Logo para sidebar recuada
-            } else {
-                logo.src = 'logo1.png'; // Logo para sidebar expandida
-            }
-        }
-    }
-}
 let permissoes = [];
 try {
   permissoes = JSON.parse(localStorage.getItem('permissoes')) || [];
@@ -980,295 +900,76 @@ function atualizarContadorTickets() {
 }
 
 async function salvarContatoCS() {
-    // função unificada para criar ou atualizar contato CS
-    const csSelect = document.getElementById('csClientName');
-    const clientId = csSelect ? csSelect.value : '';
-    const clientName = csSelect ? (csSelect.options[csSelect.selectedIndex] ? csSelect.options[csSelect.selectedIndex].text : '') : '';
-    const tipo = document.getElementById('csContactType').value;
-    const data = document.getElementById('csContactDate').value;
-    const obs = document.getElementById('csObservation').value.trim();
-    const editingId = document.getElementById('csEditingId').value;
+            const nome = document.getElementById('csClientName').value.trim();
+            const tipo = document.getElementById('csContactType').value;
+            const data = document.getElementById('csContactDate').value;
+            const obs = document.getElementById('csObservation').value.trim();
 
-    if (!clientId || !tipo || !data || !obs) {
-        showAlert('Atenção', 'Preencha todos os campos para salvar o contato!');
-        return;
-    }
-
-    try {
-        if (editingId) {
-            // atualizar
-            const { error } = await releaseClient
-                .from('cs_contacts')
-                .update({ client_id: clientId, client_name: clientName, contact_type: tipo, contact_date: data, observation: obs })
-                .eq('id', editingId);
-            if (error) {
-                console.error('Erro ao atualizar contato:', error.message);
-                showAlert('Erro', 'Erro ao atualizar contato.');
+            if (!nome || !tipo || !data || !obs) {
+                showAlert('Atenção', 'Preencha todos os campos para salvar o contato!');
                 return;
             }
-            showAlert('Sucesso', 'Contato atualizado com sucesso!');
-        } else {
-            // inserir novo
-            const { data: result, error } = await releaseClient
-                .from('cs_contacts')
-                .insert([
-                    { client_id: clientId, client_name: clientName, contact_type: tipo, contact_date: data, observation: obs }
-                ]);
-            if (error) {
-                console.error('Erro ao salvar contato:', error.message);
-                showAlert('Erro', 'Erro ao salvar contato.');
-                return;
+
+            try {
+                const { data: result, error } = await releaseClient
+                    .from('cs_contacts')
+                    .insert([
+                        {
+                            client_name: nome,
+                            contact_type: tipo,
+                            contact_date: data,
+                            observation: obs
+                        }
+                    ]);
+
+                if (error) {
+                    console.error('Erro ao salvar contato:', error.message);
+                    showAlert('Erro', 'Erro ao salvar contato.');
+                    return;
+                }
+
+                showAlert('Sucesso', 'Contato salvo com sucesso!');
+                document.getElementById('csClientName').value = '';
+                document.getElementById('csContactType').value = '';
+                document.getElementById('csContactDate').value = '';
+                document.getElementById('csObservation').value = '';
+                // Se quiser atualizar a lista de contatos, chame aqui a função de renderização
+                // fetchAndRenderContatosCS();
+            } catch (e) {
+                console.error('Erro inesperado ao salvar contato:', e);
+                showAlert('Erro', 'Erro inesperado ao salvar contato.');
             }
-            showAlert('Sucesso', 'Contato salvo com sucesso!');
         }
 
-        // limpar formulário e estado de edição
-        if (csSelect) csSelect.value = '';
-        document.getElementById('csContactType').value = '';
-        document.getElementById('csContactDate').value = '';
-        document.getElementById('csObservation').value = '';
-        document.getElementById('csEditingId').value = '';
-        document.getElementById('csSaveButton').innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>Salvar Contato';
-        document.getElementById('csCancelEditButton').style.display = 'none';
-
-        // atualizar lista localmente
-        await fetchAndRenderContatosCS();
-    } catch (e) {
-        console.error('Erro inesperado ao salvar/atualizar contato:', e);
-        showAlert('Erro', 'Erro inesperado ao salvar/atualizar contato.');
-    }
-}
-
-
-let csContactsCache = [];
-let csCurrentPage = 1;
-const csPageSize = 5; // registros por página
 
 async function fetchAndRenderContatosCS() {
     const container = document.getElementById('csContactsList');
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><p>Carregando contatos...</p></div>';
     try {
-        const sortOrderEl = document.getElementById('csSortOrder');
-        const ascending = sortOrderEl && sortOrderEl.value === 'asc';
         const { data, error } = await releaseClient
             .from('cs_contacts')
             .select('*')
-            .order('contact_date', { ascending: ascending });
+            .order('contact_date', { ascending: false });
         if (error) {
             container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro ao carregar contatos.</p></div>`;
             return;
         }
-    csContactsCache = data || [];
-    csCurrentPage = 1;
-    renderContatosCS(csContactsCache);
-        atualizarEstatisticasCS(csContactsCache);
+        if (!data || data.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div style="font-size: 4em; margin-bottom: 20px;">📞</div><h3>Nenhum contato registrado</h3><p>Os contatos com clientes aparecerão aqui quando forem registrados.</p></div>`;
+            atualizarEstatisticasCS([]);
+            return;
+        }
+        container.innerHTML = data.map(contato => `
+            <div class="document-card" style="margin-bottom: 15px;">
+                <div class="document-title">${contato.client_name}</div>
+                <div class="document-author">${contato.contact_type} • ${new Date(contato.contact_date).toLocaleDateString('pt-BR')}</div>
+                <div style="margin-top: 10px; color: #555; white-space: pre-wrap; word-break: break-word;">${contato.observation}</div>
+            </div>
+        `).join('');
+        atualizarEstatisticasCS(data);
     } catch (e) {
         container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><p>Erro inesperado ao carregar contatos.</p></div>`;
         atualizarEstatisticasCS([]);
-    }
-}
-
-function renderContatosCS(contatos) {
-    const container = document.getElementById('csContactsList');
-    if (!contatos || contatos.length === 0) {
-        container.innerHTML = `<div class="empty-state"><div style="font-size: 4em; margin-bottom: 20px;">📞</div><h3>Nenhum contato registrado</h3><p>Os contatos com clientes aparecerão aqui quando forem registrados.</p></div>`;
-        return;
-    }
-    // paginação
-    const total = contatos.length;
-    const totalPages = Math.max(1, Math.ceil(total / csPageSize));
-    if (csCurrentPage > totalPages) csCurrentPage = totalPages;
-    const start = (csCurrentPage - 1) * csPageSize;
-    const end = start + csPageSize;
-    const pageItems = contatos.slice(start, end);
-
-    container.innerHTML = pageItems.map(contato => {
-        // prefer client_name if present, otherwise try lookup by client_id
-        let clientDisplay = contato.client_name || '';
-        if ((!clientDisplay || clientDisplay === '') && contato.client_id) {
-            const found = (window.clients || []).find(c => String(c.id) === String(contato.client_id));
-            clientDisplay = found ? found.name : `Cliente ID: ${contato.client_id}`;
-        }
-        return `
-        <div class="document-card cs-contact-card" style="margin-bottom: 12px; position:relative;">
-            <div style="position:absolute; right:10px; top:10px; display:flex; gap:6px; z-index:2;">
-                <button title="Editar" class="btn-icon" onclick="startEditContato(${contato.id})" style="background:#d6d6d6; border:none; padding:6px 8px; border-radius:6px; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                <button title="Excluir" class="btn-icon" onclick="deleteContatoCS(${contato.id})" style="background:#d6d6d6; border:none; padding:6px 8px; border-radius:6px; cursor:pointer; color:#000000;"><i class="fas fa-trash"></i></button>
-            </div>
-            <div class="document-title">${clientDisplay}</div>
-            <div class="document-author">${contato.contact_type} • ${formatDateOnlyBR(contato.contact_date)}</div>
-            <div style="margin-top: 10px; color: #555; white-space: pre-wrap; word-break: break-word;">${contato.observation}</div>
-        </div>
-    `}).join('');
-
-    // render pagination controls
-    const paginationContainer = document.getElementById('csPagination');
-    if (paginationContainer) {
-        paginationContainer.innerHTML = csBuildPagination(totalPages, csCurrentPage);
-    }
-}
-
-// Constroi uma paginação compacta com elipses
-function csBuildPagination(totalPages, currentPage) {
-    if (!totalPages || totalPages < 2) return '';
-    const maxButtons = 7; // botãoes visíveis incluindo primeiros/últimos
-    let html = '';
-    html += `<button class="page-btn nav-btn" onclick="csGoToPage(1)" ${currentPage===1? 'disabled' : ''} title="Primeira">⏮</button>`;
-    html += `<button class="page-btn nav-btn" onclick="csPrevPage()" ${currentPage===1? 'disabled' : ''} title="Anterior">◀</button>`;
-
-    // se total menor que limite, mostra todos
-    if (totalPages <= maxButtons) {
-        for (let p = 1; p <= totalPages; p++) {
-            html += `<button class="page-btn ${p===currentPage? 'active':''}" onclick="csGoToPage(${p})">${p}</button>`;
-        }
-    } else {
-        // sempre mostra primeiro, último, e uma janela central
-        const sideCount = 2; // quantos próximos aos extremos
-        const middleWidth = maxButtons - (sideCount * 2) - 2; // -2 para duas elipses
-
-        // helper para adicionar botão de página
-        const addPage = (p) => { html += `<button class="page-btn ${p===currentPage? 'active':''}" onclick="csGoToPage(${p})">${p}</button>`; };
-
-        addPage(1);
-        if (currentPage > sideCount + 2) {
-            html += `<button class="page-btn ellipsis" disabled>…</button>`;
-        }
-
-        // calcular janela central
-        let start = Math.max(2, currentPage - Math.floor(middleWidth/2));
-        let end = Math.min(totalPages - 1, start + middleWidth - 1);
-        if (end - start + 1 < middleWidth) {
-            start = Math.max(2, end - middleWidth + 1);
-        }
-
-        for (let p = start; p <= end; p++) addPage(p);
-
-        if (end < totalPages - 1) {
-            html += `<button class="page-btn ellipsis" disabled>…</button>`;
-        }
-
-        addPage(totalPages);
-    }
-
-    html += `<button class="page-btn nav-btn" onclick="csNextPage()" ${currentPage===totalPages? 'disabled' : ''} title="Próxima">▶</button>`;
-    html += `<button class="page-btn nav-btn" onclick="csGoToPage(${totalPages})" ${currentPage===totalPages? 'disabled' : ''} title="Última">⏭</button>`;
-    return html;
-}
-
-function filtrarContatosCS() {
-    const nameFilter = document.getElementById('filterCSClient').value.trim().toLowerCase();
-    const typeFilter = document.getElementById('filterCSContactType').value;
-    const dateFilter = document.getElementById('filterCSDate').value;
-
-    let filtered = csContactsCache.slice();
-    if (nameFilter) filtered = filtered.filter(c => (c.client_name || '').toLowerCase().includes(nameFilter));
-    if (typeFilter) filtered = filtered.filter(c => c.contact_type === typeFilter);
-    if (dateFilter) filtered = filtered.filter(c => (c.contact_date || '').slice(0,10) === dateFilter);
-
-    // aplicar ordenação extra se necessário
-    const sortEl = document.getElementById('csSortOrder');
-    if (sortEl && sortEl.value === 'asc') {
-        filtered.sort((a,b) => (a.contact_date || '').localeCompare(b.contact_date || ''));
-    } else {
-        filtered.sort((a,b) => (b.contact_date || '').localeCompare(a.contact_date || ''));
-    }
-
-    csCurrentPage = 1;
-    renderContatosCS(filtered);
-    atualizarEstatisticasCS(filtered);
-}
-
-// Paginação: navegação entre páginas
-function csGoToPage(p) {
-    csCurrentPage = p;
-    renderContatosCS(csContactsCache.slice().filter(c => {
-        // aplicar mesmos filtros que filtrarContatosCS se houver
-        const nameFilter = document.getElementById('filterCSClient').value.trim().toLowerCase();
-        const typeFilter = document.getElementById('filterCSContactType').value;
-        const dateFilter = document.getElementById('filterCSDate').value;
-        if (nameFilter && !( (c.client_name||'').toLowerCase().includes(nameFilter) )) return false;
-        if (typeFilter && c.contact_type !== typeFilter) return false;
-        if (dateFilter && (c.contact_date||'').slice(0,10) !== dateFilter) return false;
-        return true;
-    }));
-}
-
-function csPrevPage() {
-    if (csCurrentPage > 1) {
-        csCurrentPage--;
-        csGoToPage(csCurrentPage);
-    }
-}
-
-function csNextPage() {
-    // compute total pages from current filtered list
-    const nameFilter = document.getElementById('filterCSClient').value.trim().toLowerCase();
-    const typeFilter = document.getElementById('filterCSContactType').value;
-    const dateFilter = document.getElementById('filterCSDate').value;
-    const filtered = csContactsCache.filter(c => {
-        if (nameFilter && !((c.client_name||'').toLowerCase().includes(nameFilter))) return false;
-        if (typeFilter && c.contact_type !== typeFilter) return false;
-        if (dateFilter && (c.contact_date||'').slice(0,10) !== dateFilter) return false;
-        return true;
-    });
-    const totalPages = Math.max(1, Math.ceil(filtered.length / csPageSize));
-    if (csCurrentPage < totalPages) {
-        csCurrentPage++;
-        csGoToPage(csCurrentPage);
-    }
-}
-
-function startEditContato(id) {
-    const contato = csContactsCache.find(c => c.id === id);
-    if (!contato) return;
-    const csSelect = document.getElementById('csClientName');
-    // preferir client_id quando disponível
-    if (csSelect) {
-        if (contato.client_id) {
-            csSelect.value = String(contato.client_id);
-        } else if (contato.client_name) {
-            // tentar encontrar option pelo texto
-            const opt = Array.from(csSelect.options).find(o => o.text === contato.client_name);
-            if (opt) csSelect.value = opt.value;
-            else csSelect.value = '';
-        }
-    }
-    document.getElementById('csContactType').value = contato.contact_type || '';
-    document.getElementById('csContactDate').value = formatDateForInput(contato.contact_date) || '';
-    document.getElementById('csObservation').value = contato.observation || '';
-    document.getElementById('csEditingId').value = contato.id;
-    document.getElementById('csSaveButton').innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>Atualizar Contato';
-    document.getElementById('csCancelEditButton').style.display = 'inline-block';
-    // scroll to form
-    const el = document.getElementById('csClientName');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function cancelEditContato() {
-    document.getElementById('csClientName').value = '';
-    document.getElementById('csContactType').value = '';
-    document.getElementById('csContactDate').value = '';
-    document.getElementById('csObservation').value = '';
-    document.getElementById('csEditingId').value = '';
-    document.getElementById('csSaveButton').innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i>Salvar Contato';
-    document.getElementById('csCancelEditButton').style.display = 'none';
-}
-
-async function deleteContatoCS(id) {
-    const confirmed = await showConfirm('Confirmação', 'Tem certeza que deseja excluir este contato? Esta ação é permanente.');
-    if (!confirmed) return;
-    try {
-        const { error } = await releaseClient.from('cs_contacts').delete().eq('id', id);
-        if (error) {
-            console.error('Erro ao deletar contato:', error.message);
-            showAlert('Erro', 'Erro ao excluir contato.');
-            return;
-        }
-        showAlert('Sucesso', 'Contato excluído com sucesso!');
-        await fetchAndRenderContatosCS();
-    } catch (e) {
-        console.error('Erro inesperado ao excluir contato:', e);
-        showAlert('Erro', 'Erro inesperado ao excluir contato.');
     }
 }
 
@@ -1296,145 +997,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('csContactsList')) {
         fetchAndRenderContatosCS();
     }
-    // popular datalist de clientes para autocomplete CS
-    try {
-        if (typeof populateCSClientsDatalist === 'function') populateCSClientsDatalist();
-    } catch (e) {
-        console.warn('populateCSClientsDatalist failed', e);
-    }
-    // garantir carregamento ao focar/clicar no select
-    try {
-        const csSelect = document.getElementById('csClientName');
-        if (csSelect) {
-            // Use mousedown (fired before the select opens) and only once to avoid
-            // repopulating options while the user clicks an option which would
-            // interrupt selection.
-            csSelect.addEventListener('mousedown', function onMd(e) {
-                populateCSClientsDatalist(false);
-                csSelect.removeEventListener('mousedown', onMd);
-            });
-            // also try focus once as a fallback
-            csSelect.addEventListener('focus', function onF(e) {
-                populateCSClientsDatalist(false);
-                csSelect.removeEventListener('focus', onF);
-            });
-        }
-    } catch (e) {
-        console.warn('Erro ao adicionar listeners em csClientName', e);
-    }
     
     // Atualiza o select de autores quando abre a aba documentos
     if (document.getElementById('documents')) {
         updateDocumentAuthorsSelect();
     }
-    // Enhance metric cards to StatCard-like layout
-    try {
-        if (typeof enhanceMetricCards === 'function') enhanceMetricCards();
-    } catch (e) {
-        console.warn('enhanceMetricCards failed', e);
-    }
 });
-
-let csClientsLoaded = false;
-// Carrega lista completa de clients da tabela 'clients' do Supabase e preenche o select
-async function populateCSClientsDatalist(forceRefresh = false) {
-    const select = document.getElementById('csClientName');
-    if (!select) return;
-    // se já carregado e não for forçar, use window.clients se disponível
-    if (!forceRefresh && csClientsLoaded && window.clients && window.clients.length > 0) {
-        // popular com window.clients
-        select.innerHTML = '<option value="">Selecione um cliente...</option>';
-        const sorted = [...window.clients].sort((a,b) => (a.name||'').localeCompare(b.name||''));
-        sorted.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.id !== undefined ? String(c.id) : (c.name || '');
-            opt.textContent = c.name || '';
-            select.appendChild(opt);
-        });
-        csClientsLoaded = true;
-        return;
-    }
-
-    // Buscar do Supabase
-    try {
-        select.innerHTML = '<option value="">Carregando clientes...</option>';
-        const { data, error } = await releaseClient
-            .from('clients')
-            .select('id, name')
-            .order('name', { ascending: true });
-        if (error) {
-            console.error('Erro ao carregar clients:', error.message || error);
-            select.innerHTML = '<option value="">Erro ao carregar clientes</option>';
-            return;
-        }
-        const clients = data || [];
-        // atualizar window.clients para uso em outras partes
-        window.clients = clients.map(c => ({ id: c.id, name: c.name }));
-
-        select.innerHTML = '<option value="">Selecione um cliente...</option>';
-        clients.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = String(c.id);
-            opt.textContent = c.name || '';
-            select.appendChild(opt);
-        });
-        csClientsLoaded = true;
-    } catch (e) {
-        console.error('Erro inesperado ao buscar clientes:', e);
-        select.innerHTML = '<option value="">Erro ao carregar clientes</option>';
-    }
-}
-
-// Convert existing .metric-card blocks into a tidy StatCard layout while preserving IDs
-function enhanceMetricCards() {
-    const cards = document.querySelectorAll('.metric-card');
-    if (!cards || cards.length === 0) return;
-    cards.forEach(card => {
-        // preserve original onclick (if any)
-        const onclick = card.getAttribute('onclick') || '';
-
-        // try to read existing title and value inside the card
-        const titleEl = card.querySelector('h3');
-        const valueEl = card.querySelector('p');
-        const iconWrapper = Array.from(card.children).find(c => c.style && c.style.fontSize && c.style.fontSize.includes('3em'));
-
-        const title = titleEl ? titleEl.textContent.trim() : '';
-        const valueId = valueEl && valueEl.id ? valueEl.id : null;
-        const valueText = valueEl ? valueEl.textContent.trim() : '-';
-        const originalIconHTML = iconWrapper ? iconWrapper.innerHTML : '';
-
-        // Map known titles to Font Awesome icons for a professional look
-        const titleKey = title.toLowerCase();
-        const iconMap = {
-            'clientes ativos': '<i class="fas fa-users"></i>',
-            'clientes inativos': '<i class="fas fa-user-slash"></i>',
-            'homologações': '<i class="fas fa-clipboard-check"></i>',
-            'releases': '<i class="fas fa-rocket"></i>',
-            'reuniões': '<i class="fas fa-calendar-alt"></i>',
-            'total de visitas': '<i class="fas fa-map-marked-alt"></i>',
-            'avaliação média': '<i class="fas fa-star"></i>'
-        };
-
-        const iconHTML = iconMap[titleKey] || originalIconHTML || '<i class="fas fa-chart-line"></i>';
-
-        // Build new structure but keep the value element with its original id so existing JS keeps working
-        const valueSpan = valueId ? `<div class="stat-value" id="${valueId}">${valueText}</div>` : `<div class="stat-value">${valueText}</div>`;
-
-        const html = `
-            <div class="stat-card-content">
-                <div class="stat-left">
-                    <div class="stat-title">${title}</div>
-                    ${valueSpan}
-                    <div class="stat-desc">&nbsp;</div>
-                </div>
-                <div class="stat-icon">${iconHTML}</div>
-            </div>
-        `;
-
-        card.innerHTML = html;
-        if (onclick) card.setAttribute('onclick', onclick);
-    });
-}
 
 // Função para atualizar o select de autores baseado no setor atual
 async function updateDocumentAuthorsSelect() {
@@ -2093,29 +1661,6 @@ function addEditProduct() {
             }
         }
 
-
-     function switchDashboardTab(tabName) {
-            // Ocultar todos os conteúdos
-            document.getElementById('tab-content-overview').style.display = 'none';
-            document.getElementById('tab-content-activities').style.display = 'none';
-            document.getElementById('tab-content-performance').style.display = 'none';
-            
-            // Remover estilo ativo de todos os botões
-            document.getElementById('tab-overview').style.color = '#999';
-            document.getElementById('tab-overview').style.borderBottom = '2px solid transparent';
-            document.getElementById('tab-activities').style.color = '#999';
-            document.getElementById('tab-activities').style.borderBottom = '2px solid transparent';
-            document.getElementById('tab-performance').style.color = '#999';
-            document.getElementById('tab-performance').style.borderBottom = '2px solid transparent';
-            
-            // Mostrar conteúdo selecionado
-            document.getElementById('tab-content-' + tabName).style.display = 'block';
-            
-            // Ativar botão selecionado
-            document.getElementById('tab-' + tabName).style.color = '#0066cc';
-            document.getElementById('tab-' + tabName).style.borderBottom = '2px solid #0066cc';
-        }
-
         // Função para filtrar clientes por grupo, subgrupo e nome
         function filterClientsByGroup() {
             const selectedGroup = document.getElementById('filterClientGroup').value;
@@ -2504,7 +2049,7 @@ if (clients.length === 0) {
      ${client.client_logos?.url ? `<img src="${client.client_logos.url}" alt="Logo" class="logo-preview-vertical">` : client.name.charAt(0).toUpperCase()}
     </div>
 
-    <p class="add-logo-text">${client.logo_url ? '' : ''}</p>
+    <p class="add-logo-text">${client.logo_url ? '' : 'Adicionar Logo'}</p>
     <h3 class="client-name-vertical">${client.name}</h3>
     <p class="client-status-text ${client.status === 'Cliente Inativo' ? 'inactive' : ''}">${client.status || 'Cliente Ativo'}</p>
 
@@ -2512,8 +2057,8 @@ if (clients.length === 0) {
     <!-- Produtos -->
     <div class="info-section">
       <div class="section-title">
-        <span style="font-size: 18px;"></span>
-        <span style="font-weight: bold;">Produtos</span>
+        <span style="font-size: 18px;">📦</span>
+        <span style="font-weight: bold;">Produtos</span> (<span id="productCount-${client.id}">${client.products ? client.products.length : 0}</span>)
       </div>
       ${
         client.products && client.products.length > 0
@@ -2522,6 +2067,18 @@ if (clients.length === 0) {
       }
     </div>
 
+    <!-- Integrações -->
+    <div class="info-section">
+      <div class="section-title">
+        <span style="font-size: 18px;">🔗</span>
+        <span style="font-weight: bold;">Integrações</span>
+      </div>
+      ${
+        client.integrations && client.integrations.length > 0
+          ? client.integrations.map(i => `<p class="section-item">• ${i.type} (${i.system})</p>`).join('')
+          : '<p class="section-item muted">Nenhuma integração</p>'
+      }
+    </div>
 
     <button class="btn-vertical" onclick="viewClientDocuments(${client.id})">Ver Documentos</button>
     <button class="btn-vertical edit" onclick="editClient(${client.id})">Editar Cliente</button>
@@ -3095,11 +2652,11 @@ const { data, error } = await query;
                         ).join('<br>') +
                     '</p>';
                    
-                    html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)"> Baixar Arquivos</button>`;
+                    html += `<button class="btn-exportar" data-arquivos="${arquivosData}" onclick="baixarArquivosHomologacaoFromButton(this)">📥 Baixar Todos</button>`;
                 }
                 
-                html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})"> Editar</button>`;
-                html += `<button class="btn-exportar" style="background-color: #d6d6d6; margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})"> Excluir</button>`;
+                html += `<button class="btn-editar-homologacao" style="background-color: var(--accent-color); margin-right: 10px;" onclick="editHomologacaoFromButton(this, ${h.id})">✏️ Editar</button>`;
+                html += `<button class="btn-exportar" style="background-color: var(--error-color); margin-right: 10px;" data-arquivos="${arquivosData}" onclick="deleteHomologacaoFromButton(this, ${h.id})">🗑️ Excluir</button>`;
                 html += '</div>';
                 return html;
             }).join('');
@@ -3807,15 +3364,15 @@ function exibirRelease(d, url) {
     const ticketsMelhoria = d.tickets_relacionados.filter(ticket => ticket.classificacao === 'melhoria' || !ticket.classificacao);
     
     ticketsInfo = `
-      <div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 6px; border-left: 4px solid #0066ccbf;">
-        <strong style="color: #0066ccbf;"> Tickets Relacionados (${d.tickets_relacionados.length}):</strong>
+      <div style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 6px; border-left: 4px solid #4fc3f7;">
+        <strong style="color: #4fc3f7;">🎫 Tickets Relacionados (${d.tickets_relacionados.length}):</strong>
         
         ${ticketsBug.length > 0 ? `
           <div style="margin-top: 8px;">
-            <div style="font-weight: bold; color: #0066ccbf; margin-bottom: 4px;"> Bugs (${ticketsBug.length}):</div>
+            <div style="font-weight: bold; color: #dc3545; margin-bottom: 4px;"> Bugs (${ticketsBug.length}):</div>
             ${ticketsBug.map(ticket => `
               <div style="margin: 2px 0 2px 15px; font-size: 0.9em;">
-                <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #0087ff; text-decoration: none;">
+                <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #dc3545; text-decoration: none;">
                   #${ticket.id}
                 </a> - ${ticket.subject || 'Sem assunto'}
                 ${ticket.clientName ? `<span style="font-size: 0.8em; color: #666; margin-left: 8px;">(${ticket.clientName})</span>` : ''}
@@ -3826,10 +3383,10 @@ function exibirRelease(d, url) {
         
         ${ticketsMelhoria.length > 0 ? `
           <div style="margin-top: 8px;">
-            <div style="font-weight: bold; color: #0066ccbf; margin-bottom: 4px;"> Melhorias (${ticketsMelhoria.length}):</div>
+            <div style="font-weight: bold; color: #28a745; margin-bottom: 4px;"> Melhorias (${ticketsMelhoria.length}):</div>
             ${ticketsMelhoria.map(ticket => `
               <div style="margin: 2px 0 2px 15px; font-size: 0.9em;">
-                <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #0087ff; text-decoration: none;">
+                <a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank" style="color: #28a745; text-decoration: none;">
                   #${ticket.id}
                 </a> - ${ticket.subject || 'Sem assunto'}
                 ${ticket.clientName ? `<span style="font-size: 0.8em; color: #666; margin-left: 8px;">(${ticket.clientName})</span>` : ''}
@@ -3851,7 +3408,7 @@ c.innerHTML = `
   ${ticketsInfo}
   <div style="display:flex; justify-content:space-between; margin-top:10px;">
     <a href="${url}" class="btn-secondary" target="_blank">Ver Arquivo</a>
-    <button class="btn-secondary" style="background-color:#d6d6d6;" onclick="deleteRelease('${d.id}', '[]')">Excluir</button>
+    <button class="btn-secondary" style="background-color:#dc3545;" onclick="deleteRelease('${d.id}', '[]')">Excluir</button>
   </div>
 `;
 document.getElementById("releaseList").appendChild(c);
@@ -4529,10 +4086,8 @@ function updateDateTime() {
     });
     const timeStr = now.toLocaleTimeString('pt-BR');
     
-    const elCurrentDate = document.getElementById('currentDate');
-    const elLastUpdate = document.getElementById('lastUpdate');
-    if (elCurrentDate) elCurrentDate.textContent = dateStr;
-    if (elLastUpdate) elLastUpdate.textContent = timeStr;
+    document.getElementById('currentDate').textContent = dateStr;
+    document.getElementById('lastUpdate').textContent = timeStr;
 }
 
 // Carregar métricas 
@@ -4752,7 +4307,7 @@ async function loadRecentActivities() {
                     }
                 }
                 return `
-                <div class="activity-item" style="background: rgba(255, 255, 255, 0.95); border-left: 4px solid ${activity.color}; padding: 16px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;" onclick="(${activity.action.toString()})()">
+                <div class="activity-item" style="background: rgba(179, 229, 252, 0.95); border-left: 4px solid ${activity.color}; padding: 16px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;" onclick="(${activity.action.toString()})()">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div style="font-size: 1.5em;">${activity.icon}</div>
                         <div style="flex: 1;">
@@ -5073,7 +4628,7 @@ async function viewClientTickets(clientId, clientName, clientEmail) {
                         <span class="ticket-status ${statusClass}">${statusText}</span>
                     </div>
                     <div class="ticket-subject">${ticket.subject || 'Sem assunto'}</div>
-                    <div class="ticket-description">${ticket.description_text ? ticket.description_text.substring(0, 200) + '...' : 'Detalhes'}</div>
+                    <div class="ticket-description">${ticket.description_text ? ticket.description_text.substring(0, 200) + '...' : 'Sem descrição'}</div>
                     <div class="ticket-meta">
                         <strong>Criado:</strong> ${createdDate} | 
                         <strong>Atualizado:</strong> ${updatedDate} | 
@@ -5391,19 +4946,14 @@ window.onclick = function(event) {
                         const statusClass = getTicketStatusClass(ticket.status);
                         const statusText = getTicketStatusText(ticket.status);
                         
-                        // tornar descrição clicável para abrir conversas do ticket
-                        const descriptionText = ticket.description_text ? ticket.description_text.substring(0, 200) + "..." : "Detalhes";
-                        // Adiciona data-ticket-id para delegação (não usar onclick inline para evitar duplicação)
-                        const descriptionHtml = `<a href="#" class=\"ticket-description-link\" data-ticket-id=\"${ticket.id}\">${escapeHtml(descriptionText)}</a>`;
-
                         return `
                             <div class="ticket-item">
                                 <div class="ticket-header">
                                     <span class="ticket-id"><a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank">#${ticket.id}</a></span>
                                     <span class="ticket-status ${statusClass}">${statusText}</span>
                                 </div>
-                                <div class="ticket-subject">${escapeHtml(ticket.subject || "Sem assunto")}</div>
-                                <div class="ticket-description">${descriptionHtml}</div>
+                                <div class="ticket-subject">${ticket.subject || "Sem assunto"}</div>
+                                <div class="ticket-description">${ticket.description_text ? ticket.description_text.substring(0, 200) + "..." : "Sem descrição"}</div>
                                 <div class="ticket-meta">
                                     <strong>Criado:</strong> ${createdDate} | 
                                     <strong>Atualizado:</strong> ${updatedDate} | 
@@ -5424,153 +4974,11 @@ window.onclick = function(event) {
                         </div>
                     `;
                 }
-                    // Listener delegado removido aqui: usamos um listener global adicionado uma vez
             }
 
             // Função para fechar modal de tickets
             function closeTicketsModal() {
                 document.getElementById("ticketsModal").style.display = "none";
-            }
-
-            // --- Funções para visualizar conversas de um ticket ---
-            // Função utilitária para escapar HTML simples
-            function escapeHtml(unsafe) {
-                return String(unsafe || "")
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/\"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
-            }
-
-            function openConversationsModal(ticketId, conversationsHtml) {
-                const modal = document.getElementById('conversationsModal');
-                const content = document.getElementById('conversationsContent');
-                const titleId = document.getElementById('conversationsTicketId');
-                console.log('openConversationsModal called for ticket', ticketId);
-                if (titleId) titleId.textContent = `#${ticketId}`;
-                if (content) content.innerHTML = conversationsHtml || '<p style="color:#666;">Nenhuma conversa encontrada.</p>';
-
-                if (!modal) {
-                    console.warn('conversationsModal element not found in DOM');
-                    return;
-                }
-
-                // Move modal to document.body to avoid stacking-context/overflow issues
-                try {
-                    if (modal.parentElement !== document.body) {
-                        console.log('Moving conversationsModal to document.body (was inside', modal.parentElement && modal.parentElement.tagName, ')');
-                        document.body.appendChild(modal);
-                    }
-                } catch (err) {
-                    console.warn('Failed to move conversationsModal to body:', err);
-                }
-
-                // Show modal
-                modal.style.display = 'flex';
-                // small timeout to allow transition if needed
-                setTimeout(() => modal.classList.add('visible'), 5);
-
-                // Debugging: log computed styles
-                try {
-                    const cs = window.getComputedStyle(modal);
-                    console.log('conversationsModal styles -> display:', modal.style.display, ', computed display:', cs.display, ', visibility:', cs.visibility, ', opacity:', cs.opacity, ', z-index:', cs.zIndex);
-                } catch (err) {
-                    console.warn('Erro ao obter estilos computados do modal:', err);
-                }
-            }
-
-            function closeConversationsModal() {
-                const modal = document.getElementById('conversationsModal');
-                if (modal) {
-                    modal.classList.remove('visible');
-                    setTimeout(() => { modal.style.display = 'none'; }, 300);
-                }
-            }
-
-            // Busca conversas do ticket via API Freshdesk
-            async function fetchTicketConversations(ticketId) {
-                console.log('fetchTicketConversations called with', ticketId);
-                if (!ticketId) return;
-                const contentEl = document.getElementById('conversationsContent');
-                openConversationsModal(ticketId, '<div style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin" style="font-size:24px; color:#4fc3f7"></i><div>Carregando conversas...</div></div>');
-
-                try {
-                    const url = `https://suportetryvia.freshdesk.com/api/v2/tickets/${ticketId}/conversations`;
-                    // Autenticação: a API Freshdesk usa Basic Auth com API key como usuário e 'X' como senha.
-                    // AVISO: incluir a chave diretamente no front-end é inseguro e pode expor sua API key.
-                    // O recomendado é usar um proxy/back-end que adicione a Authorization header.
-                    const providedKey = sessionStorage.getItem('FRESHDESK_API_KEY') || 'RObWd1NBqM0J9APJ2FoX';
-                    let authHeader = null;
-                    try {
-                        authHeader = 'Basic ' + btoa(providedKey + ':X');
-                    } catch (e) {
-                        console.warn('btoa not available or failed to encode API key', e);
-                    }
-
-                    const headers = {
-                        'Accept': 'application/json'
-                    };
-                    if (authHeader) headers['Authorization'] = authHeader;
-
-                    const response = await fetch(url, {
-                        headers
-                    });
-
-                    if (!response.ok) {
-                        let msg = `Falha ao buscar conversas (status ${response.status})`;
-                        if (response.status === 401 || response.status === 403) {
-                            msg += '. A API exige autenticação. Use um proxy/backend para incluir a API key do Freshdesk.';
-                        } else if (response.status === 0) {
-                            msg += '. Possível problema de CORS ou rede.';
-                        }
-                        if (contentEl) contentEl.innerHTML = `<div style="color:#f44336;">${escapeHtml(msg)}</div>`;
-                        return;
-                    }
-
-                    const conv = await response.json();
-                    if (!conv || conv.length === 0) {
-                        if (contentEl) contentEl.innerHTML = '<p style="color:#666;">Nenhuma conversa encontrada para este ticket.</p>';
-                        return;
-                    }
-
-                    const html = conv.map(c => {
-                        const who = c.incoming ? (c.from && (c.from.name || c.from.email)) : (c.user && (c.user.name || c.user.email)) || c.source || 'Remetente';
-                        const body = c.body_text ? escapeHtml(c.body_text) : (c.body ? escapeHtml(c.body) : '');
-                        const created = c.created_at ? formatDateTimeForDisplay(c.created_at) : '';
-                        return `
-                            <div style="border-bottom:1px solid #eee; padding:10px 0;">
-                                <div style="font-weight:600; color:#333;">${escapeHtml(who)} <span style="font-weight:400; color:#666; font-size:0.9em; margin-left:8px;">${escapeHtml(created)}</span></div>
-                                <div style="margin-top:6px; white-space:pre-wrap; color:#222;">${body}</div>
-                            </div>
-                        `;
-                    }).join('');
-
-                    if (contentEl) contentEl.innerHTML = html;
-
-                } catch (err) {
-                    console.error('Erro ao buscar conversas do ticket', err);
-                    const message = err && err.message ? err.message : String(err);
-                    if (contentEl) contentEl.innerHTML = `<div style="color:#f44336;">Erro ao carregar conversas: ${escapeHtml(message)}. Se for CORS/401, use um proxy no backend para adicionar a API Key do Freshdesk.</div>`;
-                }
-            }
-
-            // Fallback global: garante que cliques em links de descrição acionem a busca (adicionado apenas uma vez)
-            try {
-                if (!window._ticketDescGlobalListenerAdded) {
-                    document.addEventListener('click', function (e) {
-                        const link = e.target.closest && e.target.closest('.ticket-description-link');
-                        if (link) {
-                            e.preventDefault();
-                            const ticketId = link.getAttribute('data-ticket-id') || link.dataset.ticketId;
-                            console.log('Global listener triggered for ticket', ticketId);
-                            fetchTicketConversations(ticketId);
-                        }
-                    });
-                    window._ticketDescGlobalListenerAdded = true;
-                }
-            } catch (err) {
-                console.warn('Não foi possível adicionar listener global de ticket-description-link:', err);
             }
 
             // Função para obter classe CSS do status do ticket
@@ -5621,6 +5029,78 @@ window.onclick = function(event) {
                     return;
                 }
                 showTicketsModal(clientName, cfEmpresa);
+            }
+
+            // Função para mostrar modal de tickets do cliente
+            async function showTicketsModal(clientName, cfEmpresa) {
+                const modal = document.getElementById("ticketsModal");
+                const title = document.getElementById("ticketsModalTitle");
+                const content = document.getElementById("ticketsModalContent");
+                
+                title.textContent = `Tickets - ${clientName}`;
+                content.innerHTML = `
+                    <div class="loading-tickets">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2em; margin-bottom: 20px; color: #4fc3f7;"></i>
+                        <p>Carregando tickets...</p>
+                    </div>
+                `;
+                
+                modal.style.display = "block";
+                
+                try {
+                    // Buscar tickets do cliente via API usando cf_empresa
+                    const response = await fetch(`https://77h9ikc6ney8.manus.space/api/tickets/client-by-empresa?cf_empresa=${encodeURIComponent(cfEmpresa)}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Erro na API: ${response.status}`);
+                    }
+                    const tickets = await response.json();
+                    
+                    if (!tickets || tickets.length === 0) {
+                        content.innerHTML = `
+                            <div class="no-tickets">
+                                <i class="fas fa-info-circle" style="font-size: 3em; margin-bottom: 20px; color: #2196f3;"></i>
+                                <h3>Nenhum ticket encontrado</h3>
+                                <p>Não há tickets registrados para este cliente.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    content.innerHTML = tickets.map(ticket => {
+                        const createdDate = formatDateTimeForDisplay(ticket.created_at);
+                        const updatedDate = formatDateTimeForDisplay(ticket.updated_at);
+                        const statusClass = getTicketStatusClass(ticket.status);
+                        const statusText = getTicketStatusText(ticket.status);
+                        
+                        return `
+                            <div class="ticket-item">
+                                <div class="ticket-header">
+                                    <span class="ticket-id"><a href="https://suportetryvia.freshdesk.com/a/tickets/${ticket.id}" target="_blank">#${ticket.id}</a></span>
+                                    <span class="ticket-status ${statusClass}">${statusText}</span>
+                                </div>
+                                <div class="ticket-subject">${ticket.subject || "Sem assunto"}</div>
+                                <div class="ticket-description">${ticket.description_text ? ticket.description_text.substring(0, 200) + "..." : "Sem descrição"}</div>
+                                <div class="ticket-meta">
+                                    <strong>Criado:</strong> ${createdDate} | 
+                                    <strong>Atualizado:</strong> ${updatedDate} | 
+                                    <strong>Prioridade:</strong> ${getTicketPriorityText(ticket.priority)}
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+                    
+                } catch (error) {
+                    console.error("Erro ao buscar tickets:", error);
+                    content.innerHTML = `
+                        <div class="no-tickets">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3em; margin-bottom: 20px; color: #f44336;"></i>
+                            <h3>Erro ao carregar tickets</h3>
+                            <p>Não foi possível conectar com o serviço de tickets. Verifique se a API está rodando.</p>
+                            <p style="font-size: 0.9em; color: #666;">Erro: ${error.message}</p>
+                        </div>
+                    `;
+                }
             }
 
             // Função para fechar modal de tickets
@@ -9761,12 +9241,12 @@ function renderizarImplantacoes(implantacoes) {
         
         return `
             <div style="
-                background-color: rgba(255, 255, 255, 0.95); 
+                background-color: rgba(179, 229, 252, 0.95); 
                 border-radius: 15px; 
                 padding: 25px; 
                 margin-bottom: 20px; 
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
-                border-left: 5px solid #0066ccbf;
+                box-shadow: 0 4px 15px rgba(41, 182, 246, 0.2); 
+                border-left: 5px solid #4fc3f7;
                 overflow: hidden;
                 word-wrap: break-word;
                 word-break: break-word;
@@ -9782,7 +9262,7 @@ function renderizarImplantacoes(implantacoes) {
                 ">
                     <div style="flex: 1; min-width: 0; margin-right: 10px;">
                         <h4 style="
-                            color: #0066ccbf; 
+                            color: #4fc3f7; 
                             margin: 0 0 5px 0; 
                             font-size: 1.3em;
                             word-wrap: break-word;
@@ -9802,7 +9282,7 @@ function renderizarImplantacoes(implantacoes) {
                     </div>
                     <div style="flex-shrink: 0;">
                         <span style="
-                            background-color: #0066ccbf; 
+                            background-color: #4fc3f7; 
                             color: white; 
                             padding: 5px 12px; 
                             border-radius: 20px; 
@@ -9822,7 +9302,7 @@ function renderizarImplantacoes(implantacoes) {
                     margin-bottom: 15px;
                 ">
                     <div style="min-width: 0;">
-                        <strong style="color: #0066ccbf;">Especialista:</strong><br>
+                        <strong style="color: #4fc3f7;">Especialista:</strong><br>
                         <span style="
                             color: #333;
                             word-wrap: break-word;
@@ -9830,25 +9310,25 @@ function renderizarImplantacoes(implantacoes) {
                         ">${implantacao.especialista}</span>
                     </div>
                     <div style="min-width: 0;">
-                        <strong style="color: #0066ccbf;">Data de Atualização:</strong><br>
+                        <strong style="color: #4fc3f7;">Data de Atualização:</strong><br>
                         <span style="color: #333;">${dataFormatada}</span>
                     </div>
                     <div style="min-width: 0;">
-                        <strong style="color: #0066ccbf;">Data de Início:</strong><br>
+                        <strong style="color: #4fc3f7;">Data de Início:</strong><br>
                         <span style="color: #333;">${formatDateOnlyBR(implantacao.data_inicio)}</span>
                     </div>
                     <div style="min-width: 0;">
-                        <strong style="color: #0066ccbf;">Data de Término:</strong><br>
+                        <strong style="color: #4fc3f7;">Data de Término:</strong><br>
                         <span style="color: #333;">${formatDateOnlyBR(implantacao.data_termino)}</span>
                     </div>
                     <div style="min-width: 0;">
-                        <strong style="color: #0066ccbf;">Tickets Pendentes:</strong><br>
+                        <strong style="color: #4fc3f7;">Tickets Pendentes:</strong><br>
                         <span style="color: #333; font-weight: bold;">${implantacao.tickets_pendentes || 0}</span>
                     </div>
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <strong style="color: #0066ccbf;">Resumo:</strong><br>
+                    <strong style="color: #4fc3f7;">Resumo:</strong><br>
                     <p style="
                         color: #333; 
                         margin: 5px 0 0 0; 
@@ -9881,7 +9361,7 @@ function renderizarImplantacoes(implantacoes) {
                     
                     <div style="display: flex; gap: 8px;">
                         <button onclick="editarImplantacao('${implantacao.id}')" style="
-                            background-color: #d6d6d6; 
+                            background-color: #ff9800; 
                             color: white; 
                             border: none; 
                             padding: 8px 15px; 
@@ -9893,13 +9373,13 @@ function renderizarImplantacoes(implantacoes) {
                             display: flex;
                             align-items: center;
                             gap: 5px;
-                        " onmouseover="this.style.backgroundColor='#afafaf'" onmouseout="this.style.backgroundColor='#ff9800'">
+                        " onmouseover="this.style.backgroundColor='#f57c00'" onmouseout="this.style.backgroundColor='#ff9800'">
                             <i class="fas fa-edit"></i>
                             Editar
                         </button>
 
                             <button onclick="excluirImplantacao('${implantacao.id}', \'${implantacao.projeto}\', \'${implantacao.cliente}\')" style="
-                            background-color: #d6d6d6; 
+                            background-color: #f44336; 
                             color: white; 
                             border: none; 
                             padding: 8px 15px; 
@@ -9911,7 +9391,7 @@ function renderizarImplantacoes(implantacoes) {
                             display: flex;
                             align-items: center;
                             gap: 5px;
-                        " onmouseover="this.style.backgroundColor='#afafaf'" onmouseout="this.style.backgroundColor='#f44336'">
+                        " onmouseover="this.style.backgroundColor='#d32f2f'" onmouseout="this.style.backgroundColor='#f44336'">
                             <i class="fas fa-trash"></i>
                             Excluir
                         </button>
@@ -10474,7 +9954,7 @@ function renderTickets(tickets) {
                     <span class="ticket-status ${statusClass}">${statusText}</span>
                 </div>
                 <div class="ticket-subject">${ticket.subject || 'Sem assunto'}</div>
-                <div class="ticket-description">${ticket.description_text ? ticket.description_text.substring(0, 200) + '...' : 'Detalhes'}</div>
+                <div class="ticket-description">${ticket.description_text ? ticket.description_text.substring(0, 200) + '...' : 'Sem descrição'}</div>
                 <div class="ticket-meta">
                     <strong>Criado:</strong> ${createdDate} | 
                     <strong>Atualizado:</strong> ${updatedDate} | 
@@ -11618,5 +11098,4 @@ async function loadDocuments() {
     // Debug: Log final
     console.log('Documentos exibidos na tela:', documentosFiltrados.length);
 }
-
-
+  
