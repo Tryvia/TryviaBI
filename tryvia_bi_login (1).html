@@ -115,6 +115,7 @@
         <div class="msg-container">
           <div id="errorMessage" class="error-message" role="alert" aria-live="assertive"></div>
           <div id="successMessage" class="success-message" role="alert" aria-live="polite"></div>
+          <div id="suggestionArea" style="margin-top:8px;color:#ffd966"></div>
         </div>
       </form>
     </div>
@@ -262,9 +263,55 @@ async function handleLogin(event) {
 
     if (error || !data) {
       console.error('Supabase query error:', error);
-      showMessage('Usuário ou senha incorretos.', 'error');
-      document.getElementById('password').value = '';
-      document.getElementById('password').focus();
+      // tenta detectar sufixos acidentais no domínio (ex.: .ng anexado)
+      const suggestionArea = document.getElementById('suggestionArea');
+      suggestionArea.innerHTML = '';
+
+      // Se o erro for PGRST116 (0 rows or multiple) ou simplesmente não houve dados
+      const noUser = (!data || (error && error.code === 'PGRST116'));
+      if (noUser) {
+        // tenta remover o último rótulo do domínio (ex.: remove ".ng") como sugestão
+        const atIndex = email.lastIndexOf('@');
+        if (atIndex > -1) {
+          const local = email.slice(0, atIndex);
+          const domain = email.slice(atIndex + 1);
+          const domainParts = domain.split('.');
+          if (domainParts.length > 2) {
+            const candidateDomain = domainParts.slice(0, -1).join('.');
+            const candidate = `${local}@${candidateDomain}`;
+            // só tenta se candidato for um email válido básico
+            const emailRegex2 = /^\S+@\S+\.\S+$/;
+            if (emailRegex2.test(candidate) && candidate !== email) {
+              try {
+                const { data: candData, error: candErr } = await supabaseClient.from('usuarios').select('id').eq('email', candidate).limit(1);
+                if (!candErr && candData && candData.length > 0) {
+                  suggestionArea.innerHTML = `Nenhum usuário encontrado para <strong>${email}</strong>. Deseja tentar <a href="#" id="useCandidate">${candidate}</a>?`;
+                  const link = document.getElementById('useCandidate');
+                  if (link) {
+                    link.addEventListener('click', function(e) {
+                      e.preventDefault();
+                      document.getElementById('username').value = candidate;
+                      document.getElementById('password').focus();
+                      suggestionArea.innerHTML = '';
+                    });
+                  }
+                }
+              } catch (e) {
+                console.warn('Erro ao verificar candidato:', e);
+              }
+            }
+          }
+        }
+
+        showMessage('Usuário ou senha incorretos. Verifique o email digitado.', 'error');
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+        setLoadingState(false);
+        return false;
+      }
+
+      // Outros erros
+      showMessage('Erro ao consultar servidor. Tente novamente mais tarde.', 'error');
       setLoadingState(false);
       return false;
     }
