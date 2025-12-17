@@ -127,7 +127,23 @@
     // Configuração do Supabase
 const SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Inicializa o cliente Supabase de forma segura (evita redeclaração global)
+let supabaseClient = null;
+if (typeof window.supabaseClient !== 'undefined' && window.supabaseClient) {
+  supabaseClient = window.supabaseClient;
+} else if (window.supabase && typeof window.supabase.createClient === 'function') {
+  try {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // cache para evitar re-criação em outros scripts
+    window.supabaseClient = supabaseClient;
+  } catch (err) {
+    // fallback para objeto global
+    supabaseClient = window.supabase || null;
+  }
+} else if (window.supabaseClient) {
+  supabaseClient = window.supabaseClient;
+}
 
     document.addEventListener('DOMContentLoaded', function() {
       checkExistingAuth();
@@ -228,7 +244,7 @@ async function handleLogin(event) {
 
   try {
     // Consulta o usuário na tabela 'usuarios' pelo email
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('usuarios')
       .select('*')
       .eq('email', email)
@@ -293,7 +309,7 @@ async function handleLogin(event) {
 
     // Atualiza o campo lastLogin no Supabase (se existir)
     try {
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabaseClient
         .from('usuarios')
         .update({ lastLogin: new Date().toISOString() })
         .eq('id', data.id);
