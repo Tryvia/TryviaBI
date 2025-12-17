@@ -1085,7 +1085,7 @@ async function updateDocumentAuthorsSelect() {
         if (!window.supabaseClient) {
             window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
-        const supabase = window.supabaseClient;
+        const supabaseClient = window.supabaseClient;
 
         
         const tipoMap = {
@@ -6772,7 +6772,7 @@ async function filterEvaluations() {
     
     try {
         
-        let query = supabase
+        let query = supabaseClient
             .from('visit_evaluations')
             .select('*')
             .order('created_at', { ascending: false });
@@ -8485,7 +8485,7 @@ let submitBtn = null;
                 return;
             }
             // Obter URL pública do arquivo
-            urlData = supabase.storage
+            urlData = supabaseClient.storage
                 .from('training-videos')
                 .getPublicUrl(fileName);
             videoUrlToSave = urlData.data.publicUrl;
