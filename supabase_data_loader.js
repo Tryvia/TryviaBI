@@ -140,3 +140,4 @@ async function loadDashboardMetrics() {
 
 // Chamar a função de carregamento quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', loadDashboardMetrics);
+
