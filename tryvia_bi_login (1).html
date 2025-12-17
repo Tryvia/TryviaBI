@@ -90,7 +90,7 @@
     <div class="login-box">
       <h2>Bem-vindo ao Portal </h2>
       <p>Insira suas credenciais para acessar:</p>
-        <form class="login-form" id="loginForm">
+      <form class="login-form" id="loginForm" method="POST" onsubmit="return handleLogin(event)">
         <div class="form-group">
           <label for="username" class="sr-only">Usuário</label>
           <i class="fas fa-user input-icon" aria-hidden="true"></i>
@@ -104,7 +104,7 @@
             <i class="fas fa-eye" id="toggleIcon" aria-hidden="true"></i>
           </button>
         </div>
-        <button type="button" id="loginButton" class="btn" onclick="handleLogin(event)">
+        <button type="submit" id="loginButton" class="btn">
           <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
           <span>Entrar</span>
           <div class="loading-spinner" id="loadingSpinner"></div>
@@ -126,13 +126,12 @@ const SUPABASE_URL = 'https://mzjdmhgkrroajmsfwryu.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16amRtaGdrcnJvYWptc2Z3cnl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyMzMwMzUsImV4cCI6MjA2MzgwOTAzNX0.tQCwUfFCV7sD-IexQviU0XEPcbn9j5uK9NSUbH-OeBc';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('loginForm');
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      return false;
+    document.addEventListener('DOMContentLoaded', function() {
+      checkExistingAuth();
+      document.getElementById('username').focus();
+      setupPasswordToggle();
+      setupHelperLinks();
     });
-  });
 
     function checkExistingAuth() {
       const token = localStorage.getItem('auth_token');
