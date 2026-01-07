@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <link rel="icon" type="image/png" href="tryvia.png" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Projetos - Implantação</title>
     <link rel="stylesheet" href="style.css">
-    
+
     <!-- Script de controle de acesso -->
     <script>
-        (function() {
+        (function () {
             // Verificar se o usuário veio da página Portal.html
-            const referrerPermitido = 'https://tryvia.github.io/TryviaBI/Portal.html';
-            const paginaLogin = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
-            
+            const referrerPermitido = 'Portal.html';
+            const paginaLogin = 'tryvia_bi_login%20(1).html';
+
             // Obter o referrer atual
             const referrerAtual = document.referrer;
-            
+
             // Verificar se o referrer está vazio (acesso direto) ou não é o permitido
             if (!referrerAtual || !referrerAtual.includes(referrerPermitido)) {
                 // Verificar se não estamos já na página de login para evitar loop infinito
@@ -28,6 +29,7 @@
         })();
     </script>
 </head>
+
 <body>
     <!-- Tela Principal: Painel de Projetos -->
     <div id="painel-projetos" class="container">
@@ -42,8 +44,9 @@
         <div class="controls">
             <button id="btn-voltar-portal" class="btn-voltar-portal">Voltar para o portal</button>
             <button id="btn-adicionar" class="btn-adicionar">+ Adicionar Nova Implantação</button>
-            <input type="text" id="filtro-busca" placeholder="Buscar por empresa, projeto ou sistema..." class="filtro-busca">
-            
+            <input type="text" id="filtro-busca" placeholder="Buscar por empresa, projeto ou sistema..."
+                class="filtro-busca">
+
             <!-- Novo filtro por ano -->
             <div class="filtro-ano-container">
                 <label for="filtro-ano">Ano:</label>
@@ -61,7 +64,8 @@
                         <th>Projetos</th>
                         <th>Sistema</th>
                         <th>%</th>
-                        <th colspan="12" class="linha-tempo-header">Linha do Tempo - <span id="ano-selecionado">2024</span></th>
+                        <th colspan="12" class="linha-tempo-header">Linha do Tempo - <span
+                                id="ano-selecionado">2024</span></th>
                     </tr>
                     <tr class="meses-header">
                         <th></th>
@@ -277,13 +281,13 @@
                     <label for="especialista">Especialista Responsável:</label>
                     <input type="text" id="especialista" name="especialista" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="logo-cliente">Logo do Cliente:</label>
                     <input type="file" id="logo-cliente" name="logo-cliente" accept="image/*">
                     <small>Formatos aceitos: JPG, PNG, GIF (máx. 2MB)</small>
                 </div>
-                
+
                 <div class="form-buttons">
                     <button type="button" class="btn-cancelar" id="btn-cancelar">Cancelar</button>
                     <button type="submit" class="btn-salvar">Salvar</button>
@@ -325,7 +329,8 @@
                 <p class="warning-text">Esta ação não pode ser desfeita!</p>
                 <div class="form-buttons">
                     <button type="button" class="btn-cancelar" id="btn-cancelar-exclusao">Cancelar</button>
-                    <button type="button" class="btn-excluir-confirmar" id="btn-confirmar-exclusao">Excluir Definitivamente</button>
+                    <button type="button" class="btn-excluir-confirmar" id="btn-confirmar-exclusao">Excluir
+                        Definitivamente</button>
                 </div>
             </div>
         </div>
@@ -333,12 +338,12 @@
 
     <!-- Supabase Client -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+
     <!-- Configuração do Supabase -->
     <script src="supabase-config.js"></script>
-    
+
     <!-- Script principal -->
     <script src="script_modificado.js"></script>
 </body>
-</html>
 
+</html>
