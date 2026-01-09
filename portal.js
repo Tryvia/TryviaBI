@@ -1177,6 +1177,7 @@ async function saveTasks() {
     }
 
     try {
+        const auditData = getAuditActorData();
         const updates = [];
 
         for (const tipoHtml in tipoMap) {
@@ -9083,6 +9084,7 @@ async function salvarNovaImplantacao(event) {
             throw new Error('Cliente Supabase não inicializado');
         }
 
+        const auditData = getAuditActorData();
         const dadosImplantacao = {
             especialista: especialista,
             data: data,
