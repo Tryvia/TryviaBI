@@ -3376,3 +3376,141 @@ select {
 .modal-editar-usuario-content::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
+
+/* Estilos para a Tela de Auditoria */
+#audit-log.content-section {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.audit-table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+.audit-table th {
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.audit-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    color: #555;
+}
+
+.audit-table tr:hover {
+    background-color: #f1f8ff;
+}
+
+.badge-op {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+}
+
+.badge-insert { background-color: #28a745; }
+.badge-update { background-color: #ffc107; color: #333; }
+.badge-delete { background-color: #dc3545; }
+
+.btn-ver-detalhes {
+    background: #4fc3f7;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-ver-detalhes:hover {
+    background: #29b6f6;
+}
+
+/* Modal de Detalhes da Auditoria */
+.audit-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.audit-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 25px;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+}
+
+.audit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.audit-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.audit-payloads {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .audit-payloads { grid-template-columns: 1fr; }
+}
+
+.payload-box {
+    background: #272822;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+.payload-box h4 {
+    margin-top: 0;
+    color: #a6e22e;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+}
+
+.payload-box pre {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+    white-space: pre-wrap;
+}

@@ -18,38 +18,43 @@ try {
 
 // Funções para interagir com o Supabase
 class SupabaseService {
-    
+
     // Carregar todas as implantações
     static async carregarImplantacoes() {
         try {
             if (!supabaseClient) {
                 throw new Error('Cliente Supabase não inicializado');
             }
-            
+
             const { data, error } = await supabaseClient
                 .from('painel_implantacoes')
                 .select('*')
                 .order('created_at', { ascending: false });
-            
+
             if (error) {
                 console.error('Erro ao carregar implantações:', error);
                 return [];
             }
-            
+
             return data || [];
         } catch (error) {
             console.error('Erro na conexão com Supabase:', error);
             return [];
         }
     }
-    
+
     // Salvar nova implantação
     static async salvarImplantacao(implantacao) {
         try {
             if (!supabaseClient) {
                 throw new Error('Cliente Supabase não inicializado');
             }
-            
+
+            // Configurar contexto de auditoria
+            if (typeof setAuditContext === 'function') {
+                await setAuditContext();
+            }
+
             const { data, error } = await supabaseClient
                 .from('painel_implantacoes')
                 .insert([{
@@ -66,26 +71,31 @@ class SupabaseService {
                     resumo_operacional: implantacao.resumoOperacional
                 }])
                 .select();
-            
+
             if (error) {
                 console.error('Erro ao salvar implantação:', error);
                 throw error;
             }
-            
+
             return data[0];
         } catch (error) {
             console.error('Erro ao salvar implantação:', error);
             throw error;
         }
     }
-    
+
     // Atualizar implantação existente
     static async atualizarImplantacao(id, implantacao) {
         try {
             if (!supabaseClient) {
                 throw new Error('Cliente Supabase não inicializado');
             }
-            
+
+            // Configurar contexto de auditoria
+            if (typeof setAuditContext === 'function') {
+                await setAuditContext();
+            }
+
             const { data, error } = await supabaseClient
                 .from('painel_implantacoes')
                 .update({
@@ -104,74 +114,79 @@ class SupabaseService {
                 })
                 .eq('id', id)
                 .select();
-            
+
             if (error) {
                 console.error('Erro ao atualizar implantação:', error);
                 throw error;
             }
-            
+
             return data[0];
         } catch (error) {
             console.error('Erro ao atualizar implantação:', error);
             throw error;
         }
     }
-    
+
     // Excluir implantação
     static async excluirImplantacao(id) {
         try {
             if (!supabaseClient) {
                 throw new Error('Cliente Supabase não inicializado');
             }
-            
+
+            // Configurar contexto de auditoria
+            if (typeof setAuditContext === 'function') {
+                await setAuditContext();
+            }
+
             const { error } = await supabaseClient
                 .from('painel_implantacoes')
                 .delete()
                 .eq('id', id);
-            
+
             if (error) {
                 console.error('Erro ao excluir implantação:', error);
                 throw error;
             }
-            
+
             return true;
         } catch (error) {
             console.error('Erro ao excluir implantação:', error);
             throw error;
         }
     }
-    
+
     // Upload de ficheiro (logo)
     static async uploadLogo(file, fileName) {
         try {
             if (!supabaseClient) {
                 throw new Error('Cliente Supabase não inicializado');
             }
-            
+
             const { data, error } = await supabaseClient.storage
                 .from('logos')
                 .upload(fileName, file, {
                     cacheControl: '3600',
                     upsert: true
                 });
-            
+
             if (error) {
                 console.error('Erro ao fazer upload do logo:', error);
                 throw error;
             }
-            
+
             // Obter URL pública do ficheiro
             const { data: publicData } = supabaseClient.storage
                 .from('logos')
                 .getPublicUrl(fileName);
-            
+
             return publicData.publicUrl;
         } catch (error) {
             console.error('Erro no upload do logo:', error);
             throw error;
         }
     }
-    
+
     // Verificar conexão com Supabase
     static async verificarConexao() {
         try {
@@ -179,16 +194,16 @@ class SupabaseService {
                 console.error('Cliente Supabase não inicializado');
                 return false;
             }
-            
+
             const { data, error } = await supabaseClient
                 .from('painel_implantacoes')
                 .select('count', { count: 'exact', head: true });
-            
+
             if (error) {
                 console.error('Erro na verificação de conexão:', error);
                 return false;
             }
-            
+
             console.log('Conexão com Supabase estabelecida com sucesso');
             return true;
         } catch (error) {

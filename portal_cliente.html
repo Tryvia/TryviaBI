@@ -8073,17 +8073,19 @@ function getCurrentClientId() {
     return null;
 }
 
-// Atualizar função showTab para incluir avaliações
-const originalShowTab = window.showTab;
-window.showTab = function(tabId) {
-    if (originalShowTab) {
-        originalShowTab(tabId);
-    }
-    
-    if (tabId === 'evaluations') {
-        loadEvaluations();
-    }
-};
+(function () {
+    // Atualizar função showTab para incluir avaliações (isolado para evitar conflitos globais)
+    const originalShowTab = window.showTab;
+    window.showTab = function(tabId) {
+        if (originalShowTab) {
+            originalShowTab(tabId);
+        }
+        
+        if (tabId === 'evaluations') {
+            loadEvaluations();
+        }
+    };
+})();
 
 // Script para esconder abas do menu lateral conforme as permissões do usuário
 
@@ -8635,18 +8637,20 @@ async function criarLoginCliente() {
     }
 }
 
-// Carregar clientes quando a aba de gerenciar logins for aberta
-const originalShowTabFunction = window.showTab;
-window.showTab = function(tabId) {
-    if (originalShowTabFunction) {
-        originalShowTabFunction(tabId);
-    }
-    
-    if (tabId === 'gerenciar-logins') {
-        fetchAndRenderUsuarios();
-        carregarClientesNoSelect();
-    }
-};
+(function () {
+    // Carregar clientes quando a aba de gerenciar logins for aberta (isolado para evitar conflitos globais)
+    const originalShowTabFunction = window.showTab;
+    window.showTab = function(tabId) {
+        if (originalShowTabFunction) {
+            originalShowTabFunction(tabId);
+        }
+        
+        if (tabId === 'gerenciar-logins') {
+            fetchAndRenderUsuarios();
+            carregarClientesNoSelect();
+        }
+    };
+})();
 </script>
 </body>
 
