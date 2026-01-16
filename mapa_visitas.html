@@ -347,8 +347,8 @@
         
         (function() {
             // Verificar se o usuário veio da página Portal.html
-            const referrerPermitido = 'https://tryvia.github.io/TryviaBI/Portal.html';
-            const paginaLogin = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
+           const referrerPermitido = 'https://tryvia.github.io/TryviaBI/Portal.html';
+           const paginaLogin = 'https://tryvia.github.io/TryviaBI/tryvia_bi_login%20(1).html';
             
             // Obter o referrer atual
             const referrerAtual = document.referrer;
@@ -567,13 +567,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 
     <script>
-        let map;
-        let viagens = [];
-        let markers = [];
+        (function() {
+            let map;
+            let viagens = [];
+            let markers = [];
 
-        const supabaseUrl = "https://obwgegvrtxrlombmkaej.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM";
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            const supabaseUrl = "https://obwgegvrtxrlombmkaej.supabase.co";
+            const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id2dlZ3ZydHhybG9tYm1rYWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NDcxOTMsImV4cCI6MjA2NDAyMzE5M30.0Ng21Ywqrm6eDqbclFyeOhARpJCyWvX7b-0dJLE1QwM";
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         // Inicializar mapa
         function initMap() {
@@ -1141,6 +1142,13 @@
             document.getElementById('btnLimparFiltros').addEventListener('click', limparFiltros);
             document.getElementById('btnCentralizarMapa').addEventListener('click', centralizarMapa);
         };
+
+        // Expor funções no escopo global para acesso via onclick
+        window.editarViagem = editarViagem;
+        window.deletarViagem = deletarViagem;
+        window.fecharModal = fecharModal;
+        window.exibirListaViagens = exibirListaViagens;
+        })();
     </script>
 </body>
 </html>
