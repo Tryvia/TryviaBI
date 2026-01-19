@@ -1750,6 +1750,7 @@ async function addDocument() {
         showAlert('Atenção', 'Você não tem permissão para adicionar documentos do time.');
         return;
     }
+    const auditData = getAuditActorData();
     const title = document.getElementById('documentTitle').value;
     const author = document.getElementById('documentAuthor').value;
     const type = document.getElementById('documentType').value;
