@@ -1881,6 +1881,7 @@ async function saveClient() {
         showAlert('Atenção', 'Você não tem permissão para adicionar clientes.');
         return;
     }
+    const auditData = getAuditActorData();
     const name = document.getElementById('clientName').value;
     const email = document.getElementById('clientEmail').value;
     const phone = document.getElementById('clientPhone').value;
