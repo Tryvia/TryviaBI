@@ -171,6 +171,3 @@ ConnectionAbortedError: [WinError 10053] Uma conexão estabelecida foi anulada pe
 ::1 - - [10/Feb/2026 14:42:35] "GET /style.css HTTP/1.1" 200 -
 ::1 - - [10/Feb/2026 14:42:35] "GET /supabase-config.js HTTP/1.1" 200 -
 ::1 - - [10/Feb/2026 14:42:36] "GET /script_modificado.js HTTP/1.1" 200 -
-Serving HTTP on :: port 8000 (http://[::]:8000/) ...
-
-Keyboard interrupt received, exiting.
