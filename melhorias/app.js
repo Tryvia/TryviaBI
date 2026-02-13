@@ -391,7 +391,8 @@ function escapeHtml(str) {
      (function() {
              // Verificar se o usuário veio da página Portal.html
             const referrerPermitido = '/Portal.html';  
-            const paginaLogin = '/login/index.html';    
+            const BASE_PATH = '/dev';
+            const paginaLogin = `${BASE_PATH}/login/index.html`;    
             
              // Obter o referrer atual
              const referrerAtual = document.referrer;
@@ -399,9 +400,9 @@ function escapeHtml(str) {
              // Verificar se o referrer está vazio (acesso direto) ou não é o permitido
              if (!referrerAtual || !referrerAtual.includes(referrerPermitido)) {
                  // Verificar se não estamos já na página de login para evitar loop infinito
-                 if (window.location.href !== paginaLogin) {
-                     // Redirecionar para a página de login
-                    window.location.replace(paginaLogin);
+                 if (!window.location.pathname.endsWith(paginaLogin)) {
+                   // Redirecionar para a página de login dentro do subdiretório `/dev`
+                  window.location.replace(paginaLogin);
                  }
              }
          })();
