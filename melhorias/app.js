@@ -28,6 +28,15 @@ const STATE_CARD_CLASSES = {
   'New': 'new',
 };
 
+const SISTEMA_COLORS = {
+  'SING': '#8A2BE2',
+  'API': '#4DA6FF',
+  'OPTz': '#0ab368',
+  'SingServices': '#49dcd7',
+  'Telemetria': '#d91919',
+  'eTrip': '#0840a2'
+};
+
 // ===== STATE =====
 let allWorkItems = [];
 let filteredItems = [];
@@ -102,11 +111,13 @@ function populateFilterOptions() {
   const assignees = [...new Set(allWorkItems.map(wi => wi.assignedTo))].sort();
   const types = [...new Set(allWorkItems.map(wi => wi.type))].sort();
   const boardColumns = [...new Set(allWorkItems.map(wi => wi.boardColumn).filter(Boolean))].sort();
+  const sistemas = [...new Set(allWorkItems.map(wi => wi.sistema).filter(Boolean))].sort();
 
   fillSelect('filterState', states, 'Todos os Status');
   fillSelect('filterAssignee', assignees, 'Todos');
   fillSelect('filterType', types, 'Todos os Tipos');
   fillSelect('filterBoardColumn', boardColumns, 'Todas as Colunas');
+  fillSelect('filterSistema', sistemas, 'Todos os Sistemas');
 }
 
 function fillSelect(id, options, allLabel) {
@@ -129,6 +140,7 @@ function applyFilters() {
   const assignee = document.getElementById('filterAssignee')?.value || 'all';
   const type = document.getElementById('filterType')?.value || 'all';
   const boardColumn = document.getElementById('filterBoardColumn')?.value || 'all';
+  const sistema = document.getElementById('filterSistema')?.value || 'all';
   const dateRange = document.getElementById('filterDateRange')?.value || 'all';
 
   const monthStart = new Date(currentYear, currentMonth, 1);
@@ -140,6 +152,7 @@ function applyFilters() {
     if (assignee !== 'all' && wi.assignedTo !== assignee) return false;
     if (type !== 'all' && wi.type !== type) return false;
     if (boardColumn !== 'all' && wi.boardColumn !== boardColumn) return false;
+    if (sistema !== 'all' && wi.sistema !== sistema) return false;
 
     if (wi.startDate && wi.endDate) {
       const wiStart = new Date(wi.startDate);
@@ -274,10 +287,10 @@ function renderGantt() {
     html += `</div>`;
 
     // Bar
-    const stateClass = STATE_COLORS[wi.state] || 'state-active';
+    const bgColor = SISTEMA_COLORS[wi.sistema] || '#4DA6FF';
     const left = startOffset * DAY_WIDTH + 2;
     const width = Math.max(duration * DAY_WIDTH - 4, 8);
-    html += `<div class="gantt-bar ${stateClass}" style="left:${left}px;width:${width}px" `;
+    html += `<div class="gantt-bar" style="left:${left}px;width:${width}px;background-color:${bgColor}" `;
     html += `onmouseenter="showTooltip(event, ${wi.id})" onmouseleave="hideTooltip()" onmousemove="moveTooltip(event)">`;
     html += `<span>${escapeHtml(wi.title)}</span></div>`;
 
@@ -318,8 +331,40 @@ function showTooltip(event, id) {
 
 function moveTooltip(event) {
   const tip = document.getElementById('tooltip');
-  tip.style.left = (event.clientX + 12) + 'px';
-  tip.style.top = (event.clientY - 10) + 'px';
+  if (!tip) return;
+  const padding = 8;
+  // Inicial posição ao lado do cursor
+  let left = event.clientX + 12;
+  let top = event.clientY - 10;
+
+  // Forçar exibição para medir tamanho (se ainda estiver escondido)
+  const wasVisible = tip.classList.contains('visible');
+  if (!wasVisible) {
+    tip.style.display = 'block';
+  }
+
+  const tipW = tip.offsetWidth || 220;
+  const tipH = tip.offsetHeight || 120;
+
+  // Ajustar horizontalmente se sair da tela
+  if (left + tipW + padding > window.innerWidth) {
+    left = window.innerWidth - tipW - padding;
+  }
+
+  // Ajustar verticalmente: preferir abaixo do cursor, caso não caiba colocar acima
+  if (top + tipH + padding > window.innerHeight) {
+    // colocar acima do cursor
+    top = event.clientY - tipH - 12;
+  }
+  if (top < padding) top = padding;
+
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+
+  if (!wasVisible) {
+    // restaurar estado: visible class gerencia display
+    tip.style.display = '';
+  }
 }
 
 function hideTooltip() {
@@ -391,8 +436,7 @@ function escapeHtml(str) {
      (function() {
              // Verificar se o usuário veio da página Portal.html
             const referrerPermitido = '/Portal.html';  
-            const BASE_PATH = '/dev';
-            const paginaLogin = `${BASE_PATH}/login/index.html`;    
+            const paginaLogin = `/login/index.html`;  
             
              // Obter o referrer atual
              const referrerAtual = document.referrer;
