@@ -344,11 +344,19 @@
 
 </style>
     <script>
-        
+       
+          function configurarEventListeners() {
+    // Botão voltar para o portal
+    document.getElementById("btn-voltar-portal").addEventListener("click", function () {
+        // navegar para o arquivo no nível acima, evitando dependência do servidor
+        window.location.href = "../Portal.html";
+    });
+    }
+
         (function() {
             // Verificar se o usuário veio da página Portal.html
             const referrerPermitido = '/Portal.html';  
-            const paginaLogin = `/login/index.html`;   
+            const paginaLogin = `../login/index.html`;   
             
             // Obter o referrer atual
             const referrerAtual = document.referrer;
@@ -366,7 +374,9 @@
     </script>
 </head>
 <body>
-    <a href="/Portal.html" class="btn-voltar">⬅️ Voltar ao Portal</a>
+   <button id="btn-voltar-portal" class="btn-voltar">
+    Voltar para o portal
+</button>
     <div class="container">
         <div class="header">
             <h1>🗺️ Mapa de Viagens dos Especialistas</h1>
@@ -1135,6 +1145,11 @@
         window.onload = function() {
             initMap();
             carregarViagens(); // Carregar viagens salvas
+
+            // Registrar listeners adicionais definidos no topo do arquivo
+            if (typeof configurarEventListeners === 'function') {
+                configurarEventListeners();
+            }
 
             // Adicionar event listeners para os botões após o DOM estar pronto
             document.getElementById('btnAdicionarViagem').addEventListener('click', adicionarViagem);
